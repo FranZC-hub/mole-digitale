@@ -16,10 +16,10 @@ jobs:
       HAS_FTP: ${{ secrets.ARUBA_FTP_HOST != '' && secrets.ARUBA_FTP_USER != '' && secrets.ARUBA_FTP_PASS != '' }}
     steps:
       - name: Scarica il codice
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Node 22
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
