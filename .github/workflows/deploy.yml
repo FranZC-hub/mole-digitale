@@ -35,9 +35,12 @@ jobs:
           protocol: ftps                             # Aruba supporta FTPS; se non va, prova "ftp"
           port: 21
           local-dir: ./dist/
-          # ⚠️ Cartella web sul server. Spesso su Aruba è "./" (la root FTP è già la cartella pubblica).
-          #    Se il sito finisce in un sottodominio/sottocartella, mettila qui (es. ./www/ o ./htdocs/).
-          server-dir: ./
+          # ⚠️ Cartella PUBBLICA sul server. Su questo hosting Aruba i file del sito stanno dentro
+          #    "www.moledigitale.it/" (accanto alle cartelle di backup), NON nella root FTP.
+          #    Dopo il PRIMO run controlla dove sono finiti i file: se sono nella root accanto a
+          #    "www.moledigitale.it", questo valore è giusto; se la tua utenza FTP entra già dentro
+          #    la cartella pubblica, rimetti "./".
+          server-dir: ./www.moledigitale.it/
           # NON cancella i file presenti solo sul server (così mail-config.php caricato a mano resta).
           dangerous-clean-slate: false
           exclude: |
