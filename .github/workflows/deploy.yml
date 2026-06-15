@@ -55,4 +55,5 @@ jobs:
 
       - name: Avviso (secret FTP non ancora configurati)
         if: env.HAS_FTP != 'true'
-        run: echo "::notice::Build OK. Upload FTP saltato: aggiungi i secret ARUBA_FTP_HOST / ARUBA_FTP_USER / ARUBA_FTP_PASS per attivare il deploy su Aruba."
+        run: |
+          echo "::notice::Build OK. Upload FTP saltato perche' mancano i secret. Aggiungi ARUBA_FTP_HOST / ARUBA_FTP_USER / ARUBA_FTP_PASS per attivare il deploy su Aruba."
