@@ -1,0 +1,46 @@
+name: Deploy su Aruba (FTP)
+
+# Ad ogni push su main: ricostruisce il sito e carica dist/ su Aruba via FTP.
+# Puoi anche lanciarlo a mano dalla tab "Actions" (workflow_dispatch).
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scarica il codice
+        uses: actions/checkout@v4
+
+      - name: Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Installa dipendenze
+        run: npm ci
+
+      - name: Build del sito (genera dist/)
+        run: npm run build
+
+      - name: Carica dist/ su Aruba via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.ARUBA_FTP_HOST }}      # es. ftp.moledigitale.it
+          username: ${{ secrets.ARUBA_FTP_USER }}    # utente FTP del pannello Aruba
+          password: ${{ secrets.ARUBA_FTP_PASS }}    # password FTP
+          protocol: ftps                             # Aruba supporta FTPS; se non va, prova "ftp"
+          port: 21
+          local-dir: ./dist/
+          # ⚠️ Cartella web sul server. Spesso su Aruba è "./" (la root FTP è già la cartella pubblica).
+          #    Se il sito finisce in un sottodominio/sottocartella, mettila qui (es. ./www/ o ./htdocs/).
+          server-dir: ./
+          # NON cancella i file presenti solo sul server (così mail-config.php caricato a mano resta).
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**

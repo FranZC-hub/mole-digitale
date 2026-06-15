@@ -1,0 +1,54 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout
+  title="Chi siamo — Mole Digitale, siti web per esercenti a Torino"
+  description="Chi c'è dietro Mole Digitale: facciamo siti web moderni per gli esercenti di Torino, a prezzi onesti e senza giri di parole."
+>
+  <section class="section" style="padding-top:8rem;">
+    <div class="section-head" data-reveal>
+      <span class="kicker">Chi siamo</span>
+      <h1>Diamo agli esercenti un sito <span class="grad">come si deve</span>, senza prezzi da agenzia.</h1>
+    </div>
+
+    <div class="about-grid">
+      <div data-reveal>
+        <h3>Perché lo facciamo</h3>
+        <p>Troppe attività di Torino hanno un sito vecchio, lento, o non ce l'hanno proprio — non perché non lo vogliano, ma perché le agenzie chiedono cifre fuori scala. Noi pensiamo che un buon sito non debba essere un lusso.</p>
+        <p>Per questo abbiamo creato <strong>Mole Digitale</strong>: siti moderni, veloci e fatti con cura, a un costo che ha senso per un bar, una pizzeria, un parrucchiere.</p>
+      </div>
+      <div data-reveal>
+        <h3>Come lavoriamo</h3>
+        <p>Partiamo da una chiacchierata — di persona a Torino, o in videochiamata. Ti facciamo vedere una bozza in 48 ore, la rifiniamo insieme, e in pochi giorni sei online.</p>
+        <p>Niente sorprese in fattura, niente abbonamenti obbligatori. Il sito è tuo. Se vuoi, lo gestiamo noi.</p>
+      </div>
+    </div>
+
+    <div class="values">
+      <article class="prob-card" data-reveal>
+        <h3>Onestà sui prezzi</h3>
+        <p>Prima cifra chiara, poi si parte. Quello che non serve, non te lo facciamo pagare.</p>
+      </article>
+      <article class="prob-card" data-reveal>
+        <h3>Vicinanza</h3>
+        <p>Siamo di Torino e ci piace incontrare di persona chi ha un'attività in città.</p>
+      </article>
+      <article class="prob-card" data-reveal>
+        <h3>Velocità</h3>
+        <p>Dal primo caffè al sito online in circa una settimana.</p>
+      </article>
+    </div>
+
+    <div style="text-align:center; margin-top:3rem;" data-reveal>
+      <a href="/#contatti" class="btn btn-primary btn-magnetic btn-lg">Parliamo del tuo sito →</a>
+    </div>
+  </section>
+
+  <style>
+    .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:2.5rem; max-width:980px; margin:0 auto; }
+    .about-grid h3 { font-size:1.4rem; margin-bottom:.8rem; }
+    .about-grid p { color:var(--muted); margin-bottom:1rem; }
+    .values { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; margin-top:3.5rem; }
+    @media (max-width:820px){ .about-grid, .values { grid-template-columns:1fr; } }
+  </style>
+</Layout>

@@ -1,0 +1,41 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const fmt = post.data.date.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+<Layout title={`${post.data.title} | Mole Digitale`} description={post.data.description}>
+  <article class="section blog-article" style="padding-top:8rem;">
+    <a href="/blog" class="blog-back" data-reveal>← Tutti gli articoli</a>
+    <time class="kicker" datetime={post.data.date.toISOString().slice(0, 10)} data-reveal>{fmt}</time>
+    <h1 data-reveal>{post.data.title}</h1>
+    <div class="prose" data-reveal>
+      <Content />
+    </div>
+    <div class="blog-cta" data-reveal>
+      <p>Vuoi un sito così per la tua attività a Torino?</p>
+      <a href="/#contatti" class="btn btn-primary btn-magnetic btn-lg">Preventivo gratis →</a>
+    </div>
+  </article>
+  <style>
+    .blog-article { max-width:760px; margin:0 auto; }
+    .blog-back { color:var(--c2); display:inline-block; margin-bottom:1.5rem; }
+    .blog-article h1 { font-size:clamp(2rem,5vw,3rem); margin:.4rem 0 2rem; line-height:1.12; }
+    .prose :global(h2) { font-size:1.6rem; margin:2.2rem 0 .8rem; }
+    .prose :global(p) { color:var(--muted); margin-bottom:1.1rem; line-height:1.75; }
+    .prose :global(ul) { color:var(--muted); margin:0 0 1.1rem 1.3rem; }
+    .prose :global(li) { margin-bottom:.4rem; }
+    .prose :global(a) { color:var(--c2); border-bottom:1px solid rgba(34,211,238,.4); }
+    .prose :global(strong) { color:var(--text); }
+    .prose :global(hr) { border:0; border-top:1px solid var(--border); margin:2rem 0; }
+    .blog-cta { text-align:center; margin-top:3rem; padding-top:2rem; border-top:1px solid var(--border); }
+    .blog-cta p { color:var(--muted); margin-bottom:1rem; }
+  </style>
+</Layout>

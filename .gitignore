@@ -1,0 +1,23 @@
+# dipendenze / build
+node_modules/
+dist/
+.astro/
+.netlify/
+
+# log
+*.log
+npm-debug.log*
+
+# credenziali email — NON committare mai!
+.env
+.env.*
+!.env.example
+mail-config.php
+leads.csv
+
+# deploy FTP (file di stato creato sul server dall'action)
+.ftp-deploy-sync-state.json
+
+# sistema
+.DS_Store
+Thumbs.db

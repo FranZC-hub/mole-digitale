@@ -1,0 +1,31 @@
+/* =========================================================
+   Mole Digitale — scroll.css
+   Tecnologie moderne: animazioni scroll-driven NATIVE +
+   stati iniziali per l'hero animato con GSAP (progressive enhancement)
+   ========================================================= */
+
+/* ---------- Barra di progresso scroll: 100% CSS nativo (niente JS) ---------- */
+.scroll-progress span { transform-origin: left center; }
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    .scroll-progress span {
+      width: 100%;
+      animation: progressGrow linear both;
+      animation-timeline: scroll(root);
+    }
+  }
+}
+@keyframes progressGrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* ---------- Hero animato con GSAP solo se JS è attivo ----------
+   Senza JS gli elementi restano visibili (nessun contenuto nascosto). */
+.hero-title .word { opacity: 1; }                             /* visibile senza JS */
+html.js .hero-title .word { opacity: 0; }                     /* GSAP le rivela */
+html.js .hero-fade { opacity: 0; }
+.hero-visual { animation: none !important; }                  /* l'entrata la fa GSAP */
+
+/* ---------- Riduzione movimento: tutto fermo e visibile ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html.js .hero-title .word,
+  html.js .hero-fade { opacity: 1 !important; transform: none !important; }
+}

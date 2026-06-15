@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# ⚠️ Aggiorna il dominio quando lo registri
+Sitemap: https://www.moledigitale.it/sitemap-index.xml

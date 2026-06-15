@@ -1,0 +1,68 @@
+---
+// Pagina "PRIMA" — un sito di pizzeria vecchio e bruttissimo (anni 2000).
+// Serve solo come screenshot per lo slider Prima/Dopo della home. noindex.
+---
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>:::: PIZZERIA DA MARIO :::: Benvenuti!!!</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍕</text></svg>" />
+  <style is:global>
+    body{margin:0;background:#1d7d1d url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'><text y='30' font-size='28'>🍕</text></svg>") repeating;
+      background-size:60px 60px;font-family:'Comic Sans MS','Comic Sans',cursive;color:#000080;text-align:center}
+    .wrap{max-width:780px;margin:8px auto;background:#fffbe6;border:6px ridge #ffcc00;padding:6px}
+    .topbar{background:#000080;color:#ffff00;padding:6px;font-weight:bold;font-size:13px;letter-spacing:1px}
+    .titolo{background:#cc0000;color:#ffff00;border:4px outset #ff6600;padding:8px;margin:6px 0;
+      font-size:34px;font-weight:bold;text-shadow:2px 2px #000;font-family:'Impact','Comic Sans MS'}
+    .blink{animation:bl 1s steps(1) infinite;color:#ff0000;font-weight:bold;font-size:20px}
+    @keyframes bl{50%{opacity:0}}
+    marquee{background:#ffff00;color:#cc0000;border:2px dashed #cc0000;font-weight:bold;font-size:16px;padding:4px;margin:6px 0}
+    table{margin:8px auto;border-collapse:collapse;width:96%}
+    td{border:2px solid #000080;padding:6px;font-size:15px}
+    .menucell{background:#ffe0e0}.pricecell{background:#e0ffe0;color:#cc0000;font-weight:bold;width:80px}
+    .menuhdr{background:#000080;color:#fff;font-size:18px;font-weight:bold}
+    a{color:#0000ff;text-decoration:underline}
+    .foto{border:5px ridge #999;width:150px;height:110px;object-fit:fill;margin:6px;image-rendering:pixelated}
+    .counter{background:#000;color:#0f0;font-family:'Courier New',monospace;display:inline-block;padding:2px 8px;border:2px inset #888;letter-spacing:3px}
+    .costr{color:#cc6600;font-weight:bold;font-size:14px;margin-top:8px}
+    hr{border:2px groove #ffcc00}
+    .welcome{font-size:20px;color:#008000;font-weight:bold}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">★·.·´¯`·.·★ WWW.PIZZERIADAMARIO.IT ★·.·´¯`·.·★ &nbsp; ultimo aggiornamento: 14/03/2006</div>
+    <div class="titolo">🍕 PIZZERIA DA MARIO 🍕</div>
+    <p class="welcome">~ * ~ BENVENUTI NEL NOSTRO SITO INTERNET ~ * ~</p>
+    <p class="blink">!!! NOVITA' !!! ORA ANCHE PIZZA AL TAGLIO !!!</p>
+
+    <marquee>★ OFFERTA DELLA SETTIMANA: PIZZA MARGHERITA + BIBITA SOLO 5,00 € ★ APERTI TUTTE LE SERE TRANNE IL LUNEDI ★ PRENOTATE AL 011/1234567 ★</marquee>
+
+    <table>
+      <tr><td class="menuhdr" colspan="2">::: IL NOSTRO MENU :::</td></tr>
+      <tr><td class="menucell">Pizza Margherita</td><td class="pricecell">4,00 €</td></tr>
+      <tr><td class="menucell">Pizza Marinara</td><td class="pricecell">3,50 €</td></tr>
+      <tr><td class="menucell">Pizza 4 Stagioni</td><td class="pricecell">6,50 €</td></tr>
+      <tr><td class="menucell">Pizza Capricciosa</td><td class="pricecell">6,00 €</td></tr>
+      <tr><td class="menucell">Calzone Farcito</td><td class="pricecell">6,50 €</td></tr>
+    </table>
+
+    <hr/>
+    <img class="foto" src="/img/demo/piatto-1.webp" alt="pizza" />
+    <img class="foto" src="/img/demo/galleria-1.webp" alt="pizza" />
+    <hr/>
+
+    <p style="font-size:15px">📞 Telefono: <b>011 / 123 45 67</b> &nbsp;|&nbsp; 📠 Fax: 011 / 123 45 68<br/>
+      Indirizzo: Via Roma 1 - Torino &nbsp;|&nbsp; e-mail: <a href="#">pizzeriadamario@libero.it</a></p>
+
+    <p><a href="#">[ HOME ]</a> &nbsp; <a href="#">[ MENU ]</a> &nbsp; <a href="#">[ DOVE SIAMO ]</a> &nbsp; <a href="#">[ GUESTBOOK ]</a></p>
+
+    <p>Sei il visitatore numero: <span class="counter">0001274</span></p>
+    <p class="costr">🚧 Alcune pagine sono ancora IN COSTRUZIONE 🚧</p>
+    <p style="font-size:11px;color:#555">Ottimizzato per Internet Explorer 6 - Risoluzione 800x600</p>
+  </div>
+</body>
+</html>

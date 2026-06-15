@@ -1,0 +1,128 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const settori = {
+  'siti-web-ristoranti-torino': {
+    kicker: 'Per ristoranti e pizzerie',
+    h1a: 'Siti web per', h1b: 'ristoranti a Torino',
+    intro: "Un sito che fa venire fame e riempie i tavoli: menu sempre aggiornato, prenotazioni online e la tua attività trovata su Google quando cercano «dove mangiare vicino a me».",
+    points: [
+      { h: 'Menu digitale', p: 'Sempre aggiornato, leggibile dal telefono, anche con QR code al tavolo.' },
+      { h: 'Prenotazione tavolo', p: 'Il cliente prenota in pochi secondi, anche fuori orario.' },
+      { h: 'Trovato su Google', p: 'SEO locale + scheda Google per comparire nelle ricerche «vicino a me».' },
+    ],
+    demoUrl: '/demo/ristorante', demoName: 'Trattoria del Sole',
+  },
+  'siti-web-parrucchieri-torino': {
+    kicker: 'Per parrucchieri ed estetiste',
+    h1a: 'Siti web per', h1b: 'parrucchieri a Torino',
+    intro: "Fai prenotare i clienti mentre sono ancora sul divano: appuntamenti online, galleria dei tuoi lavori e un'immagine curata che racconta il tuo stile.",
+    points: [
+      { h: 'Appuntamenti online', p: 'Servizio, giorno e ora: il cliente prenota da solo, tu risparmi telefonate.' },
+      { h: 'Galleria lavori', p: 'Mostra tagli, colori e acconciature: si compra prima con gli occhi.' },
+      { h: 'Restyling', p: 'Hai già un sito ma sembra vecchio? Lo rifacciamo moderno mantenendo i contenuti.' },
+    ],
+    demoUrl: '/demo/salone', demoName: 'Salone Aurora',
+  },
+  'siti-web-officine-torino': {
+    kicker: 'Per officine e autoriparazioni',
+    h1a: 'Siti web per', h1b: 'officine a Torino',
+    intro: "Un sito che ispira fiducia: servizi chiari, richiesta preventivo facile e le recensioni Google bene in vista. Così chi cerca un meccanico onesto trova te.",
+    points: [
+      { h: 'Preventivo facile', p: 'Il cliente ti scrive il problema in un attimo, tu rispondi col preventivo.' },
+      { h: 'Scheda Google', p: 'Recensioni e valutazioni in evidenza: la prova sociale che convince.' },
+      { h: 'Servizi & orari', p: 'Tagliandi, gomme, diagnosi: tutto chiaro, niente sorprese.' },
+    ],
+    demoUrl: '/demo/officina', demoName: 'Garage Rossi',
+  },
+  'siti-web-bar-torino': {
+    kicker: 'Per bar e caffetterie',
+    h1a: 'Siti web per', h1b: 'bar a Torino',
+    intro: "Un sito che fa venire voglia di entrare: orari sempre giusti, menu e listino a portata di telefono, e la tua caffetteria trovata su Google da chi passa di lì.",
+    points: [
+      { h: 'Menu & listino', p: 'Colazioni, aperitivi, asporto: tutto chiaro e aggiornato in un attimo.' },
+      { h: 'Orari sempre giusti', p: 'Niente clienti davanti alla saracinesca: orari e festività sempre corretti.' },
+      { h: 'Trovato su Google', p: 'Comparire quando cercano «bar / colazione vicino a me».' },
+    ],
+    demoUrl: '/demo/ristorante', demoName: 'Trattoria del Sole',
+  },
+  'siti-web-estetiste-torino': {
+    kicker: 'Per centri estetici ed estetiste',
+    h1a: 'Siti web per', h1b: 'estetiste a Torino',
+    intro: "Fai prenotare i trattamenti online, mostra i risultati e fatti scegliere per la cura che metti. Un'immagine curata vale già metà dell'appuntamento.",
+    points: [
+      { h: 'Prenotazione trattamenti', p: 'La cliente sceglie servizio e orario da sola, anche la sera.' },
+      { h: 'Galleria risultati', p: 'Mostra ambiente e lavori: la fiducia nasce dagli occhi.' },
+      { h: 'Recensioni in vista', p: 'Le valutazioni Google in evidenza per convincere chi è indeciso.' },
+    ],
+    demoUrl: '/demo/salone', demoName: 'Salone Aurora',
+  },
+};
+
+export function getStaticPaths() {
+  return [
+    'siti-web-ristoranti-torino',
+    'siti-web-parrucchieri-torino',
+    'siti-web-officine-torino',
+    'siti-web-bar-torino',
+    'siti-web-estetiste-torino',
+  ].map((settore) => ({ params: { settore } }));
+}
+
+const { settore } = Astro.params;
+const d = settori[settore];
+const title = `${d.h1a} ${d.h1b} — Mole Digitale`;
+---
+<Layout title={title} description={d.intro}>
+  <section class="section" style="padding-top:8rem;">
+    <div class="section-head" data-reveal>
+      <span class="kicker">{d.kicker}</span>
+      <h1 style="font-size:clamp(2.2rem,5vw,3.4rem); line-height:1.1;">{d.h1a} <span class="grad">{d.h1b}</span>.</h1>
+      <p class="section-lead">{d.intro}</p>
+      <div style="margin-top:1.6rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <a href="/#contatti" class="btn btn-primary btn-magnetic">Voglio il mio sito</a>
+        <a href={d.demoUrl} class="btn btn-ghost">Guarda un esempio →</a>
+      </div>
+    </div>
+
+    <div class="land-points">
+      {d.points.map((pt) => (
+        <article class="prob-card" data-reveal>
+          <h3>{pt.h}</h3>
+          <p>{pt.p}</p>
+        </article>
+      ))}
+    </div>
+
+    <div class="land-incluso" data-reveal>
+      <h2>Sempre incluso, per ogni attività</h2>
+      <ul>
+        <li>✓ Sito velocissimo e perfetto da telefono</li>
+        <li>✓ Scheda Google e SEO locale per farti trovare a Torino</li>
+        <li>✓ Contatto WhatsApp diretto in un tap</li>
+        <li>✓ HTTPS, backup e caricamento sotto il secondo</li>
+      </ul>
+      <p>Niente abbonamenti obbligatori: il sito è tuo. La gestione la prendi solo se vuoi.</p>
+    </div>
+
+    <div class="cta-card glass" data-reveal style="margin-top:3rem; text-align:center; display:block;">
+      <h2 style="font-size:clamp(1.6rem,3.5vw,2.4rem); margin-bottom:1rem;">Un sito così, <span class="grad">per la tua attività</span>.</h2>
+      <p style="color:var(--muted); margin-bottom:1.6rem;">Apri la demo, poi scrivici: ti facciamo una prima bozza gratis, su misura per la tua attività.</p>
+      <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <a href={d.demoUrl} class="btn btn-ghost">Apri la demo</a>
+        <a href={`https://wa.me/393662102203?text=${encodeURIComponent('Ciao! Vorrei un sito — ' + d.h1b)}`} target="_blank" rel="noopener" class="btn btn-ghost">WhatsApp</a>
+        <a href="/#contatti" class="btn btn-primary btn-magnetic">Preventivo gratis</a>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .land-points { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
+    .land-incluso { max-width:760px; margin:3rem auto 0; text-align:center; }
+    .land-incluso h2 { font-size:clamp(1.5rem,3.5vw,2.2rem); margin-bottom:1.2rem; }
+    .land-incluso ul { list-style:none; display:inline-grid; gap:.6rem; text-align:left; margin:0 0 1.2rem; padding:0; }
+    .land-incluso li { color:var(--muted); }
+    .land-incluso p { color:var(--muted); }
+    @media (max-width:780px){ .land-points { grid-template-columns:1fr; } }
+  </style>
+</Layout>

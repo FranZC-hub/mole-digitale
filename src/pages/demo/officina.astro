@@ -1,0 +1,308 @@
+---
+// DEMO standalone — Garage Rossi (autofficina). Layout INDUSTRIALE.
+import '@fontsource-variable/inter';
+import '@fontsource-variable/space-grotesk';
+---
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Garage Rossi — Autofficina a Torino</title>
+  <meta name="description" content="Garage Rossi: tagliandi, gomme, diagnosi e meccanica di fiducia a Torino." />
+  <meta name="theme-color" content="#101316" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='4' fill='none' stroke='%23f59331' stroke-width='2.5'/><g stroke='%23f59331' stroke-width='2.2' stroke-linecap='round'><path d='M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2'/></g></svg>" />
+</head>
+<body>
+  <a class="demo-flag" href="/">★ Demo realizzata da <b>Mole Digitale</b> · torna al sito ↩</a>
+
+  <header class="dnav" id="dnav">
+    <a href="#top" class="dbrand"><span class="gear" aria-hidden="true"></span>GARAGE <em>ROSSI</em></a>
+    <nav class="dlinks">
+      <a href="#servizi">Servizi</a>
+      <a href="#perche">Perché noi</a>
+      <a href="#officina">Officina</a>
+      <a href="#prenota">Contatti</a>
+    </nav>
+    <a href="#prenota" class="dbtn dbtn-solid dmag">Prenota</a>
+  </header>
+
+  <main id="main">
+  <!-- HERO con stat-strip -->
+  <section class="hero" id="top">
+    <div class="hero-bg" data-parallax><img src="/img/demo-officina/hero.webp" alt="Garage Rossi" /><div class="shade"></div></div>
+    <div class="hero-in">
+      <p class="eyebrow hl">Autofficina · Torino</p>
+      <h1 class="htitle">
+        <span class="dl"><span class="dw">IL TUO MOTORE,</span></span>
+        <span class="dl"><span class="dw amber">IN MANI ESPERTE.</span></span>
+      </h1>
+      <p class="hsub hl">Tagliandi, gomme, diagnosi elettronica e meccanica di ogni marca. Preventivo chiaro prima di iniziare, sempre.</p>
+      <div class="hcta hl">
+        <a href="#prenota" class="dbtn dbtn-solid dmag">Prenota un intervento</a>
+        <a href="#servizi" class="dbtn dbtn-ghost">I servizi →</a>
+      </div>
+    </div>
+    <div class="statstrip">
+      <div><b data-count="30">0</b><span>anni di officina</span></div>
+      <div><b data-count="9000" data-suffix="+">0</b><span>auto riparate</span></div>
+      <div><b data-count="48" data-suffix="h">0</b><span>tempi medi</span></div>
+      <div><b data-count="100" data-suffix="%">0</b><span>preventivo chiaro</span></div>
+    </div>
+  </section>
+
+  <!-- SERVIZI numerati -->
+  <section class="dsection servizi" id="servizi">
+    <div class="head">
+      <span class="kick r">I servizi</span>
+      <h2 class="r">COSA FACCIAMO<br/><span class="amber">PER LA TUA AUTO</span></h2>
+    </div>
+    <div class="rows">
+      <article class="srow r">
+        <span class="num">01</span>
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L4 17l3 3 5.3-5.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg></span>
+        <div class="stx"><h3>Tagliando completo</h3><p>Olio, filtri e controllo di 30 punti. La tua auto torna come nuova.</p></div>
+        <b class="price">da 89€</b>
+      </article>
+      <article class="srow r">
+        <span class="num">02</span>
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.4"/></svg></span>
+        <div class="stx"><h3>Gomme &amp; equilibratura</h3><p>Montaggio, equilibratura e cambio stagionale. Anche deposito gomme.</p></div>
+        <b class="price">da 25€</b>
+      </article>
+      <article class="srow r">
+        <span class="num">03</span>
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M7 21h10M12 17v4M7 11l2.5 2.5L12 9l2 4 3-3"/></svg></span>
+        <div class="stx"><h3>Diagnosi elettronica</h3><p>Spia accesa? Colleghiamo la centralina e troviamo il problema, subito.</p></div>
+        <b class="price">da 40€</b>
+      </article>
+    </div>
+  </section>
+
+  <!-- PERCHÉ NOI -->
+  <section class="perche" id="perche">
+    <div class="dsection">
+      <div class="head"><span class="kick r">Perché Garage Rossi</span><h2 class="r">NIENTE SORPRESE.<br/><span class="amber">SOLO LAVORO FATTO BENE.</span></h2></div>
+      <div class="feat-grid">
+        <div class="feat r"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><h3>Preventivo chiaro</h3><p>Sai quanto spendi prima che mettiamo mano al motore.</p></div>
+        <div class="feat r"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><h3>Ricambi di qualità</h3><p>Originali o equivalenti certificati, mai roba scadente.</p></div>
+        <div class="feat r"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><h3>Tempi rispettati</h3><p>Ti diciamo quando è pronta. E quel giorno è pronta.</p></div>
+        <div class="feat r"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><h3>Auto di cortesia</h3><p>Per gli interventi lunghi, non resti mai a piedi.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE marche -->
+  <section class="brands" aria-hidden="true">
+    <div class="brands-track">
+      <span>FIAT</span><span>·</span><span>FORD</span><span>·</span><span>VOLKSWAGEN</span><span>·</span><span>AUDI</span><span>·</span><span>BMW</span><span>·</span><span>RENAULT</span><span>·</span><span>PEUGEOT</span><span>·</span><span>TOYOTA</span><span>·</span><span>MERCEDES</span><span>·</span>
+      <span>FIAT</span><span>·</span><span>FORD</span><span>·</span><span>VOLKSWAGEN</span><span>·</span><span>AUDI</span><span>·</span><span>BMW</span><span>·</span><span>RENAULT</span><span>·</span><span>PEUGEOT</span><span>·</span><span>TOYOTA</span><span>·</span><span>MERCEDES</span><span>·</span>
+    </div>
+  </section>
+
+  <!-- DENTRO L'OFFICINA -->
+  <section class="dsection officina" id="officina">
+    <div class="head"><span class="kick r">Dentro l'officina</span><h2 class="r">DOVE NASCE <span class="amber">IL LAVORO</span></h2></div>
+    <div class="ostrip">
+      <figure class="r" data-clip><img src="/img/demo-officina/galleria-1.webp" alt="" /></figure>
+      <figure class="r" data-clip><img src="/img/demo-officina/interno.webp" alt="" /></figure>
+      <figure class="r" data-clip><img src="/img/demo-officina/galleria-3.webp" alt="" /></figure>
+    </div>
+  </section>
+
+  <!-- SCHEDA GOOGLE (la feature della didascalia) -->
+  <section class="dsection gbox" id="google">
+    <div class="head"><span class="kick r">Ci trovi su Google</span><h2 class="r">RECENSIONI <span class="amber">VERE</span></h2></div>
+    <div class="gcard r">
+      <div class="gtop">
+        <span class="gicon" aria-hidden="true">G</span>
+        <div>
+          <b>Garage Rossi</b>
+          <div class="grate"><span class="gnum">4,8</span><span class="gstars">★★★★★</span><span class="gcount">127 recensioni</span></div>
+        </div>
+        <a href="https://www.google.com/maps/search/?api=1&query=Garage+Rossi+Torino" target="_blank" rel="noopener" class="dbtn dbtn-ghost gdir">↳ Indicazioni</a>
+      </div>
+      <div class="greviews">
+        <blockquote class="r"><span class="rh"><span class="av">M</span><b>Marco P.</b><span class="rs">★★★★★</span></span>«Tagliando puntuale e preventivo rispettato al centesimo. Si vede che sanno il fatto loro.»</blockquote>
+        <blockquote class="r"><span class="rh"><span class="av">L</span><b>Laura B.</b><span class="rs">★★★★★</span></span>«Spia motore risolta in giornata. Onesti e veloci, finalmente un'officina di cui fidarsi.»</blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRENOTA strip -->
+  <section class="prenota" id="prenota">
+    <div class="prenota-in r">
+      <div>
+        <span class="kick">Prenota</span>
+        <h2>PORTA L'AUTO <span class="amber">IN BUONE MANI.</span></h2>
+        <p>Lun–Ven 8:00–18:00 · Corso Francia 120, Torino. Un preventivo non costa nulla.</p>
+      </div>
+      <div class="prenota-act">
+        <a href="tel:+390110000000" class="dbtn dbtn-solid dmag big">📞 011 000 0000</a>
+        <a href="https://wa.me/390000000000" target="_blank" rel="noopener" class="dbtn dbtn-ghost">WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <footer class="dfoot">
+    <span>Garage Rossi · Corso Francia 120, Torino</span>
+    <span>Demo · <a href="/">Mole Digitale</a></span>
+  </footer>
+
+  <style is:global>
+    :root{
+      --ink:#101316;--ink2:#171b1f;--cream:#eef1f3;--muted:#9aa4ab;
+      --amber:#f59331;--line:rgba(238,241,243,.13);
+      --head:'Space Grotesk Variable','Space Grotesk',sans-serif;
+      --sans:'Inter Variable',system-ui,sans-serif;--e:cubic-bezier(.16,1,.3,1);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    body{background:var(--ink);color:var(--cream);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    img{display:block;max-width:100%}a{color:inherit;text-decoration:none}
+    h1,h2,h3{font-family:var(--head);font-weight:700;line-height:1.02;letter-spacing:-.01em}
+    .amber{color:var(--amber)}.it{color:var(--amber)}
+
+    .demo-flag{position:fixed;top:0;left:0;right:0;z-index:200;text-align:center;font-size:.8rem;padding:.4rem;background:rgba(16,19,22,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);color:var(--muted)}
+    .demo-flag b{color:var(--amber)}
+
+    .dnav{position:fixed;top:31px;left:0;right:0;z-index:150;display:flex;align-items:center;gap:1.5rem;padding:1.1rem clamp(1rem,4vw,3rem);transition:.4s var(--e)}
+    .dnav.solid{background:rgba(16,19,22,.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding-top:.75rem;padding-bottom:.75rem}
+    .dbrand{font-family:var(--head);font-weight:700;font-size:1.3rem;letter-spacing:.02em;display:inline-flex;align-items:center;gap:.6rem}
+    .dbrand em{font-style:normal;color:var(--amber)}
+    .gear{width:18px;height:18px;border-radius:50%;border:3px solid var(--amber);box-shadow:0 0 14px rgba(245,147,49,.6);flex:none}
+    .dlinks{display:flex;gap:1.7rem;margin-left:auto}
+    .dlinks a{font-size:.9rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;transition:color .25s}
+    .dlinks a:hover{color:var(--amber)}
+
+    .dbtn{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.6rem;border-radius:6px;font-weight:700;font-size:.9rem;font-family:var(--head);text-transform:uppercase;letter-spacing:.03em;cursor:pointer;transition:transform .25s var(--e),background .25s;white-space:nowrap}
+    .dbtn-solid{background:var(--amber);color:#1a1206;box-shadow:0 12px 30px -10px rgba(245,147,49,.6)}
+    .dbtn-solid:hover{transform:translateY(-3px)}
+    .dbtn-solid.big{font-size:1.05rem;padding:1.1rem 2rem}
+    .dbtn-ghost{border:1px solid var(--line);color:var(--cream)}.dbtn-ghost:hover{background:rgba(238,241,243,.06);transform:translateY(-3px)}
+
+    /* HERO */
+    .hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden}
+    .hero-bg{position:absolute;inset:-8% 0;z-index:0}
+    .hero-bg img{width:100%;height:116%;object-fit:cover;filter:contrast(1.05)}
+    .hero-bg .shade{position:absolute;inset:0;background:linear-gradient(110deg,rgba(16,19,22,.95) 30%,rgba(16,19,22,.5)),linear-gradient(0deg,var(--ink),transparent 45%)}
+    .hero-in{position:relative;z-index:1;max-width:1200px;margin:0 auto;width:100%;padding:8rem clamp(1.2rem,5vw,3.5rem) 9rem}
+    .eyebrow{font-family:var(--head);font-size:.82rem;letter-spacing:.28em;text-transform:uppercase;color:var(--amber);margin-bottom:1.4rem}
+    .htitle{font-size:clamp(2.6rem,7vw,5.6rem);margin-bottom:1.5rem;letter-spacing:-.02em}
+    .htitle .dl{display:block;overflow:hidden;padding-block:0.14em;margin-block:-0.08em}.htitle .dw{display:inline-block}
+    .hsub{max-width:520px;font-size:1.15rem;color:var(--muted);margin-bottom:2.2rem}
+    .hcta{display:flex;gap:1rem;flex-wrap:wrap}
+    .statstrip{position:absolute;bottom:0;left:0;right:0;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);max-width:1200px;margin:0 auto;border-top:1px solid var(--line)}
+    .statstrip>div{padding:1.4rem clamp(1rem,3vw,2rem);border-left:1px solid var(--line)}
+    .statstrip>div:first-child{border-left:none}
+    .statstrip b{font-family:var(--head);font-size:clamp(1.6rem,3vw,2.4rem);color:var(--amber);display:block}
+    .statstrip span{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+
+    .dsection{max-width:1200px;margin:0 auto;padding:clamp(4rem,9vw,8rem) clamp(1.2rem,5vw,3rem)}
+    .head{margin-bottom:clamp(2.2rem,4vw,3.5rem)}
+    .kick{display:inline-block;font-family:var(--head);font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:.9rem}
+    .head h2,.prenota h2{font-size:clamp(1.9rem,4.5vw,3.2rem)}
+
+    /* SERVIZI rows */
+    .srow{display:grid;grid-template-columns:auto 56px 1fr auto;align-items:center;gap:1.5rem;padding:1.8rem 0;border-top:1px solid var(--line)}
+    .srow:last-child{border-bottom:1px solid var(--line)}
+    .srow .num{font-family:var(--head);font-size:1.1rem;color:var(--muted)}
+    .srow .ic{width:56px;height:56px;border-radius:10px;display:grid;place-items:center;background:rgba(245,147,49,.1);border:1px solid rgba(245,147,49,.3);color:var(--amber)}
+    .srow .ic svg{width:28px;height:28px}
+    .srow h3{font-size:1.4rem;margin-bottom:.2rem}
+    .srow p{color:var(--muted);font-size:.96rem}
+    .srow .price{font-family:var(--head);font-size:1.4rem;color:var(--amber)}
+    .srow:hover .ic{background:var(--amber);color:#1a1206;transition:.3s}
+
+    /* PERCHÉ */
+    .perche{background:var(--ink2);border-block:1px solid var(--line)}
+    .feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem}
+    .feat{padding:1.8rem;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02);transition:border-color .3s,transform .3s var(--e)}
+    .feat:hover{border-color:rgba(245,147,49,.5);transform:translateY(-5px)}
+    .fic{width:40px;height:40px;border-radius:8px;display:grid;place-items:center;background:rgba(245,147,49,.12);color:var(--amber);margin-bottom:1rem}
+    .fic svg{width:22px;height:22px}
+    .feat h3{font-size:1.15rem;margin-bottom:.4rem}.feat p{color:var(--muted);font-size:.92rem}
+
+    /* MARQUEE */
+    .brands{overflow:hidden;border-bottom:1px solid var(--line);padding:1.6rem 0;-webkit-mask:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);mask:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+    .brands-track{display:flex;gap:1.6rem;width:max-content;animation:bscroll 28s linear infinite}
+    .brands-track span{font-family:var(--head);font-weight:700;font-size:1.4rem;color:var(--muted);opacity:.6;white-space:nowrap}
+    @keyframes bscroll{to{transform:translateX(-50%)}}
+
+    /* OFFICINA strip */
+    .ostrip{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+    .ostrip figure{border-radius:12px;overflow:hidden;aspect-ratio:4/5}
+    .ostrip img{width:100%;height:100%;object-fit:cover;filter:contrast(1.05);transition:transform .8s var(--e)}
+    .ostrip figure:hover img{transform:scale(1.06)}
+
+    /* PRENOTA */
+    .prenota{background:linear-gradient(100deg,var(--amber),#e0712a)}
+    .prenota-in{max-width:1200px;margin:0 auto;padding:clamp(3rem,6vw,5rem) clamp(1.2rem,5vw,3rem);display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;color:#1a1206}
+    .prenota .kick{color:#5b3a12}
+    .prenota h2{color:#1a1206}.prenota .amber{color:#fff}
+    .prenota p{color:#3a2a10;margin-top:.6rem;max-width:520px}
+    .prenota-act{display:flex;gap:1rem;flex-wrap:wrap}
+    .prenota .dbtn-solid{background:#1a1206;color:var(--amber);box-shadow:none}
+    .prenota .dbtn-ghost{border-color:rgba(26,18,6,.4);color:#1a1206}
+
+    .dfoot{max-width:1200px;margin:0 auto;padding:2rem clamp(1.2rem,5vw,3rem);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line)}
+    .dfoot a{color:var(--amber)}
+
+    /* SCHEDA GOOGLE */
+    .gcard{max-width:800px;margin:0 auto;background:var(--ink2);border:1px solid var(--line);border-radius:16px;padding:clamp(1.4rem,3vw,2rem)}
+    .gtop{display:flex;align-items:center;gap:1rem;padding-bottom:1.2rem;border-bottom:1px solid var(--line)}
+    .gicon{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-family:var(--head);font-weight:700;font-size:1.4rem;background:#fff;color:#4285F4;flex:none}
+    .gtop b{font-size:1.1rem}
+    .grate{display:flex;align-items:center;gap:.5rem;margin-top:.2rem;flex-wrap:wrap}
+    .gnum{font-family:var(--head);font-weight:700;color:var(--amber)}
+    .gstars{color:#fbbc04;letter-spacing:1px}
+    .gcount{color:var(--muted);font-size:.85rem}
+    .gdir{margin-left:auto;padding:.6rem 1.1rem;font-size:.8rem}
+    .greviews{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:1.4rem}
+    .greviews blockquote{background:rgba(255,255,255,.02);border:1px solid var(--line);border-radius:12px;padding:1.2rem;color:var(--muted);font-size:.95rem}
+    .rh{display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem}
+    .rh .av{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--amber);color:#1a1206;font-weight:700;font-size:.85rem;flex:none}
+    .rh b{color:var(--cream);font-size:.92rem}
+    .rh .rs{margin-left:auto;color:#fbbc04;font-size:.8rem}
+
+    .r{opacity:0;transform:translateY(30px)}.hl{opacity:0}[data-clip]{clip-path:inset(0 0 100% 0)}
+    @media (max-width:900px){
+      .statstrip{grid-template-columns:1fr 1fr}.statstrip>div:nth-child(3){border-left:none}
+      .feat-grid{grid-template-columns:1fr 1fr}.ostrip{grid-template-columns:1fr}.greviews{grid-template-columns:1fr}.srow{grid-template-columns:auto 1fr;gap:1rem}.srow .ic,.srow .price{grid-column:2}.dlinks{display:none}
+    }
+    @media (prefers-reduced-motion:reduce){.r,.hl{opacity:1!important;transform:none!important}[data-clip]{clip-path:none!important}.brands-track{animation:none}}
+  </style>
+
+  <script>
+    import { gsap } from 'gsap';
+    import { ScrollTrigger } from 'gsap/ScrollTrigger';
+    import Lenis from 'lenis';
+    import 'lenis/dist/lenis.css';
+    gsap.registerPlugin(ScrollTrigger);
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
+    const dnav = document.getElementById('dnav');
+    const onScroll = (y) => dnav.classList.toggle('solid', y > 40);
+    if (!reduced) {
+      const lenis = new Lenis({ lerp: 0.1 });
+      const raf = (t) => { lenis.raf(t); requestAnimationFrame(raf); };
+      requestAnimationFrame(raf);
+      lenis.on('scroll', ({ scroll }) => { onScroll(scroll); ScrollTrigger.update(); });
+      document.querySelectorAll('a[href^="#"]').forEach((a) => { const h = a.getAttribute('href'); if (!h || h === '#') return; const t = document.querySelector(h); if (t) a.addEventListener('click', (e) => { e.preventDefault(); lenis.scrollTo(t, { offset: -70 }); }); });
+      gsap.set('.hl', { y: 18 });
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      tl.from('.htitle .dw', { yPercent: 120, opacity: 0, stagger: 0.08, duration: 1 }, 0.15)
+        .to('.hl', { opacity: 1, y: 0, stagger: 0.12, duration: 0.9 }, 0.5)
+        .from('.hero-bg img', { scale: 1.2, duration: 1.8 }, 0);
+      document.querySelectorAll('[data-parallax]').forEach((el) => gsap.to(el.querySelector('img'), { yPercent: 12, ease: 'none', scrollTrigger: { trigger: el.closest('section'), start: 'top top', end: 'bottom top', scrub: true } }));
+      gsap.utils.toArray('.r').forEach((el) => gsap.to(el, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%' } }));
+      gsap.utils.toArray('[data-clip]').forEach((el) => gsap.to(el, { clipPath: 'inset(0 0 0% 0)', duration: 1.1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 85%' } }));
+      document.querySelectorAll('[data-count]').forEach((el) => { const target = +el.dataset.count, suf = el.dataset.suffix || ''; ScrollTrigger.create({ trigger: el, start: 'top 92%', once: true, onEnter: () => gsap.to({ v: 0 }, { v: target, duration: 1.6, ease: 'power2.out', onUpdate() { el.textContent = Math.round(this.targets()[0].v) + suf; } }) }); });
+      if (fine) document.querySelectorAll('.dmag').forEach((b) => { b.addEventListener('mousemove', (e) => { const r = b.getBoundingClientRect(); b.style.transform = `translate(${(e.clientX-r.left-r.width/2)*.3}px,${(e.clientY-r.top-r.height/2)*.4}px)`; }); b.addEventListener('mouseleave', () => { b.style.transform = ''; }); });
+    } else { window.addEventListener('scroll', () => onScroll(window.scrollY), { passive: true }); document.querySelectorAll('[data-count]').forEach((el) => el.textContent = el.dataset.count + (el.dataset.suffix || '')); }
+  </script>
+</body>
+</html>

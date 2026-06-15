@@ -1,0 +1,91 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout
+  title="Preventivo gratis — quanto costa il tuo sito | Mole Digitale"
+  description="Calcola in 30 secondi quanto costa il tuo sito con Mole Digitale: rispondi a 4 domande e ricevi subito una stima, senza impegno."
+>
+  <section class="section" style="padding-top:8rem;">
+    <div class="section-head" data-reveal>
+      <span class="kicker">Preventivo</span>
+      <h1>Quanto costa il <span class="grad">tuo sito?</span></h1>
+      <p class="section-lead">Rispondi a 4 domande: ti diamo subito una stima. Senza impegno — la cifra definitiva te la confermiamo noi, e la prima bozza è gratis.</p>
+    </div>
+
+    <div class="prev-wrap">
+      <form class="prev-form" id="prevForm" data-reveal>
+        <fieldset>
+          <legend>1 · Che tipo di sito?</legend>
+          <label class="opt"><input type="radio" name="tipo" value="390" checked /> <span>Onepage (una pagina)</span> <b>€390</b></label>
+          <label class="opt"><input type="radio" name="tipo" value="690" /> <span>Sito completo (più pagine)</span> <b>€690</b></label>
+          <label class="opt"><input type="radio" name="tipo" value="1200" /> <span>E-commerce / shop online</span> <b>da €1200</b></label>
+        </fieldset>
+        <fieldset>
+          <legend>2 · Pagine extra?</legend>
+          <label class="opt"><input type="radio" name="pagine" value="0" checked /> <span>Vanno bene quelle base</span> <b>incluse</b></label>
+          <label class="opt"><input type="radio" name="pagine" value="120" /> <span>+2 pagine</span> <b>+€120</b></label>
+          <label class="opt"><input type="radio" name="pagine" value="240" /> <span>+4 pagine</span> <b>+€240</b></label>
+        </fieldset>
+        <fieldset>
+          <legend>3 · Funzioni extra</legend>
+          <label class="opt"><input type="checkbox" name="extra" value="90" /> <span>Prenotazioni / appuntamenti</span> <b>+€90</b></label>
+          <label class="opt"><input type="checkbox" name="extra" value="60" /> <span>Menu / catalogo digitale</span> <b>+€60</b></label>
+          <label class="opt"><input type="checkbox" name="extra" value="150" /> <span>Sito in più lingue</span> <b>+€150</b></label>
+          <label class="opt"><input type="checkbox" name="extra" value="50" /> <span>Galleria foto pro</span> <b>+€50</b></label>
+        </fieldset>
+        <fieldset>
+          <legend>4 · Ci pensiamo noi? (hosting &amp; gestione)</legend>
+          <label class="opt"><input type="radio" name="gestione" value="0" checked /> <span>No, lo gestisco io</span> <b>—</b></label>
+          <label class="opt"><input type="radio" name="gestione" value="50" /> <span>Sì, gestione completa</span> <b>€50/mese</b></label>
+        </fieldset>
+      </form>
+
+      <aside class="prev-out" data-reveal>
+        <span class="kicker">La tua stima</span>
+        <div class="prev-total"><span class="cur">€</span><span id="prevAmount">390</span></div>
+        <p class="prev-once">una tantum <span id="prevCanone"></span></p>
+        <p class="prev-note">Stima indicativa: il prezzo vero te lo confermiamo dopo una chiacchierata. Prima bozza gratis, nessun anticipo.</p>
+        <a href="/#contatti" class="btn btn-primary btn-block btn-lg btn-magnetic">Richiedi questo preventivo →</a>
+        <a id="prevWa" href="https://wa.me/393662102203" target="_blank" rel="noopener" class="btn btn-ghost btn-block">Chiedi su WhatsApp</a>
+      </aside>
+    </div>
+  </section>
+
+  <style>
+    .prev-wrap { display:grid; grid-template-columns:1.4fr 1fr; gap:2rem; align-items:start; max-width:1000px; margin:0 auto; }
+    .prev-form { display:flex; flex-direction:column; gap:1.4rem; }
+    .prev-form fieldset { border:1px solid var(--border); border-radius:var(--radius-sm); padding:1.2rem 1.3rem; }
+    .prev-form legend { font-family:'Space Grotesk Variable','Space Grotesk'; font-weight:600; padding:0 .5rem; color:var(--c2); font-size:.95rem; }
+    .opt { display:flex; align-items:center; gap:.7rem; padding:.6rem .2rem; cursor:pointer; border-bottom:1px solid rgba(255,255,255,.05); }
+    .opt:last-child { border-bottom:0; }
+    .opt input { accent-color:var(--c1); width:18px; height:18px; flex:none; }
+    .opt span { flex:1; font-size:.98rem; }
+    .opt b { color:var(--muted); font-size:.9rem; font-family:'Space Grotesk Variable','Space Grotesk'; }
+    .prev-out { position:sticky; top:90px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.8rem; text-align:center; backdrop-filter:blur(10px); }
+    .prev-total { font-family:'Space Grotesk Variable','Space Grotesk'; font-size:3.4rem; font-weight:700; line-height:1; margin:.6rem 0 .2rem; background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; display:inline-flex; align-items:flex-start; gap:.1rem; }
+    .prev-total .cur { font-size:1.6rem; margin-top:.4rem; }
+    .prev-once { color:var(--muted); font-size:.9rem; margin-bottom:1rem; }
+    .prev-note { color:var(--muted-2); font-size:.84rem; margin:1rem 0 1.4rem; }
+    .prev-out .btn { margin-bottom:.7rem; }
+    @media (max-width:820px){ .prev-wrap { grid-template-columns:1fr; } .prev-out { position:static; } }
+  </style>
+
+  <script>
+    const form = document.getElementById('prevForm');
+    const amountEl = document.getElementById('prevAmount');
+    const canoneEl = document.getElementById('prevCanone');
+    const waEl = document.getElementById('prevWa');
+    function calc() {
+      const data = new FormData(form);
+      let total = Number(data.get('tipo') || 0) + Number(data.get('pagine') || 0);
+      form.querySelectorAll('input[name="extra"]:checked').forEach((c) => { total += Number(c.value); });
+      const canone = Number(data.get('gestione') || 0);
+      amountEl.textContent = total;
+      canoneEl.textContent = canone ? `· + €${canone}/mese gestione` : '';
+      const msg = `Ciao! Dal preventivo online mi viene circa €${total}${canone ? ' + €' + canone + '/mese' : ''}. Possiamo sentirci?`;
+      waEl.href = 'https://wa.me/393662102203?text=' + encodeURIComponent(msg);
+    }
+    form.addEventListener('change', calc);
+    calc();
+  </script>
+</Layout>

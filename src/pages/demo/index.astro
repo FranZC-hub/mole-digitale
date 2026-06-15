@@ -1,0 +1,36 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+import pizz from '../../assets/img/lavoro-pizzeria.jpg';
+import sal from '../../assets/img/lavoro-salone.jpg';
+import off from '../../assets/img/lavoro-officina.jpg';
+
+const demos = [
+  { img: pizz, name: 'Trattoria del Sole', cat: 'Ristorante', url: '/demo/ristorante', desc: 'Menu digitale + prenotazione tavolo' },
+  { img: sal,  name: 'Salone Aurora',      cat: 'Parrucchiere', url: '/demo/salone',     desc: 'Prenotazione appuntamenti online' },
+  { img: off,  name: 'Garage Rossi',       cat: 'Officina',     url: '/demo/officina',   desc: 'Sito vetrina + scheda Google' },
+];
+---
+<Layout title="Demo — esempi di siti | Mole Digitale" description="Esempi di siti realizzati da Mole Digitale per diverse attività di Torino: ristorante, parrucchiere, officina.">
+  <section class="section" style="padding-top:8rem;">
+    <div class="section-head" data-reveal>
+      <span class="kicker">Demo</span>
+      <h1>Esempi di siti che <span class="grad">facciamo</span>.</h1>
+      <p class="section-lead">Tre attività diverse, tre stili diversi. Aprili e prova a cliccare: prenotazioni, menu, recensioni.</p>
+    </div>
+    <div class="port-grid">
+      {demos.map((dm) => (
+        <a class="port-card glass" href={dm.url} data-reveal data-tilt>
+          <div class="port-thumb">
+            <Image class="port-img" src={dm.img} alt={`Demo sito ${dm.name}`} widths={[360, 720]} sizes="(max-width:980px) 92vw, 360px" format="webp" loading="lazy" />
+            <span class="port-go">Apri la demo →</span>
+          </div>
+          <div class="port-cap"><b>{dm.name}</b><span>{dm.cat} · {dm.desc}</span></div>
+        </a>
+      ))}
+    </div>
+    <div style="text-align:center; margin-top:3rem;" data-reveal>
+      <a href="/#contatti" class="btn btn-primary btn-magnetic btn-lg">Voglio un sito così →</a>
+    </div>
+  </section>
+</Layout>

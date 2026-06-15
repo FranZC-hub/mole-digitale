@@ -1,0 +1,367 @@
+---
+// DEMO standalone — sito ristorante da mostrare ai clienti.
+// Non usa il Layout di Mole Digitale: è un sito a sé, come quello del cliente.
+import '@fontsource-variable/inter';
+import '@fontsource-variable/playfair-display';
+---
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Trattoria del Sole — Cucina italiana a Torino</title>
+  <meta name="description" content="Trattoria del Sole: cucina italiana di tradizione nel cuore di Torino. Prenota il tuo tavolo." />
+  <meta name="theme-color" content="#14110d" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='6' fill='%23d8a657'/><g stroke='%23d8a657' stroke-width='1.6'><path d='M12 1v3M12 20v3M1 12h3M20 12h3M4 4l2 2M18 18l2 2M20 4l-2 2M6 18l-2 2'/></g></svg>" />
+</head>
+<body>
+
+  <!-- Nastrino: è una demo di Mole Digitale -->
+  <a class="demo-flag" href="/">★ Demo realizzata da <b>Mole Digitale</b> · torna al sito ↩</a>
+
+  <!-- NAV -->
+  <header class="dnav" id="dnav">
+    <a href="#top" class="dbrand">
+      <span class="sun" aria-hidden="true"></span>
+      Trattoria <em>del Sole</em>
+    </a>
+    <nav class="dlinks">
+      <a href="#storia">Storia</a>
+      <a href="#menu">Menu</a>
+      <a href="#galleria">Galleria</a>
+      <a href="#contatti">Contatti</a>
+    </nav>
+    <a href="#contatti" class="dbtn dbtn-solid dmag">Prenota</a>
+  </header>
+
+  <main id="main">
+  <!-- HERO -->
+  <section class="dhero" id="top">
+    <div class="dhero-bg" data-parallax>
+      <img src="/img/demo/hero.webp" alt="Piatto della Trattoria del Sole" />
+      <div class="dhero-shade"></div>
+    </div>
+    <div class="dhero-inner">
+      <p class="deyebrow hl">Cucina italiana · Torino dal 1992</p>
+      <h1 class="dhero-title">
+        <span class="dl"><span class="dw">Il gusto</span> <span class="dw">di una volta,</span></span>
+        <span class="dl"><span class="dw it">l'eleganza</span> <span class="dw">di oggi.</span></span>
+      </h1>
+      <p class="dhero-sub hl">Pasta fatta in casa, forno a legna e una cantina che racconta il Piemonte. Un tavolo qui è già una piccola festa.</p>
+      <div class="dhero-cta hl">
+        <a href="#contatti" class="dbtn dbtn-solid dmag">Prenota un tavolo</a>
+        <a href="#menu" class="dbtn dbtn-ghost">Scopri il menu</a>
+      </div>
+    </div>
+    <a href="#storia" class="dscroll" aria-hidden="true"><span></span></a>
+  </section>
+
+  <!-- STORIA -->
+  <section class="dsection dstoria" id="storia">
+    <div class="dstoria-grid">
+      <div class="dmedia r" data-clip>
+        <img src="/img/demo/interno.webp" alt="L'interno della trattoria" />
+      </div>
+      <div class="dstoria-text">
+        <span class="dkicker r">La nostra storia</span>
+        <h2 class="r">Tre generazioni<br/>ai fornelli.</h2>
+        <p class="r">Dal 1992 portiamo a Torino i sapori veri della cucina italiana. Ricette tramandate, ingredienti scelti ogni mattina al mercato, e quella cura che si sente al primo assaggio.</p>
+        <p class="r">Da nonna Teresa a oggi, una cosa non è mai cambiata: chi entra da noi, esce sazio e sorridente.</p>
+        <div class="dstats r">
+          <div><b data-count="32">0</b><span>anni di storia</span></div>
+          <div><b data-count="100" data-suffix="%">0</b><span>fatto in casa</span></div>
+          <div><b data-count="48">0</b><span>etichette in cantina</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MENU -->
+  <section class="dsection dmenu" id="menu">
+    <div class="dhead">
+      <span class="dkicker r">Il menu</span>
+      <h2 class="r">I nostri <span class="it">piatti del cuore</span></h2>
+      <p class="dlead r">Una selezione che cambia con le stagioni. Questi, però, non mancano mai.</p>
+    </div>
+    <div class="dmenu-grid">
+      <article class="ddish r">
+        <div class="ddish-img"><img src="/img/demo/piatto-1.webp" alt="Pizza al forno a legna" /></div>
+        <div class="ddish-row"><h3>Pizza del Sole</h3><span class="ddot"></span><b>9€</b></div>
+        <p>Impasto a lunga lievitazione, pomodoro San Marzano, fiordilatte e basilico.</p>
+      </article>
+      <article class="ddish r">
+        <div class="ddish-img"><img src="/img/demo/piatto-2.webp" alt="Pasta fatta in casa" /></div>
+        <div class="ddish-row"><h3>Tajarin al ragù</h3><span class="ddot"></span><b>14€</b></div>
+        <p>Tagliolini tirati a mano, ragù di carne piemontese cotto otto ore.</p>
+      </article>
+      <article class="ddish r">
+        <div class="ddish-img"><img src="/img/demo/piatto-3.webp" alt="Dolce della casa" /></div>
+        <div class="ddish-row"><h3>Dolce della nonna</h3><span class="ddot"></span><b>6€</b></div>
+        <p>Il dessert del giorno, come lo faceva Teresa. Chiedi al cameriere.</p>
+      </article>
+    </div>
+    <p class="dmenu-note r">…e molto altro. <a href="#contatti">Chiedi il menu completo</a></p>
+  </section>
+
+  <!-- GALLERIA -->
+  <section class="dsection dgalleria" id="galleria">
+    <div class="dhead">
+      <span class="dkicker r">Galleria</span>
+      <h2 class="r">Si mangia <span class="it">prima con gli occhi</span></h2>
+    </div>
+    <div class="dgal-grid">
+      <figure class="dgal r"><img src="/img/demo/galleria-1.webp" alt="Piatto 1" /></figure>
+      <figure class="dgal r"><img src="/img/demo/galleria-2.webp" alt="Piatto 2" /></figure>
+      <figure class="dgal r"><img src="/img/demo/galleria-3.webp" alt="Piatto 3" /></figure>
+      <figure class="dgal r"><img src="/img/demo/piatto-1.webp" alt="Piatto 4" /></figure>
+    </div>
+  </section>
+
+  <!-- PRENOTA / CONTATTI -->
+  <section class="dsection dcta" id="contatti">
+    <div class="dcta-bg" data-parallax><img src="/img/demo/galleria-2.webp" alt="" /><div class="dcta-shade"></div></div>
+    <div class="dcta-inner r">
+      <span class="dkicker">Prenota</span>
+      <h2>Ti aspettiamo<br/><span class="it">a tavola.</span></h2>
+      <p>Prenota il tuo tavolo online in pochi secondi — oppure chiamaci.</p>
+      <form class="resv" onsubmit="return false">
+        <label>Persone
+          <select><option>2 persone</option><option>3 persone</option><option>4 persone</option><option>5+ persone</option></select>
+        </label>
+        <label>Giorno
+          <select><option>Stasera</option><option>Domani</option><option>Ven 14</option><option>Sab 15</option></select>
+        </label>
+        <label>Ora
+          <select><option>19:30</option><option>20:00</option><option>20:30</option><option>21:00</option></select>
+        </label>
+        <a class="dbtn dbtn-solid dmag" href="https://wa.me/390000000000?text=Vorrei%20prenotare%20un%20tavolo" target="_blank" rel="noopener">Prenota il tavolo</a>
+      </form>
+      <p class="resv-or">oppure</p>
+      <div class="dcta-actions">
+        <a href="tel:+390110000000" class="dbtn dbtn-ghost">📞 Chiama 011 000 0000</a>
+        <a href="https://wa.me/390000000000" target="_blank" rel="noopener" class="dbtn dbtn-ghost">WhatsApp</a>
+      </div>
+      <div class="dinfo">
+        <div><b>Dove</b><span>Via Roma 1, Torino</span></div>
+        <div><b>Orari</b><span>Mar–Dom · 19:00–23:30</span></div>
+        <div><b>Telefono</b><span>011 000 0000</span></div>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <footer class="dfoot">
+    <span>Trattoria del Sole · Via Roma 1, Torino</span>
+    <span>Demo · <a href="/">Mole Digitale</a></span>
+  </footer>
+
+  <style is:global>
+    :root{
+      --ink:#14110d; --ink2:#1c1712; --cream:#f6efe4; --muted:#cabfae;
+      --gold:#d8a657; --terra:#c4694b; --line:rgba(246,239,228,.14);
+      --serif:'Playfair Display Variable',Georgia,serif;
+      --sans:'Inter Variable',system-ui,sans-serif;
+      --easel:cubic-bezier(.16,1,.3,1);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    body{background:var(--ink);color:var(--cream);font-family:var(--sans);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    img{display:block;max-width:100%}
+    a{color:inherit;text-decoration:none}
+    h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.05;letter-spacing:-.01em}
+    .it{font-style:italic;color:var(--gold)}
+
+    .demo-flag{position:fixed;top:0;left:0;right:0;z-index:200;text-align:center;font-size:.8rem;
+      padding:.4rem;background:rgba(20,17,13,.85);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);color:var(--muted)}
+    .demo-flag b{color:var(--gold)}
+
+    /* NAV */
+    .dnav{position:fixed;top:31px;left:0;right:0;z-index:150;display:flex;align-items:center;gap:1.5rem;
+      padding:1.1rem clamp(1rem,4vw,3rem);transition:.4s var(--easel)}
+    .dnav.solid{top:31px;background:rgba(20,17,13,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding-top:.8rem;padding-bottom:.8rem}
+    .dbrand{font-family:var(--serif);font-size:1.4rem;font-weight:600;display:inline-flex;align-items:center;gap:.6rem}
+    .dbrand em{font-style:italic;color:var(--gold);margin-left:-.15rem}
+    .sun{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle,#f1c27a,var(--gold));box-shadow:0 0 0 3px rgba(216,166,87,.25),0 0 18px rgba(216,166,87,.6);flex:none}
+    .dlinks{display:flex;gap:1.8rem;margin-left:auto}
+    .dlinks a{font-size:.95rem;color:var(--muted);position:relative;transition:color .25s}
+    .dlinks a::after{content:'';position:absolute;left:0;bottom:-5px;height:1px;width:0;background:var(--gold);transition:width .3s var(--easel)}
+    .dlinks a:hover{color:var(--cream)} .dlinks a:hover::after{width:100%}
+
+    .dbtn{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.6rem;border-radius:999px;font-weight:600;font-size:.95rem;cursor:pointer;transition:transform .25s var(--easel),background .25s,color .25s;white-space:nowrap}
+    .dbtn-solid{background:var(--gold);color:#241a0c;box-shadow:0 12px 30px -10px rgba(216,166,87,.7)}
+    .dbtn-solid:hover{transform:translateY(-3px)}
+    .dbtn-ghost{border:1px solid var(--line);color:var(--cream)}
+    .dbtn-ghost:hover{background:rgba(246,239,228,.06);transform:translateY(-3px)}
+
+    /* HERO */
+    .dhero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden}
+    .dhero-bg{position:absolute;inset:-8% 0;z-index:0}
+    .dhero-bg img{width:100%;height:116%;object-fit:cover;transform:scale(1.1);filter:saturate(1.05)}
+    .dhero-shade{position:absolute;inset:0;background:
+      linear-gradient(180deg,rgba(20,17,13,.55),rgba(20,17,13,.35) 40%,rgba(20,17,13,.95)),
+      radial-gradient(70% 60% at 20% 40%,rgba(20,17,13,.2),rgba(20,17,13,.7))}
+    .dhero-inner{position:relative;z-index:1;max-width:1100px;margin:0 auto;width:100%;padding:8rem clamp(1.2rem,5vw,3rem) 4rem}
+    .deyebrow{font-size:.85rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:1.6rem}
+    .dhero-title{font-size:clamp(2.8rem,8vw,6rem);margin-bottom:1.6rem;text-shadow:0 4px 40px rgba(0,0,0,.4)}
+    .dhero-title .dl{display:block;overflow:hidden;padding-block:0.14em;margin-block:-0.08em}
+    .dhero-title .dw{display:inline-block}
+    .dhero-sub{max-width:560px;font-size:1.2rem;color:#eae0d0;margin-bottom:2.4rem}
+    .dhero-cta{display:flex;gap:1rem;flex-wrap:wrap}
+    .dscroll{position:absolute;bottom:1.6rem;left:50%;transform:translateX(-50%);z-index:1;width:26px;height:42px;border:1px solid rgba(246,239,228,.4);border-radius:14px}
+    .dscroll span{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:4px;height:8px;border-radius:2px;background:var(--gold);animation:ddot 1.6s var(--easel) infinite}
+    @keyframes ddot{0%{opacity:0;top:8px}40%{opacity:1}80%{opacity:0;top:22px}100%{opacity:0}}
+
+    /* SECTIONS */
+    .dsection{max-width:1180px;margin:0 auto;padding:clamp(5rem,11vw,9rem) clamp(1.2rem,5vw,3rem)}
+    .dhead{text-align:center;max-width:720px;margin:0 auto clamp(2.5rem,5vw,4rem)}
+    .dkicker{display:inline-block;font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
+    .dhead h2,.dstoria-text h2,.dcta h2{font-size:clamp(2rem,5vw,3.4rem)}
+    .dlead{color:var(--muted);font-size:1.1rem;margin-top:1rem}
+
+    /* STORIA */
+    .dstoria-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4.5rem);align-items:center}
+    .dmedia{border-radius:16px;overflow:hidden}
+    .dmedia img{width:100%;height:520px;object-fit:cover;transition:transform 1.2s var(--easel)}
+    .dmedia:hover img{transform:scale(1.05)}
+    .dstoria-text p{color:var(--muted);margin-top:1.2rem;font-size:1.05rem}
+    .dstoria-text h2{margin-top:.6rem}
+    .dstats{display:flex;gap:2rem;margin-top:2.2rem;flex-wrap:wrap}
+    .dstats b{font-family:var(--serif);font-size:2.2rem;color:var(--gold);display:block}
+    .dstats span{font-size:.85rem;color:var(--muted)}
+
+    /* MENU */
+    .dmenu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem}
+    .ddish-img{border-radius:14px;overflow:hidden;aspect-ratio:4/3;margin-bottom:1.2rem}
+    .ddish-img img{width:100%;height:100%;object-fit:cover;transition:transform 1s var(--easel)}
+    .ddish:hover .ddish-img img{transform:scale(1.08)}
+    .ddish-row{display:flex;align-items:baseline;gap:.8rem}
+    .ddish-row h3{font-size:1.35rem}
+    .ddish-row .ddot{flex:1;border-bottom:1px dotted rgba(246,239,228,.3);transform:translateY(-4px)}
+    .ddish-row b{font-family:var(--serif);font-size:1.35rem;color:var(--gold)}
+    .ddish p{color:var(--muted);margin-top:.5rem;font-size:.96rem}
+    .dmenu-note{text-align:center;margin-top:2.6rem;color:var(--muted)}
+    .dmenu-note a{color:var(--gold);border-bottom:1px solid var(--gold)}
+
+    /* GALLERIA */
+    .dgal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+    .dgal{border-radius:12px;overflow:hidden;aspect-ratio:3/4}
+    .dgal img{width:100%;height:100%;object-fit:cover;transition:transform .9s var(--easel),filter .6s}
+    .dgal:hover img{transform:scale(1.1)}
+
+    /* CTA */
+    .dcta{position:relative;max-width:none;margin-top:2rem;padding:0;overflow:hidden}
+    .dcta-bg{position:absolute;inset:-8% 0;z-index:0}
+    .dcta-bg img{width:100%;height:116%;object-fit:cover}
+    .dcta-shade{position:absolute;inset:0;background:linear-gradient(rgba(20,17,13,.82),rgba(20,17,13,.92))}
+    .dcta-inner{position:relative;z-index:1;max-width:760px;margin:0 auto;text-align:center;padding:clamp(5rem,10vw,8rem) clamp(1.2rem,5vw,3rem)}
+    .dcta-inner h2{font-size:clamp(2.2rem,6vw,4rem);margin:.4rem 0 1rem}
+    .dcta-inner p{color:var(--muted);max-width:480px;margin:0 auto 2rem}
+    .dcta-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+    .resv{display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center;align-items:flex-end;max-width:640px;margin:0 auto 1.2rem;background:rgba(20,17,13,.5);border:1px solid var(--line);border-radius:16px;padding:1.2rem;backdrop-filter:blur(8px)}
+    .resv label{display:flex;flex-direction:column;gap:.35rem;font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left}
+    .resv select{padding:.7rem .8rem;border-radius:10px;border:1px solid var(--line);background:rgba(0,0,0,.35);color:var(--cream);font-family:var(--sans);font-size:.95rem}
+    .resv button{margin-top:.2rem}
+    .resv-or{color:var(--muted);font-size:.85rem;margin:0 0 1rem}
+    .dinfo{display:flex;gap:2.5rem;justify-content:center;flex-wrap:wrap;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--line)}
+    .dinfo b{display:block;font-family:var(--serif);color:var(--gold);font-size:1.05rem}
+    .dinfo span{color:var(--muted);font-size:.92rem}
+
+    .dfoot{max-width:1180px;margin:0 auto;padding:2rem clamp(1.2rem,5vw,3rem);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line)}
+    .dfoot a{color:var(--gold)}
+
+    /* Reveal (JS) */
+    .r{opacity:0;transform:translateY(34px)}
+    .hl{opacity:0}
+    [data-clip]{clip-path:inset(0 0 100% 0)}
+
+    @media (max-width:900px){
+      .dstoria-grid{grid-template-columns:1fr}
+      .dmedia img{height:360px}
+      .dmenu-grid{grid-template-columns:1fr}
+      .dgal-grid{grid-template-columns:repeat(2,1fr)}
+      .dlinks{display:none}
+    }
+    @media (prefers-reduced-motion:reduce){
+      .r,.hl{opacity:1!important;transform:none!important}
+      [data-clip]{clip-path:none!important}
+      .dhero-bg img{transform:none}
+    }
+  </style>
+
+  <script>
+    import { gsap } from 'gsap';
+    import { ScrollTrigger } from 'gsap/ScrollTrigger';
+    import Lenis from 'lenis';
+    import 'lenis/dist/lenis.css';
+    gsap.registerPlugin(ScrollTrigger);
+
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
+
+    // Nav solid on scroll
+    const dnav = document.getElementById('dnav');
+    const onScroll = (y) => dnav.classList.toggle('solid', y > 40);
+
+    if (!reduced) {
+      const lenis = new Lenis({ lerp: 0.1 });
+      const raf = (t) => { lenis.raf(t); requestAnimationFrame(raf); };
+      requestAnimationFrame(raf);
+      lenis.on('scroll', ({ scroll }) => { onScroll(scroll); ScrollTrigger.update(); });
+
+      // smooth anchor scroll
+      document.querySelectorAll('a[href^="#"]').forEach((a) => {
+        const h = a.getAttribute('href');
+        if (!h || h === '#') return;
+        const t = document.querySelector(h);
+        if (t) a.addEventListener('click', (e) => { e.preventDefault(); lenis.scrollTo(t, { offset: -70 }); });
+      });
+
+      // Hero entrance
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      tl.from('.dhero-title .dw', { yPercent: 120, opacity: 0, stagger: 0.08, duration: 1 }, 0.15)
+        .to('.dhero .hl', { opacity: 1, y: 0, stagger: 0.15, duration: 0.9 }, 0.5)
+        .from('.dhero-bg img', { scale: 1.25, duration: 2, ease: 'power2.out' }, 0);
+      gsap.set('.dhero .hl', { y: 20 });
+
+      // Parallax backgrounds
+      document.querySelectorAll('[data-parallax]').forEach((el) => {
+        gsap.to(el.querySelector('img'), {
+          yPercent: 14, ease: 'none',
+          scrollTrigger: { trigger: el.closest('section'), start: 'top bottom', end: 'bottom top', scrub: true },
+        });
+      });
+
+      // Reveal generico
+      gsap.utils.toArray('.r').forEach((el) => {
+        gsap.to(el, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 86%' } });
+      });
+      // Clip reveal immagini
+      gsap.utils.toArray('[data-clip]').forEach((el) => {
+        gsap.to(el, { clipPath: 'inset(0 0 0% 0)', duration: 1.1, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 85%' } });
+      });
+      // Contatori
+      document.querySelectorAll('[data-count]').forEach((el) => {
+        const target = +el.dataset.count, suf = el.dataset.suffix || '';
+        ScrollTrigger.create({ trigger: el, start: 'top 90%', once: true, onEnter: () => {
+          gsap.to({ v: 0 }, { v: target, duration: 1.6, ease: 'power2.out',
+            onUpdate() { el.textContent = Math.round(this.targets()[0].v) + suf; } });
+        }});
+      });
+      // Bottoni magnetici
+      if (fine) document.querySelectorAll('.dmag').forEach((b) => {
+        b.addEventListener('mousemove', (e) => { const r = b.getBoundingClientRect();
+          b.style.transform = `translate(${(e.clientX-r.left-r.width/2)*.3}px,${(e.clientY-r.top-r.height/2)*.4}px)`; });
+        b.addEventListener('mouseleave', () => { b.style.transform = ''; });
+      });
+    } else {
+      window.addEventListener('scroll', () => onScroll(window.scrollY), { passive: true });
+      document.querySelectorAll('[data-count]').forEach((el) => el.textContent = el.dataset.count + (el.dataset.suffix || ''));
+    }
+  </script>
+</body>
+</html>

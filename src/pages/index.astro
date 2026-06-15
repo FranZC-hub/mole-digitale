@@ -1,0 +1,500 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+import heroDemo from '../assets/img/hero-demo.jpg';
+import lavoroPizzeria from '../assets/img/lavoro-pizzeria.jpg';
+import lavoroSalone from '../assets/img/lavoro-salone.jpg';
+import lavoroOfficina from '../assets/img/lavoro-officina.jpg';
+import primaImg from '../assets/img/prima.jpg';
+import dopoImg from '../assets/img/dopo.jpg';
+---
+<Layout>
+  <!-- ===================== HERO ===================== -->
+  <section class="hero" id="hero">
+    <div class="hero-inner">
+      <p class="eyebrow hero-fade">
+        <span class="ping"></span> Torino e provincia · prima bozza gratis
+      </p>
+
+      <h1 class="hero-title">
+        <span class="line"><span class="word">Il</span> <span class="word">tuo</span> <span class="word grad">sito,</span></span>
+        <span class="line"><span class="word">rifatto</span> <span class="word">come</span> <span class="word">si</span> <span class="word">deve.</span></span>
+      </h1>
+
+      <p class="hero-sub hero-fade">
+        Creiamo e <strong>ricreiamo siti web</strong> per ristoranti, negozi e attività di Torino.
+        Moderni, velocissimi e a un <strong>costo ridotto</strong> — senza sorprese.
+      </p>
+
+      <div class="hero-cta hero-fade">
+        <a href="#contatti" class="btn btn-primary btn-magnetic btn-lg">
+          Voglio il mio sito
+          <svg viewBox="0 0 24 24" width="18" height="18"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#prima-dopo" class="btn btn-ghost btn-lg">Guarda un prima/dopo</a>
+      </div>
+
+      <div class="hero-stats hero-fade">
+        <div><b class="counter" data-target="24" data-suffix="h">0</b><span>tempo di risposta</span></div>
+        <div class="divider"></div>
+        <div><b class="counter" data-target="7" data-suffix=" gg">0</b><span>prima bozza</span></div>
+        <div class="divider"></div>
+        <div><b class="counter" data-target="100" data-suffix="%">0</b><span>su misura</span></div>
+      </div>
+
+      <p class="guarantee hero-fade">
+        <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Prima bozza gratis</span>
+        <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Nessun anticipo</span>
+        <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Online in 7 giorni</span>
+      </p>
+    </div>
+
+    <div class="hero-visual hero-fade" data-tilt aria-hidden="true">
+      <div class="browser-mock">
+        <div class="browser-bar">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="url">trattoriadelsole.it</span>
+        </div>
+        <div class="browser-body">
+          <Image src={heroDemo} alt="" class="browser-shot" widths={[460, 920]} sizes="(max-width:980px) 86vw, 460px" format="webp" />
+        </div>
+      </div>
+      <div class="floating-badge fb-1"><svg class="badge-ic"><use href="#ic-phone"/></svg> Perfetto da telefono</div>
+      <div class="floating-badge fb-2"><svg class="badge-ic"><use href="#ic-bolt"/></svg> Veloce a caricare</div>
+      <div class="floating-badge fb-3"><svg class="badge-ic"><use href="#ic-sparkle"/></svg> Design su misura</div>
+    </div>
+
+    <a href="#trust" class="scroll-hint" aria-hidden="true" tabindex="-1"><span></span> scorri</a>
+  </section>
+
+  <!-- ===================== TRUST MARQUEE ===================== -->
+  <section class="trust" id="trust">
+    <p class="trust-label" data-reveal>La fiducia delle attività di Torino</p>
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span><svg class="m-ic"><use href="#ic-pizza"/></svg> Pizzerie</span>
+        <span><svg class="m-ic"><use href="#ic-scissors"/></svg> Parrucchieri</span>
+        <span><svg class="m-ic"><use href="#ic-coffee"/></svg> Bar &amp; Caffè</span>
+        <span><svg class="m-ic"><use href="#ic-bag"/></svg> Negozi</span>
+        <span><svg class="m-ic"><use href="#ic-sparkle"/></svg> Estetiste</span>
+        <span><svg class="m-ic"><use href="#ic-wrench"/></svg> Officine</span>
+        <span><svg class="m-ic"><use href="#ic-dumbbell"/></svg> Palestre</span>
+        <span><svg class="m-ic"><use href="#ic-tooth"/></svg> Studi medici</span>
+        <span><svg class="m-ic"><use href="#ic-wine"/></svg> Enoteche</span>
+        <span><svg class="m-ic"><use href="#ic-croissant"/></svg> Pasticcerie</span>
+        <span><svg class="m-ic"><use href="#ic-pizza"/></svg> Pizzerie</span>
+        <span><svg class="m-ic"><use href="#ic-scissors"/></svg> Parrucchieri</span>
+        <span><svg class="m-ic"><use href="#ic-coffee"/></svg> Bar &amp; Caffè</span>
+        <span><svg class="m-ic"><use href="#ic-bag"/></svg> Negozi</span>
+        <span><svg class="m-ic"><use href="#ic-sparkle"/></svg> Estetiste</span>
+        <span><svg class="m-ic"><use href="#ic-wrench"/></svg> Officine</span>
+        <span><svg class="m-ic"><use href="#ic-dumbbell"/></svg> Palestre</span>
+        <span><svg class="m-ic"><use href="#ic-tooth"/></svg> Studi medici</span>
+        <span><svg class="m-ic"><use href="#ic-wine"/></svg> Enoteche</span>
+        <span><svg class="m-ic"><use href="#ic-croissant"/></svg> Pasticcerie</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PROBLEMA ===================== -->
+  <section class="section problema band" id="problema">
+    <div class="section-head" data-reveal>
+      <span class="kicker">Il problema</span>
+      <h2>Un sito vecchio ti fa <span class="grad">perdere clienti</span> ogni giorno.</h2>
+    </div>
+    <div class="problem-grid">
+      <article class="prob-card" data-reveal>
+        <div class="prob-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18a9 9 0 1 1 18 0"/><path d="M3 18h18"/><path d="M12 13l3.5-3.5"/></svg>
+        </div>
+        <h3>Lento e pesante</h3>
+        <p>Il 53% delle persone abbandona un sito che impiega più di 3 secondi a caricare.</p>
+      </article>
+      <article class="prob-card" data-reveal>
+        <div class="prob-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="2.5"/><path d="M11 17.5h2"/></svg>
+        </div>
+        <h3>Non si vede da telefono</h3>
+        <p>8 clienti su 10 ti cercano dallo smartphone. Se il sito è rotto, vanno dal concorrente.</p>
+      </article>
+      <article class="prob-card" data-reveal>
+        <div class="prob-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        </div>
+        <h3>Invisibile su Google</h3>
+        <p>Senza struttura e SEO di base, nessuno ti trova quando cerca “vicino a me”.</p>
+      </article>
+      <article class="prob-card" data-reveal>
+        <div class="prob-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9.3a3.4 3.4 0 0 0-2.8-1.3c-1.9 0-3 1.8-3 4s1.1 4 3 4A3.4 3.4 0 0 0 15 14.7"/><path d="M7.7 11.3h5M7.7 13.3h5"/></svg>
+        </div>
+        <h3>Costoso da aggiornare</h3>
+        <p>Le agenzie tradizionali chiedono cifre alte per ogni piccola modifica. Noi no.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== PRIMA / DOPO ===================== -->
+  <section class="section prima-dopo" id="prima-dopo">
+    <div class="section-head" data-reveal>
+      <span class="kicker">Prima / Dopo</span>
+      <h2>Trascina e guarda la <span class="grad">trasformazione</span>.</h2>
+      <p class="section-lead">Stesso negozio, due mondi diversi. Sposta il cursore.</p>
+    </div>
+
+    <div class="compare" data-reveal id="compare"
+         role="slider" tabindex="0" aria-label="Confronto prima e dopo: usa le frecce per spostare"
+         aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+      <div class="compare-img before">
+        <Image class="cmp-img" src={primaImg} alt="Esempio di sito vecchio e disordinato (prima)" widths={[640, 1280]} sizes="(max-width:920px) 92vw, 880px" format="webp" loading="lazy" />
+        <span class="tag tag-bad">PRIMA</span>
+      </div>
+      <div class="compare-img after" id="compareAfter">
+        <Image class="cmp-img cmp-img-after" src={dopoImg} alt="Esempio di sito moderno rifatto (dopo)" widths={[640, 1280]} sizes="(max-width:920px) 92vw, 880px" format="webp" loading="lazy" />
+        <span class="tag tag-good">DOPO</span>
+      </div>
+      <div class="compare-handle" id="compareHandle">
+        <div class="handle-circle">
+          <svg viewBox="0 0 24 24" width="20" height="20"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PORTFOLIO / LAVORI ===================== -->
+  <section class="section portfolio band" id="lavori">
+    <div class="section-head" data-reveal>
+      <span class="kicker">Esempi</span>
+      <h2>Un'idea di <span class="grad">come potrebbe essere</span>.</h2>
+      <p class="section-lead">Mockup dimostrativi — <a href="/demo" style="color:var(--c2);border-bottom:1px solid rgba(34,211,238,.4);">aprili tutti</a>.</p>
+    </div>
+    <div class="port-grid">
+      <a class="port-card glass" href="/demo/ristorante" data-reveal data-tilt>
+        <div class="port-thumb">
+          <Image class="port-img" src={lavoroPizzeria} alt="Anteprima sito Trattoria del Sole" widths={[360, 720]} sizes="(max-width:980px) 92vw, 360px" format="webp" loading="lazy" />
+          <span class="port-go">Vedi il sito →</span>
+        </div>
+        <div class="port-cap"><b>Trattoria del Sole</b><span>Menu digitale + prenotazione tavolo</span></div>
+      </a>
+      <a class="port-card glass" href="/demo/salone" data-reveal data-tilt>
+        <div class="port-thumb">
+          <Image class="port-img" src={lavoroSalone} alt="Anteprima sito Salone Aurora" widths={[360, 720]} sizes="(max-width:980px) 92vw, 360px" format="webp" loading="lazy" />
+          <span class="port-go">Vedi il sito →</span>
+        </div>
+        <div class="port-cap"><b>Salone Aurora</b><span>Prenotazione appuntamenti online</span></div>
+      </a>
+      <a class="port-card glass" href="/demo/officina" data-reveal data-tilt>
+        <div class="port-thumb">
+          <Image class="port-img" src={lavoroOfficina} alt="Anteprima sito Garage Rossi" widths={[360, 720]} sizes="(max-width:980px) 92vw, 360px" format="webp" loading="lazy" />
+          <span class="port-go">Vedi il sito →</span>
+        </div>
+        <div class="port-cap"><b>Garage Rossi</b><span>Sito vetrina + scheda Google e recensioni</span></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===================== SERVIZI ===================== -->
+  <section class="section servizi" id="servizi">
+    <div class="section-head" data-reveal>
+      <span class="kicker">Cosa facciamo</span>
+      <h2>Tutto quello che serve, <span class="grad">niente di superfluo</span>.</h2>
+    </div>
+    <div class="serv-grid">
+      <article class="serv-card glass" data-reveal data-tilt>
+        <div class="serv-num">01</div>
+        <h3>Sito vetrina</h3>
+        <p>Pagine eleganti che raccontano la tua attività e convincono il cliente a venire da te.</p>
+        <ul><li>Design su misura</li><li>Mobile-first</li><li>Galleria foto</li></ul>
+      </article>
+      <article class="serv-card glass" data-reveal data-tilt>
+        <div class="serv-num">02</div>
+        <h3>Restyling sito esistente</h3>
+        <p>Hai già un sito ma sembra del 2010? Lo ricostruiamo moderno mantenendo i tuoi contenuti.</p>
+        <ul><li>Migrazione contenuti</li><li>Nuova grafica</li><li>Stesso dominio</li></ul>
+      </article>
+      <article class="serv-card glass" data-reveal data-tilt>
+        <div class="serv-num">03</div>
+        <h3>Prenotazioni &amp; menu</h3>
+        <p>Menu digitale, modulo prenotazioni e contatto WhatsApp diretto. Tutto integrato.</p>
+        <ul><li>Menu QR code</li><li>Form prenotazione</li><li>WhatsApp 1-tap</li></ul>
+      </article>
+      <article class="serv-card glass" data-reveal data-tilt>
+        <div class="serv-num">04</div>
+        <h3>Google &amp; mappe</h3>
+        <p>Ti rendiamo trovabile quando cercano “vicino a me”. Scheda Google ottimizzata.</p>
+        <ul><li>SEO locale</li><li>Google Business</li><li>Recensioni in vista</li></ul>
+      </article>
+      <article class="serv-card glass" data-reveal data-tilt>
+        <div class="serv-num">05</div>
+        <h3>Velocità &amp; sicurezza</h3>
+        <p>Siti leggeri che caricano in meno di un secondo. Certificato HTTPS sempre incluso.</p>
+        <ul><li>Hosting veloce</li><li>SSL gratuito</li><li>Backup automatici</li></ul>
+      </article>
+      <article class="serv-card glass" data-reveal data-tilt>
+        <div class="serv-num">06</div>
+        <h3>Assistenza continua</h3>
+        <p>Una modifica all'orario, una foto nuova, un'offerta? Scrivici e pensiamo a tutto noi.</p>
+        <ul><li>Modifiche incluse</li><li>Risposta in 24h</li><li>Nessun extra a sorpresa</li></ul>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== PROCESSO ===================== -->
+  <section class="section processo band" id="processo">
+    <div class="section-head" data-reveal>
+      <span class="kicker">Come funziona</span>
+      <h2>Dal primo caffè al sito online in <span class="grad">4 passi</span>.</h2>
+    </div>
+    <ol class="timeline">
+      <li class="t-step" data-reveal>
+        <div class="t-num">1</div>
+        <div class="t-body">
+          <h3>Chiacchierata gratuita</h3>
+          <p>Ci racconti la tua attività — di persona a Torino, al telefono o in videochiamata. Zero impegno.</p>
+        </div>
+      </li>
+      <li class="t-step" data-reveal>
+        <div class="t-num">2</div>
+        <div class="t-body">
+          <h3>Bozza in 48 ore</h3>
+          <p>Ti mostriamo una prima anteprima del sito così vedi subito dove andiamo a parare.</p>
+        </div>
+      </li>
+      <li class="t-step" data-reveal>
+        <div class="t-num">3</div>
+        <div class="t-body">
+          <h3>Rifiniture insieme</h3>
+          <p>Aggiustiamo testi, colori e foto finché non è esattamente come lo vuoi tu.</p>
+        </div>
+      </li>
+      <li class="t-step" data-reveal>
+        <div class="t-num">4</div>
+        <div class="t-body">
+          <h3>Online &amp; festeggiamo 🎉</h3>
+          <p>Pubblichiamo, colleghiamo Google e ti lasciamo tutto pronto. Da lì, ci pensiamo noi.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ===================== PREZZI ===================== -->
+  <section class="section prezzi" id="prezzi">
+    <div class="section-head" data-reveal>
+      <span class="kicker">Prezzi onesti</span>
+      <h2>Paghi quello che vedi. <span class="grad">Punto.</span></h2>
+      <p class="section-lead">Niente costi nascosti. Prima cifra chiara, poi si parte.</p>
+    </div>
+
+    <div class="price-grid">
+      <article class="price-card glass" data-reveal>
+        <h3>Essenziale</h3>
+        <p class="price-for">Per chi parte da zero</p>
+        <span class="price-from">a partire da</span>
+        <div class="price"><span class="cur">€</span>390<span class="per">una tantum</span></div>
+        <ul class="price-feats">
+          <li>✓ Sito 1 pagina (onepage)</li>
+          <li>✓ Mobile + desktop</li>
+          <li>✓ Contatti e mappa</li>
+          <li>✓ WhatsApp diretto</li>
+          <li>✓ Online in 5 giorni</li>
+        </ul>
+        <a href="#contatti" class="btn btn-ghost btn-block">Inizia da qui</a>
+      </article>
+
+      <article class="price-card glass popular" data-reveal>
+        <span class="badge-pop">Più scelto ⭐</span>
+        <h3>Attività</h3>
+        <p class="price-for">Il pacchetto completo</p>
+        <span class="price-from">a partire da</span>
+        <div class="price"><span class="cur">€</span>690<span class="per">una tantum</span></div>
+        <ul class="price-feats">
+          <li>✓ Fino a 6 pagine</li>
+          <li>✓ Menu / catalogo digitale</li>
+          <li>✓ Form prenotazioni</li>
+          <li>✓ SEO locale + Google Business</li>
+          <li>✓ Galleria foto pro</li>
+          <li>✓ 1 anno di modifiche incluse</li>
+        </ul>
+        <a href="#contatti" class="btn btn-primary btn-block btn-magnetic">Lo voglio</a>
+      </article>
+
+      <article class="price-card glass" data-reveal>
+        <h3>Su misura</h3>
+        <p class="price-for">Esigenze particolari</p>
+        <div class="price price-custom">parliamone</div>
+        <ul class="price-feats">
+          <li>✓ E-commerce / shop</li>
+          <li>✓ Prenotazioni avanzate</li>
+          <li>✓ Più lingue</li>
+          <li>✓ Integrazioni custom</li>
+          <li>✓ Tutto ciò che serve</li>
+        </ul>
+        <a href="#contatti" class="btn btn-ghost btn-block">Chiedi un preventivo</a>
+      </article>
+    </div>
+
+    <div class="addon" data-reveal>
+      <div class="addon-text">
+        <span class="addon-tag">✓ Opzionale · se vuoi pensare a zero</span>
+        <h3>Ci pensiamo noi: <span class="grad">Hosting &amp; Gestione</span></h3>
+        <p>Una volta creato il sito (una tantum), <strong>il sito è tuo</strong>. Se vuoi, possiamo
+        ospitarlo e gestirlo noi: tu non tocchi niente, a tutto il resto pensiamo noi.</p>
+      </div>
+      <div class="addon-price">
+        <div class="price"><span class="cur">€</span>50<span class="per">/ mese</span></div>
+        <ul class="addon-feats">
+          <li>Hosting veloce + dominio</li>
+          <li>Certificato SSL e backup</li>
+          <li>Modifiche illimitate</li>
+          <li>Assistenza prioritaria</li>
+          <li>Disdici quando vuoi</li>
+        </ul>
+        <a href="#contatti" class="btn btn-primary btn-block btn-magnetic">Attiva la gestione</a>
+      </div>
+    </div>
+
+    <p class="price-note" data-reveal>💡 Il canone è <strong>facoltativo</strong>: il sito resta tuo. Se preferisci gestirlo da solo, nessun problema — niente abbonamenti obbligatori.</p>
+    <div style="text-align:center; margin-top:1.6rem;" data-reveal>
+      <a href="/preventivo" class="btn btn-ghost btn-magnetic">🧮 Calcola il tuo preventivo</a>
+    </div>
+  </section>
+
+  <!-- ===================== NUMERI ===================== -->
+  <section class="section numeri" id="numeri">
+    <div class="numeri-grid">
+      <div class="num-item" data-reveal>
+        <b class="counter" data-target="0" data-prefix="0," data-target2="8" data-suffix="s">0</b>
+        <span>tempo di caricamento</span>
+      </div>
+      <div class="num-item" data-reveal>
+        <b class="counter" data-target="12" data-suffix=" mesi">0</b>
+        <span>di modifiche incluse</span>
+      </div>
+      <div class="num-item" data-reveal>
+        <b class="counter" data-target="0" data-suffix="€">0</b>
+        <span>costi nascosti</span>
+      </div>
+      <div class="num-item" data-reveal>
+        <b class="counter" data-target="100" data-suffix="%">0</b>
+        <span>fatto a Torino</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TESTIMONIANZE (esempi da sostituire) ===================== -->
+  <!-- Niente recensioni inventate: siamo appena partiti. Garanzie vere, invece. -->
+  <section class="section perche band" id="perche">
+    <div class="section-head" data-reveal>
+      <span class="kicker">Perché fidarti</span>
+      <h2>Onestà, <span class="grad">messa nero su bianco</span>.</h2>
+      <p class="section-lead">Siamo appena nati, quindi niente recensioni finte. In compenso, queste sono le nostre regole — sempre.</p>
+    </div>
+    <div class="serv-grid">
+      <article class="serv-card glass" data-reveal data-tilt>
+        <div class="prob-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <h3>Prima bozza gratis</h3>
+        <p>Ti mostriamo un'anteprima del sito prima che tu decida. Se non ti convince, non hai speso un euro.</p>
+      </article>
+      <article class="serv-card glass" data-reveal data-tilt>
+        <div class="prob-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <h3>Il sito è tuo</h3>
+        <p>Niente abbonamenti obbligatori: una volta fatto, sito e dominio sono tuoi. La gestione la prendi solo se vuoi.</p>
+      </article>
+      <article class="serv-card glass" data-reveal data-tilt>
+        <div class="prob-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <h3>Prezzo chiaro, detto prima</h3>
+        <p>La cifra te la diciamo all'inizio. Quello che non serve, non te lo facciamo pagare. Zero sorprese in fattura.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== FAQ ===================== -->
+  <section class="section faq" id="faq">
+    <div class="section-head" data-reveal>
+      <span class="kicker">Dubbi?</span>
+      <h2>Le domande che <span class="grad">ci fanno tutti</span>.</h2>
+    </div>
+    <div class="faq-list">
+      <details class="faq-item" data-reveal>
+        <summary>Quanto tempo ci vuole davvero?<span class="chev">+</span></summary>
+        <p>In media 7 giorni lavorativi per un sito completo. Per l'onepage Essenziale anche 5. Dipende da quanto velocemente ci mandi foto e testi — ma su quello ti diamo una mano.</p>
+      </details>
+      <details class="faq-item" data-reveal>
+        <summary>Devo avere già le foto e i testi?<span class="chev">+</span></summary>
+        <p>No. Se non li hai, ti aiutiamo noi a scrivere i testi e possiamo organizzare uno shooting foto a Torino a parte. Partiamo anche solo da una chiacchierata.</p>
+      </details>
+      <details class="faq-item" data-reveal>
+        <summary>Il prezzo è davvero tutto lì?<span class="chev">+</span></summary>
+        <p>Sì. Paghi una tantum per la creazione e <strong>il sito è tuo</strong>. Poi, <strong>solo se vuoi</strong>, possiamo ospitarlo e gestirlo noi a €50/mese (hosting, assistenza e modifiche illimitate). Altrimenti te lo gestisci da solo: nessun abbonamento obbligatorio.</p>
+      </details>
+      <details class="faq-item" data-reveal>
+        <summary>Lavorate solo a Torino?<span class="chev">+</span></summary>
+        <p>Partiamo da Torino e provincia perché ci piace incontrare di persona gli esercenti. Ma lavoriamo benissimo anche a distanza, quindi se sei fuori scrivici lo stesso.</p>
+      </details>
+      <details class="faq-item" data-reveal>
+        <summary>E dopo, se voglio cambiare qualcosa?<span class="chev">+</span></summary>
+        <p>Ci scrivi e lo facciamo noi. Col pacchetto Attività il primo anno di modifiche è incluso. Dopo, piccole cifre per intervento — sempre dette prima.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- Internal linking per settore (SEO locale) -->
+  <section class="section settori-links" style="padding-top:0; padding-bottom:2rem; text-align:center;">
+    <p data-reveal style="color:var(--muted); max-width:780px; margin:0 auto; font-size:1.05rem;">
+      Facciamo siti su misura per
+      <a href="/siti-web-ristoranti-torino">ristoranti</a>,
+      <a href="/siti-web-bar-torino">bar</a>,
+      <a href="/siti-web-parrucchieri-torino">parrucchieri</a>,
+      <a href="/siti-web-estetiste-torino">estetiste</a> e
+      <a href="/siti-web-officine-torino">officine</a> di Torino — e per tante altre attività.
+    </p>
+  </section>
+
+  <!-- ===================== CTA / CONTATTI ===================== -->
+  <section class="section contatti" id="contatti">
+    <div class="cta-card glass" data-reveal>
+      <div class="cta-text">
+        <span class="kicker">Facciamolo</span>
+        <h2>Pronto a far <span class="grad">brillare</span> la tua attività online?</h2>
+        <p>Raccontaci due righe sulla tua attività. Ti rispondiamo entro 24 ore con un'idea e un prezzo chiaro. Gratis e senza impegno.</p>
+        <div class="cta-direct">
+          <a href="https://wa.me/393662102203?text=Ciao!%20Vorrei%20un%20preventivo%20per%20il%20mio%20sito" class="btn btn-wa btn-magnetic" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.8.8.7-2.8-.2-.3A8 8 0 1 1 12 20zm4.6-5.9c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.5 6.5 0 0 1-1.9-1.2 7.3 7.3 0 0 1-1.4-1.7c-.1-.2 0-.4.1-.5l.4-.4.2-.4a.5.5 0 0 0 0-.4c0-.1-.6-1.4-.8-1.9s-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c.6.3 1.1.4 1.5.5a3.5 3.5 0 0 0 1.6.1c.5-.1 1.5-.6 1.7-1.2s.2-1.1.2-1.2-.2-.2-.5-.3z"/></svg>
+            Scrivici su WhatsApp
+          </a>
+          <a href="tel:+393662102203" class="btn btn-ghost">📞 Chiama ora</a>
+        </div>
+      </div>
+
+      <form class="cta-form" id="contactForm" novalidate>
+        <div class="field">
+          <input type="text" id="nome" name="nome" required placeholder=" " autocomplete="name" aria-describedby="err-nome" />
+          <label for="nome">Il tuo nome</label>
+          <small class="field-error" id="err-nome"></small>
+        </div>
+        <div class="field">
+          <input type="text" id="attivita" name="attivita" required placeholder=" " autocomplete="organization" aria-describedby="err-attivita" />
+          <label for="attivita">Nome attività</label>
+          <small class="field-error" id="err-attivita"></small>
+        </div>
+        <div class="field">
+          <input type="text" id="telefono" name="telefono" required placeholder=" " autocomplete="tel" aria-describedby="err-telefono" />
+          <label for="telefono">Telefono o email</label>
+          <small class="field-error" id="err-telefono"></small>
+        </div>
+        <div class="field">
+          <textarea id="messaggio" name="messaggio" rows="3" placeholder=" "></textarea>
+          <label for="messaggio">Cosa ti serve? (facoltativo)</label>
+        </div>
+        <div class="hp" aria-hidden="true"><label>Non compilare<input type="text" name="website" tabindex="-1" autocomplete="off" /></label></div>
+        <label class="consent">
+          <input type="checkbox" id="privacy" name="privacy" required />
+          <span>Acconsento a essere ricontattato riguardo alla mia richiesta.</span>
+        </label>
+        <small class="field-error" id="err-privacy"></small>
+        <button type="submit" class="btn btn-primary btn-block btn-lg btn-magnetic">Invia richiesta →</button>
+        <p class="form-feedback" id="formFeedback" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+</Layout>
