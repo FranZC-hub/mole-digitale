@@ -10,14 +10,18 @@ on:
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
+    # HAS_FTP è "true" solo quando i 3 secret FTP sono configurati.
+    # Così, finché non li aggiungi, lo step di upload viene SALTATO e il workflow non fallisce.
+    env:
+      HAS_FTP: ${{ secrets.ARUBA_FTP_HOST != '' && secrets.ARUBA_FTP_USER != '' && secrets.ARUBA_FTP_PASS != '' }}
     steps:
       - name: Scarica il codice
         uses: actions/checkout@v4
 
-      - name: Node 20
+      - name: Node 22
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Installa dipendenze
@@ -27,6 +31,7 @@ jobs:
         run: npm run build
 
       - name: Carica dist/ su Aruba via FTP
+        if: env.HAS_FTP == 'true'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.ARUBA_FTP_HOST }}      # es. ftp.moledigitale.it
@@ -47,3 +52,7 @@ jobs:
             **/.git*
             **/.git*/**
             **/node_modules/**
+
+      - name: Avviso (secret FTP non ancora configurati)
+        if: env.HAS_FTP != 'true'
+        run: echo "::notice::Build OK. Upload FTP saltato: aggiungi i secret ARUBA_FTP_HOST / ARUBA_FTP_USER / ARUBA_FTP_PASS per attivare il deploy su Aruba."
