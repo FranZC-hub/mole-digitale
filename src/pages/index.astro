@@ -290,7 +290,7 @@ import dopoImg from '../assets/img/dopo.jpg';
         <h3>Essenziale</h3>
         <p class="price-for">Per chi parte da zero</p>
         <span class="price-from">a partire da</span>
-        <div class="price"><span class="cur">€</span>390<span class="per">una tantum</span></div>
+        <div class="price"><span class="cur">€</span>390<span class="per">una tantum + IVA</span></div>
         <ul class="price-feats">
           <li>✓ Sito 1 pagina (onepage)</li>
           <li>✓ Mobile + desktop</li>
@@ -306,7 +306,7 @@ import dopoImg from '../assets/img/dopo.jpg';
         <h3>Attività</h3>
         <p class="price-for">Il pacchetto completo</p>
         <span class="price-from">a partire da</span>
-        <div class="price"><span class="cur">€</span>690<span class="per">una tantum</span></div>
+        <div class="price"><span class="cur">€</span>690<span class="per">una tantum + IVA</span></div>
         <ul class="price-feats">
           <li>✓ Fino a 6 pagine</li>
           <li>✓ Menu / catalogo digitale</li>
@@ -335,25 +335,24 @@ import dopoImg from '../assets/img/dopo.jpg';
 
     <div class="addon" data-reveal>
       <div class="addon-text">
-        <span class="addon-tag">✓ Opzionale · se vuoi pensare a zero</span>
-        <h3>Ci pensiamo noi: <span class="grad">Hosting &amp; Gestione</span></h3>
-        <p>Una volta creato il sito (una tantum), <strong>il sito è tuo</strong>. Se vuoi, possiamo
-        ospitarlo e gestirlo noi: tu non tocchi niente, a tutto il resto pensiamo noi.</p>
+        <span class="addon-tag">✓ Incluso nel servizio · all'hosting pensiamo noi</span>
+        <h3>Ci pensiamo noi: <span class="grad">Hosting &amp; dominio</span></h3>
+        <p>Oltre alla creazione, ci occupiamo noi di <strong>hosting, dominio, certificato SSL e backup</strong>:
+        il tuo sito resta sempre veloce, sicuro e online. Tu non pensi a niente di tecnico.</p>
       </div>
       <div class="addon-price">
-        <div class="price"><span class="cur">€</span>50<span class="per">/ mese</span></div>
+        <div class="price"><span class="cur">€</span>29<span class="per">/ mese + IVA</span></div>
         <ul class="addon-feats">
           <li>Hosting veloce + dominio</li>
-          <li>Certificato SSL e backup</li>
-          <li>Modifiche illimitate</li>
-          <li>Assistenza prioritaria</li>
-          <li>Disdici quando vuoi</li>
+          <li>Certificato SSL incluso</li>
+          <li>Backup automatici</li>
+          <li>Assistenza tecnica</li>
         </ul>
-        <a href="#contatti" class="btn btn-primary btn-block btn-magnetic">Attiva la gestione</a>
+        <a href="#contatti" class="btn btn-primary btn-block btn-magnetic">Richiedi un preventivo</a>
       </div>
     </div>
 
-    <p class="price-note" data-reveal>💡 Il canone è <strong>facoltativo</strong>: il sito resta tuo. Se preferisci gestirlo da solo, nessun problema — niente abbonamenti obbligatori.</p>
+    <p class="price-note" data-reveal>💡 Il servizio comprende un canone di <strong>€29/mese + IVA</strong> (hosting, dominio, SSL e assistenza) oltre al costo una tantum di creazione. Le modifiche dopo il primo anno si concordano a parte. <strong>Tutti i prezzi sono IVA esclusa.</strong></p>
     <div style="text-align:center; margin-top:1.6rem;" data-reveal>
       <a href="/preventivo" class="btn btn-ghost btn-magnetic">🧮 Calcola il tuo preventivo</a>
     </div>
@@ -397,8 +396,8 @@ import dopoImg from '../assets/img/dopo.jpg';
       </article>
       <article class="serv-card glass" data-reveal data-tilt>
         <div class="prob-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
-        <h3>Il sito è tuo</h3>
-        <p>Niente abbonamenti obbligatori: una volta fatto, sito e dominio sono tuoi. La gestione la prendi solo se vuoi.</p>
+        <h3>All'hosting pensiamo noi</h3>
+        <p>Hosting, dominio, certificato SSL e backup sono sempre gestiti da noi a canone fisso: tu non pensi a niente di tecnico, ci pensiamo noi.</p>
       </article>
       <article class="serv-card glass" data-reveal data-tilt>
         <div class="prob-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
@@ -425,7 +424,7 @@ import dopoImg from '../assets/img/dopo.jpg';
       </details>
       <details class="faq-item" data-reveal>
         <summary>Il prezzo è davvero tutto lì?<span class="chev">+</span></summary>
-        <p>Sì. Paghi una tantum per la creazione e <strong>il sito è tuo</strong>. Poi, <strong>solo se vuoi</strong>, possiamo ospitarlo e gestirlo noi a €50/mese (hosting, assistenza e modifiche illimitate). Altrimenti te lo gestisci da solo: nessun abbonamento obbligatorio.</p>
+        <p>Sì, te lo diciamo prima. Paghi una tantum la creazione, poi un canone di <strong>€29/mese + IVA</strong> per hosting, dominio, SSL e assistenza tecnica. Il primo anno di modifiche è incluso nel pacchetto Attività; dopo, piccoli interventi a parte — sempre detti prima. Tutti i prezzi sono IVA esclusa.</p>
       </details>
       <details class="faq-item" data-reveal>
         <summary>Lavorate solo a Torino?<span class="chev">+</span></summary>
@@ -466,7 +465,7 @@ import dopoImg from '../assets/img/dopo.jpg';
         </div>
       </div>
 
-      <form class="cta-form" id="contactForm" novalidate>
+      <form class="cta-form" id="contactForm" action="/contact.php" method="post">
         <div class="field">
           <input type="text" id="nome" name="nome" required placeholder=" " autocomplete="name" aria-describedby="err-nome" />
           <label for="nome">Il tuo nome</label>

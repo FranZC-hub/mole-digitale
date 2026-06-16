@@ -34,16 +34,15 @@ import Layout from '../layouts/Layout.astro';
           <label class="opt"><input type="checkbox" name="extra" value="50" /> <span>Galleria foto pro</span> <b>+€50</b></label>
         </fieldset>
         <fieldset>
-          <legend>4 · Ci pensiamo noi? (hosting &amp; gestione)</legend>
-          <label class="opt"><input type="radio" name="gestione" value="0" checked /> <span>No, lo gestisco io</span> <b>—</b></label>
-          <label class="opt"><input type="radio" name="gestione" value="50" /> <span>Sì, gestione completa</span> <b>€50/mese</b></label>
+          <legend>4 · Hosting &amp; dominio (sempre incluso)</legend>
+          <label class="opt"><span>Server veloce, dominio, certificato SSL, backup e assistenza tecnica</span> <b>€29/mese + IVA</b></label>
         </fieldset>
       </form>
 
       <aside class="prev-out" data-reveal>
         <span class="kicker">La tua stima</span>
         <div class="prev-total"><span class="cur">€</span><span id="prevAmount">390</span></div>
-        <p class="prev-once">una tantum <span id="prevCanone"></span></p>
+        <p class="prev-once">una tantum + IVA <span id="prevCanone"></span></p>
         <p class="prev-note">Stima indicativa: il prezzo vero te lo confermiamo dopo una chiacchierata. Prima bozza gratis, nessun anticipo.</p>
         <a href="/#contatti" class="btn btn-primary btn-block btn-lg btn-magnetic">Richiedi questo preventivo →</a>
         <a id="prevWa" href="https://wa.me/393662102203" target="_blank" rel="noopener" class="btn btn-ghost btn-block">Chiedi su WhatsApp</a>
@@ -79,10 +78,10 @@ import Layout from '../layouts/Layout.astro';
       const data = new FormData(form);
       let total = Number(data.get('tipo') || 0) + Number(data.get('pagine') || 0);
       form.querySelectorAll('input[name="extra"]:checked').forEach((c) => { total += Number(c.value); });
-      const canone = Number(data.get('gestione') || 0);
+      const canone = 29;
       amountEl.textContent = total;
-      canoneEl.textContent = canone ? `· + €${canone}/mese gestione` : '';
-      const msg = `Ciao! Dal preventivo online mi viene circa €${total}${canone ? ' + €' + canone + '/mese' : ''}. Possiamo sentirci?`;
+      canoneEl.textContent = `· + €${canone}/mese + IVA hosting`;
+      const msg = `Ciao! Dal preventivo online mi viene circa €${total} + IVA una tantum, più €${canone}/mese + IVA di hosting. Possiamo sentirci?`;
       waEl.href = 'https://wa.me/393662102203?text=' + encodeURIComponent(msg);
     }
     form.addEventListener('change', calc);

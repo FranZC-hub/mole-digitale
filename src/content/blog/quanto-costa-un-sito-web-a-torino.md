@@ -16,9 +16,9 @@ Il costo di un sito dipende soprattutto da **quante cose deve fare**:
 
 ## Cosa NON dovresti pagare
 
-Diffida di chi ti chiede migliaia di euro per un sito vetrina, o di chi ti lega a un **abbonamento obbligatorio** per “tenerlo acceso”. Il sito, una volta fatto, **deve essere tuo**.
+Diffida di chi ti chiede migliaia di euro per un sito vetrina, o di chi non ti dice chiaramente la cifra prima di iniziare. Il prezzo deve essere **trasparente fin dall'inizio**, senza sorprese in fattura.
 
-L'unica spesa davvero ricorrente è **hosting + dominio** (più o meno 60 €/anno) se gestisci tutto tu. In alternativa — e solo se vuoi — puoi affidarci **hosting + gestione completa** (modifiche illimitate e assistenza) a 50 €/mese: due cose diverse, scegli tu quale fa per te. In ogni caso, niente abbonamenti obbligatori.
+Oltre alla creazione (una tantum), c'è una spesa ricorrente da mettere in conto: l'**hosting + dominio**, cioè ciò che tiene il sito online, veloce e al sicuro. Ce ne occupiamo noi a **29 €/mese + IVA** — server veloce, certificato SSL, backup e assistenza tecnica inclusi — così non devi pensare a niente di tecnico. Le modifiche ai contenuti, dopo il primo anno incluso, si concordano a parte con cifre chiare.
 
 ## Il nostro approccio
 
