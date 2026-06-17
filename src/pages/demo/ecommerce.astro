@@ -1,0 +1,383 @@
+---
+// DEMO — Bottega Subalpina (e-commerce gourmet). Tema CHIARO / terracotta.
+// Sito a sé (non usa il Layout di Mole Digitale): carrello funzionante in vanilla JS.
+import '@fontsource-variable/inter';
+import '@fontsource-variable/playfair-display';
+
+const prodotti = [
+  { id: 'tagliere',  nome: 'Tagliere del Borgo',        cat: 'antipasti', prezzo: 24, img: '/img/demo/piatto-1.webp',  desc: 'Salumi e formaggi piemontesi selezionati' },
+  { id: 'agnolotti', nome: 'Agnolotti freschi · 500g',  cat: 'primi',     prezzo: 9,  img: '/img/demo/piatto-2.webp',  desc: 'Pasta fresca ripiena, ricetta di famiglia' },
+  { id: 'vitello',   nome: 'Vitello tonnato pronto',     cat: 'antipasti', prezzo: 14, img: '/img/demo/piatto-3.webp',  desc: 'Il classico della domenica, già pronto' },
+  { id: 'aperitivo', nome: 'Box Aperitivo Piemontese',   cat: 'regalo',    prezzo: 29, img: '/img/demo/galleria-1.webp', desc: 'Tutto per un aperitivo come si deve' },
+  { id: 'bagna',     nome: 'Kit Bagna Càuda',            cat: 'primi',     prezzo: 18, img: '/img/demo/galleria-2.webp', desc: 'Salsa, verdure e istruzioni incluse' },
+  { id: 'gianduiotti', nome: 'Gianduiotti Artigianali',  cat: 'dolci',     prezzo: 12, img: '/img/demo/galleria-3.webp', desc: 'Il cioccolato di Torino, quello vero' },
+  { id: 'cesto',     nome: 'Cesto Regalo Gourmet',       cat: 'regalo',    prezzo: 45, img: '/img/demo/interno.webp',   desc: 'Una selezione che fa sempre bella figura' },
+];
+---
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Bottega Subalpina — Gastronomia piemontese online</title>
+  <meta name="description" content="Bottega Subalpina: specialità gastronomiche piemontesi artigianali consegnate a casa. Taglieri, pasta fresca, dolci e cesti regalo. Spedizione in tutta Italia." />
+  <meta name="theme-color" content="#faf6ef" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6 7h12l-1 13H7L6 7zm3 0a3 3 0 0 1 6 0' fill='none' stroke='%23c0552b' stroke-width='2'/></svg>" />
+</head>
+<body>
+  <a class="demo-flag" href="/">★ Demo realizzata da <b>Mole Digitale</b> · torna al sito ↩</a>
+
+  <header class="snav" id="snav">
+    <a href="#top" class="brand">Bottega <em>Subalpina</em></a>
+    <nav class="nlinks">
+      <a href="#negozio">Negozio</a>
+      <a href="#storia">La bottega</a>
+      <a href="#spedizioni">Spedizioni</a>
+    </nav>
+    <button class="cart-btn" id="cartBtn" aria-label="Apri il carrello">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+      <span class="cart-count" id="cartCount" hidden>0</span>
+    </button>
+  </header>
+
+  <main id="main">
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="hero-text r">
+      <p class="eyebrow">Gastronomia artigianale · dal 1962</p>
+      <h1>Il Piemonte,<br/><span class="it">a casa tua.</span></h1>
+      <p class="hsub">Taglieri, pasta fresca, dolci e cesti regalo preparati come una volta — e spediti dove vuoi tu.</p>
+      <div class="hcta">
+        <a href="#negozio" class="btn btn-solid">Scopri il negozio</a>
+        <a href="#storia" class="btn btn-ghost">La nostra storia</a>
+      </div>
+      <p class="hship">🚚 Spedizione <b>gratis</b> sopra i 50€ · consegna in 24-48h</p>
+    </div>
+    <div class="hero-img r">
+      <img src="/img/demo/hero.webp" alt="Selezione di specialità gastronomiche piemontesi" />
+      <span class="hero-badge">★ 4,9 · 1.200+ ordini</span>
+    </div>
+  </section>
+
+  <!-- NEGOZIO -->
+  <section class="shop" id="negozio">
+    <div class="shop-head r">
+      <h2>Il nostro <span class="it">negozio</span></h2>
+      <div class="cats" id="cats">
+        <button class="cat is-on" data-cat="all">Tutti</button>
+        <button class="cat" data-cat="antipasti">Antipasti</button>
+        <button class="cat" data-cat="primi">Primi</button>
+        <button class="cat" data-cat="dolci">Dolci</button>
+        <button class="cat" data-cat="regalo">Regalo</button>
+      </div>
+    </div>
+
+    <div class="grid" id="grid">
+      {prodotti.map((p) => (
+        <article class="card r" data-cat={p.cat}>
+          <div class="card-img"><img src={p.img} alt={p.nome} loading="lazy" /><span class="card-tag">{p.cat}</span></div>
+          <div class="card-body">
+            <h3>{p.nome}</h3>
+            <p class="card-desc">{p.desc}</p>
+            <div class="card-foot">
+              <span class="price">€{p.prezzo.toFixed(2)}</span>
+              <button class="add" data-id={p.id} data-nome={p.nome} data-prezzo={p.prezzo}>Aggiungi</button>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- TRUST -->
+  <section class="trust">
+    <div class="ti r"><b>🚚 Spedizione gratis</b><span>sopra i 50€, in tutta Italia</span></div>
+    <div class="ti r"><b>↩ Resi facili</b><span>14 giorni per ripensarci</span></div>
+    <div class="ti r"><b>🔒 Pagamenti sicuri</b><span>carta, PayPal, Satispay</span></div>
+    <div class="ti r"><b>🌿 Artigianale</b><span>produttori del territorio</span></div>
+  </section>
+
+  <!-- STORIA -->
+  <section class="story" id="storia">
+    <div class="story-img r"><img src="/img/demo/interno.webp" alt="Interno della Bottega Subalpina" /></div>
+    <div class="story-text r">
+      <p class="eyebrow">La bottega</p>
+      <h2>Tre generazioni,<br/>una sola <span class="it">passione</span>.</h2>
+      <p>Dal 1962 selezioniamo i migliori produttori del Piemonte e portiamo a casa tua sapori che sanno di domenica in famiglia. Ogni prodotto è preparato a mano e spedito con cura.</p>
+      <a href="#negozio" class="btn btn-solid">Vai al negozio</a>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="news" id="spedizioni">
+    <h2>−10% sul primo ordine</h2>
+    <p>Iscriviti e ricevi subito il codice sconto, più le novità della bottega.</p>
+    <form class="news-form" onsubmit="return false">
+      <input type="email" placeholder="La tua email" aria-label="La tua email" required />
+      <button class="btn btn-solid">Iscriviti</button>
+    </form>
+  </section>
+  </main>
+
+  <footer class="sfoot">
+    <span><b>Bottega Subalpina</b> · Via Garibaldi 12, Torino</span>
+    <span>Demo · <a href="/">Mole Digitale</a></span>
+  </footer>
+
+  <!-- CARRELLO (drawer) -->
+  <div class="overlay" id="overlay"></div>
+  <aside class="drawer" id="drawer" aria-label="Carrello">
+    <div class="drawer-head">
+      <h3>Il tuo carrello</h3>
+      <button class="x" id="closeCart" aria-label="Chiudi">✕</button>
+    </div>
+    <div class="ship-wrap"><div class="ship-bar"><div id="shipFill"></div></div><p id="shipMsg">Aggiungi 50€ per la spedizione gratis</p></div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-empty" id="cartEmpty">Il carrello è vuoto.<br/><small>Aggiungi qualche bontà dal negozio 🧺</small></div>
+    <div class="drawer-foot">
+      <div class="subtot"><span>Totale</span><b id="cartTotal">€0,00</b></div>
+      <button class="btn btn-solid btn-block" id="checkout">Vai al checkout →</button>
+      <p class="securenote">🔒 Pagamento sicuro · è una demo, nessun addebito</p>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <style is:global>
+    :root{
+      --bg:#faf6ef; --card:#fffdf9; --ink:#1f1a16; --muted:#7a6f63; --line:#ece2d4;
+      --terra:#c0552b; --terra-d:#a3441f; --green:#3f5d4a;
+      --radius:18px; --shadow:0 18px 40px -22px rgba(60,40,20,.35); --ease:cubic-bezier(.2,.7,.2,1);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:84px}
+    body{font-family:'Inter Variable','Inter',sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
+    h1,h2,h3,.brand{font-family:'Playfair Display Variable','Playfair Display',serif;font-weight:700;line-height:1.08;letter-spacing:-.01em}
+    .it{font-style:italic;color:var(--terra)}
+    img{max-width:100%;display:block}
+    a{color:inherit;text-decoration:none}
+    section{padding:clamp(3rem,7vw,6rem) clamp(1.1rem,5vw,3rem);max-width:1180px;margin:0 auto}
+
+    .demo-flag{position:fixed;top:0;left:0;right:0;z-index:300;text-align:center;font-size:.8rem;padding:.4rem;background:rgba(255,253,249,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);color:var(--muted)}
+    .demo-flag b{color:var(--terra)}
+
+    /* header */
+    .snav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;gap:1rem;
+      padding:.85rem clamp(1.1rem,5vw,3rem);margin-top:27px;background:rgba(250,246,239,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+    .brand{font-size:1.4rem}.brand em{font-style:italic;color:var(--terra)}
+    .nlinks{display:flex;gap:1.6rem}
+    .nlinks a{font-size:.95rem;color:var(--muted);font-weight:500;transition:color .2s}
+    .nlinks a:hover{color:var(--ink)}
+    .cart-btn{position:relative;background:var(--ink);color:#fff;border:0;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;cursor:pointer;transition:transform .2s var(--ease),background .2s}
+    .cart-btn:hover{transform:translateY(-2px);background:var(--terra)}
+    .cart-count{position:absolute;top:-4px;right:-4px;background:var(--terra);color:#fff;font-family:'Inter Variable';font-size:.7rem;font-weight:700;min-width:19px;height:19px;border-radius:10px;display:grid;place-items:center;padding:0 5px;border:2px solid var(--bg)}
+
+    /* hero */
+    .hero{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(1.5rem,4vw,3.5rem);align-items:center;padding-top:clamp(2.5rem,5vw,4rem)}
+    .eyebrow{text-transform:uppercase;letter-spacing:.18em;font-size:.72rem;font-weight:600;color:var(--terra);margin-bottom:1rem}
+    .hero h1{font-size:clamp(2.6rem,6vw,4.4rem)}
+    .hsub{color:var(--muted);font-size:1.12rem;margin:1.2rem 0 1.8rem;max-width:46ch}
+    .hcta{display:flex;gap:.8rem;flex-wrap:wrap}
+    .hship{margin-top:1.4rem;font-size:.92rem;color:var(--muted)}.hship b{color:var(--green)}
+    .hero-img{position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);aspect-ratio:4/5}
+    .hero-img img{width:100%;height:100%;object-fit:cover}
+    .hero-badge{position:absolute;left:1rem;bottom:1rem;background:rgba(255,253,249,.94);backdrop-filter:blur(6px);padding:.5rem .9rem;border-radius:999px;font-size:.85rem;font-weight:600;box-shadow:var(--shadow)}
+
+    /* buttons */
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;font-weight:600;font-size:.96rem;
+      padding:.8rem 1.4rem;border-radius:999px;cursor:pointer;border:1px solid transparent;transition:transform .18s var(--ease),background .2s,box-shadow .2s;font-family:'Inter Variable'}
+    .btn-solid{background:var(--terra);color:#fff;box-shadow:0 10px 22px -12px var(--terra)}
+    .btn-solid:hover{background:var(--terra-d);transform:translateY(-2px)}
+    .btn-ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+    .btn-ghost:hover{border-color:var(--ink)}
+    .btn-block{width:100%}
+
+    /* shop */
+    .shop-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2rem}
+    .shop-head h2{font-size:clamp(1.8rem,4vw,2.6rem)}
+    .cats{display:flex;gap:.5rem;flex-wrap:wrap}
+    .cat{background:var(--card);border:1px solid var(--line);color:var(--muted);padding:.45rem 1rem;border-radius:999px;font-size:.88rem;font-weight:600;cursor:pointer;font-family:'Inter Variable';transition:all .2s}
+    .cat:hover{border-color:var(--terra);color:var(--terra)}
+    .cat.is-on{background:var(--ink);color:#fff;border-color:var(--ink)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1.4rem}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;transition:transform .25s var(--ease),box-shadow .25s}
+    .card:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+    .card-img{position:relative;aspect-ratio:1/1;overflow:hidden}
+    .card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease)}
+    .card:hover .card-img img{transform:scale(1.06)}
+    .card-tag{position:absolute;top:.7rem;left:.7rem;background:rgba(255,253,249,.92);padding:.2rem .65rem;border-radius:999px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--green)}
+    .card-body{padding:1rem 1.1rem 1.2rem;display:flex;flex-direction:column;gap:.35rem;flex:1}
+    .card-body h3{font-size:1.18rem}
+    .card-desc{color:var(--muted);font-size:.88rem;flex:1}
+    .card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:.7rem}
+    .price{font-family:'Playfair Display Variable','Playfair Display';font-size:1.4rem;font-weight:700}
+    .add{background:var(--ink);color:#fff;border:0;padding:.55rem 1rem;border-radius:999px;font-weight:600;font-size:.88rem;cursor:pointer;font-family:'Inter Variable';transition:background .2s,transform .15s}
+    .add:hover{background:var(--terra)}
+    .add:active{transform:scale(.94)}
+    .add.added{background:var(--green)}
+
+    /* trust */
+    .trust{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .ti{display:flex;flex-direction:column;gap:.2rem;padding:.4rem}
+    .ti b{font-size:1rem}.ti span{color:var(--muted);font-size:.85rem}
+
+    /* storia */
+    .story{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,4vw,3.5rem);align-items:center}
+    .story-img{border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);aspect-ratio:4/3}
+    .story-img img{width:100%;height:100%;object-fit:cover}
+    .story-text h2{font-size:clamp(1.9rem,4vw,2.8rem);margin:.3rem 0 1rem}
+    .story-text p{color:var(--muted);margin-bottom:1.5rem;max-width:48ch}
+
+    /* newsletter */
+    .news{text-align:center;background:var(--ink);color:#fff;border-radius:var(--radius);max-width:1180px;margin:0 auto clamp(3rem,7vw,5rem);padding:clamp(2.5rem,6vw,4rem) 1.5rem}
+    .news h2{font-size:clamp(1.8rem,4vw,2.8rem)}
+    .news p{color:#d8cfc4;margin:.6rem 0 1.6rem}
+    .news-form{display:flex;gap:.6rem;max-width:430px;margin:0 auto;flex-wrap:wrap}
+    .news-form input{flex:1;min-width:200px;padding:.85rem 1.2rem;border-radius:999px;border:0;font-size:.95rem;font-family:'Inter Variable'}
+
+    /* footer */
+    .sfoot{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.6rem;
+      padding:1.6rem clamp(1.1rem,5vw,3rem);border-top:1px solid var(--line);color:var(--muted);font-size:.88rem;max-width:1180px;margin:0 auto}
+    .sfoot a{color:var(--terra);font-weight:600}
+
+    /* drawer carrello */
+    .overlay{position:fixed;inset:0;background:rgba(31,26,22,.45);opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;z-index:400}
+    .overlay.on{opacity:1;visibility:visible}
+    .drawer{position:fixed;top:0;right:0;height:100%;width:min(400px,92vw);background:var(--bg);z-index:401;
+      transform:translateX(100%);transition:transform .35s var(--ease);display:flex;flex-direction:column;box-shadow:-20px 0 50px -20px rgba(0,0,0,.4)}
+    .drawer.on{transform:translateX(0)}
+    .drawer-head{display:flex;align-items:center;justify-content:space-between;padding:1.3rem 1.3rem 1rem;border-bottom:1px solid var(--line)}
+    .drawer-head h3{font-size:1.4rem}
+    .x{background:none;border:0;font-size:1.2rem;cursor:pointer;color:var(--muted);width:34px;height:34px;border-radius:50%}
+    .x:hover{background:var(--line);color:var(--ink)}
+    .ship-wrap{padding:.9rem 1.3rem;border-bottom:1px solid var(--line)}
+    .ship-bar{height:7px;background:var(--line);border-radius:999px;overflow:hidden;margin-bottom:.5rem}
+    .ship-bar div{height:100%;width:0;background:var(--green);border-radius:999px;transition:width .4s var(--ease)}
+    #shipMsg{font-size:.8rem;color:var(--muted)}
+    .cart-items{flex:1;overflow-y:auto;padding:.6rem 1.3rem}
+    .cart-line{display:grid;grid-template-columns:56px 1fr auto;gap:.8rem;align-items:center;padding:.8rem 0;border-bottom:1px solid var(--line)}
+    .cart-line img{width:56px;height:56px;object-fit:cover;border-radius:12px}
+    .cl-name{font-weight:600;font-size:.92rem}.cl-price{color:var(--muted);font-size:.84rem}
+    .qty{display:inline-flex;align-items:center;gap:.5rem;margin-top:.35rem}
+    .qty button{width:24px;height:24px;border-radius:50%;border:1px solid var(--line);background:var(--card);cursor:pointer;font-size:.95rem;line-height:1;color:var(--ink)}
+    .qty button:hover{border-color:var(--terra);color:var(--terra)}
+    .qty span{min-width:18px;text-align:center;font-weight:600;font-size:.9rem}
+    .cl-rm{background:none;border:0;color:var(--muted);cursor:pointer;font-size:.78rem;text-decoration:underline;padding:0;margin-top:.3rem}
+    .cart-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--muted);padding:2rem;gap:.4rem}
+    .drawer-foot{padding:1.1rem 1.3rem 1.4rem;border-top:1px solid var(--line)}
+    .subtot{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;font-size:1.05rem}
+    .subtot b{font-family:'Playfair Display Variable','Playfair Display';font-size:1.6rem}
+    .securenote{text-align:center;font-size:.76rem;color:var(--muted);margin-top:.7rem}
+
+    /* toast */
+    .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,140%);background:var(--ink);color:#fff;
+      padding:.75rem 1.2rem;border-radius:999px;font-size:.9rem;font-weight:600;z-index:500;box-shadow:var(--shadow);transition:transform .35s var(--ease)}
+    .toast.on{transform:translate(-50%,0)}
+
+    /* reveal */
+    .r{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+    .r.in{opacity:1;transform:none}
+    @media (prefers-reduced-motion:reduce){.r{opacity:1;transform:none;transition:none}}
+
+    @media (max-width:900px){
+      .hero{grid-template-columns:1fr}.hero-img{order:-1;aspect-ratio:16/10}
+      .story{grid-template-columns:1fr}.story-img{order:-1}
+      .trust{grid-template-columns:repeat(2,1fr);gap:1.4rem}
+      .nlinks{display:none}
+    }
+    @media (max-width:480px){ .trust{grid-template-columns:1fr} }
+  </style>
+
+  <script is:inline>
+    (() => {
+      const cart = new Map(); // id -> {nome, prezzo, q}
+      const FREE = 50;
+      const $ = (s) => document.querySelector(s);
+      const fmt = (n) => '€' + n.toFixed(2).replace('.', ',');
+
+      const drawer = $('#drawer'), overlay = $('#overlay');
+      const itemsEl = $('#cartItems'), emptyEl = $('#cartEmpty');
+      const countEl = $('#cartCount'), totalEl = $('#cartTotal');
+      const fillEl = $('#shipFill'), shipMsg = $('#shipMsg'), toast = $('#toast');
+
+      const openCart = () => { drawer.classList.add('on'); overlay.classList.add('on'); };
+      const closeCart = () => { drawer.classList.remove('on'); overlay.classList.remove('on'); };
+      $('#cartBtn').addEventListener('click', openCart);
+      $('#closeCart').addEventListener('click', closeCart);
+      overlay.addEventListener('click', closeCart);
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCart(); });
+
+      let toastT;
+      const showToast = (msg) => { toast.textContent = msg; toast.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => toast.classList.remove('on'), 1800); };
+
+      function imgFor(id){ const c = document.querySelector(`.add[data-id="${id}"]`); const card = c && c.closest('.card'); const im = card && card.querySelector('img'); return im ? im.getAttribute('src') : ''; }
+
+      function render() {
+        let total = 0, n = 0;
+        itemsEl.innerHTML = '';
+        cart.forEach((it, id) => {
+          total += it.prezzo * it.q; n += it.q;
+          const row = document.createElement('div');
+          row.className = 'cart-line';
+          row.innerHTML = `<img src="${imgFor(id)}" alt="${it.nome}">
+            <div><div class="cl-name">${it.nome}</div><div class="cl-price">${fmt(it.prezzo)}</div>
+              <div class="qty"><button aria-label="Meno" data-m="${id}">−</button><span>${it.q}</span><button aria-label="Più" data-p="${id}">+</button></div></div>
+            <button class="cl-rm" data-r="${id}">rimuovi</button>`;
+          itemsEl.appendChild(row);
+        });
+        const has = n > 0;
+        emptyEl.style.display = has ? 'none' : 'flex';
+        itemsEl.style.display = has ? 'block' : 'none';
+        totalEl.textContent = fmt(total);
+        if (has) { countEl.hidden = false; countEl.textContent = n; } else { countEl.hidden = true; }
+        const pct = Math.min(100, (total / FREE) * 100);
+        fillEl.style.width = pct + '%';
+        shipMsg.textContent = total >= FREE ? '🎉 Spedizione gratis sbloccata!' : `Aggiungi ${fmt(FREE - total)} per la spedizione gratis`;
+      }
+
+      document.querySelectorAll('.add').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.id;
+          const it = cart.get(id) || { nome: btn.dataset.nome, prezzo: parseFloat(btn.dataset.prezzo), q: 0 };
+          it.q++; cart.set(id, it);
+          render();
+          btn.textContent = 'Aggiunto ✓'; btn.classList.add('added');
+          setTimeout(() => { btn.textContent = 'Aggiungi'; btn.classList.remove('added'); }, 1100);
+          showToast(`${btn.dataset.nome} aggiunto al carrello`);
+        });
+      });
+
+      itemsEl.addEventListener('click', (e) => {
+        const t = e.target;
+        if (t.dataset.p) { const it = cart.get(t.dataset.p); it.q++; render(); }
+        else if (t.dataset.m) { const it = cart.get(t.dataset.m); it.q--; if (it.q <= 0) cart.delete(t.dataset.m); render(); }
+        else if (t.dataset.r) { cart.delete(t.dataset.r); render(); }
+      });
+
+      $('#checkout').addEventListener('click', () => {
+        if (cart.size === 0) { showToast('Il carrello è vuoto'); return; }
+        showToast('Demo: qui partirebbe il checkout 😊');
+      });
+
+      // filtro categorie
+      document.querySelectorAll('.cat').forEach((c) => {
+        c.addEventListener('click', () => {
+          document.querySelectorAll('.cat').forEach((x) => x.classList.remove('is-on'));
+          c.classList.add('is-on');
+          const cat = c.dataset.cat;
+          document.querySelectorAll('.card').forEach((card) => {
+            card.style.display = (cat === 'all' || card.dataset.cat === cat) ? 'flex' : 'none';
+          });
+        });
+      });
+
+      // reveal on scroll
+      const io = new IntersectionObserver((es) => es.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } }), { threshold: 0.12 });
+      document.querySelectorAll('.r').forEach((el) => io.observe(el));
+
+      render();
+    })();
+  </script>
+</body>
+</html>

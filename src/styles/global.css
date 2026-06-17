@@ -92,6 +92,24 @@ main:focus { outline: none; }
 .guarantee svg { color:var(--c2); flex:none; }
 .hero .guarantee { justify-content:flex-start; }
 
+/* Banda garanzia (vicino al prezzo) */
+.guarantee-band { display:flex; align-items:center; gap:1.1rem; max-width:680px; margin:2.2rem auto 0; padding:1.1rem 1.4rem; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); }
+.guarantee-band .gb-ic { flex:none; width:50px; height:50px; border-radius:14px; display:grid; place-items:center; background:rgba(34,211,238,.12); color:var(--c2); }
+.guarantee-band strong { display:block; font-size:1.08rem; color:var(--text); }
+.guarantee-band p { color:var(--muted); font-size:.92rem; margin-top:.2rem; }
+
+/* Barra CTA fissa su mobile */
+.mobile-cta { position:fixed; left:0; right:0; bottom:0; z-index:860; display:none; gap:.6rem; padding:.6rem .7rem calc(.6rem + env(safe-area-inset-bottom,0px)); background:rgba(8,12,22,.92); backdrop-filter:blur(12px); border-top:1px solid var(--border); }
+.mobile-cta a { flex:1; display:flex; align-items:center; justify-content:center; gap:.4rem; padding:.85rem; border-radius:12px; font-weight:700; font-size:.95rem; text-decoration:none; }
+.mobile-cta .mc-wa { background:#25d366; color:#06251a; }
+.mobile-cta .mc-prev { background:var(--c2); color:#06121a; }
+@media (max-width:760px) {
+  .mobile-cta { display:flex; }
+  .wa-fab { display:none; }
+  body { padding-bottom:66px; }
+}
+@media print { .mobile-cta { display:none; } }
+
 /* ---------- Link interni per settore ---------- */
 .settori-links a { color:var(--c2); border-bottom:1px solid rgba(34,211,238,.4); transition:color .2s; white-space:nowrap; }
 .settori-links a:hover { color:var(--text); }
