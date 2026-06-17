@@ -1,5 +1,5 @@
 ---
-title: "Come far trovare la tua attività su Google (anche senza spendere)"
+title: "Come farsi trovare su Google (senza spendere)"
 description: "Le 4 cose concrete che fanno comparire il tuo negozio, ristorante o salone su Google quando i clienti cercano «vicino a me» — senza pubblicità a pagamento."
 date: 2026-06-02
 ---

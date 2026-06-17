@@ -408,6 +408,8 @@ main:focus { outline: none; }
 .price-card h3 { font-size:1.4rem; margin-bottom:.3rem; }
 .price-for { color:var(--muted-2); font-size:.88rem; margin-bottom:1.3rem; }
 .price-from { display:block; font-size:.72rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:.3rem; }
+.price-canone { margin:-0.9rem 0 1.4rem; font-size:.82rem; color:var(--muted-2); }
+.price-canone b { color:var(--c2); font-weight:600; }
 .price { font-family:'Space Grotesk Variable', 'Space Grotesk'; font-size:3rem; font-weight:700; line-height:1; margin-bottom:1.4rem; display:flex; align-items:flex-start; gap:.15rem; }
 .price .cur { font-size:1.4rem; margin-top:.4rem; color:var(--muted); }
 .price .per { font-size:.8rem; font-weight:500; color:var(--muted-2); align-self:flex-end; margin-bottom:.4rem; margin-left:.4rem; font-family:'Inter Variable', 'Inter'; }
@@ -531,7 +533,7 @@ main:focus { outline: none; }
 }
 .footer-top { position:relative; z-index:1; max-width:var(--maxw); margin:0 auto; padding:3.5rem clamp(1rem,4vw,2rem) 2.5rem; display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:2rem; }
 .footer-brand p { color:var(--muted); margin-top:1rem; max-width:320px; font-size:.94rem; }
-.footer-col h4 { font-size:.95rem; margin-bottom:1rem; color:var(--text); }
+.footer-col h3 { font-size:.95rem; margin-bottom:1rem; color:var(--text); }
 .footer-col a, .footer-col span { display:block; color:var(--muted); font-size:.92rem; margin-bottom:.55rem; transition:color .25s; }
 .footer-col a:hover { color:var(--c2); }
 .footer-bottom { position:relative; z-index:1; max-width:var(--maxw); margin:0 auto; padding:1.4rem clamp(1rem,4vw,2rem); border-top:1px solid var(--border); display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap; color:var(--muted-2); font-size:.84rem; }
