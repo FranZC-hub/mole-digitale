@@ -125,7 +125,7 @@ const prodotti = [
 
   <!-- CARRELLO (drawer) -->
   <div class="overlay" id="overlay"></div>
-  <aside class="drawer" id="drawer" aria-label="Carrello">
+  <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Carrello">
     <div class="drawer-head">
       <h3>Il tuo carrello</h3>
       <button class="x" id="closeCart" aria-label="Chiudi">✕</button>
@@ -299,8 +299,9 @@ const prodotti = [
       const countEl = $('#cartCount'), totalEl = $('#cartTotal');
       const fillEl = $('#shipFill'), shipMsg = $('#shipMsg'), toast = $('#toast');
 
-      const openCart = () => { drawer.classList.add('on'); overlay.classList.add('on'); };
-      const closeCart = () => { drawer.classList.remove('on'); overlay.classList.remove('on'); };
+      let lastFocus = null;
+      const openCart = () => { lastFocus = document.activeElement; drawer.classList.add('on'); overlay.classList.add('on'); $('#closeCart').focus(); };
+      const closeCart = () => { drawer.classList.remove('on'); overlay.classList.remove('on'); if (lastFocus && lastFocus.focus) lastFocus.focus(); };
       $('#cartBtn').addEventListener('click', openCart);
       $('#closeCart').addEventListener('click', closeCart);
       overlay.addEventListener('click', closeCart);

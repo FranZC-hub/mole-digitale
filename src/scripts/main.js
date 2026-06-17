@@ -253,7 +253,7 @@ if (compare && after && handle) {
   }
 }
 
-/* ---------- Form contatti (demo via WhatsApp) ---------- */
+/* ---------- Form contatti (invio email via /contact.php) ---------- */
 const form = document.getElementById('contactForm');
 const feedback = document.getElementById('formFeedback');
 if (form) {
@@ -285,7 +285,7 @@ if (form) {
       if (firstBad) firstBad.focus();
       return;
     }
-    // Invio reale alla funzione serverless (Aruba SMTP)
+    // Invio reale all'endpoint PHP /contact.php (PHPMailer + SMTP Aruba)
     const btn = form.querySelector('button[type="submit"]');
     feedback.style.color = '#22d3ee';
     feedback.textContent = 'Invio in corso…';

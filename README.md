@@ -26,13 +26,15 @@ public/             immagini, contact.php, phpmailer/, .htaccess, robots, sitema
 mail-config.php     credenziali email (NON committato, NON in dist) — vedi sotto
 ```
 
-## Deploy su Hostinger
-1. `npm run build` → cartella `dist/`.
-2. Carica **il contenuto di `dist/`** in `public_html/` (incluso `.htaccess`, mostra i file nascosti).
-3. Carica **`mail-config.php`** (con la password vera) **un livello sopra** `public_html`
-   (o, in alternativa, in `public_html/` — il `.htaccess` ne blocca l'accesso diretto).
-4. Collega il dominio e attiva l'**SSL gratuito** di Hostinger.
-5. Prova il form: l'email arriva a `MAIL_TO`. Se la porta 465 è bloccata, passa a 587/STARTTLS.
+## Deploy su Aruba (automatico via GitHub Actions)
+Il workflow `.github/workflows/deploy.yml` builda e carica `dist/` su Aruba via FTP a ogni push su `main`.
+1. Aggiungi i 3 secret su GitHub (Settings → Secrets → Actions): `ARUBA_FTP_HOST`, `ARUBA_FTP_USER`, `ARUBA_FTP_PASS`.
+2. Carica **`mail-config.php`** (con la password vera) via FTP nella stessa cartella di `contact.php`
+   (la cartella pubblica, es. `www.moledigitale.it/`). Il `.htaccess` ne blocca l'accesso diretto.
+3. Attiva l'**SSL** sul dominio (il `.htaccess` forza l'HTTPS) e verifica che il PHP sia ≥ 7.4.
+4. Prova il form: l'email arriva a `MAIL_TO`. Se la porta 465 è bloccata, passa a 587/STARTTLS.
+
+In alternativa, deploy manuale: `npm run build` e carica il contenuto di `dist/` via FTP nella cartella pubblica.
 
 ## Variabili / credenziali email
 File `mail-config.php` (modello in `mail-config.example.php`):
