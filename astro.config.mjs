@@ -10,5 +10,5 @@ export default defineConfig({
   site: 'https://www.moledigitale.it',
   build: { inlineStylesheets: 'auto' },
   // Sitemap automatica, escludendo le demo (noindex) dall'indice
-  integrations: [sitemap({ filter: (page) => !page.includes('/demo/') })],
+  integrations: [sitemap({ filter: (page) => !page.includes('/demo/') && !page.includes('/privacy') })],
 });

@@ -5,13 +5,12 @@ import '@fontsource-variable/inter';
 import '@fontsource-variable/playfair-display';
 
 const prodotti = [
-  { id: 'tagliere',  nome: 'Tagliere del Borgo',        cat: 'antipasti', prezzo: 24, img: '/img/demo/piatto-1.webp',  desc: 'Salumi e formaggi piemontesi selezionati' },
-  { id: 'agnolotti', nome: 'Agnolotti freschi · 500g',  cat: 'primi',     prezzo: 9,  img: '/img/demo/piatto-2.webp',  desc: 'Pasta fresca ripiena, ricetta di famiglia' },
-  { id: 'vitello',   nome: 'Vitello tonnato pronto',     cat: 'antipasti', prezzo: 14, img: '/img/demo/piatto-3.webp',  desc: 'Il classico della domenica, già pronto' },
-  { id: 'aperitivo', nome: 'Box Aperitivo Piemontese',   cat: 'regalo',    prezzo: 29, img: '/img/demo/galleria-1.webp', desc: 'Tutto per un aperitivo come si deve' },
-  { id: 'bagna',     nome: 'Kit Bagna Càuda',            cat: 'primi',     prezzo: 18, img: '/img/demo/galleria-2.webp', desc: 'Salsa, verdure e istruzioni incluse' },
-  { id: 'gianduiotti', nome: 'Gianduiotti Artigianali',  cat: 'dolci',     prezzo: 12, img: '/img/demo/galleria-3.webp', desc: 'Il cioccolato di Torino, quello vero' },
-  { id: 'cesto',     nome: 'Cesto Regalo Gourmet',       cat: 'regalo',    prezzo: 45, img: '/img/demo/interno.webp',   desc: 'Una selezione che fa sempre bella figura' },
+  { id: 'pizzette',    nome: 'Pizzette Margherita · 4 pz',     cat: 'pizze', prezzo: 8,  img: '/img/demo/piatto-1.webp',  desc: 'Mini pizze pomodoro, mozzarella e basilico' },
+  { id: 'pizzataglio', nome: 'Pizza al taglio · 1 kg',         cat: 'pizze', prezzo: 14, img: '/img/demo/galleria-1.webp', desc: 'Croccante e condita, pronta da scaldare' },
+  { id: 'penne',       nome: 'Penne pomodoro e zucchine',      cat: 'primi', prezzo: 7,  img: '/img/demo/piatto-2.webp',  desc: 'Primo pronto: bastano 3 minuti in padella' },
+  { id: 'spaghetti',   nome: 'Spaghetti al pomodoro',          cat: 'primi', prezzo: 6,  img: '/img/demo/galleria-2.webp', desc: 'Sugo fresco e basilico, come a casa' },
+  { id: 'dolce',       nome: 'Frittata dolce ai frutti rossi', cat: 'dolci', prezzo: 5,  img: '/img/demo/piatto-3.webp',  desc: 'Soffice, con frutti di bosco e zucchero a velo' },
+  { id: 'gelato',      nome: 'Gelato artigianale · fragola',   cat: 'dolci', prezzo: 4,  img: '/img/demo/galleria-3.webp', desc: 'Mantecato fresco, gusto fragola' },
 ];
 ---
 <!DOCTYPE html>
@@ -20,8 +19,8 @@ const prodotti = [
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex" />
-  <title>Bottega Subalpina — Gastronomia piemontese online</title>
-  <meta name="description" content="Bottega Subalpina: specialità gastronomiche piemontesi artigianali consegnate a casa. Taglieri, pasta fresca, dolci e cesti regalo. Spedizione in tutta Italia." />
+  <title>Bottega Subalpina — Piatti freschi pronti, consegna a Torino</title>
+  <meta name="description" content="Bottega Subalpina: pizze, primi e dolci preparati ogni giorno e consegnati a casa a Torino. Cucina fresca, pronta da gustare. Ordina online." />
   <meta name="theme-color" content="#faf6ef" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6 7h12l-1 13H7L6 7zm3 0a3 3 0 0 1 6 0' fill='none' stroke='%23c0552b' stroke-width='2'/></svg>" />
 </head>
@@ -45,17 +44,17 @@ const prodotti = [
   <!-- HERO -->
   <section class="hero" id="top">
     <div class="hero-text r">
-      <p class="eyebrow">Gastronomia artigianale · dal 1962</p>
-      <h1>Il Piemonte,<br/><span class="it">a casa tua.</span></h1>
-      <p class="hsub">Taglieri, pasta fresca, dolci e cesti regalo preparati come una volta — e spediti dove vuoi tu.</p>
+      <p class="eyebrow">Cucina fresca · consegna a Torino</p>
+      <h1>La cucina di casa,<br/><span class="it">pronta da gustare.</span></h1>
+      <p class="hsub">Pizze, primi e dolci preparati ogni giorno e consegnati caldi dove vuoi tu. Niente di surgelato, solo roba buona.</p>
       <div class="hcta">
-        <a href="#negozio" class="btn btn-solid">Scopri il negozio</a>
+        <a href="#negozio" class="btn btn-solid">Ordina ora</a>
         <a href="#storia" class="btn btn-ghost">La nostra storia</a>
       </div>
-      <p class="hship">🚚 Spedizione <b>gratis</b> sopra i 50€ · consegna in 24-48h</p>
+      <p class="hship">🚚 Consegna <b>gratis</b> sopra i 30€ · pronta in giornata</p>
     </div>
     <div class="hero-img r">
-      <img src="/img/demo/hero.webp" alt="Selezione di specialità gastronomiche piemontesi" />
+      <img src="/img/demo/hero.webp" alt="Pizza appena sfornata della Bottega Subalpina" />
       <span class="hero-badge">★ 4,9 · 1.200+ ordini</span>
     </div>
   </section>
@@ -66,10 +65,9 @@ const prodotti = [
       <h2>Il nostro <span class="it">negozio</span></h2>
       <div class="cats" id="cats">
         <button class="cat is-on" data-cat="all">Tutti</button>
-        <button class="cat" data-cat="antipasti">Antipasti</button>
+        <button class="cat" data-cat="pizze">Pizze</button>
         <button class="cat" data-cat="primi">Primi</button>
         <button class="cat" data-cat="dolci">Dolci</button>
-        <button class="cat" data-cat="regalo">Regalo</button>
       </div>
     </div>
 
@@ -92,19 +90,19 @@ const prodotti = [
 
   <!-- TRUST -->
   <section class="trust">
-    <div class="ti r"><b>🚚 Spedizione gratis</b><span>sopra i 50€, in tutta Italia</span></div>
-    <div class="ti r"><b>↩ Resi facili</b><span>14 giorni per ripensarci</span></div>
+    <div class="ti r"><b>🚚 Consegna gratis</b><span>sopra i 30€, a Torino</span></div>
+    <div class="ti r"><b>🕒 Pronto in giornata</b><span>ordini entro le 11, pranzo servito</span></div>
     <div class="ti r"><b>🔒 Pagamenti sicuri</b><span>carta, PayPal, Satispay</span></div>
-    <div class="ti r"><b>🌿 Artigianale</b><span>produttori del territorio</span></div>
+    <div class="ti r"><b>🍅 Ingredienti freschi</b><span>niente surgelati, cucina vera</span></div>
   </section>
 
   <!-- STORIA -->
   <section class="story" id="storia">
-    <div class="story-img r"><img src="/img/demo/interno.webp" alt="Interno della Bottega Subalpina" /></div>
+    <div class="story-img r"><img src="/img/demo/interno.webp" alt="La sala della Bottega Subalpina" /></div>
     <div class="story-text r">
       <p class="eyebrow">La bottega</p>
       <h2>Tre generazioni,<br/>una sola <span class="it">passione</span>.</h2>
-      <p>Dal 1962 selezioniamo i migliori produttori del Piemonte e portiamo a casa tua sapori che sanno di domenica in famiglia. Ogni prodotto è preparato a mano e spedito con cura.</p>
+      <p>Dal 1962 cuciniamo ogni giorno piatti freschi come si faceva una volta, con ingredienti veri e ricette di famiglia. Tu ordini, noi prepariamo e ti portiamo tutto caldo a casa.</p>
       <a href="#negozio" class="btn btn-solid">Vai al negozio</a>
     </div>
   </section>
@@ -292,7 +290,7 @@ const prodotti = [
   <script is:inline>
     (() => {
       const cart = new Map(); // id -> {nome, prezzo, q}
-      const FREE = 50;
+      const FREE = 30;
       const $ = (s) => document.querySelector(s);
       const fmt = (n) => '€' + n.toFixed(2).replace('.', ',');
 
