@@ -29,11 +29,14 @@ const prodotti = [
 
   <header class="snav" id="snav">
     <a href="#top" class="brand">Bottega <em>Subalpina</em></a>
-    <nav class="nlinks">
+    <nav class="nlinks" id="nlinks">
       <a href="#negozio">Negozio</a>
       <a href="#storia">La bottega</a>
       <a href="#spedizioni">Spedizioni</a>
     </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="nlinks">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
     <button class="cart-btn" id="cartBtn" aria-label="Apri il carrello">
       <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
       <span class="cart-count" id="cartCount" hidden>0</span>
@@ -167,6 +170,8 @@ const prodotti = [
     .nlinks{display:flex;gap:1.6rem}
     .nlinks a{font-size:.95rem;color:var(--muted);font-weight:500;transition:color .2s}
     .nlinks a:hover{color:var(--ink)}
+    .nav-toggle{display:none;background:none;border:0;cursor:pointer;color:var(--ink);width:42px;height:42px;border-radius:10px}
+    .nav-toggle:hover{background:var(--line)}
     .cart-btn{position:relative;background:var(--ink);color:#fff;border:0;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;cursor:pointer;transition:transform .2s var(--ease),background .2s}
     .cart-btn:hover{transform:translateY(-2px);background:var(--terra)}
     .cart-count{position:absolute;top:-4px;right:-4px;background:var(--terra);color:#fff;font-family:'Inter Variable';font-size:.7rem;font-weight:700;min-width:19px;height:19px;border-radius:10px;display:grid;place-items:center;padding:0 5px;border:2px solid var(--bg)}
@@ -282,7 +287,12 @@ const prodotti = [
       .hero{grid-template-columns:1fr}.hero-img{order:-1;aspect-ratio:16/10}
       .story{grid-template-columns:1fr}.story-img{order:-1}
       .trust{grid-template-columns:repeat(2,1fr);gap:1.4rem}
-      .nlinks{display:none}
+      .nav-toggle{display:grid;place-items:center;margin-left:auto;margin-right:.2rem}
+      .nlinks{position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1.1rem;display:none;
+        background:rgba(250,246,239,.98);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);
+        padding:1.1rem clamp(1.1rem,5vw,3rem) 1.4rem;box-shadow:0 16px 30px -18px rgba(60,40,20,.35)}
+      .nlinks.open{display:flex}
+      .nlinks a{font-size:1.05rem}
     }
     @media (max-width:480px){ .trust{grid-template-columns:1fr} }
   </style>
@@ -305,7 +315,17 @@ const prodotti = [
       $('#cartBtn').addEventListener('click', openCart);
       $('#closeCart').addEventListener('click', closeCart);
       overlay.addEventListener('click', closeCart);
-      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCart(); });
+      // menu mobile (hamburger)
+      const navToggle = $('#navToggle'), nlinks = $('#nlinks');
+      const closeMenu = () => { nlinks.classList.remove('open'); navToggle.setAttribute('aria-expanded', 'false'); };
+      if (navToggle && nlinks) {
+        navToggle.addEventListener('click', () => {
+          const open = nlinks.classList.toggle('open');
+          navToggle.setAttribute('aria-expanded', String(open));
+        });
+        nlinks.querySelectorAll('a').forEach((a) => a.addEventListener('click', closeMenu));
+      }
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeCart(); closeMenu(); } });
 
       let toastT;
       const showToast = (msg) => { toast.textContent = msg; toast.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => toast.classList.remove('on'), 1800); };
