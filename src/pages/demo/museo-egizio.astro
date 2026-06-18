@@ -31,6 +31,7 @@ const mostre = [
 </head>
 <body>
   <a class="demo-flag" href="/">★ Demo realizzata da <b>Mole Digitale</b> · torna al sito ↩</a>
+  <canvas id="dust" class="dust" aria-hidden="true"></canvas>
 
   <header class="menav" id="menav">
     <a href="#top" class="brand">MUSEO <span>EGIZIO</span></a>
@@ -61,9 +62,9 @@ const mostre = [
       </div>
     </div>
     <div class="hero-facts r">
-      <div><b>40.000+</b><span>reperti</span></div>
-      <div><b>1824</b><span>fondato nel</span></div>
-      <div><b>2°</b><span>al mondo</span></div>
+      <div><b class="count" data-to="40000" data-sep="." data-suffix="+">0</b><span>reperti</span></div>
+      <div><b class="count" data-to="1824">0</b><span>fondato nel</span></div>
+      <div><b class="count" data-to="2" data-suffix="°">0</b><span>al mondo</span></div>
     </div>
   </section>
 
@@ -95,6 +96,24 @@ const mostre = [
       <h2>La <span class="it gold">Tomba di Kha</span>, intatta da 3.400 anni</h2>
       <p>Il corredo funerario dell’architetto Kha e della moglie Merit è giunto fino a noi quasi intatto: mobili, vasi, gioielli e cibo per l’eternità. Una capsula del tempo unica al mondo.</p>
       <a href="#biglietti" class="btn btn-gold">Vieni a vederla</a>
+    </div>
+  </section>
+
+  <!-- FREGIO geroglifico animato -->
+  <div class="frieze" aria-hidden="true">
+    <div class="frieze-track">𓄿 𓃀 𓂧 𓅓 𓈖 𓆑 𓇋 𓋴 𓏏 𓂋 𓅱 𓎼 𓃭 𓍯 𓊃 𓐍 𓄿 𓃀 𓂧 𓅓 𓈖 𓆑 𓇋 𓋴 𓏏 𓂋 𓅱 𓎼 𓃭 𓍯 𓊃 𓐍</div>
+  </div>
+
+  <!-- NOME IN GEROGLIFICI (interattivo, tocco distintivo) -->
+  <section class="dsection nome-sec" id="nome">
+    <div class="head r" style="text-align:center;margin:0 auto 2.4rem">
+      <p class="kick">Esperienza interattiva</p>
+      <h2>Scrivi il tuo nome <span class="it gold">in geroglifici</span></h2>
+      <p class="csub">Come gli scribi facevano per i faraoni — digita e guarda.</p>
+    </div>
+    <div class="cartiglio-wrap r">
+      <div class="cartiglio"><div class="glyphs" id="glyphs"></div></div>
+      <input id="nameIn" class="name-in" maxlength="14" value="TORINO" aria-label="Scrivi il tuo nome" autocomplete="off" spellcheck="false" />
     </div>
   </section>
 
@@ -324,6 +343,41 @@ const mostre = [
       .mtoggle{display:grid;place-items:center;margin-left:auto;margin-right:.2rem}
       .mcta{display:none}
     }
+
+    /* === Animazioni: storia + futuro moderno === */
+    /* polvere d'oro */
+    .dust{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.6}
+    #main{position:relative;z-index:1}
+    .mfoot{position:relative;z-index:1}
+    /* hero cinematografico (ken-burns) */
+    @keyframes kenburns{0%{transform:scale(1)}100%{transform:scale(1.13)}}
+    .hero-bg{animation:kenburns 26s ease-in-out infinite alternate;transform-origin:60% 40%}
+    /* bagliore oro sui titoli accento */
+    .gold{text-shadow:0 0 30px rgba(230,200,120,.35)}
+    .brand span{text-shadow:0 0 18px rgba(230,200,120,.4)}
+    /* fregio geroglifico animato */
+    .frieze{overflow:hidden;border-block:1px solid var(--line);background:rgba(0,0,0,.25);padding:.6rem 0;position:relative;z-index:1}
+    .frieze-track{display:inline-block;white-space:nowrap;font-family:'Segoe UI Historic','Noto Sans Egyptian Hieroglyphs','Aegyptus',serif;
+      font-size:1.7rem;color:var(--gold);opacity:.7;letter-spacing:.5rem;animation:frieze 44s linear infinite;will-change:transform}
+    @keyframes frieze{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    /* nome in geroglifici (cartiglio) */
+    .nome-sec{text-align:center}
+    .csub{color:var(--muted);margin-top:.6rem}
+    .cartiglio-wrap{display:flex;flex-direction:column;align-items:center;gap:1.8rem}
+    .cartiglio{position:relative;display:inline-flex;align-items:center;justify-content:center;min-width:240px;min-height:128px;
+      padding:1rem 2.8rem;border:3px solid var(--gold);border-radius:90px;background:rgba(0,0,0,.32);
+      box-shadow:0 0 50px -12px rgba(205,162,78,.45),inset 0 0 34px -12px rgba(205,162,78,.35)}
+    .cartiglio::after{content:'';position:absolute;bottom:-17px;left:50%;transform:translateX(-50%);width:40px;height:17px;
+      border:3px solid var(--gold);border-top:0;border-radius:0 0 10px 10px}
+    .glyphs{font-family:'Segoe UI Historic','Noto Sans Egyptian Hieroglyphs','Aegyptus',serif;
+      font-size:clamp(2.3rem,6vw,3.6rem);color:var(--gold-2);letter-spacing:.12rem;line-height:1;
+      text-shadow:0 0 24px rgba(230,200,120,.55);min-height:1.1em;transition:opacity .2s}
+    .name-in{background:#120d07;border:1px solid var(--line);border-radius:999px;color:var(--ink);font-family:'Inter Variable';
+      font-size:1.05rem;padding:.8rem 1.6rem;text-align:center;letter-spacing:.18em;text-transform:uppercase;width:min(340px,90%)}
+    .name-in:focus{outline:none;border-color:var(--gold-2);box-shadow:0 0 0 3px rgba(205,162,78,.22)}
+    @media (prefers-reduced-motion:reduce){
+      .hero-bg,.frieze-track{animation:none}
+    }
   </style>
 
   <script is:inline>
@@ -348,6 +402,49 @@ const mostre = [
       tg.addEventListener('click', () => { const o = ml.classList.toggle('open'); tg.setAttribute('aria-expanded', String(o)); });
       ml.querySelectorAll('a').forEach((a) => a.addEventListener('click', closeMenu));
       document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      // polvere d'oro (canvas)
+      const dust = $('#dust');
+      if (dust && !reduced) {
+        const ctx = dust.getContext('2d');
+        let w, h;
+        const resize = () => { w = dust.width = innerWidth; h = dust.height = innerHeight; };
+        resize(); addEventListener('resize', resize);
+        const parts = Array.from({ length: 64 }, () => ({ x: Math.random()*innerWidth, y: Math.random()*innerHeight, r: Math.random()*1.6+0.4, s: Math.random()*0.25+0.06, o: Math.random()*0.5+0.15, p: Math.random()*Math.PI*2 }));
+        const draw = () => {
+          ctx.clearRect(0, 0, w, h);
+          for (const a of parts) {
+            a.y -= a.s; a.p += 0.01; a.x += Math.sin(a.p) * 0.25;
+            if (a.y < -6) { a.y = h + 6; a.x = Math.random() * w; }
+            ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(232,200,120,' + a.o + ')'; ctx.fill();
+          }
+          requestAnimationFrame(draw);
+        };
+        draw();
+      }
+
+      // contatori animati
+      const fmtN = (n, sep) => sep ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, sep) : String(n);
+      const cio = new IntersectionObserver((es) => es.forEach((en) => {
+        if (!en.isIntersecting) return; cio.unobserve(en.target);
+        const el = en.target, to = parseInt(el.dataset.to, 10), sep = el.dataset.sep || '', suf = el.dataset.suffix || '';
+        if (reduced) { el.textContent = fmtN(to, sep) + suf; return; }
+        const t0 = performance.now();
+        const step = (now) => { const p = Math.min((now - t0) / 1600, 1); const e = 1 - Math.pow(1 - p, 3); el.textContent = fmtN(Math.round(e * to), sep) + suf; if (p < 1) requestAnimationFrame(step); };
+        requestAnimationFrame(step);
+      }), { threshold: 0.6 });
+      document.querySelectorAll('.count').forEach((el) => cio.observe(el));
+
+      // nome in geroglifici (glifi verificati che renderizzano)
+      const MAP = {A:'𓄿',B:'𓃀',C:'𓎡',D:'𓂧',E:'𓇋',F:'𓆑',G:'𓎼',H:'𓎛',I:'𓇩',J:'𓆓',K:'𓎡',L:'𓃭',M:'𓅓',N:'𓈖',O:'𓍯',P:'𓊨',Q:'𓏘',R:'𓂋',S:'𓋴',T:'𓏏',U:'𓅱',V:'𓆑',W:'𓅨',X:'𓐍',Y:'𓏭',Z:'𓊃'};
+      const nameIn = $('#nameIn'), glyphs = $('#glyphs');
+      if (nameIn && glyphs) {
+        const renderName = () => { glyphs.textContent = [...nameIn.value.toUpperCase()].map((c) => MAP[c] || (c === ' ' ? ' ' : '')).join(' '); };
+        nameIn.addEventListener('input', renderName); renderName();
+      }
+
       // reveal
       const io = new IntersectionObserver((es) => es.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } }), { threshold: 0.12 });
       document.querySelectorAll('.r').forEach((el) => io.observe(el));
