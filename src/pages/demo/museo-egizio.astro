@@ -40,6 +40,7 @@ const mostre = [
       <a href="#collezione">Collezione</a>
       <a href="#visita">Visita</a>
       <a href="#mostre">Mostre</a>
+      <a href="#faq">Info</a>
       <a href="#biglietti">Biglietti</a>
     </nav>
     <button class="mtoggle" id="mtoggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="mlinks">
@@ -138,6 +139,12 @@ const mostre = [
         <h3>Dove siamo</h3>
         <p class="vaddr">Via Accademia delle Scienze 6<br/>10123 Torino</p>
         <div class="vmap" aria-hidden="true"><span>🗺️ Mappa (demo)</span></div>
+        <ul class="vmini">
+          <li><span>🚆 Treno</span> Porta Nuova, 6 min a piedi</li>
+          <li><span>🚌 Bus</span> 4 · 11 · 51 · 55 · 57</li>
+          <li><span>🅿️ Auto</span> Parcheggio Roma–San Carlo</li>
+          <li><span>♿ Accesso</span> percorso senza barriere</li>
+        </ul>
       </div>
       <div class="vcard vtickets r" id="biglietti">
         <h3>Biglietti</h3>
@@ -155,9 +162,26 @@ const mostre = [
           </div>
         </div>
         <div class="ttot"><span>Totale</span><b id="tkTotal">€36,00</b></div>
+        <ul class="tincl">
+          <li>✓ Collezione permanente + mostre temporanee</li>
+          <li>✓ Audioguida nell’app inclusa</li>
+          <li>✓ Acquisto online = salta la fila</li>
+        </ul>
         <button class="btn btn-gold btn-block" id="tkBuy">Acquista online</button>
         <p class="tnote">🔒 Pagamento sicuro · è una demo, nessun addebito</p>
       </div>
+    </div>
+  </section>
+
+  <!-- BUONO A SAPERSI (servizi utili) -->
+  <section class="dsection servizi" id="servizi" aria-label="Informazioni utili">
+    <div class="srow">
+      <div class="sitem r"><span class="sico">🕐</span><b>~1,5 ore</b><span>durata media</span></div>
+      <div class="sitem r"><span class="sico">♿</span><b>Accessibile</b><span>ascensori e percorsi</span></div>
+      <div class="sitem r"><span class="sico">🎧</span><b>Audioguida</b><span>in 8 lingue</span></div>
+      <div class="sitem r"><span class="sico">🧥</span><b>Guardaroba</b><span>gratuito</span></div>
+      <div class="sitem r"><span class="sico">☕</span><b>Caffè &amp; bookshop</b><span>al piano terra</span></div>
+      <div class="sitem r"><span class="sico">📷</span><b>Foto sì</b><span>senza flash</span></div>
     </div>
   </section>
 
@@ -179,6 +203,40 @@ const mostre = [
     </div>
   </section>
 
+  <!-- SCUOLE / GRUPPI / SOSTIENI -->
+  <section class="dsection two-band" aria-label="Scuole, gruppi e membership">
+    <article class="band r">
+      <p class="kick">Scuole e gruppi</p>
+      <h3>Visite guidate e laboratori didattici</h3>
+      <p>Percorsi su misura per scuole di ogni grado e gruppi (min. 15 persone), con educatori del museo e tariffe agevolate.</p>
+      <button class="btn btn-ghost" data-demo>Richiedi un preventivo</button>
+    </article>
+    <article class="band band-gold r">
+      <p class="kick">Sostieni il museo</p>
+      <h3>Diventa Amico del Museo</h3>
+      <p>Con la membership entri quante volte vuoi per un anno, salti la fila e aiuti il restauro dei reperti.</p>
+      <button class="btn btn-gold" data-demo>Scopri la membership</button>
+    </article>
+  </section>
+
+  <!-- FAQ -->
+  <section class="dsection" id="faq">
+    <div class="head r">
+      <p class="kick">Domande frequenti</p>
+      <h2>Buono a sapersi <span class="it gold">prima di venire</span></h2>
+    </div>
+    <div class="faq r">
+      <details><summary>Posso fare fotografie?</summary><p>Sì, per uso personale e senza flash né treppiede. In alcune mostre temporanee può essere vietato: lo trovi indicato all’ingresso.</p></details>
+      <details><summary>Quanto dura la visita?</summary><p>In media 1,5–2 ore. Con l’audioguida o una visita guidata puoi prenderti tutto il tempo che vuoi.</p></details>
+      <details><summary>Chi ha diritto al biglietto ridotto?</summary><p>Giovani 15–18 anni, studenti universitari, over 65, gruppi e possessori delle convenzioni attive. Gli under 6 entrano gratis.</p></details>
+      <details><summary>Il museo è accessibile?</summary><p>Sì: l’intero percorso è privo di barriere, con ascensori e servizi dedicati. Sedie a rotelle disponibili gratuitamente all’ingresso.</p></details>
+      <details><summary>Posso portare zaini o borse grandi?</summary><p>Zaini e borse ingombranti vanno lasciati al guardaroba gratuito. Sono ammesse solo borse di piccole dimensioni.</p></details>
+      <details><summary>C’è l’audioguida? In quali lingue?</summary><p>Sì, è inclusa nel biglietto tramite l’app del museo ed è disponibile in 8 lingue.</p></details>
+      <details><summary>C’è una caffetteria o un bookshop?</summary><p>Trovi caffetteria e bookshop al piano terra, accessibili anche senza biglietto.</p></details>
+      <details><summary>Come prenoto per una scuola o un gruppo?</summary><p>Dalla sezione “Scuole e gruppi” qui sopra: ti ricontattiamo con disponibilità e tariffe dedicate.</p></details>
+    </div>
+  </section>
+
   <!-- NEWSLETTER -->
   <section class="news" id="news">
     <h2>Resta in contatto col passato</h2>
@@ -189,6 +247,10 @@ const mostre = [
     </form>
   </section>
   </main>
+
+  <a class="mobilebar" href="#biglietti" aria-label="Vai ai biglietti">
+    <span>🎟️ Biglietti <i>da €1</i></span><b>Acquista →</b>
+  </a>
 
   <footer class="mfoot">
     <div class="mfoot-top">
@@ -334,7 +396,7 @@ const mostre = [
     /* reveal */
     .r{opacity:0;transform:translateY(36px);filter:blur(5px);transition:opacity .9s var(--ease),transform .9s var(--ease),filter .9s var(--ease)}
     .r.in{opacity:1;transform:none;filter:blur(0)}
-    @media (prefers-reduced-motion:reduce){.r{opacity:1;transform:none;filter:none;transition:none}}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.r{opacity:1;transform:none;filter:none;transition:none}}
 
     @media (max-width:900px){
       .feature{grid-template-columns:1fr}.feature-img{order:-1}
@@ -402,6 +464,61 @@ const mostre = [
       .ccard-img img,.feature-img img{clip-path:none;transition:none}
       .cgrid .ccard,.mgrid .mcard{transition-delay:0s}
     }
+
+    /* === Sezioni informative (utente + cliente) === */
+    /* come arrivare / accessibilità nella card "Dove siamo" */
+    .vmini{list-style:none;margin-top:1.1rem;display:grid;gap:.5rem}
+    .vmini li{font-size:.88rem;color:var(--muted);display:flex;gap:.5rem}
+    .vmini li span{color:var(--gold-2);font-weight:600;min-width:74px}
+
+    /* cosa è incluso nel biglietto */
+    .tincl{list-style:none;margin:.1rem 0 1rem;display:grid;gap:.35rem}
+    .tincl li{font-size:.85rem;color:var(--muted)}
+
+    /* buono a sapersi (servizi) */
+    .servizi{padding-top:clamp(1rem,3vw,2rem)}
+    .srow{display:grid;grid-template-columns:repeat(6,1fr);gap:1rem}
+    .sitem{display:flex;flex-direction:column;align-items:center;text-align:center;gap:.28rem;
+      background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:1.4rem .8rem;transition:border-color .3s,transform .3s var(--ease)}
+    .sitem:hover{border-color:var(--gold-2);transform:translateY(-4px)}
+    .sico{font-size:1.7rem;line-height:1}
+    .sitem b{color:var(--ink);font-family:'Inter Variable';font-weight:700;font-size:.97rem}
+    .sitem span:last-child{color:var(--muted);font-size:.8rem}
+
+    /* band scuole/gruppi + sostieni */
+    .two-band{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+    .band{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:2rem 1.9rem}
+    .band h3{font-size:1.5rem;margin:.3rem 0 .7rem}
+    .band p{color:var(--muted);margin-bottom:1.4rem;max-width:46ch}
+    .band-gold{background:linear-gradient(180deg,rgba(205,162,78,.12),rgba(205,162,78,.03));border-color:rgba(205,162,78,.42)}
+
+    /* FAQ (accordion nativo) */
+    .faq{display:grid;gap:.7rem;max-width:820px}
+    .faq details{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+    .faq summary{cursor:pointer;padding:1rem 1.2rem;font-weight:600;color:var(--ink);list-style:none;
+      display:flex;justify-content:space-between;align-items:center;gap:1rem;transition:color .2s}
+    .faq summary::-webkit-details-marker{display:none}
+    .faq summary::after{content:'+';color:var(--gold-2);font-size:1.35rem;line-height:1;transition:transform .25s var(--ease)}
+    .faq details[open] summary::after{transform:rotate(45deg)}
+    .faq summary:hover{color:var(--gold-2)}
+    .faq details p{padding:0 1.2rem 1.1rem;color:var(--muted);font-size:.92rem}
+
+    /* barra biglietti fissa (solo mobile) */
+    .mobilebar{display:none}
+
+    @media (max-width:900px){
+      .srow{grid-template-columns:repeat(2,1fr)}
+      .two-band{grid-template-columns:1fr}
+      .mobilebar{display:flex;align-items:center;justify-content:space-between;gap:.8rem;
+        position:fixed;left:.7rem;right:.7rem;bottom:.7rem;z-index:250;
+        background:linear-gradient(135deg,var(--gold-2),var(--gold));color:#1c1405;
+        padding:.85rem 1.2rem;border-radius:14px;box-shadow:0 16px 34px -12px rgba(0,0,0,.85);font-weight:700}
+      .mobilebar i{font-style:normal;font-weight:600;opacity:.78;font-size:.82rem}
+      .mobilebar b{white-space:nowrap}
+      #main{padding-bottom:4.6rem}
+      .mfoot{margin-bottom:4.6rem}
+      .toast{bottom:5.2rem}
+    }
   </style>
 
   <script>
@@ -451,6 +568,7 @@ const mostre = [
       const toast = $('#toast'); let tt;
       const showToast = (m) => { toast.textContent = m; toast.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => toast.classList.remove('on'), 1900); };
       $('#tkBuy').addEventListener('click', () => showToast('Demo: qui partirebbe l’acquisto online 🎟️'));
+      document.querySelectorAll('[data-demo]').forEach((b) => b.addEventListener('click', () => showToast('Demo: in un sito reale qui partirebbe la richiesta ✦')));
       // menu mobile
       const tg = $('#mtoggle'), ml = $('#mlinks');
       const closeMenu = () => { ml.classList.remove('open'); tg.setAttribute('aria-expanded', 'false'); };
