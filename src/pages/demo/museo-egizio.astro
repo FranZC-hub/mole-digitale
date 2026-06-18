@@ -48,7 +48,6 @@ const mostre = [
       <a href="#visita">Visita</a>
       <a href="#mostre">Mostre</a>
       <a href="#faq">Info</a>
-      <a href="#biglietti">Biglietti</a>
     </nav>
     <button class="mtoggle" id="mtoggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="mlinks">
       <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
@@ -154,22 +153,46 @@ const mostre = [
           <li><span>♿ Accesso</span> percorso senza barriere</li>
         </ul>
       </div>
-      <div class="vcard vtickets r" id="biglietti">
-        <h3>Biglietti</h3>
-        <div class="trow">
-          <label>Tipo
-            <select id="tkType">
-              <option value="18">Intero · €18</option>
-              <option value="15">Ridotto · €15</option>
-              <option value="1">Under 15 · €1</option>
-              <option value="0">Under 6 · gratis</option>
-            </select>
-          </label>
-          <div class="qty">Quantità
-            <div class="qbox"><button id="qMinus" aria-label="Meno">−</button><span id="qVal">2</span><button id="qPlus" aria-label="Più">+</button></div>
-          </div>
+    </div>
+  </section>
+
+  <!-- BIGLIETTI (sezione dedicata) -->
+  <section class="dsection biglietti-sec" id="biglietti">
+    <div class="head r">
+      <p class="kick">Biglietti</p>
+      <h2>Salta la fila, <span class="it gold">entra quando vuoi</span></h2>
+    </div>
+    <div class="bgrid r">
+      <div class="btypes">
+        <div class="btype" data-price="18">
+          <div class="btype-info"><b>Intero</b><span>dai 19 anni</span></div>
+          <div class="bprice">€18</div>
+          <div class="qbox"><button class="qm" type="button" aria-label="Togli un intero">−</button><span class="qn">0</span><button class="qp" type="button" aria-label="Aggiungi un intero">+</button></div>
         </div>
-        <div class="ttot"><span>Totale</span><b id="tkTotal">€36,00</b></div>
+        <div class="btype" data-price="15">
+          <div class="btype-info"><b>Ridotto</b><span>15–18 anni, over 65, studenti</span></div>
+          <div class="bprice">€15</div>
+          <div class="qbox"><button class="qm" type="button" aria-label="Togli un ridotto">−</button><span class="qn">0</span><button class="qp" type="button" aria-label="Aggiungi un ridotto">+</button></div>
+        </div>
+        <div class="btype" data-price="1">
+          <div class="btype-info"><b>Under 15</b><span>dai 6 ai 14 anni</span></div>
+          <div class="bprice">€1</div>
+          <div class="qbox"><button class="qm" type="button" aria-label="Togli un under 15">−</button><span class="qn">0</span><button class="qp" type="button" aria-label="Aggiungi un under 15">+</button></div>
+        </div>
+        <div class="btype" data-price="0">
+          <div class="btype-info"><b>Under 6</b><span>ingresso gratuito</span></div>
+          <div class="bprice">Gratis</div>
+          <div class="qbox"><button class="qm" type="button" aria-label="Togli un under 6">−</button><span class="qn">0</span><button class="qp" type="button" aria-label="Aggiungi un under 6">+</button></div>
+        </div>
+        <div class="bdate">
+          <label for="bDate">📅 Giorno della visita</label>
+          <input type="date" id="bDate" />
+        </div>
+      </div>
+      <aside class="bsummary">
+        <h3>Riepilogo</h3>
+        <ul class="brecap" id="bRecap"><li class="brecap-empty">Seleziona i biglietti</li></ul>
+        <div class="ttot"><span>Totale</span><b id="tkTotal">€0,00</b></div>
         <ul class="tincl">
           <li>✓ Collezione permanente + mostre temporanee</li>
           <li>✓ Audioguida nell’app inclusa</li>
@@ -177,7 +200,7 @@ const mostre = [
         </ul>
         <button class="btn btn-gold btn-block" id="tkBuy">Acquista online</button>
         <p class="tnote">🔒 Pagamento sicuro · è una demo, nessun addebito</p>
-      </div>
+      </aside>
     </div>
   </section>
 
@@ -371,7 +394,7 @@ const mostre = [
     .feature-text p{color:var(--muted);margin-bottom:1.6rem;max-width:48ch}
 
     /* visita */
-    .visita-grid{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:1.5rem}
+    .visita-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
     .vcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:1.6rem 1.6rem 1.8rem}
     .vcard h3{font-size:1.4rem;margin-bottom:1.1rem;color:var(--gold-2)}
     .vlist{list-style:none}
@@ -380,11 +403,6 @@ const mostre = [
     .vlist span{color:var(--muted)}
     .vaddr{color:var(--ink);line-height:1.7;margin-bottom:1rem}
     .vmap{height:120px;border-radius:12px;background:repeating-linear-gradient(45deg,#1d160c,#1d160c 12px,#181208 12px,#181208 24px);display:grid;place-items:center;color:var(--muted);border:1px solid var(--line)}
-    .vtickets{display:flex;flex-direction:column}
-    .trow{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.1rem}
-    .trow label{display:flex;flex-direction:column;gap:.4rem;font-size:.82rem;color:var(--muted);flex:1;min-width:140px}
-    .trow select{padding:.7rem .8rem;border-radius:10px;border:1px solid var(--line);background:#120d07;color:var(--ink);font-family:'Inter Variable';font-size:.95rem}
-    .qty{display:flex;flex-direction:column;gap:.4rem;font-size:.82rem;color:var(--muted)}
     .qbox{display:inline-flex;align-items:center;gap:.8rem;background:#120d07;border:1px solid var(--line);border-radius:10px;padding:.35rem .6rem}
     .qbox button{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;font-size:1.1rem;line-height:1}
     .qbox button:hover{border-color:var(--gold-2);color:var(--gold-2)}
@@ -595,6 +613,26 @@ const mostre = [
     @keyframes lbFade{from{opacity:0}to{opacity:1}}
 
     @media (prefers-reduced-motion:reduce){.open-now.is-open::before{animation:none}.lb-card,.lb-backdrop{animation:none}}
+
+    /* biglietti: sezione dedicata */
+    .biglietti-sec .bgrid{display:grid;grid-template-columns:1.5fr .9fr;gap:1.6rem;align-items:start}
+    .btypes{display:grid;gap:.8rem}
+    .btype{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:1.2rem;
+      background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1rem 1.3rem;transition:border-color .25s}
+    .btype.sel{border-color:var(--gold-2)}
+    .btype-info b{display:block;font-family:'Inter Variable';font-weight:700;font-size:1.02rem}
+    .btype-info span{color:var(--muted);font-size:.82rem}
+    .bprice{font-family:'Playfair Display Variable','Playfair Display';font-size:1.3rem;color:var(--gold-2);min-width:62px;text-align:right}
+    .bdate{display:flex;flex-direction:column;gap:.5rem;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1rem 1.3rem;font-size:.88rem;color:var(--muted)}
+    .bdate input{padding:.7rem .8rem;border-radius:10px;border:1px solid var(--line);background:#120d07;color:var(--ink);font-family:'Inter Variable';font-size:.95rem;color-scheme:dark}
+    .bsummary{background:linear-gradient(180deg,#1a130a,#120d07);border:1px solid var(--line);border-radius:var(--radius);padding:1.6rem;position:sticky;top:100px}
+    .bsummary h3{color:var(--gold-2);font-size:1.3rem;margin-bottom:1rem}
+    .brecap{list-style:none;display:grid;gap:.5rem;margin-bottom:.3rem;font-size:.92rem;min-height:1.5rem}
+    .brecap li{display:flex;justify-content:space-between;gap:1rem}
+    .brecap li b{color:var(--ink);font-family:'Inter Variable'}
+    .brecap-empty{color:var(--muted)}
+    @media (max-width:900px){.biglietti-sec .bgrid{grid-template-columns:1fr}.bsummary{position:static}}
+    @media (max-width:560px){.btype{grid-template-columns:1fr auto}.btype .qbox{grid-column:1 / -1;justify-self:start;margin-top:.3rem}}
   </style>
 
   <script>
@@ -631,15 +669,32 @@ const mostre = [
         });
       });
 
-      // calcolatore biglietti
-      const sel = $('#tkType'), qv = $('#qVal'), tot = $('#tkTotal');
-      let q = 2;
+      // selezione biglietti: più tipi insieme, con riepilogo e totale
+      const bTypes = [...document.querySelectorAll('.btype')];
+      const bRecap = $('#bRecap'), bTot = $('#tkTotal');
       const fmt = (n) => '€' + n.toFixed(2).replace('.', ',');
-      const calc = () => { tot.textContent = fmt(parseFloat(sel.value) * q); };
-      $('#qMinus').addEventListener('click', () => { q = Math.max(1, q - 1); qv.textContent = q; calc(); });
-      $('#qPlus').addEventListener('click', () => { q = Math.min(20, q + 1); qv.textContent = q; calc(); });
-      sel.addEventListener('change', calc);
-      calc();
+      const qtyOf = (t) => parseInt(t.querySelector('.qn').textContent, 10) || 0;
+      const renderTickets = () => {
+        let total = 0; const items = [];
+        bTypes.forEach((t) => {
+          const q = qtyOf(t); if (q < 1) return;
+          const price = parseFloat(t.dataset.price), name = t.querySelector('b').textContent;
+          total += q * price;
+          items.push('<li><span>' + q + '× ' + name + '</span><b>' + (price === 0 ? 'gratis' : fmt(q * price)) + '</b></li>');
+        });
+        bRecap.innerHTML = items.length ? items.join('') : '<li class="brecap-empty">Seleziona i biglietti</li>';
+        bTot.textContent = fmt(total);
+      };
+      bTypes.forEach((t) => {
+        const n = t.querySelector('.qn');
+        const set = (v) => { const q = Math.max(0, Math.min(20, v)); n.textContent = q; t.classList.toggle('sel', q > 0); renderTickets(); };
+        t.querySelector('.qp').addEventListener('click', () => set(qtyOf(t) + 1));
+        t.querySelector('.qm').addEventListener('click', () => set(qtyOf(t) - 1));
+      });
+      if (bTypes[0]) { bTypes[0].querySelector('.qn').textContent = '2'; bTypes[0].classList.add('sel'); }
+      renderTickets();
+      const bDate = $('#bDate');
+      if (bDate) { const today = new Date().toISOString().slice(0, 10); bDate.min = today; if (!bDate.value) bDate.value = today; }
       // toast
       const toast = $('#toast'); let tt;
       const showToast = (m) => { toast.textContent = m; toast.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => toast.classList.remove('on'), 1900); };
