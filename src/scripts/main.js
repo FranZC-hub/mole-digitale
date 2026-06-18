@@ -187,7 +187,7 @@ if (!reduced && finePointer) {
   });
 }
 if (finePointer) {
-  document.querySelectorAll('.serv-card, .testi-card, .port-card').forEach((card) => {
+  document.querySelectorAll('.serv-card, .port-card').forEach((card) => {
     card.addEventListener('mousemove', (e) => {
       const r = card.getBoundingClientRect();
       card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');

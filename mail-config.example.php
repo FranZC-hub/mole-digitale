@@ -1,6 +1,6 @@
 <?php
 // Modello. Copia in "mail-config.php", inserisci la password reale e carica
-// il file su Hostinger (un livello sopra public_html, oppure in public_html).
+// il file via FTP nella stessa cartella di contact.php (cartella pubblica su Aruba).
 return [
   'SMTP_HOST' => 'smtps.aruba.it',
   'SMTP_PORT' => 465,

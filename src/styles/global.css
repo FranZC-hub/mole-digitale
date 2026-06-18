@@ -476,19 +476,8 @@ main:focus { outline: none; }
   background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
 .num-item span { color:var(--muted); font-size:.92rem; }
 
-/* ---------- Testimonianze ---------- */
-.testi-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.4rem; }
-.testi-card { padding:2rem 1.7rem; transition:transform .35s var(--ease), box-shadow .35s; }
-.testi-card:hover { transform:translateY(-6px); box-shadow:0 30px 60px -30px rgba(34,211,238,.4); }
+/* ---------- Stelle recensioni (usate nella demo officina) ---------- */
 .stars { color:#ffc83d; letter-spacing:2px; margin-bottom:1rem; }
-.testi-card blockquote { font-size:1.04rem; line-height:1.6; margin-bottom:1.4rem; }
-.testi-card figcaption { display:flex; align-items:center; gap:.8rem; }
-.avatar { width:42px; height:42px; border-radius:50%; display:grid; place-items:center; font-family:'Space Grotesk Variable', 'Space Grotesk'; font-weight:700; color:#fff; }
-.avatar.a1{background:linear-gradient(135deg,var(--c1),var(--c3))}
-.avatar.a2{background:linear-gradient(135deg,var(--c2),var(--c1))}
-.avatar.a3{background:linear-gradient(135deg,var(--c3),var(--c2))}
-.testi-card figcaption b { font-size:.95rem; display:block; }
-.testi-card figcaption small { color:var(--muted-2); font-size:.82rem; }
 
 /* ---------- FAQ ---------- */
 .faq-list { max-width:760px; margin:0 auto; display:flex; flex-direction:column; gap:.9rem; }
@@ -604,12 +593,12 @@ main:focus { outline: none; }
 @keyframes heroIn { from{opacity:0; transform:translateX(46px) rotateY(-18deg)} to{opacity:1; transform:none} }
 
 /* Spotlight che segue il cursore dentro le card */
-.serv-card::after, .testi-card::after, .port-card::after {
+.serv-card::after, .port-card::after {
   content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
   opacity:0; transition:opacity .35s var(--ease); z-index:1;
   background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%), rgba(124,92,255,.16), transparent 60%);
 }
-.serv-card:hover::after, .testi-card:hover::after, .port-card:hover::after { opacity:1; }
+.serv-card:hover::after, .port-card:hover::after { opacity:1; }
 
 /* Bordo conico rotante sulla card prezzi consigliata (solo ANELLO, non riempie) */
 .price-card.popular::after {
