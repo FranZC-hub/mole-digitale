@@ -32,6 +32,7 @@ const mostre = [
 <body>
   <a class="demo-flag" href="/">★ Demo realizzata da <b>Mole Digitale</b> · torna al sito ↩</a>
   <canvas id="dust" class="dust" aria-hidden="true"></canvas>
+  <div class="progress" id="progress" aria-hidden="true"></div>
 
   <header class="menav" id="menav">
     <a href="#top" class="brand">MUSEO <span>EGIZIO</span></a>
@@ -52,6 +53,7 @@ const mostre = [
   <section class="hero" id="top">
     <img class="hero-bg" src="/img/demo-egizio/hero.webp" alt="Galleria di statue del Museo Egizio" />
     <div class="hero-shade"></div>
+    <div class="hero-rays" aria-hidden="true"></div>
     <div class="hero-content r">
       <p class="eyebrow">Torino · dal 1824</p>
       <h1>Quattromila anni<br/><span class="gold it">a un passo da te.</span></h1>
@@ -375,8 +377,31 @@ const mostre = [
     .name-in{background:#120d07;border:1px solid var(--line);border-radius:999px;color:var(--ink);font-family:'Inter Variable';
       font-size:1.05rem;padding:.8rem 1.6rem;text-align:center;letter-spacing:.18em;text-transform:uppercase;width:min(340px,90%)}
     .name-in:focus{outline:none;border-color:var(--gold-2);box-shadow:0 0 0 3px rgba(205,162,78,.22)}
+    /* barra avanzamento scroll */
+    .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:400;background:linear-gradient(90deg,var(--gold),var(--gold-2));box-shadow:0 0 12px rgba(205,162,78,.85)}
+    /* raggi di luce dorata che attraversano l'hero */
+    .hero-rays{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.6;mix-blend-mode:screen;
+      background:linear-gradient(102deg,transparent 34%,rgba(232,200,120,.10) 50%,transparent 66%);background-size:220% 100%;animation:rays 10s ease-in-out infinite}
+    @keyframes rays{0%,100%{background-position:0 0}50%{background-position:100% 0}}
+    /* rivelazione immagini a tendina (clip-path) */
+    .ccard-img img,.feature-img img{clip-path:inset(0 0 100% 0);transition:clip-path 1.1s var(--ease),transform .6s var(--ease)}
+    .r.in .ccard-img img,.feature-img.in img{clip-path:inset(0 0 0 0)}
+    /* reveal a cascata nelle griglie */
+    .cgrid .ccard:nth-child(2){transition-delay:.09s}.cgrid .ccard:nth-child(3){transition-delay:.18s}
+    .cgrid .ccard:nth-child(4){transition-delay:.27s}.cgrid .ccard:nth-child(5){transition-delay:.36s}.cgrid .ccard:nth-child(6){transition-delay:.45s}
+    .mgrid .mcard:nth-child(2){transition-delay:.1s}.mgrid .mcard:nth-child(3){transition-delay:.2s}
+    /* bagliore oro su hover delle card */
+    .ccard,.mcard{position:relative}
+    .ccard::after,.mcard::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .35s;
+      box-shadow:0 0 34px -6px rgba(205,162,78,.55),inset 0 0 0 1px rgba(232,200,120,.5)}
+    .ccard:hover::after,.mcard:hover::after{opacity:1}
+    /* cartiglio che "respira" */
+    @keyframes cartGlow{0%,100%{box-shadow:0 0 42px -14px rgba(205,162,78,.4),inset 0 0 30px -12px rgba(205,162,78,.3)}50%{box-shadow:0 0 66px -10px rgba(205,162,78,.7),inset 0 0 42px -10px rgba(205,162,78,.5)}}
+    .cartiglio{animation:cartGlow 3.6s ease-in-out infinite}
     @media (prefers-reduced-motion:reduce){
-      .hero-bg,.frieze-track{animation:none}
+      .hero-bg,.frieze-track,.hero-rays,.cartiglio{animation:none}
+      .ccard-img img,.feature-img img{clip-path:none;transition:none}
+      .cgrid .ccard,.mgrid .mcard{transition-delay:0s}
     }
   </style>
 
@@ -443,6 +468,13 @@ const mostre = [
       if (nameIn && glyphs) {
         const renderName = () => { glyphs.textContent = [...nameIn.value.toUpperCase()].map((c) => MAP[c] || (c === ' ' ? ' ' : '')).join(' '); };
         nameIn.addEventListener('input', renderName); renderName();
+      }
+
+      // barra avanzamento scroll
+      const prog = $('#progress');
+      if (prog) {
+        const upd = () => { const h = document.documentElement.scrollHeight - innerHeight; prog.style.width = (h > 0 ? (scrollY / h) * 100 : 0) + '%'; };
+        addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd();
       }
 
       // reveal
