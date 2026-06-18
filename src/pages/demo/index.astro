@@ -5,12 +5,14 @@ import pizz from '../../assets/img/lavoro-pizzeria.jpg';
 import sal from '../../assets/img/lavoro-salone.jpg';
 import off from '../../assets/img/lavoro-officina.jpg';
 import ecom from '../../assets/img/lavoro-ecommerce.webp';
+import museo from '../../assets/img/lavoro-museo.webp';
 
 const demos = [
   { img: pizz, name: 'Trattoria del Sole', cat: 'Ristorante',   url: '/demo/ristorante', desc: 'Menu digitale + prenotazione tavolo' },
   { img: sal,  name: 'Salone Aurora',      cat: 'Parrucchiere', url: '/demo/salone',     desc: 'Prenotazione appuntamenti online' },
   { img: off,  name: 'Garage Rossi',       cat: 'Officina',     url: '/demo/officina',   desc: 'Sito vetrina + scheda Google' },
   { img: ecom, name: 'Bottega Subalpina',  cat: 'E-commerce',   url: '/demo/ecommerce',  desc: 'Negozio online con carrello' },
+  { img: museo, name: 'Museo Egizio',      cat: 'Cultura',      url: '/demo/museo-egizio', desc: 'Sito museale + biglietti online' },
 ];
 ---
 <Layout title="Demo — esempi di siti | Mole Digitale" description="Esempi di siti realizzati da Mole Digitale per attività di Torino: ristorante, parrucchiere, officina ed e-commerce con carrello.">
@@ -18,7 +20,7 @@ const demos = [
     <div class="section-head" data-reveal>
       <span class="kicker">Demo</span>
       <h1>Esempi di siti che <span class="grad">facciamo</span>.</h1>
-      <p class="section-lead">Quattro attività diverse, quattro stili diversi. Aprili e prova a cliccare: prenotazioni, menu, recensioni e un carrello che funziona davvero.</p>
+      <p class="section-lead">Cinque attività diverse, cinque stili diversi — dal ristorante al museo. Aprili e prova a cliccare: prenotazioni, menu, carrello e biglietti che funzionano davvero.</p>
     </div>
     <div class="port-grid">
       {demos.map((dm) => (

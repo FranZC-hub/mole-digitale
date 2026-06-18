@@ -1,0 +1,357 @@
+---
+// DEMO — Museo Egizio (cultura/istituzione). Tema SCURO / oro. Sito a sé.
+// Sito DIMOSTRATIVO non ufficiale: nessun dato legale reale (no P.IVA, no email ufficiali).
+import '@fontsource-variable/inter';
+import '@fontsource-variable/playfair-display';
+
+const collezione = [
+  { img: '/img/demo-egizio/galleria.webp',    nome: 'Galleria dei Re',        desc: 'Statue monumentali in una scenografia di luce indimenticabile.' },
+  { img: '/img/demo-egizio/sekhmet.webp',      nome: 'Le statue di Sekhmet',   desc: 'La dea leonessa in granito nero, custode e guerriera.' },
+  { img: '/img/demo-egizio/faraone.webp',      nome: 'Statuaria reale',        desc: 'I volti dei faraoni scolpiti per l’eternità.' },
+  { img: '/img/demo-egizio/sarcofago.webp',    nome: 'Sarcofagi dipinti',      desc: 'Colori e geroglifici che accompagnavano il viaggio nell’aldilà.' },
+  { img: '/img/demo-egizio/papiro.webp',       nome: 'Il Libro dei Morti',     desc: 'Papiri millenari con le formule per la vita eterna.' },
+  { img: '/img/demo-egizio/fayum.webp',        nome: 'Ritratti del Fayum',     desc: 'Volti dipinti che ci guardano da duemila anni.' },
+];
+const mostre = [
+  { tag: 'In corso', nome: 'Volti dell’eternità', date: 'fino al 30 settembre', desc: 'Un viaggio tra i ritratti funerari dell’antico Egitto.' },
+  { tag: 'In arrivo', nome: 'Scrivere per gli dèi', date: 'dal 12 ottobre',      desc: 'La nascita della scrittura geroglifica e i suoi segreti.' },
+  { tag: 'Famiglie',  nome: 'Piccoli archeologi',  date: 'ogni domenica',        desc: 'Laboratori per bambini alla scoperta dei reperti.' },
+];
+---
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Museo Egizio — Torino (sito dimostrativo)</title>
+  <meta name="description" content="Sito dimostrativo per un museo: 4.000 anni di storia egizia nel cuore di Torino. Collezione, mostre, orari e biglietti. Demo non ufficiale realizzata da Mole Digitale." />
+  <meta name="theme-color" content="#0d0a07" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2l2 5 5 .4-3.8 3.3L16.5 16 12 13.3 7.5 16l1.3-5.3L5 7.4 10 7z' fill='%23c9a24a'/></svg>" />
+</head>
+<body>
+  <a class="demo-flag" href="/">★ Demo realizzata da <b>Mole Digitale</b> · torna al sito ↩</a>
+
+  <header class="menav" id="menav">
+    <a href="#top" class="brand">MUSEO <span>EGIZIO</span></a>
+    <nav class="mlinks" id="mlinks">
+      <a href="#collezione">Collezione</a>
+      <a href="#visita">Visita</a>
+      <a href="#mostre">Mostre</a>
+      <a href="#biglietti">Biglietti</a>
+    </nav>
+    <button class="mtoggle" id="mtoggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="mlinks">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <a href="#biglietti" class="btn btn-gold mcta">Biglietti</a>
+  </header>
+
+  <main id="main">
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <img class="hero-bg" src="/img/demo-egizio/hero.webp" alt="Galleria di statue del Museo Egizio" />
+    <div class="hero-shade"></div>
+    <div class="hero-content r">
+      <p class="eyebrow">Torino · dal 1824</p>
+      <h1>Quattromila anni<br/><span class="gold it">a un passo da te.</span></h1>
+      <p class="hsub">Il museo dedicato all’antico Egitto più importante del mondo dopo quello del Cairo. Oltre 40.000 reperti, una storia che toglie il fiato.</p>
+      <div class="hcta">
+        <a href="#biglietti" class="btn btn-gold">Acquista i biglietti</a>
+        <a href="#collezione" class="btn btn-ghost">Esplora la collezione</a>
+      </div>
+    </div>
+    <div class="hero-facts r">
+      <div><b>40.000+</b><span>reperti</span></div>
+      <div><b>1824</b><span>fondato nel</span></div>
+      <div><b>2°</b><span>al mondo</span></div>
+    </div>
+  </section>
+
+  <!-- COLLEZIONE -->
+  <section class="dsection" id="collezione">
+    <div class="head r">
+      <p class="kick">La collezione</p>
+      <h2>Capolavori che <span class="it gold">attraversano i millenni</span></h2>
+    </div>
+    <div class="cgrid">
+      {collezione.map((c) => (
+        <article class="ccard r">
+          <div class="ccard-img"><img src={c.img} alt={c.nome} loading="lazy" /></div>
+          <div class="ccard-body">
+            <h3>{c.nome}</h3>
+            <p>{c.desc}</p>
+            <span class="ccard-link">Scopri →</span>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- CAPOLAVORO -->
+  <section class="feature" id="kha">
+    <div class="feature-img r"><img src="/img/demo-egizio/geroglifici.webp" alt="Dettaglio di geroglifici incisi" /></div>
+    <div class="feature-text r">
+      <p class="kick">Il tesoro del museo</p>
+      <h2>La <span class="it gold">Tomba di Kha</span>, intatta da 3.400 anni</h2>
+      <p>Il corredo funerario dell’architetto Kha e della moglie Merit è giunto fino a noi quasi intatto: mobili, vasi, gioielli e cibo per l’eternità. Una capsula del tempo unica al mondo.</p>
+      <a href="#biglietti" class="btn btn-gold">Vieni a vederla</a>
+    </div>
+  </section>
+
+  <!-- VISITA + BIGLIETTI -->
+  <section class="dsection" id="visita">
+    <div class="head r">
+      <p class="kick">Pianifica la visita</p>
+      <h2>Tutto quello che ti serve <span class="it gold">per venire</span></h2>
+    </div>
+    <div class="visita-grid">
+      <div class="vcard r">
+        <h3>Orari</h3>
+        <ul class="vlist">
+          <li><span>Lunedì</span><b>9:00 – 14:00</b></li>
+          <li><span>Martedì – Domenica</span><b>9:00 – 18:30</b></li>
+          <li><span>Ultimo ingresso</span><b>17:30</b></li>
+        </ul>
+      </div>
+      <div class="vcard r">
+        <h3>Dove siamo</h3>
+        <p class="vaddr">Via Accademia delle Scienze 6<br/>10123 Torino</p>
+        <div class="vmap" aria-hidden="true"><span>🗺️ Mappa (demo)</span></div>
+      </div>
+      <div class="vcard vtickets r" id="biglietti">
+        <h3>Biglietti</h3>
+        <div class="trow">
+          <label>Tipo
+            <select id="tkType">
+              <option value="18">Intero · €18</option>
+              <option value="15">Ridotto · €15</option>
+              <option value="1">Under 15 · €1</option>
+              <option value="0">Under 6 · gratis</option>
+            </select>
+          </label>
+          <div class="qty">Quantità
+            <div class="qbox"><button id="qMinus" aria-label="Meno">−</button><span id="qVal">2</span><button id="qPlus" aria-label="Più">+</button></div>
+          </div>
+        </div>
+        <div class="ttot"><span>Totale</span><b id="tkTotal">€36,00</b></div>
+        <button class="btn btn-gold btn-block" id="tkBuy">Acquista online</button>
+        <p class="tnote">🔒 Pagamento sicuro · è una demo, nessun addebito</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- MOSTRE -->
+  <section class="dsection" id="mostre">
+    <div class="head r">
+      <p class="kick">Mostre &amp; eventi</p>
+      <h2>Sempre qualcosa di <span class="it gold">nuovo da scoprire</span></h2>
+    </div>
+    <div class="mgrid">
+      {mostre.map((m) => (
+        <article class="mcard r">
+          <span class="mtag">{m.tag}</span>
+          <h3>{m.nome}</h3>
+          <p class="mdate">{m.date}</p>
+          <p>{m.desc}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="news" id="news">
+    <h2>Resta in contatto col passato</h2>
+    <p>Iscriviti: mostre, eventi e aperture straordinarie, prima di tutti.</p>
+    <form class="news-form" onsubmit="return false">
+      <input type="email" placeholder="La tua email" aria-label="La tua email" required />
+      <button class="btn btn-gold">Iscriviti</button>
+    </form>
+  </section>
+  </main>
+
+  <footer class="mfoot">
+    <div class="mfoot-top">
+      <span class="brand">MUSEO <span>EGIZIO</span></span>
+      <span>Via Accademia delle Scienze 6, Torino</span>
+    </div>
+    <div class="mfoot-bottom">
+      <span>⚠️ Sito <b>dimostrativo non ufficiale</b> — non affiliato al Museo Egizio.</span>
+      <span>Demo · <a href="/">Mole Digitale</a></span>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <style is:global>
+    :root{
+      --bg:#0d0a07; --bg2:#151009; --card:#19130b; --ink:#f1eada; --muted:#b3a890;
+      --gold:#cda24e; --gold-2:#e6c878; --gold-d:#a8842f; --line:rgba(205,162,78,.2);
+      --radius:16px; --ease:cubic-bezier(.2,.7,.2,1); --shadow:0 30px 70px -34px rgba(0,0,0,.8);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:84px}
+    body{font-family:'Inter Variable','Inter',sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+    h1,h2,h3,.brand{font-family:'Playfair Display Variable','Playfair Display',serif;font-weight:700;line-height:1.08;letter-spacing:-.01em}
+    .it{font-style:italic}
+    .gold{color:var(--gold-2)}
+    img{max-width:100%;display:block}
+    a{color:inherit;text-decoration:none}
+    .dsection{padding:clamp(3.5rem,8vw,7rem) clamp(1.2rem,5vw,3rem);max-width:1200px;margin:0 auto}
+
+    .demo-flag{position:fixed;top:0;left:0;right:0;z-index:300;text-align:center;font-size:.8rem;padding:.4rem;background:rgba(13,10,7,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);color:var(--muted)}
+    .demo-flag b{color:var(--gold-2)}
+
+    /* header */
+    .menav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;gap:1rem;
+      margin-top:27px;padding:.9rem clamp(1.2rem,5vw,3rem);background:rgba(13,10,7,.78);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+    .brand{font-size:1.25rem;letter-spacing:.04em;color:var(--ink)}
+    .brand span{color:var(--gold-2)}
+    .mlinks{display:flex;gap:1.8rem}
+    .mlinks a{font-size:.92rem;color:var(--muted);font-weight:500;transition:color .2s;letter-spacing:.02em}
+    .mlinks a:hover{color:var(--ink)}
+    .mtoggle{display:none;background:none;border:0;color:var(--ink);cursor:pointer;width:42px;height:42px;border-radius:10px}
+
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;font-weight:600;font-size:.95rem;
+      padding:.82rem 1.5rem;border-radius:999px;cursor:pointer;border:1px solid transparent;transition:transform .18s var(--ease),background .2s,box-shadow .2s;font-family:'Inter Variable'}
+    .btn-gold{background:linear-gradient(135deg,var(--gold-2),var(--gold));color:#1c1405;box-shadow:0 12px 26px -14px var(--gold)}
+    .btn-gold:hover{transform:translateY(-2px);box-shadow:0 16px 32px -14px var(--gold)}
+    .btn-ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+    .btn-ghost:hover{border-color:var(--gold-2)}
+    .btn-block{width:100%}
+
+    /* hero */
+    .hero{position:relative;min-height:94vh;display:flex;flex-direction:column;justify-content:center;
+      padding:6rem clamp(1.2rem,6vw,5rem) 7rem;overflow:hidden}
+    .hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+    .hero-shade{position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(13,10,7,.92) 0%,rgba(13,10,7,.7) 45%,rgba(13,10,7,.25) 100%),linear-gradient(0deg,rgba(13,10,7,.9),transparent 40%)}
+    .hero-content{position:relative;z-index:2;max-width:640px}
+    .eyebrow{text-transform:uppercase;letter-spacing:.3em;font-size:.74rem;font-weight:600;color:var(--gold-2);margin-bottom:1.4rem}
+    .hero h1{font-size:clamp(2.8rem,7vw,5.4rem)}
+    .hsub{color:#d8cfbe;font-size:clamp(1.05rem,1.6vw,1.25rem);margin:1.5rem 0 2.2rem;max-width:46ch}
+    .hcta{display:flex;gap:.9rem;flex-wrap:wrap}
+    .hero-facts{position:relative;z-index:2;display:flex;gap:clamp(1.5rem,4vw,3.5rem);margin-top:3.5rem}
+    .hero-facts div{display:flex;flex-direction:column}
+    .hero-facts b{font-family:'Playfair Display Variable','Playfair Display';font-size:clamp(1.7rem,3vw,2.4rem);color:var(--gold-2)}
+    .hero-facts span{color:var(--muted);font-size:.85rem;text-transform:uppercase;letter-spacing:.12em}
+
+    /* head sezioni */
+    .head{margin-bottom:2.8rem;max-width:760px}
+    .kick{text-transform:uppercase;letter-spacing:.22em;font-size:.74rem;font-weight:600;color:var(--gold-2);margin-bottom:.8rem}
+    .head h2{font-size:clamp(1.9rem,4.5vw,3.2rem)}
+
+    /* collezione */
+    .cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem}
+    .ccard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:transform .3s var(--ease),box-shadow .3s}
+    .ccard:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+    .ccard-img{aspect-ratio:4/5;overflow:hidden}
+    .ccard-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease);filter:saturate(1.05)}
+    .ccard:hover .ccard-img img{transform:scale(1.06)}
+    .ccard-body{padding:1.2rem 1.3rem 1.4rem}
+    .ccard-body h3{font-size:1.3rem;margin-bottom:.4rem}
+    .ccard-body p{color:var(--muted);font-size:.92rem}
+    .ccard-link{display:inline-block;margin-top:.8rem;color:var(--gold-2);font-weight:600;font-size:.9rem}
+
+    /* feature */
+    .feature{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,4vw,4rem);align-items:center;max-width:1200px;margin:0 auto;padding:clamp(2rem,5vw,4rem) clamp(1.2rem,5vw,3rem)}
+    .feature-img{border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);aspect-ratio:4/3}
+    .feature-img img{width:100%;height:100%;object-fit:cover}
+    .feature-text h2{font-size:clamp(1.8rem,4vw,2.9rem);margin:.4rem 0 1rem}
+    .feature-text p{color:var(--muted);margin-bottom:1.6rem;max-width:48ch}
+
+    /* visita */
+    .visita-grid{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:1.5rem}
+    .vcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:1.6rem 1.6rem 1.8rem}
+    .vcard h3{font-size:1.4rem;margin-bottom:1.1rem;color:var(--gold-2)}
+    .vlist{list-style:none}
+    .vlist li{display:flex;justify-content:space-between;gap:1rem;padding:.6rem 0;border-bottom:1px solid var(--line);font-size:.95rem}
+    .vlist li:last-child{border-bottom:0}
+    .vlist span{color:var(--muted)}
+    .vaddr{color:var(--ink);line-height:1.7;margin-bottom:1rem}
+    .vmap{height:120px;border-radius:12px;background:repeating-linear-gradient(45deg,#1d160c,#1d160c 12px,#181208 12px,#181208 24px);display:grid;place-items:center;color:var(--muted);border:1px solid var(--line)}
+    .vtickets{display:flex;flex-direction:column}
+    .trow{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.1rem}
+    .trow label{display:flex;flex-direction:column;gap:.4rem;font-size:.82rem;color:var(--muted);flex:1;min-width:140px}
+    .trow select{padding:.7rem .8rem;border-radius:10px;border:1px solid var(--line);background:#120d07;color:var(--ink);font-family:'Inter Variable';font-size:.95rem}
+    .qty{display:flex;flex-direction:column;gap:.4rem;font-size:.82rem;color:var(--muted)}
+    .qbox{display:inline-flex;align-items:center;gap:.8rem;background:#120d07;border:1px solid var(--line);border-radius:10px;padding:.35rem .6rem}
+    .qbox button{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;font-size:1.1rem;line-height:1}
+    .qbox button:hover{border-color:var(--gold-2);color:var(--gold-2)}
+    .qbox span{min-width:20px;text-align:center;font-weight:700;color:var(--ink)}
+    .ttot{display:flex;align-items:center;justify-content:space-between;margin:.4rem 0 1rem;font-size:1.05rem;padding-top:1rem;border-top:1px solid var(--line)}
+    .ttot b{font-family:'Playfair Display Variable','Playfair Display';font-size:1.7rem;color:var(--gold-2)}
+    .tnote{text-align:center;font-size:.76rem;color:var(--muted);margin-top:.7rem}
+
+    /* mostre */
+    .mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem}
+    .mcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:1.6rem;transition:transform .3s var(--ease),border-color .3s}
+    .mcard:hover{transform:translateY(-5px);border-color:var(--gold-2)}
+    .mtag{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#1c1405;background:var(--gold-2);padding:.2rem .65rem;border-radius:999px;margin-bottom:1rem}
+    .mcard h3{font-size:1.35rem;margin-bottom:.3rem}
+    .mdate{color:var(--gold-2);font-size:.88rem;margin-bottom:.7rem}
+    .mcard p{color:var(--muted);font-size:.92rem}
+
+    /* newsletter */
+    .news{text-align:center;max-width:1200px;margin:0 auto clamp(3rem,7vw,5rem);padding:clamp(2.5rem,6vw,4rem) 1.5rem;
+      background:linear-gradient(180deg,#1a130a,#120d07);border:1px solid var(--line);border-radius:var(--radius)}
+    .news h2{font-size:clamp(1.8rem,4vw,2.7rem)}
+    .news p{color:var(--muted);margin:.7rem 0 1.6rem}
+    .news-form{display:flex;gap:.6rem;max-width:440px;margin:0 auto;flex-wrap:wrap}
+    .news-form input{flex:1;min-width:200px;padding:.85rem 1.2rem;border-radius:999px;border:1px solid var(--line);background:#0f0b06;color:var(--ink);font-family:'Inter Variable';font-size:.95rem}
+
+    /* footer */
+    .mfoot{border-top:1px solid var(--line);max-width:1200px;margin:0 auto;padding:2.4rem clamp(1.2rem,5vw,3rem)}
+    .mfoot-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.6rem;padding-bottom:1.4rem;color:var(--muted);font-size:.9rem}
+    .mfoot-bottom{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.6rem;padding-top:1.4rem;border-top:1px solid var(--line);color:var(--muted);font-size:.82rem}
+    .mfoot-bottom b{color:var(--gold-2)}
+    .mfoot a{color:var(--gold-2);font-weight:600}
+
+    /* toast */
+    .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,140%);background:var(--gold-2);color:#1c1405;
+      padding:.75rem 1.2rem;border-radius:999px;font-size:.9rem;font-weight:700;z-index:500;box-shadow:var(--shadow);transition:transform .35s var(--ease)}
+    .toast.on{transform:translate(-50%,0)}
+
+    /* reveal */
+    .r{opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+    .r.in{opacity:1;transform:none}
+    @media (prefers-reduced-motion:reduce){.r{opacity:1;transform:none;transition:none}}
+
+    @media (max-width:900px){
+      .feature{grid-template-columns:1fr}.feature-img{order:-1}
+      .visita-grid{grid-template-columns:1fr}
+      .mlinks{position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1rem;display:none;
+        background:rgba(13,10,7,.98);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:1.1rem clamp(1.2rem,5vw,3rem) 1.4rem}
+      .mlinks.open{display:flex}
+      .mtoggle{display:grid;place-items:center;margin-left:auto;margin-right:.2rem}
+      .mcta{display:none}
+    }
+  </style>
+
+  <script is:inline>
+    (() => {
+      const $ = (s) => document.querySelector(s);
+      // calcolatore biglietti
+      const sel = $('#tkType'), qv = $('#qVal'), tot = $('#tkTotal');
+      let q = 2;
+      const fmt = (n) => '€' + n.toFixed(2).replace('.', ',');
+      const calc = () => { tot.textContent = fmt(parseFloat(sel.value) * q); };
+      $('#qMinus').addEventListener('click', () => { q = Math.max(1, q - 1); qv.textContent = q; calc(); });
+      $('#qPlus').addEventListener('click', () => { q = Math.min(20, q + 1); qv.textContent = q; calc(); });
+      sel.addEventListener('change', calc);
+      calc();
+      // toast
+      const toast = $('#toast'); let tt;
+      const showToast = (m) => { toast.textContent = m; toast.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => toast.classList.remove('on'), 1900); };
+      $('#tkBuy').addEventListener('click', () => showToast('Demo: qui partirebbe l’acquisto online 🎟️'));
+      // menu mobile
+      const tg = $('#mtoggle'), ml = $('#mlinks');
+      const closeMenu = () => { ml.classList.remove('open'); tg.setAttribute('aria-expanded', 'false'); };
+      tg.addEventListener('click', () => { const o = ml.classList.toggle('open'); tg.setAttribute('aria-expanded', String(o)); });
+      ml.querySelectorAll('a').forEach((a) => a.addEventListener('click', closeMenu));
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+      // reveal
+      const io = new IntersectionObserver((es) => es.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } }), { threshold: 0.12 });
+      document.querySelectorAll('.r').forEach((el) => io.observe(el));
+    })();
+  </script>
+</body>
+</html>
