@@ -332,9 +332,9 @@ const mostre = [
     .toast.on{transform:translate(-50%,0)}
 
     /* reveal */
-    .r{opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
-    .r.in{opacity:1;transform:none}
-    @media (prefers-reduced-motion:reduce){.r{opacity:1;transform:none;transition:none}}
+    .r{opacity:0;transform:translateY(36px);filter:blur(5px);transition:opacity .9s var(--ease),transform .9s var(--ease),filter .9s var(--ease)}
+    .r.in{opacity:1;transform:none;filter:blur(0)}
+    @media (prefers-reduced-motion:reduce){.r{opacity:1;transform:none;filter:none;transition:none}}
 
     @media (max-width:900px){
       .feature{grid-template-columns:1fr}.feature-img{order:-1}
@@ -352,8 +352,7 @@ const mostre = [
     #main{position:relative;z-index:1}
     .mfoot{position:relative;z-index:1}
     /* hero cinematografico (ken-burns) */
-    @keyframes kenburns{0%{transform:scale(1)}100%{transform:scale(1.13)}}
-    .hero-bg{animation:kenburns 26s ease-in-out infinite alternate;transform-origin:60% 40%}
+    .hero-bg{transform:scale(1.2);transform-origin:center;will-change:transform}
     /* bagliore oro sui titoli accento */
     .gold{text-shadow:0 0 30px rgba(230,200,120,.35)}
     .brand span{text-shadow:0 0 18px rgba(230,200,120,.4)}
@@ -405,9 +404,40 @@ const mostre = [
     }
   </style>
 
-  <script is:inline>
+  <script>
+    import Lenis from 'lenis';
+    import 'lenis/dist/lenis.css';
     (() => {
       const $ = (s) => document.querySelector(s);
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // --- Scroll fluido (Lenis) + parallasse hero + barra avanzamento ---
+      const heroBg = $('.hero-bg'), prog = $('#progress');
+      const onScroll = (scroll) => {
+        if (heroBg) heroBg.style.transform = 'translateY(' + (scroll * 0.1) + 'px) scale(1.2)';
+        if (prog) { const hMax = document.documentElement.scrollHeight - innerHeight; prog.style.width = (hMax > 0 ? (scroll / hMax) * 100 : 0) + '%'; }
+      };
+      let lenis = null;
+      if (!reduced) {
+        lenis = new Lenis({ lerp: 0.085, smoothWheel: true });
+        lenis.on('scroll', (e) => onScroll(e.animatedScroll));
+        const raf = (t) => { lenis.raf(t); requestAnimationFrame(raf); };
+        requestAnimationFrame(raf);
+      } else {
+        addEventListener('scroll', () => onScroll(window.scrollY), { passive: true });
+      }
+      onScroll(0);
+      // ancore con scroll morbido
+      document.querySelectorAll('a[href^="#"]').forEach((a) => {
+        const id = a.getAttribute('href');
+        if (!id || id.length < 2) return;
+        a.addEventListener('click', (e) => {
+          const t = document.querySelector(id); if (!t) return;
+          e.preventDefault();
+          if (lenis) lenis.scrollTo(t, { offset: -70 }); else t.scrollIntoView({ behavior: 'smooth' });
+        });
+      });
+
       // calcolatore biglietti
       const sel = $('#tkType'), qv = $('#qVal'), tot = $('#tkTotal');
       let q = 2;
@@ -428,7 +458,6 @@ const mostre = [
       ml.querySelectorAll('a').forEach((a) => a.addEventListener('click', closeMenu));
       document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
 
-      const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
       // polvere d'oro (canvas)
       const dust = $('#dust');
       if (dust && !reduced) {
@@ -468,13 +497,6 @@ const mostre = [
       if (nameIn && glyphs) {
         const renderName = () => { glyphs.textContent = [...nameIn.value.toUpperCase()].map((c) => MAP[c] || (c === ' ' ? ' ' : '')).join(' '); };
         nameIn.addEventListener('input', renderName); renderName();
-      }
-
-      // barra avanzamento scroll
-      const prog = $('#progress');
-      if (prog) {
-        const upd = () => { const h = document.documentElement.scrollHeight - innerHeight; prog.style.width = (h > 0 ? (scrollY / h) * 100 : 0) + '%'; };
-        addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd();
       }
 
       // reveal
