@@ -628,7 +628,7 @@ main:focus { outline: none; }
   .floating-badge { font-size:.74rem; padding:.4rem .7rem; }
   .fb-1 { left:-2%; } .fb-2 { right:-2%; } .fb-3 { left:4%; }
   .problem-grid { grid-template-columns:repeat(2,1fr); }
-  .serv-grid, .price-grid, .testi-grid, .port-grid { grid-template-columns:1fr; }
+  .serv-grid, .price-grid, .port-grid { grid-template-columns:1fr; }
   .price-card.popular { transform:none; }
   .price-card.popular:hover { transform:translateY(-6px); }
   .numeri-grid { grid-template-columns:repeat(2,1fr); }
