@@ -27,9 +27,16 @@ const mostre = [
   <title>Museo Egizio — Torino (sito dimostrativo)</title>
   <meta name="description" content="Sito dimostrativo per un museo: 4.000 anni di storia egizia nel cuore di Torino. Collezione, mostre, orari e biglietti. Demo non ufficiale realizzata da Mole Digitale." />
   <meta name="theme-color" content="#0d0a07" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Museo Egizio — Torino (sito dimostrativo)" />
+  <meta property="og:description" content="4.000 anni di storia egizia nel cuore di Torino: collezione, mostre, orari e biglietti. Demo realizzata da Mole Digitale." />
+  <meta property="og:image" content="/img/demo-egizio/hero.webp" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preload" as="image" href="/img/demo-egizio/hero.webp" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2l2 5 5 .4-3.8 3.3L16.5 16 12 13.3 7.5 16l1.3-5.3L5 7.4 10 7z' fill='%23c9a24a'/></svg>" />
 </head>
 <body>
+  <a class="skip" href="#main">Vai al contenuto</a>
   <a class="demo-flag" href="/">★ Demo realizzata da <b>Mole Digitale</b> · torna al sito ↩</a>
   <canvas id="dust" class="dust" aria-hidden="true"></canvas>
   <div class="progress" id="progress" aria-hidden="true"></div>
@@ -52,7 +59,7 @@ const mostre = [
   <main id="main">
   <!-- HERO -->
   <section class="hero" id="top">
-    <img class="hero-bg" src="/img/demo-egizio/hero.webp" alt="Galleria di statue del Museo Egizio" />
+    <img class="hero-bg" src="/img/demo-egizio/hero.webp" alt="Galleria di statue del Museo Egizio" fetchpriority="high" decoding="async" />
     <div class="hero-shade"></div>
     <div class="hero-rays" aria-hidden="true"></div>
     <div class="hero-content r">
@@ -134,11 +141,12 @@ const mostre = [
           <li><span>Martedì – Domenica</span><b>9:00 – 18:30</b></li>
           <li><span>Ultimo ingresso</span><b>17:30</b></li>
         </ul>
+        <p class="open-now" id="openNow" aria-live="polite"></p>
       </div>
       <div class="vcard r">
         <h3>Dove siamo</h3>
         <p class="vaddr">Via Accademia delle Scienze 6<br/>10123 Torino</p>
-        <div class="vmap" aria-hidden="true"><span>🗺️ Mappa (demo)</span></div>
+        <a class="vmap" href="https://www.google.com/maps/search/?api=1&amp;query=Via%20Accademia%20delle%20Scienze%206%20Torino" target="_blank" rel="noopener"><span>🗺️ Apri in Google Maps →</span></a>
         <ul class="vmini">
           <li><span>🚆 Treno</span> Porta Nuova, 6 min a piedi</li>
           <li><span>🚌 Bus</span> 4 · 11 · 51 · 55 · 57</li>
@@ -241,7 +249,7 @@ const mostre = [
   <section class="news" id="news">
     <h2>Resta in contatto col passato</h2>
     <p>Iscriviti: mostre, eventi e aperture straordinarie, prima di tutti.</p>
-    <form class="news-form" onsubmit="return false">
+    <form class="news-form" id="newsForm">
       <input type="email" placeholder="La tua email" aria-label="La tua email" required />
       <button class="btn btn-gold">Iscriviti</button>
     </form>
@@ -257,6 +265,13 @@ const mostre = [
       <span class="brand">MUSEO <span>EGIZIO</span></span>
       <span>Via Accademia delle Scienze 6, Torino</span>
     </div>
+    <nav class="mfoot-nav" aria-label="Link rapidi">
+      <a href="#collezione">Collezione</a>
+      <a href="#visita">Visita &amp; orari</a>
+      <a href="#mostre">Mostre</a>
+      <a href="#biglietti">Biglietti</a>
+      <a href="#faq">Info utili</a>
+    </nav>
     <div class="mfoot-bottom">
       <span>⚠️ Sito <b>dimostrativo non ufficiale</b> — non affiliato al Museo Egizio.</span>
       <span>Demo · <a href="/">Mole Digitale</a></span>
@@ -519,6 +534,31 @@ const mostre = [
       .mfoot{margin-bottom:4.6rem}
       .toast{bottom:5.2rem}
     }
+
+    /* === Accessibilità & rifiniture utili === */
+    /* salta al contenuto (tastiera) */
+    .skip{position:fixed;top:-100px;left:50%;transform:translateX(-50%);z-index:600;background:var(--gold-2);color:#1c1405;
+      padding:.6rem 1.1rem;border-radius:0 0 10px 10px;font-weight:700;transition:top .2s var(--ease)}
+    .skip:focus{top:0;outline:none}
+    /* focus visibile coerente */
+    a:focus-visible,button:focus-visible,select:focus-visible,summary:focus-visible,input:focus-visible{
+      outline:2px solid var(--gold-2);outline-offset:3px;border-radius:6px}
+    /* indicatore "aperto ora" */
+    .open-now{display:flex;align-items:center;gap:.5rem;margin-top:1.1rem;font-size:.9rem;font-weight:600;color:var(--muted)}
+    .open-now::before{content:'';width:9px;height:9px;border-radius:50%;background:var(--muted)}
+    .open-now.is-open{color:#86d191}
+    .open-now.is-open::before{background:#5ec46e;box-shadow:0 0 10px #5ec46e;animation:pulse 2s ease-in-out infinite}
+    .open-now.is-closed{color:#e3a0a0}
+    .open-now.is-closed::before{background:#d36b6b}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+    /* mappa diventa link */
+    a.vmap{cursor:pointer;transition:border-color .25s,color .25s}
+    a.vmap:hover{border-color:var(--gold-2);color:var(--gold-2)}
+    /* footer: link rapidi */
+    .mfoot-nav{display:flex;flex-wrap:wrap;gap:1.3rem;padding:1.2rem 0;border-top:1px solid var(--line)}
+    .mfoot-nav a{color:var(--muted);font-size:.9rem;transition:color .2s}
+    .mfoot-nav a:hover{color:var(--gold-2)}
+    @media (prefers-reduced-motion:reduce){.open-now.is-open::before{animation:none}}
   </style>
 
   <script>
@@ -569,6 +609,26 @@ const mostre = [
       const showToast = (m) => { toast.textContent = m; toast.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => toast.classList.remove('on'), 1900); };
       $('#tkBuy').addEventListener('click', () => showToast('Demo: qui partirebbe l’acquisto online 🎟️'));
       document.querySelectorAll('[data-demo]').forEach((b) => b.addEventListener('click', () => showToast('Demo: in un sito reale qui partirebbe la richiesta ✦')));
+      // iscrizione newsletter (demo)
+      const nf = document.getElementById('newsForm');
+      if (nf) nf.addEventListener('submit', (e) => { e.preventDefault(); showToast('Demo: iscrizione registrata, grazie ✦'); nf.reset(); });
+
+      // "aperto ora" calcolato sull'orario corrente (Lun 9–14, Mar–Dom 9–18:30)
+      const openEl = $('#openNow');
+      if (openEl) {
+        const HRS = { 0:[9,18.5], 1:[9,14], 2:[9,18.5], 3:[9,18.5], 4:[9,18.5], 5:[9,18.5], 6:[9,18.5] };
+        const fmtH = (x) => { const h = Math.floor(x), m = Math.round((x - h) * 60); return h + ':' + String(m).padStart(2, '0'); };
+        const now = new Date(), d = now.getDay(), t = now.getHours() + now.getMinutes() / 60, [o, c] = HRS[d];
+        if (t >= o && t < c) {
+          openEl.textContent = 'Aperto ora · chiude alle ' + fmtH(c);
+          openEl.classList.add('is-open');
+        } else {
+          openEl.textContent = (t < o)
+            ? 'Chiuso · apre oggi alle ' + fmtH(o)
+            : 'Chiuso · riapre domani alle ' + fmtH(HRS[(d + 1) % 7][0]);
+          openEl.classList.add('is-closed');
+        }
+      }
       // menu mobile
       const tg = $('#mtoggle'), ml = $('#mlinks');
       const closeMenu = () => { ml.classList.remove('open'); tg.setAttribute('aria-expanded', 'false'); };
