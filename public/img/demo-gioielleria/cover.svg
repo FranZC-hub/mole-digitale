@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Lùmina — Atelier di gioielli">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fdfbf7"/><stop offset="1" stop-color="#eef6f2"/></linearGradient>
+    <linearGradient id="dTop" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#dff3ee"/><stop offset="1" stop-color="#a6d9cd"/></linearGradient>
+    <linearGradient id="dL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe6db"/><stop offset="1" stop-color="#5fae9b"/></linearGradient>
+    <linearGradient id="dR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9ed7c8"/><stop offset="1" stop-color="#317d6a"/></linearGradient>
+    <linearGradient id="dC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc3b1"/><stop offset="1" stop-color="#0e6b57"/></linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <circle cx="200" cy="168" r="118" fill="#ffffff" opacity=".7"/>
+  <g transform="translate(200 168) scale(1.02)">
+    <polygon points="-92,-44 92,-44 64,-70 -64,-70" fill="url(#dTop)"/>
+    <polygon points="-64,-70 -92,-44 -34,-44" fill="#cdeae1"/>
+    <polygon points="64,-70 92,-44 34,-44" fill="#bfe6db"/>
+    <polygon points="-34,-44 34,-44 0,-70" fill="#e7f6f1"/>
+    <polygon points="-34,-44 0,-70 -64,-70" fill="#d6efe8"/>
+    <polygon points="34,-44 0,-70 64,-70" fill="#caeae0"/>
+    <polygon points="-92,-44 0,96 -52,-44" fill="url(#dL)"/>
+    <polygon points="-52,-44 0,96 0,-44" fill="url(#dC)"/>
+    <polygon points="0,-44 0,96 52,-44" fill="url(#dR)"/>
+    <polygon points="52,-44 0,96 92,-44" fill="#2f7a68"/>
+    <polyline points="-92,-44 92,-44" stroke="#ffffff" stroke-width="1.5" fill="none" opacity=".7"/>
+  </g>
+  <g fill="#0e6b57"><circle cx="96" cy="96" r="3"/><circle cx="312" cy="120" r="2.5"/><circle cx="300" cy="232" r="3"/></g>
+  <text x="200" y="328" text-anchor="middle" font-family="'Space Grotesk', system-ui, sans-serif" font-size="42" font-weight="600" fill="#1b1916">Lùmina</text>
+  <text x="200" y="356" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" letter-spacing="4" fill="#0e6b57">ATELIER DI GIOIELLI · TORINO</text>
+</svg>

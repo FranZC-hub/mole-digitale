@@ -1,0 +1,828 @@
+---
+// DEMO standalone — "Cronos", laboratorio orologiaio a Torino. Tema SCURO / tecnico (acciaio + bronzo).
+// Sito a sé (non usa il Layout di Mole Digitale). JS vanilla: orologio analogico LIVE + preventivo riparazione.
+import '@fontsource-variable/inter';
+import '@fontsource-variable/space-grotesk';
+---
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Cronos — Laboratorio orologiaio a Torino · Riparazioni, revisioni e restauro</title>
+  <meta name="description" content="Cronos, laboratorio orologiaio a Torino: cambio batteria in 10 minuti, revisione completa del movimento, prova impermeabilità e restauro vintage. Preventivo gratuito." />
+  <meta name="theme-color" content="#0c1015" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='9' fill='none' stroke='%23c8a06a' stroke-width='2'/><path d='M12 7v5l3 2' fill='none' stroke='%239fb3c8' stroke-width='2' stroke-linecap='round'/></svg>" />
+</head>
+<body>
+  <a class="demo-flag" href="/">★ Demo realizzata da <b>Mole Digitale</b> · torna al sito ↩</a>
+
+  <header class="cnav" id="cnav">
+    <a href="#top" class="cbrand"><span class="cgear" aria-hidden="true"></span>CRONOS<em>·</em><span class="cbrand-sub">orologeria</span></a>
+    <nav class="clinks" id="clinks">
+      <a href="#preventivo">Preventivo</a>
+      <a href="#listino">Listino</a>
+      <a href="#laboratorio">Laboratorio</a>
+      <a href="#restauro">Restauro</a>
+      <a href="#contatti">Contatti</a>
+    </nav>
+    <button class="cnav-toggle" id="navToggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="clinks">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <a href="#preventivo" class="cbtn cbtn-solid">Preventivo gratuito</a>
+  </header>
+
+  <main id="main">
+  <!-- HERO -->
+  <section class="chero" id="top">
+    <div class="chero-grid">
+      <div class="chero-text">
+        <p class="ceyebrow r"><span class="tick"></span> Laboratorio orologiaio · Torino dal 1979</p>
+        <h1 class="chero-title r">Il tempo,<br/>riparato <span class="grad">a regola d'arte.</span></h1>
+        <p class="chero-sub r">Cambio batteria mentre aspetti, revisione completa del movimento, prova di impermeabilità e restauro di orologi vintage. Mani esperte, ricambi originali.</p>
+        <div class="chero-cta r">
+          <a href="#preventivo" class="cbtn cbtn-solid">Richiedi un preventivo</a>
+          <a href="#listino" class="cbtn cbtn-ghost">Vedi il listino</a>
+        </div>
+        <ul class="chero-trust r">
+          <li><b>24</b> mesi di garanzia</li>
+          <li><b>10'</b> per la batteria</li>
+          <li><b>45+</b> marche trattate</li>
+        </ul>
+      </div>
+
+      <div class="chero-watch r">
+        <svg viewBox="0 0 360 360" class="watch" id="watch" role="img" aria-label="Orologio che segna l'ora attuale">
+          <defs>
+            <radialGradient id="case" cx=".4" cy=".35" r=".75"><stop offset="0" stop-color="#e6c896"/><stop offset=".5" stop-color="#c8a06a"/><stop offset="1" stop-color="#7c5f34"/></radialGradient>
+            <radialGradient id="dial" cx=".4" cy=".35" r=".9"><stop offset="0" stop-color="#1d242e"/><stop offset="1" stop-color="#0c1015"/></radialGradient>
+          </defs>
+          <circle cx="180" cy="180" r="172" fill="url(#case)"/>
+          <circle cx="180" cy="180" r="156" fill="#11161d"/>
+          <circle cx="180" cy="180" r="150" fill="url(#dial)" stroke="#2a333f" stroke-width="2"/>
+          <!-- minute ticks -->
+          <circle cx="180" cy="180" r="138" fill="none" stroke="#4a5663" stroke-width="6" stroke-dasharray="1.5 12.95"/>
+          <!-- hour markers -->
+          <g id="markers" fill="#c8a06a"></g>
+          <!-- numerals -->
+          <g fill="#cfd8e2" font-family="'Space Grotesk Variable','Space Grotesk',sans-serif" font-size="22" font-weight="600" text-anchor="middle">
+            <text x="180" y="68">12</text><text x="292" y="188">3</text><text x="180" y="306">6</text><text x="76" y="188">9</text>
+          </g>
+          <text x="180" y="138" text-anchor="middle" fill="#c8a06a" font-family="'Space Grotesk Variable','Space Grotesk',sans-serif" font-size="15" font-weight="600" letter-spacing="3">CRONOS</text>
+          <text x="180" y="158" text-anchor="middle" fill="#7d8a99" font-family="'Inter Variable',sans-serif" font-size="9" letter-spacing="4">AUTOMATIC · TORINO</text>
+          <!-- date window -->
+          <rect x="222" y="170" width="26" height="20" rx="2" fill="#e7edf3"/>
+          <text id="dateNum" x="235" y="185" text-anchor="middle" fill="#11161d" font-family="'Space Grotesk Variable',sans-serif" font-size="13" font-weight="700">21</text>
+          <!-- hands -->
+          <g id="handHour"><rect x="174" y="98" width="12" height="92" rx="6" fill="#e7edf3"/></g>
+          <g id="handMin"><rect x="176.5" y="60" width="7" height="130" rx="3.5" fill="#cfd8e2"/></g>
+          <g id="handSec"><rect x="178.6" y="46" width="2.8" height="158" rx="1.4" fill="#c8a06a"/><circle cx="180" cy="180" r="7" fill="#c8a06a"/></g>
+          <circle cx="180" cy="180" r="3.4" fill="#11161d"/>
+        </svg>
+        <span class="watch-glow" aria-hidden="true"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PREVENTIVO -->
+  <section class="csection" id="preventivo">
+    <div class="chead">
+      <span class="ckicker r">Preventivo immediato</span>
+      <h2 class="r">Quanto costa <span class="grad">ripararlo?</span></h2>
+      <p class="clead r">Scegli il tuo orologio e l'intervento: ti diamo subito una stima di prezzo e tempi. La diagnosi precisa, in laboratorio, è gratuita.</p>
+    </div>
+
+    <div class="prev-card r">
+      <div class="prev-controls">
+        <div class="prev-field">
+          <span class="prev-lbl">1 · Tipo di orologio</span>
+          <div class="opts" id="moveOpts">
+            <button class="opt is-on" data-f="1"   data-extra="0">Al quarzo</button>
+            <button class="opt" data-f="1.35" data-extra="0">Automatico</button>
+            <button class="opt" data-f="1.7"  data-extra="0">Cronografo</button>
+            <button class="opt" data-f="1.9"  data-extra="6">Vintage (pre-1980)</button>
+          </div>
+        </div>
+        <div class="prev-field">
+          <span class="prev-lbl">2 · Intervento</span>
+          <div class="opts opts-grid" id="jobOpts">
+            <button class="opt is-on" data-base="15"  data-days="0">Cambio batteria</button>
+            <button class="opt" data-base="35"  data-days="1">Prova impermeabilità</button>
+            <button class="opt" data-base="55"  data-days="3">Sostituzione vetro</button>
+            <button class="opt" data-base="40"  data-days="0">Cinturino / bracciale</button>
+            <button class="opt" data-base="75"  data-days="4">Lucidatura cassa</button>
+            <button class="opt" data-base="180" data-days="10">Revisione completa</button>
+            <button class="opt" data-base="320" data-days="22">Restauro quadrante</button>
+          </div>
+        </div>
+      </div>
+      <div class="prev-out">
+        <span class="prev-out-lbl">Stima indicativa</span>
+        <div class="prev-amount" id="prevAmount">€ 15 – 18</div>
+        <div class="prev-time"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round"/></svg><span id="prevTime">pronto in ~10 minuti, mentre aspetti</span></div>
+        <a href="#contatti" class="cbtn cbtn-solid prev-cta">Prenota l'intervento</a>
+        <p class="prev-note">Stima senza impegno · diagnosi e preventivo in laboratorio gratuiti.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- LISTINO / SERVIZI -->
+  <section class="csection" id="listino">
+    <div class="chead">
+      <span class="ckicker r">Cosa facciamo</span>
+      <h2 class="r">Servizi & <span class="grad">listino</span></h2>
+    </div>
+    <div class="serv-list">
+      <div class="srow r"><div class="srow-ic">🔋</div><div class="srow-main"><b>Cambio batteria</b><span>Batteria originale, guarnizione controllata, test di tenuta.</span></div><div class="srow-meta"><i>da € 15</i><em>~10 min</em></div></div>
+      <div class="srow r"><div class="srow-ic">💧</div><div class="srow-main"><b>Prova impermeabilità</b><span>Test in pressione e sostituzione guarnizioni.</span></div><div class="srow-meta"><i>da € 35</i><em>1 giorno</em></div></div>
+      <div class="srow r"><div class="srow-ic">🔍</div><div class="srow-main"><b>Sostituzione vetro</b><span>Minerale, zaffiro o plexi, anche bombato.</span></div><div class="srow-meta"><i>da € 55</i><em>2–4 gg</em></div></div>
+      <div class="srow r"><div class="srow-ic">⛓️</div><div class="srow-main"><b>Cinturino &amp; bracciale</b><span>Sostituzione, riduzione maglie, anse e molle.</span></div><div class="srow-meta"><i>da € 40</i><em>subito</em></div></div>
+      <div class="srow r"><div class="srow-ic">✨</div><div class="srow-main"><b>Lucidatura cassa</b><span>Rifinitura satinata/lucida, via graffi e segni del tempo.</span></div><div class="srow-meta"><i>da € 75</i><em>3–5 gg</em></div></div>
+      <div class="srow r"><div class="srow-ic">⚙️</div><div class="srow-main"><b>Revisione completa</b><span>Movimento smontato, pulito, oliato e regolato. Garanzia 24 mesi.</span></div><div class="srow-meta"><i>da € 180</i><em>~2 sett.</em></div></div>
+      <div class="srow r"><div class="srow-ic">🛠️</div><div class="srow-main"><b>Restauro vintage</b><span>Quadrante, lancette e movimento riportati a vita, nel rispetto dell'originale.</span></div><div class="srow-meta"><i>da € 320</i><em>su valutazione</em></div></div>
+    </div>
+  </section>
+
+  <!-- LABORATORIO -->
+  <section class="csection" id="laboratorio">
+    <div class="lab-grid">
+      <div class="lab-visual r">
+        <svg viewBox="0 0 300 300" class="gears" role="img" aria-label="Ingranaggi di un movimento">
+          <rect width="300" height="300" rx="20" fill="#11161d"/>
+          <g class="gear" style="transform-origin:108px 124px">
+            <circle cx="108" cy="124" r="58" fill="none" stroke="#c8a06a" stroke-width="20" stroke-dasharray="7 13.2"/>
+            <circle cx="108" cy="124" r="40" fill="#161c25" stroke="#3a4654" stroke-width="2"/>
+            <circle cx="108" cy="124" r="8" fill="#c8a06a"/>
+            <g stroke="#2a333f" stroke-width="4"><line x1="108" y1="92" x2="108" y2="156"/><line x1="76" y1="124" x2="140" y2="124"/></g>
+          </g>
+          <g class="gear rev" style="transform-origin:200px 186px">
+            <circle cx="200" cy="186" r="44" fill="none" stroke="#9fb3c8" stroke-width="16" stroke-dasharray="6 11.0"/>
+            <circle cx="200" cy="186" r="30" fill="#161c25" stroke="#3a4654" stroke-width="2"/>
+            <circle cx="200" cy="186" r="6" fill="#9fb3c8"/>
+            <g stroke="#2a333f" stroke-width="3"><line x1="200" y1="162" x2="200" y2="210"/><line x1="176" y1="186" x2="224" y2="186"/></g>
+          </g>
+          <g class="gear" style="transform-origin:214px 92px">
+            <circle cx="214" cy="92" r="28" fill="none" stroke="#7d8a99" stroke-width="11" stroke-dasharray="5 8.4"/>
+            <circle cx="214" cy="92" r="18" fill="#161c25" stroke="#3a4654" stroke-width="2"/>
+            <circle cx="214" cy="92" r="5" fill="#7d8a99"/>
+          </g>
+        </svg>
+      </div>
+      <div class="lab-text">
+        <span class="ckicker r">In laboratorio</span>
+        <h2 class="r">Ogni movimento, <span class="grad">smontato e curato</span></h2>
+        <p class="r">Non ci limitiamo a una pulizia esterna. Smontiamo il calibro pezzo per pezzo, laviamo a ultrasuoni, sostituiamo le parti usurate, oliamo nei punti giusti e regoliamo la precisione al cronocomparatore.</p>
+        <div class="lab-stats">
+          <div class="lab-stat r"><b data-count="45">0</b><span>anni di mestiere</span></div>
+          <div class="lab-stat r"><b data-count="32000" data-suffix="+">0</b><span>orologi riparati</span></div>
+          <div class="lab-stat r"><b data-count="45" data-suffix="+">0</b><span>marche trattate</span></div>
+          <div class="lab-stat r"><b data-count="24" data-suffix=" mesi">0</b><span>di garanzia</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESSO -->
+  <section class="csection cprocess">
+    <div class="chead">
+      <span class="ckicker r">Come funziona</span>
+      <h2 class="r">Cosa succede <span class="grad">al tuo orologio</span></h2>
+      <p class="clead r">Trasparenza totale, dal momento in cui ce lo affidi a quando torna al tuo polso.</p>
+    </div>
+    <ol class="timeline">
+      <li class="tl-step r"><span class="tl-dot"></span><div class="tl-card"><span class="tl-n">01 · Accettazione</span><h3>Lo registriamo</h3><p>Scheda con foto e condizioni dell'orologio. Ricevi un codice per seguirne lo stato online.</p></div></li>
+      <li class="tl-step r"><span class="tl-dot"></span><div class="tl-card"><span class="tl-n">02 · Diagnosi</span><h3>Apriamo e capiamo</h3><p>Esaminiamo il movimento e individuiamo con precisione cosa serve. Sempre gratis.</p></div></li>
+      <li class="tl-step r"><span class="tl-dot"></span><div class="tl-card"><span class="tl-n">03 · Preventivo</span><h3>Ti diciamo costo e tempi</h3><p>Si procede solo dopo il tuo "sì". Nessuna sorpresa, nessun lavoro non concordato.</p></div></li>
+      <li class="tl-step r"><span class="tl-dot"></span><div class="tl-card"><span class="tl-n">04 · Lavorazione</span><h3>Ci mettiamo le mani</h3><p>Smontaggio, pulizia a ultrasuoni, ricambi, oliatura e regolazione al cronocomparatore.</p></div></li>
+      <li class="tl-step r"><span class="tl-dot"></span><div class="tl-card"><span class="tl-n">05 · Collaudo</span><h3>Lo mettiamo alla prova</h3><p>Test di precisione e di tenuta per più giorni, finché tutto non è perfetto.</p></div></li>
+      <li class="tl-step r"><span class="tl-dot"></span><div class="tl-card"><span class="tl-n">06 · Riconsegna</span><h3>Torna al tuo polso</h3><p>Pulito e in perfetta forma, con 24 mesi di garanzia scritta.</p></div></li>
+    </ol>
+  </section>
+
+  <!-- TRACKER -->
+  <section class="csection ctrack-sec">
+    <div class="ctrack">
+      <div class="ctrack-head">
+        <span class="ckicker r">Riparazione in corso?</span>
+        <h2 class="r">Traccia il tuo <span class="grad">orologio</span></h2>
+        <p class="clead r">Inserisci il codice che trovi sulla ricevuta e scopri a che punto siamo.</p>
+        <form class="track-form r" id="trackForm">
+          <input type="text" id="trackInput" placeholder="Es. CR-2048" aria-label="Codice riparazione" autocomplete="off" />
+          <button class="cbtn cbtn-solid" type="submit">Traccia</button>
+        </form>
+        <p class="track-hint r">Demo: prova con <button type="button" class="track-ex" data-code="CR-2048">CR-2048</button>, <button type="button" class="track-ex" data-code="CR-1099">CR-1099</button> o <button type="button" class="track-ex" data-code="CR-3001">CR-3001</button>.</p>
+      </div>
+      <div class="track-result" id="trackResult" hidden></div>
+    </div>
+  </section>
+
+  <!-- RESTAURO / GALLERIA -->
+  <section class="csection" id="restauro">
+    <div class="chead">
+      <span class="ckicker r">Restauro &amp; collezione</span>
+      <h2 class="r">Diamo una seconda vita <span class="grad">al tempo</span></h2>
+      <p class="clead r">Trascina il cursore: ecco un solo tempo anni '60 prima e dopo il nostro restauro.</p>
+    </div>
+    <div class="ba r">
+      <div class="ba-stage" id="baStage">
+        <div class="ba-after">
+          <svg viewBox="0 0 300 240" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
+            <rect width="300" height="240" fill="#0c1015"/>
+            <circle cx="150" cy="120" r="90" fill="#7c5f34"/><circle cx="150" cy="120" r="86" fill="#c8a06a"/>
+            <circle cx="150" cy="120" r="76" fill="#11161d"/><circle cx="150" cy="120" r="72" fill="#1d242e"/>
+            <circle cx="150" cy="120" r="66" fill="none" stroke="#c8a06a" stroke-width="3" stroke-opacity=".4" stroke-dasharray="1.4 8.0"/>
+            <g stroke="#c8a06a" stroke-width="4" stroke-linecap="round"><line x1="150" y1="56" x2="150" y2="68"/><line x1="214" y1="120" x2="202" y2="120"/><line x1="150" y1="184" x2="150" y2="172"/><line x1="86" y1="120" x2="98" y2="120"/></g>
+            <line x1="150" y1="120" x2="120" y2="88" stroke="#e7edf3" stroke-width="5" stroke-linecap="round"/>
+            <line x1="150" y1="120" x2="182" y2="86" stroke="#cfd8e2" stroke-width="3.5" stroke-linecap="round"/>
+            <circle cx="150" cy="120" r="5" fill="#c8a06a"/>
+            <path d="M104 70a86 86 0 0 1 96 -6" stroke="rgba(255,255,255,.16)" stroke-width="9" fill="none" stroke-linecap="round"/>
+          </svg>
+          <span class="ba-tag ba-tag-a">Dopo</span>
+        </div>
+        <div class="ba-before">
+          <svg viewBox="0 0 300 240" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
+            <rect width="300" height="240" fill="#0c1015"/>
+            <circle cx="150" cy="120" r="90" fill="#27282a"/><circle cx="150" cy="120" r="86" fill="#46443f"/>
+            <circle cx="150" cy="120" r="76" fill="#101113"/><circle cx="150" cy="120" r="72" fill="#2b2620"/>
+            <g stroke="#6a6258" stroke-width="4" stroke-linecap="round"><line x1="150" y1="56" x2="150" y2="68"/><line x1="214" y1="120" x2="202" y2="120"/><line x1="150" y1="184" x2="150" y2="172"/><line x1="86" y1="120" x2="98" y2="120"/></g>
+            <line x1="150" y1="120" x2="120" y2="88" stroke="#7a756c" stroke-width="5" stroke-linecap="round"/>
+            <line x1="150" y1="120" x2="182" y2="86" stroke="#6a6258" stroke-width="3.5" stroke-linecap="round"/>
+            <circle cx="150" cy="120" r="5" fill="#6a6258"/>
+            <g stroke="#ffffff" stroke-opacity=".1" stroke-width="1.3" stroke-linecap="round"><line x1="96" y1="84" x2="206" y2="150"/><line x1="110" y1="170" x2="200" y2="92"/><line x1="120" y1="120" x2="190" y2="135"/></g>
+            <polyline points="150,66 160,92 150,108 166,128" fill="none" stroke="#0c1015" stroke-width="2"/>
+            <g fill="#ffffff" fill-opacity=".06"><circle cx="124" cy="100" r="6"/><circle cx="176" cy="142" r="5"/><circle cx="140" cy="150" r="4"/></g>
+          </svg>
+          <span class="ba-tag ba-tag-b">Prima</span>
+        </div>
+        <div class="ba-handle" id="baHandle"><span></span></div>
+      </div>
+      <input type="range" id="baRange" min="0" max="100" value="50" aria-label="Confronta prima e dopo il restauro" />
+      <p class="ba-cap">← trascina per confrontare prima e dopo →</p>
+    </div>
+    <div class="gallery">
+      <figure class="gw r">
+        <svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="86" fill="#161c25" stroke="#c8a06a" stroke-width="6"/><circle cx="100" cy="100" r="72" fill="#0c1015"/><g stroke="#c8a06a" stroke-width="3"><line x1="100" y1="34" x2="100" y2="46"/><line x1="166" y1="100" x2="154" y2="100"/><line x1="100" y1="166" x2="100" y2="154"/><line x1="34" y1="100" x2="46" y2="100"/></g><line x1="100" y1="100" x2="100" y2="56" stroke="#e7edf3" stroke-width="4" stroke-linecap="round"/><line x1="100" y1="100" x2="132" y2="100" stroke="#9fb3c8" stroke-width="3" stroke-linecap="round"/><circle cx="100" cy="100" r="5" fill="#c8a06a"/></svg>
+        <figcaption>Solo tempo · anni '60</figcaption>
+      </figure>
+      <figure class="gw r">
+        <svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="86" fill="#161c25" stroke="#9fb3c8" stroke-width="6"/><circle cx="100" cy="100" r="72" fill="#0c1015"/><circle cx="100" cy="72" r="14" fill="none" stroke="#3a4654" stroke-width="3"/><circle cx="72" cy="116" r="14" fill="none" stroke="#3a4654" stroke-width="3"/><circle cx="128" cy="116" r="14" fill="none" stroke="#3a4654" stroke-width="3"/><line x1="100" y1="100" x2="100" y2="60" stroke="#e7edf3" stroke-width="4" stroke-linecap="round"/><line x1="100" y1="100" x2="126" y2="86" stroke="#c8a06a" stroke-width="3" stroke-linecap="round"/><circle cx="100" cy="100" r="5" fill="#9fb3c8"/></svg>
+        <figcaption>Cronografo · vintage</figcaption>
+      </figure>
+      <figure class="gw r">
+        <svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="84" fill="#161c25" stroke="#7d8a99" stroke-width="5"/><circle cx="100" cy="100" r="84" fill="none" stroke="#c8a06a" stroke-width="5" stroke-dasharray="6 10"/><circle cx="100" cy="100" r="62" fill="#0c1015"/><g fill="#c8f0d8"><circle cx="100" cy="50" r="4"/><circle cx="150" cy="100" r="4"/><circle cx="100" cy="150" r="4"/><circle cx="50" cy="100" r="4"/></g><line x1="100" y1="100" x2="100" y2="62" stroke="#c8f0d8" stroke-width="5" stroke-linecap="round"/><line x1="100" y1="100" x2="124" y2="100" stroke="#9fb3c8" stroke-width="3" stroke-linecap="round"/><circle cx="100" cy="100" r="5" fill="#c8f0d8"/></svg>
+        <figcaption>Subacqueo · diver</figcaption>
+      </figure>
+      <figure class="gw r">
+        <svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="104" r="74" fill="#161c25" stroke="#c8a06a" stroke-width="6"/><rect x="92" y="18" width="16" height="14" rx="3" fill="#c8a06a"/><circle cx="100" cy="34" r="9" fill="none" stroke="#c8a06a" stroke-width="4"/><circle cx="100" cy="104" r="60" fill="#0c1015"/><g stroke="#7d8a99" stroke-width="2"><line x1="100" y1="50" x2="100" y2="60"/><line x1="154" y1="104" x2="144" y2="104"/><line x1="100" y1="158" x2="100" y2="148"/><line x1="46" y1="104" x2="56" y2="104"/></g><line x1="100" y1="104" x2="100" y2="66" stroke="#e7edf3" stroke-width="3.5" stroke-linecap="round"/><line x1="100" y1="104" x2="128" y2="120" stroke="#c8a06a" stroke-width="2.5" stroke-linecap="round"/><circle cx="100" cy="104" r="4.5" fill="#c8a06a"/></svg>
+        <figcaption>Da tasca · primo '900</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- GARANZIA / TRUST -->
+  <section class="csection ctrust-sec">
+    <div class="ctrust">
+      <div class="ct r"><span class="ct-ic">🛡️</span><b>Garanzia 24 mesi</b><span>Su ogni revisione del movimento.</span></div>
+      <div class="ct r"><span class="ct-ic">🧩</span><b>Ricambi originali</b><span>O equivalenti certificati, mai pezzi dubbi.</span></div>
+      <div class="ct r"><span class="ct-ic">📝</span><b>Preventivo gratuito</b><span>Diagnosi e stima senza alcun impegno.</span></div>
+      <div class="ct r"><span class="ct-ic">📦</span><b>Spedizione assicurata</b><span>Non sei a Torino? Spedisci in sicurezza.</span></div>
+    </div>
+    <div class="cmarquee" aria-label="Recensioni dei clienti">
+      <div class="cmarquee-row">
+        <span class="cq"><i>★★★★★</i> "Il cronografo di mio padre era fermo da vent'anni: tornato perfetto." — Stefano D.</span>
+        <span class="cq"><i>★★★★★</i> "Cambio batteria in dieci minuti mentre prendevo un caffè." — Lucia B.</span>
+        <span class="cq"><i>★★★★★</i> "Revisione spiegata per bene e con garanzia. Si vede la passione." — Andrea T.</span>
+        <span class="cq"><i>★★★★★</i> "Restauro del quadrante impeccabile, professionisti veri." — Marco P.</span>
+        <span class="cq"><i>★★★★★</i> "Onesti sul preventivo, nessuna sorpresa al ritiro." — Elena R.</span>
+        <span class="cq" aria-hidden="true"><i>★★★★★</i> "Il cronografo di mio padre era fermo da vent'anni: tornato perfetto." — Stefano D.</span>
+        <span class="cq" aria-hidden="true"><i>★★★★★</i> "Cambio batteria in dieci minuti mentre prendevo un caffè." — Lucia B.</span>
+        <span class="cq" aria-hidden="true"><i>★★★★★</i> "Revisione spiegata per bene e con garanzia. Si vede la passione." — Andrea T.</span>
+        <span class="cq" aria-hidden="true"><i>★★★★★</i> "Restauro del quadrante impeccabile, professionisti veri." — Marco P.</span>
+        <span class="cq" aria-hidden="true"><i>★★★★★</i> "Onesti sul preventivo, nessuna sorpresa al ritiro." — Elena R.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="csection cfaq" id="faq">
+    <div class="chead">
+      <span class="ckicker r">Domande frequenti</span>
+      <h2 class="r">Prima di <span class="grad">affidarci l'orologio</span></h2>
+    </div>
+    <div class="faq r">
+      <details class="faq-i"><summary>Riparate la mia marca?<span class="faq-x" aria-hidden="true"></span></summary><div class="faq-a">Trattiamo tutte le principali marche, svizzere e giapponesi, sia al quarzo sia meccaniche e automatiche. Se non siamo i più indicati per un pezzo particolare, te lo diciamo subito e ti indirizziamo.</div></details>
+      <details class="faq-i"><summary>Quanto dura una revisione completa?<span class="faq-x" aria-hidden="true"></span></summary><div class="faq-a">In media due settimane, a seconda dei ricambi necessari. Gli interventi rapidi come il cambio batteria si fanno mentre aspetti, in circa dieci minuti.</div></details>
+      <details class="faq-i"><summary>C'è una garanzia sul lavoro?<span class="faq-x" aria-hidden="true"></span></summary><div class="faq-a">Sì: 24 mesi di garanzia scritta su ogni revisione completa del movimento. Per gli altri interventi la garanzia varia in base alla lavorazione e te la indichiamo nel preventivo.</div></details>
+      <details class="faq-i"><summary>Non sono di Torino, posso spedire l'orologio?<span class="faq-x" aria-hidden="true"></span></summary><div class="faq-a">Certo. Ti inviamo le istruzioni per una spedizione assicurata; alla ricezione facciamo la diagnosi e ti mandiamo il preventivo prima di procedere.</div></details>
+      <details class="faq-i"><summary>Il preventivo ha un costo?<span class="faq-x" aria-hidden="true"></span></summary><div class="faq-a">No, diagnosi e preventivo sono gratuiti e senza impegno. Paghi solo se decidi di far eseguire l'intervento.</div></details>
+      <details class="faq-i"><summary>Trovate i ricambi per orologi vecchi?<span class="faq-x" aria-hidden="true"></span></summary><div class="faq-a">Nella maggior parte dei casi sì, grazie alla nostra rete di fornitori. Per i pezzi introvabili realizziamo o adattiamo il ricambio a mano, come si faceva una volta.</div></details>
+    </div>
+  </section>
+
+  <!-- DOVE SIAMO -->
+  <section class="csection cdove">
+    <div class="dove-grid">
+      <div class="dove-map r">
+        <svg viewBox="0 0 400 300" class="mapsvg" role="img" aria-label="Mappa stilizzata della zona del laboratorio">
+          <rect width="400" height="300" fill="#0a0e12"/>
+          <g stroke="#1a222c" stroke-width="14" stroke-linecap="round"><path d="M-10 90H410"/><path d="M-10 215H410"/><path d="M100 -10V310"/><path d="M295 -10V310"/></g>
+          <g stroke="#222c38" stroke-width="5"><path d="M-10 150H410"/><path d="M195 -10V310"/><path d="M50 -10V310"/></g>
+          <path d="M-10 255C120 215 190 305 410 240" stroke="#14323f" stroke-width="20" fill="none" stroke-linecap="round"/>
+          <g><circle cx="205" cy="150" r="26" fill="rgba(200,160,106,.18)"/><path d="M205 126a14 14 0 00-14 14c0 9 14 24 14 24s14-15 14-24a14 14 0 00-14-14z" fill="#c8a06a"/><circle cx="205" cy="140" r="5" fill="#0a0e12"/></g>
+        </svg>
+        <span class="dove-pin">📍 Via Po 21</span>
+      </div>
+      <div class="dove-info r">
+        <span class="ckicker">Il laboratorio</span>
+        <h2>Sotto i portici <span class="grad">di Via Po</span></h2>
+        <div class="open-badge" id="openStatus"><span class="dot"></span><b>—</b><span></span></div>
+        <ul class="dove-list">
+          <li><b>Indirizzo</b>Via Po 21, 10124 Torino</li>
+          <li><b>Orari</b>Lun–Ven 9:00–18:30 · Sab e Dom chiuso</li>
+          <li><b>Come arrivare</b>Metro Porta Nuova · tram 13, 15 · sotto i portici</li>
+          <li><b>Non sei a Torino?</b>Spedizione assicurata in tutta Italia</li>
+        </ul>
+        <a class="cbtn cbtn-ghost" href="https://www.google.com/maps/search/?api=1&query=Via+Po+21+Torino" target="_blank" rel="noopener">🗺️ Apri in Google Maps</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="csection ccta" id="contatti">
+    <div class="ccta-inner r">
+      <span class="ckicker">Richiedi un preventivo</span>
+      <h2>Raccontaci<br/><span class="grad">il guasto.</span></h2>
+      <p>Descrivi il problema in due righe: ti rispondiamo con una prima stima e i tempi indicativi.</p>
+      <form class="lead" id="leadForm">
+        <div class="lead-row">
+          <label>Nome<input type="text" name="nome" required placeholder="Il tuo nome" /></label>
+          <label>Telefono o email<input type="text" name="contatto" required placeholder="Come ricontattarti" /></label>
+        </div>
+        <div class="lead-row">
+          <label>Tipo di orologio<select name="tipo"><option>Al quarzo</option><option>Automatico</option><option>Cronografo</option><option>Vintage / da collezione</option><option>Da tasca</option><option>Non lo so</option></select></label>
+          <label>Intervento<select name="intervento"><option>Cambio batteria</option><option>Revisione completa</option><option>Sostituzione vetro</option><option>Impermeabilità</option><option>Cinturino / bracciale</option><option>Restauro</option><option>Da capire insieme</option></select></label>
+        </div>
+        <label class="lead-full">Descrivi il problema<textarea name="problema" rows="3" placeholder="Es. si ferma dopo qualche ora, il vetro è rigato, la lancetta è staccata…"></textarea></label>
+        <button class="cbtn cbtn-solid lead-submit" type="submit">Invia e ricevi una stima</button>
+        <p class="lead-priv">🔒 Demo: i dati non vengono inviati. Ti risponderemmo con la stima.</p>
+      </form>
+      <div class="lead-done" id="leadDone" hidden>
+        <span class="lead-check">✓</span>
+        <h3>Richiesta ricevuta!</h3>
+        <p>Ti risponderemmo a breve con una prima stima e i tempi. <br/>(In questa demo nessun dato è stato realmente inviato.)</p>
+      </div>
+      <p class="resv-sep">oppure contattaci subito</p>
+      <div class="ccta-actions">
+        <a href="tel:+390110000000" class="cbtn cbtn-ghost">📞 Chiama 011 000 0000</a>
+        <a href="https://wa.me/390110000000" target="_blank" rel="noopener" class="cbtn cbtn-ghost">💬 WhatsApp</a>
+      </div>
+    </div>
+  </section>
+  </main>
+
+  <a class="wa-float" href="https://wa.me/390110000000" target="_blank" rel="noopener" aria-label="Scrivici su WhatsApp">
+    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 018.413 3.488 11.82 11.82 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.51 5.26l-.999 3.648 3.736-.979a9.864 9.864 0 002.732.272zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+  </a>
+
+  <footer class="cfoot">
+    <span><b>Cronos</b> · Laboratorio orologiaio · Via Po 21, Torino</span>
+    <span>Demo · <a href="/">Mole Digitale</a></span>
+  </footer>
+
+  <style is:global>
+    :root{
+      --bg:#0c1015; --bg2:#11161d; --panel:#161c25; --panel2:#1b2330;
+      --steel:#9fb3c8; --bronze:#c8a06a; --bronze-d:#a9824c;
+      --ink:#e7edf3; --muted:#8593a3; --line:rgba(231,237,243,.1);
+      --disp:'Space Grotesk Variable','Space Grotesk',system-ui,sans-serif;
+      --sans:'Inter Variable',system-ui,sans-serif;
+      --ease:cubic-bezier(.2,.7,.2,1);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:88px}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    svg,img{display:block;max-width:100%}
+    a{color:inherit;text-decoration:none}
+    h1,h2,h3,.cbrand{font-family:var(--disp);font-weight:600;line-height:1.07;letter-spacing:-.015em}
+    .grad{background:linear-gradient(120deg,var(--bronze),#ecd3aa 50%,var(--steel));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+    .demo-flag{position:fixed;top:0;left:0;right:0;z-index:300;text-align:center;font-size:.8rem;padding:.4rem;background:rgba(12,16,21,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);color:var(--muted)}
+    .demo-flag b{color:var(--bronze)}
+
+    /* NAV */
+    .cnav{position:fixed;top:30px;left:0;right:0;z-index:150;display:flex;align-items:center;gap:1.4rem;padding:1rem clamp(1rem,4vw,3rem);transition:.35s var(--ease)}
+    .cnav.solid{background:rgba(12,16,21,.86);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding-top:.7rem;padding-bottom:.7rem}
+    .cbrand{font-size:1.35rem;font-weight:700;display:inline-flex;align-items:center;gap:.45rem;letter-spacing:.06em}
+    .cbrand em{color:var(--bronze);font-style:normal}
+    .cbrand-sub{font-family:var(--sans);font-size:.7rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);align-self:center}
+    .cgear{width:18px;height:18px;border-radius:50%;border:3px solid var(--bronze);border-style:dashed;flex:none;animation:spin 9s linear infinite}
+    .clinks{display:flex;gap:1.7rem;margin-left:auto}
+    .clinks a{font-size:.95rem;color:var(--muted);font-weight:500;position:relative;transition:color .25s}
+    .clinks a::after{content:'';position:absolute;left:0;bottom:-5px;height:1.5px;width:0;background:var(--bronze);transition:width .3s var(--ease)}
+    .clinks a:hover{color:var(--ink)} .clinks a:hover::after{width:100%}
+    .cnav-toggle{display:none;background:none;border:0;color:var(--ink);cursor:pointer;width:42px;height:42px;border-radius:10px;margin-left:auto}
+
+    .cbtn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;font-weight:600;font-size:.94rem;padding:.78rem 1.4rem;border-radius:10px;cursor:pointer;border:1px solid transparent;transition:transform .2s var(--ease),background .2s,box-shadow .2s,border-color .2s;font-family:var(--sans);white-space:nowrap}
+    .cbtn-solid{background:linear-gradient(135deg,var(--bronze),var(--bronze-d));color:#1a130a;box-shadow:0 12px 26px -14px var(--bronze)}
+    .cbtn-solid:hover{transform:translateY(-2px);box-shadow:0 18px 34px -14px var(--bronze)}
+    .cbtn-ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+    .cbtn-ghost:hover{border-color:var(--steel);transform:translateY(-2px)}
+
+    /* HERO */
+    .chero{padding:clamp(7rem,12vw,9.5rem) clamp(1.2rem,5vw,3rem) clamp(3rem,6vw,5rem);position:relative;overflow:hidden}
+    .chero::before{content:'';position:absolute;inset:0;background:
+      radial-gradient(50% 50% at 78% 30%,rgba(200,160,106,.14),transparent 70%),
+      radial-gradient(40% 50% at 10% 80%,rgba(159,179,200,.1),transparent 70%);pointer-events:none}
+    .chero-grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(1.5rem,4vw,3.5rem);align-items:center;position:relative}
+    .ceyebrow{display:inline-flex;align-items:center;gap:.55rem;text-transform:uppercase;letter-spacing:.18em;font-size:.74rem;font-weight:600;color:var(--bronze);margin-bottom:1.3rem}
+    .ceyebrow .tick{width:8px;height:8px;border-radius:50%;background:var(--bronze);box-shadow:0 0 10px var(--bronze);animation:blink 2s var(--ease) infinite}
+    @keyframes blink{0%,100%{opacity:.35}50%{opacity:1}}
+    .chero-title{font-size:clamp(2.6rem,6.4vw,4.8rem)}
+    .chero-sub{color:var(--muted);font-size:1.15rem;margin:1.4rem 0 2rem;max-width:48ch}
+    .chero-cta{display:flex;gap:.8rem;flex-wrap:wrap}
+    .chero-trust{list-style:none;display:flex;gap:1.8rem;margin-top:2.2rem;flex-wrap:wrap;color:var(--muted);font-size:.9rem}
+    .chero-trust b{font-family:var(--disp);color:var(--ink);font-size:1.15rem;margin-right:.25rem}
+    .chero-watch{position:relative;display:grid;place-items:center}
+    .watch{width:min(420px,82vw);height:auto;filter:drop-shadow(0 30px 50px rgba(0,0,0,.6));position:relative;z-index:1}
+    .watch-glow{position:absolute;width:70%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(200,160,106,.25),transparent 70%);filter:blur(20px);z-index:0}
+    #handSec{transition:none}
+
+    /* SECTIONS */
+    .csection{max-width:1180px;margin:0 auto;padding:clamp(3.5rem,8vw,6.5rem) clamp(1.2rem,5vw,3rem)}
+    .chead{text-align:center;max-width:680px;margin:0 auto clamp(2rem,4vw,3rem)}
+    .ckicker{display:inline-block;font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--bronze);margin-bottom:.9rem}
+    .chead h2,.lab-text h2,.ccta h2{font-size:clamp(1.9rem,4.6vw,3.1rem)}
+    .clead{color:var(--muted);margin-top:.7rem;font-size:1.05rem}
+
+    /* PREVENTIVO */
+    .prev-card{display:grid;grid-template-columns:1.25fr .75fr;border:1px solid var(--line);border-radius:20px;overflow:hidden;background:linear-gradient(180deg,var(--panel),var(--bg2))}
+    .prev-controls{padding:clamp(1.6rem,3vw,2.4rem);display:flex;flex-direction:column;gap:1.6rem}
+    .prev-lbl{display:block;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.8rem;font-weight:600}
+    .opts{display:flex;gap:.5rem;flex-wrap:wrap}
+    .opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+    .opt{background:rgba(231,237,243,.04);border:1px solid var(--line);color:var(--muted);font-family:var(--sans);font-weight:600;font-size:.9rem;padding:.7rem .9rem;border-radius:10px;cursor:pointer;transition:all .2s;text-align:left}
+    .opt:hover{border-color:var(--steel);color:var(--ink)}
+    .opt.is-on{background:linear-gradient(135deg,rgba(200,160,106,.22),rgba(200,160,106,.08));border-color:var(--bronze);color:var(--ink)}
+    .prev-out{background:radial-gradient(120% 120% at 80% 0%,rgba(200,160,106,.16),transparent 60%),#0a0e12;border-left:1px solid var(--line);padding:clamp(1.6rem,3vw,2.4rem);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+    .prev-out-lbl{font-size:.76rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+    .prev-amount{font-family:var(--disp);font-size:clamp(2.2rem,5vw,3rem);font-weight:700;margin:.4rem 0 .6rem;line-height:1;
+      background:linear-gradient(120deg,var(--bronze),#ecd3aa);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .prev-time{display:inline-flex;align-items:center;gap:.5rem;color:var(--steel);font-size:.92rem}
+    .prev-cta{margin-top:1.6rem;width:100%}
+    .prev-note{font-size:.76rem;color:var(--muted);margin-top:.8rem}
+
+    /* LISTINO */
+    .serv-list{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+    .srow{display:grid;grid-template-columns:auto 1fr auto;gap:1.1rem;align-items:center;padding:1.15rem 1.3rem;border-bottom:1px solid var(--line);transition:background .25s}
+    .srow:last-child{border-bottom:0}
+    .srow:hover{background:rgba(231,237,243,.03)}
+    .srow-ic{font-size:1.5rem;width:48px;height:48px;display:grid;place-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px}
+    .srow-main b{font-family:var(--disp);font-size:1.12rem;display:block}
+    .srow-main span{color:var(--muted);font-size:.9rem}
+    .srow-meta{text-align:right;white-space:nowrap}
+    .srow-meta i{font-family:var(--disp);font-style:normal;font-weight:600;color:var(--bronze);font-size:1.1rem;display:block}
+    .srow-meta em{font-style:normal;color:var(--muted);font-size:.82rem}
+
+    /* LABORATORIO */
+    .lab-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(1.5rem,4vw,3.5rem);align-items:center}
+    .gears{width:100%;border-radius:20px;border:1px solid var(--line)}
+    .gear{transform-box:fill-box}
+    .gear{animation:spin 18s linear infinite}
+    .gear.rev{animation:spin 13s linear infinite reverse}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .lab-text h2{margin:.4rem 0 1rem}
+    .lab-text p{color:var(--muted);margin-bottom:1.6rem;max-width:48ch}
+    .lab-stats{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .lab-stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:1.2rem}
+    .lab-stat b{font-family:var(--disp);font-size:1.9rem;color:var(--bronze);display:block;line-height:1}
+    .lab-stat span{color:var(--muted);font-size:.84rem;margin-top:.2rem;display:block}
+
+    /* GALLERIA */
+    .gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem}
+    .gw{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:1.2rem;text-align:center;transition:transform .3s var(--ease),border-color .3s}
+    .gw:hover{transform:translateY(-6px);border-color:var(--bronze)}
+    .gw svg{width:74%;margin:0 auto .8rem;transition:transform .5s var(--ease)}
+    .gw:hover svg{transform:rotate(8deg)}
+    .gw figcaption{color:var(--muted);font-size:.86rem}
+
+    /* TRUST */
+    .ctrust-sec{display:flex;flex-direction:column;gap:clamp(2rem,5vw,3.5rem)}
+    .ctrust{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem}
+    .ct{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:1.5rem}
+    .ct-ic{font-size:1.6rem;display:block;margin-bottom:.7rem}
+    .ct b{font-family:var(--disp);font-size:1.1rem;display:block;margin-bottom:.2rem}
+    .ct span{color:var(--muted);font-size:.9rem}
+    .ctesti{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+    .cte{background:rgba(231,237,243,.03);border:1px solid var(--line);border-radius:16px;padding:1.7rem}
+    .cte-stars{color:var(--bronze);letter-spacing:.15em;margin-bottom:.8rem}
+    .cte blockquote{font-family:var(--disp);font-size:1.04rem;line-height:1.5}
+    .cte figcaption{margin-top:1rem;color:var(--muted);font-size:.9rem}
+
+    /* CTA */
+    .ccta{text-align:center}
+    .ccta-inner{background:radial-gradient(120% 120% at 50% 0%,rgba(200,160,106,.16),transparent 60%),linear-gradient(180deg,var(--panel),var(--bg));border:1px solid var(--line);border-radius:24px;padding:clamp(2.6rem,6vw,4.5rem) clamp(1.4rem,5vw,3rem)}
+    .ccta-inner h2{font-size:clamp(2rem,5vw,3.4rem);margin:.3rem 0 1rem}
+    .ccta-inner p{color:var(--muted);max-width:440px;margin:0 auto 2rem}
+    .ccta-actions{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap}
+    .cinfo{display:flex;gap:2.2rem;justify-content:center;flex-wrap:wrap;margin-top:2.6rem;padding-top:2rem;border-top:1px solid var(--line)}
+    .cinfo b{display:block;font-family:var(--disp);color:var(--bronze);font-size:1.02rem}
+    .cinfo span{color:var(--muted);font-size:.9rem}
+
+    .cfoot{max-width:1180px;margin:0 auto;padding:1.8rem clamp(1.2rem,5vw,3rem);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.84rem;border-top:1px solid var(--line)}
+    .cfoot b{color:var(--ink)}
+    .cfoot a{color:var(--bronze);font-weight:600}
+
+    /* PROCESSO timeline */
+    .timeline{list-style:none;position:relative;max-width:720px;margin:0 auto}
+    .timeline::before{content:'';position:absolute;left:11px;top:8px;bottom:8px;width:2px;background:linear-gradient(var(--bronze),var(--steel));opacity:.4}
+    .tl-step{position:relative;padding:0 0 1.3rem 2.6rem}
+    .tl-step:last-child{padding-bottom:0}
+    .tl-dot{position:absolute;left:3px;top:6px;width:18px;height:18px;border-radius:50%;background:var(--bg);border:2px solid var(--bronze);box-shadow:0 0 0 4px rgba(200,160,106,.12)}
+    .tl-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:1.05rem 1.3rem}
+    .tl-n{font-family:var(--disp);font-size:.78rem;color:var(--bronze);letter-spacing:.08em}
+    .tl-card h3{font-size:1.1rem;margin:.15rem 0 .3rem}
+    .tl-card p{color:var(--muted);font-size:.92rem}
+
+    /* TRACKER */
+    .ctrack{max-width:840px;margin:0 auto;background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:20px;padding:clamp(1.6rem,4vw,2.6rem)}
+    .ctrack-head{text-align:center}
+    .ctrack .ckicker{margin-bottom:.5rem}
+    .ctrack h2{font-size:clamp(1.6rem,4vw,2.4rem)}
+    .ctrack .clead{margin-bottom:1.3rem}
+    .track-form{display:flex;gap:.6rem;max-width:420px;margin:0 auto;flex-wrap:wrap}
+    .track-form input{flex:1;min-width:170px;padding:.8rem 1rem;border-radius:10px;border:1px solid var(--line);background:rgba(0,0,0,.3);color:var(--ink);font-family:var(--disp);font-size:1rem;letter-spacing:.05em;text-transform:uppercase}
+    .track-form input:focus{outline:none;border-color:var(--bronze)}
+    .track-hint{text-align:center;color:var(--muted);font-size:.84rem;margin-top:.8rem}
+    .track-ex{background:none;border:0;border-bottom:1px dashed var(--bronze);color:var(--bronze);cursor:pointer;font-family:var(--disp);font-size:.84rem;padding:0}
+    .track-result{margin-top:1.6rem;background:#0a0e12;border:1px solid var(--line);border-radius:14px;padding:1.4rem}
+    .track-empty{color:var(--muted);text-align:center;margin:0}
+    .track-top{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+    .track-top b{font-family:var(--disp);font-size:1.3rem;letter-spacing:.05em}
+    .track-badge{padding:.3rem .8rem;border-radius:999px;background:rgba(200,160,106,.16);color:var(--bronze);font-size:.82rem;font-weight:600;border:1px solid rgba(200,160,106,.3)}
+    .track-badge.is-done{background:rgba(92,186,92,.16);color:#7dd37d;border-color:rgba(92,186,92,.4)}
+    .track-model{color:var(--muted);font-size:.92rem;margin:.4rem 0 1.3rem}
+    .track-steps{display:flex;justify-content:space-between;gap:.3rem;position:relative}
+    .track-steps::before{content:'';position:absolute;top:9px;left:8%;right:8%;height:2px;background:var(--line)}
+    .tstep{display:flex;flex-direction:column;align-items:center;gap:.5rem;flex:1;position:relative;z-index:1}
+    .tstep-dot{width:20px;height:20px;border-radius:50%;background:var(--bg2);border:2px solid var(--line)}
+    .tstep.done .tstep-dot{background:var(--bronze);border-color:var(--bronze)}
+    .tstep.now .tstep-dot{border-color:var(--bronze);box-shadow:0 0 0 4px rgba(200,160,106,.2);background:var(--bronze)}
+    .tstep-lbl{font-size:.72rem;color:var(--muted);text-align:center;line-height:1.2}
+    .tstep.now .tstep-lbl,.tstep.done .tstep-lbl{color:var(--ink)}
+    .track-eta{text-align:center;margin-top:1.2rem;color:var(--steel);font-weight:600;font-size:.95rem}
+
+    /* BEFORE/AFTER */
+    .ba{max-width:540px;margin:0 auto 2.5rem}
+    .ba-stage{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line);aspect-ratio:5/4;--pos:50%;background:#0c1015;touch-action:none}
+    .ba-after,.ba-before{position:absolute;inset:0}
+    .ba-after svg,.ba-before svg{width:100%;height:100%}
+    .ba-before{clip-path:inset(0 calc(100% - var(--pos)) 0 0)}
+    .ba-tag{position:absolute;top:.7rem;padding:.25rem .7rem;border-radius:999px;font-size:.72rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+    .ba-tag-a{right:.7rem;background:rgba(200,160,106,.92);color:#1a130a}
+    .ba-tag-b{left:.7rem;background:rgba(125,138,153,.92);color:#0c1015}
+    .ba-handle{position:absolute;top:0;bottom:0;left:var(--pos);width:2px;background:#fff;transform:translateX(-1px);pointer-events:none}
+    .ba-handle span{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:#fff;color:#0c1015;display:grid;place-items:center;font-size:.95rem;box-shadow:0 4px 12px rgba(0,0,0,.45)}
+    .ba-handle span::before{content:'⇄'}
+    .ba input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:999px;background:var(--line);outline:none;margin:1rem 0 .6rem}
+    .ba input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:var(--bronze);cursor:pointer;border:2px solid #1a130a}
+    .ba input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--bronze);cursor:pointer;border:2px solid #1a130a}
+    .ba-cap{text-align:center;color:var(--muted);font-size:.86rem}
+
+    /* MARQUEE recensioni */
+    .cmarquee{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:1.3rem 0}
+    .cmarquee-row{display:inline-flex;gap:2.5rem;white-space:nowrap;animation:cmarq 38s linear infinite;will-change:transform}
+    .cq{color:var(--muted);font-size:.95rem}
+    .cq i{color:var(--bronze);font-style:normal;letter-spacing:.1em;margin-right:.4rem}
+
+    /* FAQ */
+    .cfaq{max-width:880px}
+    .faq{display:flex;flex-direction:column;gap:.8rem}
+    .faq-i{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:border-color .25s}
+    .faq-i[open]{border-color:var(--bronze)}
+    .faq-i summary{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.1rem 1.3rem;cursor:pointer;font-family:var(--disp);font-size:1.06rem;color:var(--ink);list-style:none}
+    .faq-i summary::-webkit-details-marker{display:none}
+    .faq-x{position:relative;width:18px;height:18px;flex:none}
+    .faq-x::before,.faq-x::after{content:'';position:absolute;background:var(--bronze);transition:transform .3s var(--ease),opacity .3s}
+    .faq-x::before{top:8px;left:0;width:18px;height:2px}
+    .faq-x::after{top:0;left:8px;width:2px;height:18px}
+    .faq-i[open] .faq-x::after{transform:rotate(90deg);opacity:0}
+    .faq-a{padding:0 1.3rem 1.2rem;color:var(--muted);font-size:.95rem}
+
+    /* DOVE SIAMO */
+    .dove-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(1.5rem,4vw,3rem);align-items:center}
+    .dove-map{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#0a0e12;aspect-ratio:4/3}
+    .mapsvg{width:100%;height:100%;object-fit:cover}
+    .dove-pin{position:absolute;left:1rem;bottom:1rem;background:rgba(12,16,21,.85);backdrop-filter:blur(6px);border:1px solid var(--line);padding:.4rem .8rem;border-radius:999px;font-size:.85rem;color:var(--bronze)}
+    .dove-info h2{margin:.3rem 0 1rem}
+    .dove-list{list-style:none;display:flex;flex-direction:column;gap:.7rem;margin:1.2rem 0 1.6rem}
+    .dove-list li{color:var(--muted);font-size:.96rem}
+    .dove-list b{display:block;color:var(--ink);font-family:var(--disp);font-size:.95rem;margin-bottom:.1rem}
+    .open-badge{display:inline-flex;align-items:center;gap:.55rem;padding:.5rem .9rem;border-radius:999px;border:1px solid var(--line);font-size:.9rem;color:var(--muted)}
+    .open-badge .dot{width:9px;height:9px;border-radius:50%;background:#d9694e;box-shadow:0 0 8px #d9694e;flex:none}
+    .open-badge.is-open .dot{background:#5cba5c;box-shadow:0 0 8px #5cba5c}
+    .open-badge b{color:var(--ink)}
+
+    /* LEAD FORM */
+    .lead{display:flex;flex-direction:column;gap:.9rem;max-width:560px;margin:0 auto 1.2rem;text-align:left}
+    .lead-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+    .lead label{display:flex;flex-direction:column;gap:.35rem;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+    .lead input,.lead select,.lead textarea{padding:.75rem .9rem;border-radius:10px;border:1px solid var(--line);background:rgba(0,0,0,.3);color:var(--ink);font-family:var(--sans);font-size:.95rem}
+    .lead textarea{resize:vertical;min-height:74px}
+    .lead select option{color:#11161d}
+    .lead input:focus,.lead select:focus,.lead textarea:focus{outline:none;border-color:var(--bronze)}
+    .lead-full{grid-column:1/-1}
+    .lead-submit{margin-top:.3rem;width:100%}
+    .lead-priv{font-size:.76rem;color:var(--muted);text-align:center}
+    .lead-done{max-width:520px;margin:0 auto 1.2rem;text-align:center;background:rgba(200,160,106,.1);border:1px solid rgba(200,160,106,.4);border-radius:16px;padding:2rem}
+    .lead-check{display:inline-grid;place-items:center;width:54px;height:54px;border-radius:50%;background:var(--bronze);color:#1a130a;font-size:1.6rem;margin-bottom:.8rem}
+    .lead-done h3{font-size:1.4rem;margin-bottom:.4rem}
+    .lead-done p{color:var(--muted)}
+    .resv-sep{color:var(--muted);font-size:.85rem;margin:.2rem 0 1.1rem}
+
+    /* WhatsApp float */
+    .wa-float{position:fixed;right:18px;bottom:18px;z-index:350;width:56px;height:56px;border-radius:50%;background:#25d366;color:#fff;display:grid;place-items:center;box-shadow:0 12px 30px -8px rgba(37,211,102,.6);transition:transform .25s var(--ease)}
+    .wa-float:hover{transform:scale(1.08) translateY(-2px)}
+    .wa-float::after{content:'';position:absolute;inset:0;border-radius:50%;border:2px solid #25d366;animation:wapulse 2.4s ease-out infinite}
+    @keyframes wapulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.6);opacity:0}}
+
+    /* reveal */
+    .r{opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+    .r.in{opacity:1;transform:none}
+
+    @media (max-width:960px){
+      .chero-grid{grid-template-columns:1fr;text-align:center}
+      .chero-watch{order:-1}.ceyebrow,.chero-cta,.chero-trust{justify-content:center}.chero-sub{margin-left:auto;margin-right:auto}
+      .prev-card{grid-template-columns:1fr}.prev-out{border-left:0;border-top:1px solid var(--line)}
+      .lab-grid{grid-template-columns:1fr}.lab-visual{order:-1;max-width:420px;margin:0 auto}
+      .gallery{grid-template-columns:repeat(2,1fr)}.ctrust{grid-template-columns:repeat(2,1fr)}
+      .dove-grid{grid-template-columns:1fr}
+    }
+    @media (max-width:680px){
+      .clinks{display:none}.cnav-toggle{display:grid;place-items:center}
+      .cnav.open .clinks{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1.1rem;background:rgba(12,16,21,.98);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:1.2rem clamp(1.2rem,5vw,3rem) 1.5rem;margin:0}
+      .opts-grid{grid-template-columns:1fr}.lab-stats{grid-template-columns:1fr 1fr}
+      .lead-row{grid-template-columns:1fr}.tstep-lbl{font-size:.62rem}
+    }
+    @media (max-width:460px){ .gallery,.ctrust{grid-template-columns:1fr} }
+    @media (prefers-reduced-motion:reduce){
+      .r{opacity:1!important;transform:none!important;transition:none}
+      .gear,.cgear,.ceyebrow .tick,.cmarquee-row,.wa-float::after{animation:none!important}
+    }
+  </style>
+
+  <script is:inline>
+    (() => {
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const cnav = document.getElementById('cnav');
+      const onScroll = () => cnav.classList.toggle('solid', window.scrollY > 40);
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      const toggle = document.getElementById('navToggle');
+      toggle.addEventListener('click', () => { const o = cnav.classList.toggle('open'); toggle.setAttribute('aria-expanded', String(o)); });
+      document.querySelectorAll('#clinks a').forEach((a) => a.addEventListener('click', () => cnav.classList.remove('open')));
+
+      /* ---- Hour markers (generati) ---- */
+      const mk = document.getElementById('markers');
+      for (let i = 0; i < 12; i++) {
+        const big = i % 3 === 0;
+        const r = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        r.setAttribute('x', big ? '176.5' : '178');
+        r.setAttribute('y', '38');
+        r.setAttribute('width', big ? '7' : '4');
+        r.setAttribute('height', big ? '18' : '12');
+        r.setAttribute('rx', '2');
+        r.setAttribute('transform', `rotate(${i * 30} 180 180)`);
+        r.setAttribute('opacity', big ? '1' : '.6');
+        mk.appendChild(r);
+      }
+
+      /* ---- Orologio LIVE ---- */
+      const hH = document.getElementById('handHour');
+      const hM = document.getElementById('handMin');
+      const hS = document.getElementById('handSec');
+      const dateNum = document.getElementById('dateNum');
+      function setHands(smooth) {
+        const now = new Date();
+        const ms = now.getMilliseconds();
+        const s = now.getSeconds() + (smooth ? ms / 1000 : 0);
+        const m = now.getMinutes() + s / 60;
+        const h = (now.getHours() % 12) + m / 60;
+        hH.setAttribute('transform', `rotate(${h * 30} 180 180)`);
+        hM.setAttribute('transform', `rotate(${m * 6} 180 180)`);
+        hS.setAttribute('transform', `rotate(${s * 6} 180 180)`);
+        dateNum.textContent = now.getDate();
+      }
+      if (reduced) { setHands(false); setInterval(() => setHands(false), 1000); }
+      else { const loop = () => { setHands(true); requestAnimationFrame(loop); }; loop(); }
+
+      /* ---- Preventivo ---- */
+      const prevAmount = document.getElementById('prevAmount');
+      const prevTime = document.getElementById('prevTime');
+      let factor = 1, extraDays = 0, base = 15, days = 0;
+      const fmtMoney = (n) => '€ ' + Math.round(n).toLocaleString('it-IT');
+      function quote() {
+        const price = Math.max(12, base * factor);
+        prevAmount.textContent = `${fmtMoney(price * 0.95)} – ${fmtMoney(price * 1.12)}`;
+        const d = Math.round(days * (factor > 1.5 ? 1.4 : 1)) + (days > 0 ? extraDays : (extraDays ? Math.ceil(extraDays / 3) : 0));
+        if (d <= 0) prevTime.textContent = base <= 20 ? 'pronto in ~10 minuti, mentre aspetti' : 'pronto in giornata';
+        else if (d === 1) prevTime.textContent = 'pronto in ~1 giorno lavorativo';
+        else prevTime.textContent = `pronto in ~${d} giorni lavorativi`;
+      }
+      document.querySelectorAll('#moveOpts .opt').forEach((b) => b.addEventListener('click', () => {
+        document.querySelectorAll('#moveOpts .opt').forEach((x) => x.classList.remove('is-on'));
+        b.classList.add('is-on'); factor = +b.dataset.f; extraDays = +b.dataset.extra; quote();
+      }));
+      document.querySelectorAll('#jobOpts .opt').forEach((b) => b.addEventListener('click', () => {
+        document.querySelectorAll('#jobOpts .opt').forEach((x) => x.classList.remove('is-on'));
+        b.classList.add('is-on'); base = +b.dataset.base; days = +b.dataset.days; quote();
+      }));
+      quote();
+
+      /* ---- Tracker riparazione (demo) ---- */
+      const trackData = {
+        'CR-2048': { model: 'Cronografo automatico · revisione completa', step: 2, eta: 'Pronto previsto: tra circa 6 giorni lavorativi.' },
+        'CR-1099': { model: 'Orologio al quarzo · sostituzione vetro', step: 4, eta: 'Pronto: puoi passare in laboratorio a ritirarlo!' },
+        'CR-3001': { model: 'Solo tempo vintage · restauro quadrante', step: 1, eta: 'Pronto previsto: tra circa 3 settimane.' },
+      };
+      const TSTEPS = ['Ricevuto', 'In diagnosi', 'In lavorazione', 'Collaudo', 'Pronto'];
+      const trackForm = document.getElementById('trackForm');
+      const trackInput = document.getElementById('trackInput');
+      const trackResult = document.getElementById('trackResult');
+      function runTrack(code) {
+        if (!trackResult) return;
+        code = (code || '').trim().toUpperCase();
+        trackResult.hidden = false;
+        const d = trackData[code];
+        if (!d) { trackResult.innerHTML = '<p class="track-empty">Codice non trovato. Controlla la ricevuta o prova uno dei codici demo qui sopra.</p>'; return; }
+        const done = d.step >= 4;
+        trackResult.innerHTML =
+          '<div class="track-top"><b>' + code + '</b><span class="track-badge' + (done ? ' is-done' : '') + '">' + TSTEPS[d.step] + '</span></div>' +
+          '<p class="track-model">' + d.model + '</p>' +
+          '<div class="track-steps">' + TSTEPS.map(function (s, i) {
+            return '<div class="tstep' + (i < d.step ? ' done' : '') + (i === d.step ? ' now' : '') + '"><span class="tstep-dot"></span><span class="tstep-lbl">' + s + '</span></div>';
+          }).join('') + '</div>' +
+          '<p class="track-eta">' + d.eta + '</p>';
+      }
+      if (trackForm) trackForm.addEventListener('submit', function (e) { e.preventDefault(); runTrack(trackInput.value); });
+      document.querySelectorAll('.track-ex').forEach(function (b) { b.addEventListener('click', function () { trackInput.value = b.dataset.code; runTrack(b.dataset.code); }); });
+
+      /* ---- Slider prima/dopo ---- */
+      const baStage = document.getElementById('baStage');
+      const baRange = document.getElementById('baRange');
+      if (baStage && baRange) {
+        const setBA = function (v) { v = Math.max(0, Math.min(100, v)); baStage.style.setProperty('--pos', v + '%'); baRange.value = v; };
+        setBA(50);
+        baRange.addEventListener('input', function () { setBA(+baRange.value); });
+        let dragging = false;
+        const fromEvent = function (e) { const r = baStage.getBoundingClientRect(); const x = (e.clientX || 0) - r.left; setBA(x / r.width * 100); };
+        baStage.addEventListener('pointerdown', function (e) { dragging = true; fromEvent(e); });
+        window.addEventListener('pointermove', function (e) { if (dragging) fromEvent(e); });
+        window.addEventListener('pointerup', function () { dragging = false; });
+      }
+
+      /* ---- Form guasto (demo) ---- */
+      const cForm = document.getElementById('leadForm');
+      const cDone = document.getElementById('leadDone');
+      if (cForm) cForm.addEventListener('submit', function (e) { e.preventDefault(); cForm.hidden = true; cDone.hidden = false; cDone.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' }); });
+
+      /* ---- "Aperto adesso" ---- */
+      (function () {
+        const el = document.getElementById('openStatus'); if (!el) return;
+        const sched = [null, [540, 1110], [540, 1110], [540, 1110], [540, 1110], [540, 1110], null]; // Lun–Ven 9:00–18:30
+        const days = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'];
+        const fmt = function (m) { return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); };
+        const now = new Date(), d = now.getDay(), mins = now.getHours() * 60 + now.getMinutes(), t = sched[d];
+        let open = false, txt = '';
+        if (t && mins >= t[0] && mins < t[1]) { open = true; txt = '· chiude alle ' + fmt(t[1]); }
+        else if (t && mins < t[0]) { txt = '· apre oggi alle ' + fmt(t[0]); }
+        else { for (let i = 1; i <= 7; i++) { const s = sched[(d + i) % 7]; if (s) { txt = '· ' + (i === 1 ? 'apre domani' : 'apre ' + days[(d + i) % 7]) + ' alle ' + fmt(s[0]); break; } } }
+        el.classList.toggle('is-open', open);
+        el.querySelector('b').textContent = open ? 'Aperto adesso' : 'Chiuso ora';
+        el.querySelector('span:last-child').textContent = ' ' + txt;
+      })();
+
+      /* ---- Reveal + contatori ---- */
+      const animateCount = (el) => {
+        const target = +el.dataset.count, suf = el.dataset.suffix || '';
+        const t0 = performance.now(), dur = 1500;
+        const step = (t) => {
+          const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(target * e).toLocaleString('it-IT') + suf;
+          if (p < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      };
+      if (reduced) {
+        document.querySelectorAll('[data-count]').forEach((el) => el.textContent = (+el.dataset.count).toLocaleString('it-IT') + (el.dataset.suffix || ''));
+      } else {
+        const io = new IntersectionObserver((es) => es.forEach((en) => {
+          if (en.isIntersecting) { en.target.classList.add('in'); const c = en.target.querySelector?.('[data-count]'); if (en.target.dataset && en.target.dataset.count) animateCount(en.target); else if (c) animateCount(c); io.unobserve(en.target); }
+        }), { threshold: 0.14 });
+        document.querySelectorAll('.r').forEach((el) => io.observe(el));
+      }
+    })();
+  </script>
+</body>
+</html>

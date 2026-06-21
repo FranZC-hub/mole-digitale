@@ -13,20 +13,25 @@ const demos = [
   { img: off,  name: 'Garage Rossi',       cat: 'Officina',     url: '/demo/officina',   desc: 'Sito vetrina + scheda Google' },
   { img: ecom, name: 'Bottega Subalpina',  cat: 'E-commerce',   url: '/demo/ecommerce',  desc: 'Negozio online con carrello' },
   { img: museo, name: 'Museo Egizio',      cat: 'Cultura',      url: '/demo/museo-egizio', desc: 'Sito museale + biglietti online' },
+  { cover: '/img/demo-oro/cover.svg',         name: 'Aureo',   cat: 'Compro Oro',  url: '/demo/compro-oro',  desc: 'Calcolo valore oro in tempo reale' },
+  { cover: '/img/demo-gioielleria/cover.svg', name: 'Lùmina',  cat: 'Gioielleria', url: '/demo/gioielleria', desc: 'Collezioni, preferiti e fede su misura' },
+  { cover: '/img/demo-orologiaio/cover.svg',  name: 'Cronos',  cat: 'Orologiaio',  url: '/demo/orologiaio',  desc: 'Orologio live + preventivo riparazione' },
 ];
 ---
-<Layout title="Demo — esempi di siti | Mole Digitale" description="Esempi di siti realizzati da Mole Digitale per attività di Torino: ristorante, parrucchiere, officina ed e-commerce con carrello.">
+<Layout title="Demo — esempi di siti | Mole Digitale" description="Esempi di siti realizzati da Mole Digitale per attività di Torino: ristorante, parrucchiere, officina, e-commerce, compro oro, gioielleria e orologiaio.">
   <section class="section" style="padding-top:8rem;">
     <div class="section-head" data-reveal>
       <span class="kicker">Demo</span>
       <h1>Esempi di siti che <span class="grad">facciamo</span>.</h1>
-      <p class="section-lead">Cinque attività diverse, cinque stili diversi — dal ristorante al museo. Aprili e prova a cliccare: prenotazioni, menu, carrello e biglietti che funzionano davvero.</p>
+      <p class="section-lead">Otto attività diverse, otto stili diversi — dal ristorante all'orologiaio. Aprili e prova a cliccare: prenotazioni, menu, carrello, calcolatori e preventivi che funzionano davvero.</p>
     </div>
     <div class="port-grid">
       {demos.map((dm) => (
         <a class="port-card glass" href={dm.url} data-reveal data-tilt>
           <div class="port-thumb">
-            <Image class="port-img" src={dm.img} alt={`Demo sito ${dm.name}`} widths={[360, 720]} sizes="(max-width:980px) 92vw, 360px" format="webp" loading="lazy" />
+            {dm.img
+              ? <Image class="port-img" src={dm.img} alt={`Demo sito ${dm.name}`} widths={[360, 720]} sizes="(max-width:980px) 92vw, 360px" format="webp" loading="lazy" />
+              : <img class="port-img" src={dm.cover} alt={`Demo sito ${dm.name}`} loading="lazy" width="360" height="360" />}
             <span class="port-go">Apri la demo →</span>
           </div>
           <div class="port-cap"><b>{dm.name}</b><span>{dm.cat} · {dm.desc}</span></div>
