@@ -216,11 +216,11 @@ if (compare && after && handle) {
   };
   const startDrag = () => { dragging = true; compare.style.cursor = 'grabbing'; };
   const stopDrag = () => { dragging = false; compare.style.cursor = 'ew-resize'; };
-  const move = (e) => { if (!dragging) return; setPos(e.touches ? e.touches[0].clientX : e.clientX); };
+  const move = (e) => { if (!dragging) return; if (e.cancelable) e.preventDefault(); setPos(e.touches ? e.touches[0].clientX : e.clientX); };
   compare.addEventListener('mousedown', (e) => { startDrag(); setPos(e.clientX); });
-  compare.addEventListener('touchstart', (e) => { startDrag(); setPos(e.touches[0].clientX); }, { passive: true });
+  compare.addEventListener('touchstart', (e) => { startDrag(); setPos(e.touches[0].clientX); }, { passive: false });
   addEventListener('mousemove', move);
-  addEventListener('touchmove', move, { passive: true });
+  addEventListener('touchmove', move, { passive: false });
   addEventListener('mouseup', stopDrag);
   addEventListener('touchend', stopDrag);
 
