@@ -57,6 +57,28 @@ const settori = {
     ],
     demoUrl: '/demo/salone', demoName: 'Salone Aurora',
   },
+  'siti-web-negozi-torino': {
+    kicker: 'Per negozi e botteghe',
+    h1a: 'Siti web per', h1b: 'negozi a Torino',
+    intro: "Porta la tua vetrina online: prodotti in mostra, orari sempre giusti e — se vuoi — vendita con carrello e consegna. Chi cerca cosa vendi, trova te.",
+    points: [
+      { h: 'Vetrina prodotti', p: 'Mostra i tuoi articoli con foto curate, aggiornati in un attimo.' },
+      { h: 'Vendi anche online', p: 'Se vuoi, aggiungiamo carrello e pagamenti: vendi anche a saracinesca chiusa.' },
+      { h: 'Trovato su Google', p: 'SEO locale e scheda Google per comparire a chi cerca «vicino a me».' },
+    ],
+    demoUrl: '/demo/ecommerce', demoName: 'Bottega Subalpina',
+  },
+  'siti-web-pasticcerie-torino': {
+    kicker: 'Per pasticcerie e panetterie',
+    h1a: 'Siti web per', h1b: 'pasticcerie a Torino',
+    intro: "Un sito che fa venire l'acquolina: le tue specialità in vetrina, le torte su ordinazione e l'asporto a portata di telefono. Si compra prima con gli occhi.",
+    points: [
+      { h: 'Vetrina golosa', p: 'Foto curate di torte, lievitati e dolci, sempre aggiornate.' },
+      { h: 'Ordini e torte su misura', p: "Il cliente prenota la torta o l'asporto in pochi tocchi, anche di sera." },
+      { h: 'Trovato su Google', p: 'Comparire quando cercano «pasticceria» o «torta su ordinazione» a Torino.' },
+    ],
+    demoUrl: '/demo/ecommerce', demoName: 'Bottega Subalpina',
+  },
 };
 
 export function getStaticPaths() {
@@ -66,6 +88,8 @@ export function getStaticPaths() {
     'siti-web-officine-torino',
     'siti-web-bar-torino',
     'siti-web-estetiste-torino',
+    'siti-web-negozi-torino',
+    'siti-web-pasticcerie-torino',
   ].map((settore) => ({ params: { settore } }));
 }
 

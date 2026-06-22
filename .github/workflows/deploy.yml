@@ -6,6 +6,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      full_resync:
+        description: "Re-sync COMPLETO: rimuove i file orfani vecchi dal server (mail-config.php e leads.csv restano protetti). Usalo se il sito mostra asset mancanti/rotti dopo un deploy."
+        type: boolean
+        default: false
 
 jobs:
   build-deploy:
@@ -46,12 +51,18 @@ jobs:
           #    "www.moledigitale.it", questo valore è giusto; se la tua utenza FTP entra già dentro
           #    la cartella pubblica, rimetti "./".
           server-dir: ./www.moledigitale.it/
-          # NON cancella i file presenti solo sul server (così mail-config.php caricato a mano resta).
-          dangerous-clean-slate: false
+          # Di norma incrementale (mantiene i file solo-server). Con "full_resync" fa pulizia
+          # totale degli orfani; i file in "exclude" qui sotto restano comunque intoccati.
+          dangerous-clean-slate: ${{ github.event.inputs.full_resync == 'true' }}
+          # Verbose: aiuta a capire cosa carica/cancella se qualcosa va storto.
+          log-level: verbose
           exclude: |
             **/.git*
             **/.git*/**
             **/node_modules/**
+            mail-config.php
+            mail-config.example.php
+            leads.csv
 
       - name: Avviso (secret FTP non ancora configurati)
         if: env.HAS_FTP != 'true'

@@ -25,6 +25,7 @@ import '@fontsource-variable/space-grotesk';
       <a href="#officina">Officina</a>
       <a href="#prenota">Contatti</a>
     </nav>
+    <button class="dnav-toggle" id="dtoggle" aria-label="Apri il menu" aria-expanded="false"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     <a href="#prenota" class="dbtn dbtn-solid dmag">Prenota</a>
   </header>
 
@@ -202,8 +203,9 @@ import '@fontsource-variable/space-grotesk';
     .statstrip span{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
 
     .dsection{max-width:1200px;margin:0 auto;padding:clamp(4rem,9vw,8rem) clamp(1.2rem,5vw,3rem)}
-    .head{margin-bottom:clamp(2.2rem,4vw,3.5rem)}
-    .kick{display:inline-block;font-family:var(--head);font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:.9rem}
+    .head{margin-bottom:clamp(2.2rem,4vw,3.5rem);text-align:left}
+    .kick{display:inline-flex;align-items:center;gap:.6rem;font-family:var(--head);font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);margin-bottom:.9rem}
+    .kick::before{content:'';width:26px;height:10px;background:var(--amber);border-radius:2px}
     .head h2,.prenota h2{font-size:clamp(1.9rem,4.5vw,3.2rem)}
 
     /* SERVIZI rows */
@@ -269,9 +271,14 @@ import '@fontsource-variable/space-grotesk';
     .rh .rs{margin-left:auto;color:#fbbc04;font-size:.8rem}
 
     .r{opacity:0;transform:translateY(30px)}.hl{opacity:0}[data-clip]{clip-path:inset(0 0 100% 0)}
+    .dnav-toggle{display:none;background:none;border:0;color:var(--cream);cursor:pointer;width:44px;height:44px;border-radius:10px;place-items:center;margin-left:auto}
+    .dnav-toggle:hover{background:rgba(238,241,243,.08)}
     @media (max-width:900px){
       .statstrip{grid-template-columns:1fr 1fr}.statstrip>div:nth-child(3){border-left:none}
       .feat-grid{grid-template-columns:1fr 1fr}.ostrip{grid-template-columns:1fr}.greviews{grid-template-columns:1fr}.srow{grid-template-columns:auto 1fr;gap:1rem}.srow .ic,.srow .price{grid-column:2}.dlinks{display:none}
+      .dnav>.dbtn{display:none}
+      .dnav-toggle{display:grid}
+      .dnav.dopen .dlinks{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1.1rem;background:rgba(16,19,22,.97);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:1.2rem clamp(1.2rem,5vw,3rem) 1.5rem}
     }
     @media (prefers-reduced-motion:reduce){.r,.hl{opacity:1!important;transform:none!important}[data-clip]{clip-path:none!important}.brands-track{animation:none}}
   </style>
@@ -286,6 +293,13 @@ import '@fontsource-variable/space-grotesk';
     const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
     const dnav = document.getElementById('dnav');
     const onScroll = (y) => dnav.classList.toggle('solid', y > 40);
+
+    // menu mobile (hamburger)
+    const dtoggle = document.querySelector('.dnav-toggle');
+    if (dtoggle) {
+      dtoggle.addEventListener('click', () => { const o = dnav.classList.toggle('dopen'); dtoggle.setAttribute('aria-expanded', String(o)); });
+      document.querySelectorAll('.dlinks a').forEach((a) => a.addEventListener('click', () => dnav.classList.remove('dopen')));
+    }
     if (!reduced) {
       const lenis = new Lenis({ lerp: 0.1 });
       const raf = (t) => { lenis.raf(t); requestAnimationFrame(raf); };
@@ -298,7 +312,7 @@ import '@fontsource-variable/space-grotesk';
         .to('.hl', { opacity: 1, y: 0, stagger: 0.12, duration: 0.9 }, 0.5)
         .from('.hero-bg img', { scale: 1.2, duration: 1.8 }, 0);
       document.querySelectorAll('[data-parallax]').forEach((el) => gsap.to(el.querySelector('img'), { yPercent: 12, ease: 'none', scrollTrigger: { trigger: el.closest('section'), start: 'top top', end: 'bottom top', scrub: true } }));
-      gsap.utils.toArray('.r').forEach((el) => gsap.to(el, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%' } }));
+      gsap.utils.toArray('.r').forEach((el) => gsap.fromTo(el, { opacity: 0, x: 36 }, { opacity: 1, x: 0, duration: 0.9, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%' } }));
       gsap.utils.toArray('[data-clip]').forEach((el) => gsap.to(el, { clipPath: 'inset(0 0 0% 0)', duration: 1.1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 85%' } }));
       document.querySelectorAll('[data-count]').forEach((el) => { const target = +el.dataset.count, suf = el.dataset.suffix || ''; ScrollTrigger.create({ trigger: el, start: 'top 92%', once: true, onEnter: () => gsap.to({ v: 0 }, { v: target, duration: 1.6, ease: 'power2.out', onUpdate() { el.textContent = Math.round(this.targets()[0].v) + suf; } }) }); });
       if (fine) document.querySelectorAll('.dmag').forEach((b) => { b.addEventListener('mousemove', (e) => { const r = b.getBoundingClientRect(); b.style.transform = `translate(${(e.clientX-r.left-r.width/2)*.3}px,${(e.clientY-r.top-r.height/2)*.4}px)`; }); b.addEventListener('mouseleave', () => { b.style.transform = ''; }); });

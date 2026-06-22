@@ -62,7 +62,10 @@ const quote = [
   <main id="main">
   <!-- HERO -->
   <section class="ahero" id="top">
-    <div class="ahero-glow" aria-hidden="true"></div>
+    <div class="ahero-bg" aria-hidden="true">
+      <img src="/img/demo-oro/hero.webp" alt="" />
+      <div class="ahero-shade"></div>
+    </div>
     <div class="ahero-inner">
       <div class="ahero-text">
         <p class="aeyebrow hl"><span class="dot"></span> Compro oro · Torino · dal 2004</p>
@@ -81,79 +84,6 @@ const quote = [
           <li>✓ Bilancia certificata</li>
           <li>✓ Massima riservatezza</li>
         </ul>
-      </div>
-      <div class="ahero-art hl">
-        <svg viewBox="0 0 600 560" class="goldstack" role="img" aria-label="Lingotti e monete d'oro">
-          <defs>
-            <linearGradient id="goldF" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#fbe6b6"/><stop offset=".5" stop-color="#dcab43"/><stop offset="1" stop-color="#9c6f1f"/>
-            </linearGradient>
-            <linearGradient id="goldT" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="#fff3cf"/><stop offset="1" stop-color="#e6c269"/>
-            </linearGradient>
-            <linearGradient id="goldS" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#caa24a"/><stop offset="1" stop-color="#7c581a"/>
-            </linearGradient>
-            <linearGradient id="coinG" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#f7df9f"/><stop offset=".5" stop-color="#d3a53e"/><stop offset="1" stop-color="#8c641c"/>
-            </linearGradient>
-            <radialGradient id="coinR" cx=".4" cy=".35" r=".8">
-              <stop offset="0" stop-color="#fff0c4"/><stop offset="1" stop-color="#c69a39"/>
-            </radialGradient>
-            <linearGradient id="sheen" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="#fff" stop-opacity="0"/>
-              <stop offset=".5" stop-color="#fff" stop-opacity=".75"/>
-              <stop offset="1" stop-color="#fff" stop-opacity="0"/>
-            </linearGradient>
-            <clipPath id="barsClip">
-              <polygon points="190,300 410,300 470,360 130,360"/>
-              <polygon points="130,360 470,360 470,420 130,420"/>
-              <polygon points="225,238 375,238 425,290 175,290"/>
-              <polygon points="175,290 425,290 425,344 175,344"/>
-              <polygon points="262,182 338,182 380,228 220,228"/>
-              <polygon points="220,228 380,228 380,278 220,278"/>
-            </clipPath>
-          </defs>
-
-          <!-- coins -->
-          <g class="coin coin-a">
-            <ellipse cx="468" cy="430" rx="62" ry="62" fill="url(#coinG)"/>
-            <ellipse cx="468" cy="424" rx="62" ry="62" fill="url(#coinR)" stroke="#8c641c" stroke-width="2"/>
-            <ellipse cx="468" cy="424" rx="48" ry="48" fill="none" stroke="#9c7322" stroke-width="2" opacity=".55"/>
-            <text x="468" y="434" text-anchor="middle" font-family="Georgia, serif" font-size="30" fill="#8a6320">€</text>
-          </g>
-          <g class="coin coin-b">
-            <ellipse cx="120" cy="452" rx="46" ry="46" fill="url(#coinG)"/>
-            <ellipse cx="120" cy="447" rx="46" ry="46" fill="url(#coinR)" stroke="#8c641c" stroke-width="2"/>
-            <ellipse cx="120" cy="447" rx="35" ry="35" fill="none" stroke="#9c7322" stroke-width="1.6" opacity=".55"/>
-          </g>
-
-          <!-- bottom bar -->
-          <g class="bar bar-1">
-            <polygon points="190,300 410,300 470,360 130,360" fill="url(#goldT)"/>
-            <polygon points="130,360 470,360 470,420 130,420" fill="url(#goldF)"/>
-            <polygon points="410,300 470,360 470,420 410,360" fill="url(#goldS)"/>
-            <text x="290" y="398" text-anchor="middle" font-family="Georgia, serif" font-size="17" letter-spacing="3" fill="#6e4f15">FINE GOLD 999.9</text>
-          </g>
-          <!-- middle bar -->
-          <g class="bar bar-2">
-            <polygon points="225,238 375,238 425,290 175,290" fill="url(#goldT)"/>
-            <polygon points="175,290 425,290 425,344 175,344" fill="url(#goldF)"/>
-            <polygon points="375,238 425,290 425,344 375,290" fill="url(#goldS)"/>
-            <text x="298" y="324" text-anchor="middle" font-family="Georgia, serif" font-size="15" letter-spacing="2.5" fill="#6e4f15">AUREO · 1kg</text>
-          </g>
-          <!-- top bar -->
-          <g class="bar bar-3">
-            <polygon points="262,182 338,182 380,228 220,228" fill="url(#goldT)"/>
-            <polygon points="220,228 380,228 380,278 220,278" fill="url(#goldF)"/>
-            <polygon points="338,182 380,228 380,278 338,228" fill="url(#goldS)"/>
-          </g>
-
-          <!-- shimmer sweep over all bars -->
-          <g clip-path="url(#barsClip)">
-            <rect class="sheen" x="-260" y="170" width="200" height="270" fill="url(#sheen)" transform="skewX(-22)"/>
-          </g>
-        </svg>
       </div>
     </div>
     <a href="#calcola" class="ascroll" aria-hidden="true"><span></span></a>
@@ -463,9 +393,13 @@ const quote = [
 
     /* HERO */
     .ahero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;padding-top:110px}
-    .ahero-glow{position:absolute;top:-10%;right:-5%;width:60vw;height:60vw;max-width:760px;max-height:760px;border-radius:50%;
-      background:radial-gradient(circle,rgba(232,195,114,.22),rgba(232,195,114,.06) 45%,transparent 70%);filter:blur(10px);z-index:0}
-    .ahero-inner{position:relative;z-index:1;max-width:1200px;margin:0 auto;width:100%;padding:1rem clamp(1.2rem,5vw,3rem) 4rem;display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(1.5rem,4vw,3rem);align-items:center}
+    .ahero-bg{position:absolute;inset:0;z-index:0}
+    .ahero-bg img{width:100%;height:100%;object-fit:cover;object-position:center right;transform-origin:center}
+    .ahero-shade{position:absolute;inset:0;background:
+      linear-gradient(90deg,rgba(14,11,7,.95) 24%,rgba(14,11,7,.6) 64%,rgba(14,11,7,.32)),
+      linear-gradient(180deg,rgba(14,11,7,.35),rgba(14,11,7,.55))}
+    .ahero-inner{position:relative;z-index:2;max-width:1180px;margin:0 auto;width:100%;padding:1rem clamp(1.2rem,5vw,3rem) 4rem}
+    .ahero-text{max-width:640px}
     .aeyebrow{font-size:.82rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.4rem;display:inline-flex;align-items:center;gap:.55rem}
     .aeyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold);animation:pulse 2s var(--ease) infinite}
     @keyframes pulse{0%,100%{opacity:.4;transform:scale(.85)}50%{opacity:1;transform:scale(1.15)}}
@@ -491,10 +425,12 @@ const quote = [
 
     /* SECTIONS */
     .asection{max-width:1180px;margin:0 auto;padding:clamp(4.5rem,10vw,8rem) clamp(1.2rem,5vw,3rem)}
-    .ahead{text-align:center;max-width:720px;margin:0 auto clamp(2.5rem,5vw,4rem)}
+    main{counter-reset:asec}
+    .ahead{text-align:left;max-width:820px;margin:0 0 clamp(2.5rem,5vw,4rem);counter-increment:asec;padding-left:1.4rem;border-left:2px solid var(--gold)}
+    .ahead .akicker::before{content:counter(asec,decimal-leading-zero) "  ·  ";font-family:var(--serif);color:var(--gold)}
     .akicker{display:inline-block;font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
     .ahead h2,.fid-text h2,.acta h2{font-size:clamp(2rem,5vw,3.4rem)}
-    .alead{color:var(--muted);font-size:1.1rem;margin-top:.6rem}
+    .alead{color:var(--muted);font-size:1.1rem;margin-top:.6rem;max-width:62ch}
 
     /* CALCOLATORE */
     .calc-card{display:grid;grid-template-columns:1.2fr .8fr;gap:0;border:1px solid var(--line);border-radius:22px;overflow:hidden;background:linear-gradient(180deg,#181208,#120d07);box-shadow:0 40px 80px -40px rgba(0,0,0,.7)}
@@ -598,10 +534,13 @@ const quote = [
     .faq-i[open]{border-color:rgba(232,195,114,.4)}
     .faq-i summary{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.1rem 1.3rem;cursor:pointer;font-family:var(--serif);font-size:1.12rem;color:var(--cream);list-style:none}
     .faq-i summary::-webkit-details-marker{display:none}
-    .faq-x{position:relative;width:18px;height:18px;flex:none}
-    .faq-x::before,.faq-x::after{content:'';position:absolute;background:var(--gold);transition:transform .3s var(--ease),opacity .3s}
-    .faq-x::before{top:8px;left:0;width:18px;height:2px}
-    .faq-x::after{top:0;left:8px;width:2px;height:18px}
+    /* toggle FAQ: cerchio oro che si riempie (firma Aureo) */
+    .faq-x{position:relative;width:26px;height:26px;flex:none;border:1px solid rgba(232,195,114,.45);border-radius:50%;transition:background .3s,border-color .3s}
+    .faq-x::before,.faq-x::after{content:'';position:absolute;background:var(--gold);transition:transform .3s var(--ease),opacity .3s,background .3s}
+    .faq-x::before{top:12px;left:6px;width:14px;height:2px}
+    .faq-x::after{top:6px;left:12px;width:2px;height:14px}
+    .faq-i[open] .faq-x{background:var(--gold);border-color:var(--gold)}
+    .faq-i[open] .faq-x::before{background:#27190a}
     .faq-i[open] .faq-x::after{transform:rotate(90deg);opacity:0}
     .faq-a{padding:0 1.3rem 1.2rem;color:var(--muted);font-size:.98rem}
 
@@ -640,15 +579,14 @@ const quote = [
     .wa-float::after{content:'';position:absolute;inset:0;border-radius:50%;border:2px solid #25d366;animation:wapulse 2.4s ease-out infinite}
     @keyframes wapulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.6);opacity:0}}
 
-    /* Reveal */
-    .r{opacity:0;transform:translateY(34px)}
+    /* Reveal — "messa a fuoco" (blur-in), firma di Aureo */
+    .r{opacity:0;transform:translateY(20px);filter:blur(8px)}
     .hl{opacity:0}
 
     @media (max-width:980px){
-      .ahero-inner{grid-template-columns:1fr;text-align:center}
-      .ahero-art{order:-1;max-width:440px;margin:0 auto}
-      .aeyebrow,.ahero-cta,.ahero-trust{justify-content:center}
-      .ahero-sub{margin-left:auto;margin-right:auto}
+      /* hero full-bleed: testo a sinistra leggibile, overlay più scuro su mobile */
+      .ahero-shade{background:linear-gradient(180deg,rgba(14,11,7,.55),rgba(14,11,7,.74) 45%,rgba(14,11,7,.95))}
+      .ahero-bg img{object-position:center}
       .calc-card{grid-template-columns:1fr}
       .calc-out{border-left:0;border-top:1px solid var(--line)}
       .fid-grid{grid-template-columns:1fr}
@@ -659,6 +597,7 @@ const quote = [
     @media (max-width:760px){
       .alinks{display:none}
       .anav-toggle{display:grid;place-items:center}
+      .anav>.abtn-solid{display:none}
       .anav.open .alinks{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1.1rem;
         background:rgba(14,11,7,.97);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:1.2rem clamp(1.2rem,5vw,3rem) 1.5rem;margin:0}
       .anav.open .alinks a{font-size:1.05rem}
@@ -667,7 +606,7 @@ const quote = [
       .lead-row{grid-template-columns:1fr}
     }
     @media (prefers-reduced-motion:reduce){
-      .r,.hl{opacity:1!important;transform:none!important}
+      .r,.hl{opacity:1!important;transform:none!important;filter:none!important}
       .sheen,.coin-a,.coin-b,.ticker-row,.aeyebrow .dot,.wa-float::after{animation:none!important}
     }
   </style>
@@ -772,14 +711,11 @@ const quote = [
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
       tl.from('.ahero-title .aw', { yPercent: 120, opacity: 0, stagger: 0.09, duration: 1 }, 0.15)
         .to('.ahero-text .hl', { opacity: 1, y: 0, stagger: 0.14, duration: 0.9 }, 0.5)
-        .fromTo('.ahero-art', { opacity: 0, y: 40, scale: 0.92 }, { opacity: 1, y: 0, scale: 1, duration: 1.2 }, 0.4);
+        .fromTo('.ahero-bg img', { scale: 1.18 }, { scale: 1, duration: 1.8, ease: 'power2.out' }, 0);
       gsap.set('.ahero-text .hl', { y: 20 });
 
-      gsap.to('.ahero-art', { yPercent: -8, ease: 'none',
-        scrollTrigger: { trigger: '.ahero', start: 'top top', end: 'bottom top', scrub: true } });
-
       gsap.utils.toArray('.r').forEach((el) => {
-        gsap.to(el, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+        gsap.to(el, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.9, ease: 'power3.out',
           scrollTrigger: { trigger: el, start: 'top 88%' } });
       });
       document.querySelectorAll('[data-count]').forEach((el) => {

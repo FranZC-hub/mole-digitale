@@ -10,12 +10,14 @@ interface Props {
   description?: string;
   noindex?: boolean;
   image?: string;
+  article?: { datePublished: string; dateModified?: string };
 }
 const {
   title = 'Siti web per attività a Torino — Mole Digitale',
   description = 'Rifacciamo e creiamo siti web moderni per ristoranti, negozi e attività di Torino e provincia. Veloci, belli e a prezzi onesti.',
   noindex = false,
   image,
+  article,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -91,6 +93,20 @@ const breadcrumbSchema = isHome ? null : {
     { '@type': 'ListItem', position: 2, name: pageName, item: canonical.href },
   ],
 };
+
+// Dati strutturati articolo (solo nelle pagine del blog)
+const articleSchema = article ? {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: pageName,
+  description,
+  datePublished: article.datePublished,
+  dateModified: article.dateModified ?? article.datePublished,
+  image: ogImage.href,
+  mainEntityOfPage: canonical.href,
+  author: { '@type': 'Organization', name: 'Mole Digitale', url: Astro.site?.href },
+  publisher: { '@type': 'Organization', name: 'Mole Digitale', logo: { '@type': 'ImageObject', url: new URL('/apple-touch-icon.png', Astro.site).href } },
+} : null;
 ---
 <!DOCTYPE html>
 <html lang="it">
@@ -111,7 +127,9 @@ const breadcrumbSchema = isHome ? null : {
 
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
-  <meta property="og:type" content="website" />
+  <meta property="og:type" content={article ? 'article' : 'website'} />
+  {article && <meta property="article:published_time" content={article.datePublished} />}
+  {article?.dateModified && <meta property="article:modified_time" content={article.dateModified} />}
   <meta property="og:locale" content="it_IT" />
   <meta property="og:url" content={canonical} />
   <meta property="og:image" content={ogImage} />
@@ -125,6 +143,7 @@ const breadcrumbSchema = isHome ? null : {
   <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
   <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
   {breadcrumbSchema && <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />}
+  {articleSchema && <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />}
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%237c5cff'/><stop offset='.55' stop-color='%2322d3ee'/><stop offset='1' stop-color='%23ff6b88'/></linearGradient></defs><rect width='24' height='24' rx='6' fill='url(%23g)'/><g fill='white'><path d='M12 3.2l.55 5.6h-1.1z'/><path d='M11.6 8.8C9.8 9.9 9.3 11.6 10.2 12.9h3.6c.9-1.3.4-3-1.4-4.1z'/><rect x='10.2' y='12.6' width='3.6' height='4.9'/><path d='M8 17.3h8l.45 2.3H7.55z'/></g></svg>" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -249,6 +268,8 @@ const breadcrumbSchema = isHome ? null : {
         <a href="/siti-web-parrucchieri-torino">Siti per parrucchieri</a>
         <a href="/siti-web-estetiste-torino">Siti per estetiste</a>
         <a href="/siti-web-officine-torino">Siti per officine</a>
+        <a href="/siti-web-negozi-torino">Siti per negozi</a>
+        <a href="/siti-web-pasticcerie-torino">Siti per pasticcerie</a>
       </div>
       <div class="footer-col">
         <h3>Contatti</h3>
@@ -280,6 +301,7 @@ const breadcrumbSchema = isHome ? null : {
       <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.8.8.7-2.8-.2-.3A8 8 0 1 1 12 20zm4.6-5.9c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.5 6.5 0 0 1-1.9-1.2 7.3 7.3 0 0 1-1.4-1.7c-.1-.2 0-.4.1-.5l.4-.4.2-.4a.5.5 0 0 0 0-.4c0-.1-.6-1.4-.8-1.9s-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c.6.3 1.1.4 1.5.5a3.5 3.5 0 0 0 1.6.1c.5-.1 1.5-.6 1.7-1.2s.2-1.1.2-1.2-.2-.2-.5-.3z"/></svg> WhatsApp
     </a>
     <a class="mc-prev" href="/preventivo">Preventivo gratis</a>
+    <!-- nota: testo accorciato via CSS su schermi molto stretti -->
   </nav>
 
   <script>import '../scripts/main.js';</script>

@@ -262,20 +262,20 @@ import '@fontsource-variable/space-grotesk';
     </div>
     <div class="gallery">
       <figure class="gw r">
-        <svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="86" fill="#161c25" stroke="#c8a06a" stroke-width="6"/><circle cx="100" cy="100" r="72" fill="#0c1015"/><g stroke="#c8a06a" stroke-width="3"><line x1="100" y1="34" x2="100" y2="46"/><line x1="166" y1="100" x2="154" y2="100"/><line x1="100" y1="166" x2="100" y2="154"/><line x1="34" y1="100" x2="46" y2="100"/></g><line x1="100" y1="100" x2="100" y2="56" stroke="#e7edf3" stroke-width="4" stroke-linecap="round"/><line x1="100" y1="100" x2="132" y2="100" stroke="#9fb3c8" stroke-width="3" stroke-linecap="round"/><circle cx="100" cy="100" r="5" fill="#c8a06a"/></svg>
-        <figcaption>Solo tempo · anni '60</figcaption>
+        <img src="/img/demo-orologiaio/g-solotempo.webp" alt="Orologio solo tempo in revisione" loading="lazy" />
+        <figcaption>Solo tempo · revisione completa</figcaption>
       </figure>
       <figure class="gw r">
-        <svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="86" fill="#161c25" stroke="#9fb3c8" stroke-width="6"/><circle cx="100" cy="100" r="72" fill="#0c1015"/><circle cx="100" cy="72" r="14" fill="none" stroke="#3a4654" stroke-width="3"/><circle cx="72" cy="116" r="14" fill="none" stroke="#3a4654" stroke-width="3"/><circle cx="128" cy="116" r="14" fill="none" stroke="#3a4654" stroke-width="3"/><line x1="100" y1="100" x2="100" y2="60" stroke="#e7edf3" stroke-width="4" stroke-linecap="round"/><line x1="100" y1="100" x2="126" y2="86" stroke="#c8a06a" stroke-width="3" stroke-linecap="round"/><circle cx="100" cy="100" r="5" fill="#9fb3c8"/></svg>
-        <figcaption>Cronografo · vintage</figcaption>
+        <img src="/img/demo-orologiaio/g-cronografo.webp" alt="Cronografo da revisionare" loading="lazy" />
+        <figcaption>Cronografo · revisione</figcaption>
       </figure>
       <figure class="gw r">
-        <svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="84" fill="#161c25" stroke="#7d8a99" stroke-width="5"/><circle cx="100" cy="100" r="84" fill="none" stroke="#c8a06a" stroke-width="5" stroke-dasharray="6 10"/><circle cx="100" cy="100" r="62" fill="#0c1015"/><g fill="#c8f0d8"><circle cx="100" cy="50" r="4"/><circle cx="150" cy="100" r="4"/><circle cx="100" cy="150" r="4"/><circle cx="50" cy="100" r="4"/></g><line x1="100" y1="100" x2="100" y2="62" stroke="#c8f0d8" stroke-width="5" stroke-linecap="round"/><line x1="100" y1="100" x2="124" y2="100" stroke="#9fb3c8" stroke-width="3" stroke-linecap="round"/><circle cx="100" cy="100" r="5" fill="#c8f0d8"/></svg>
-        <figcaption>Subacqueo · diver</figcaption>
+        <img src="/img/demo-orologiaio/g-diver.webp" alt="Orologio subacqueo vintage" loading="lazy" />
+        <figcaption>Subacqueo · restauro vintage</figcaption>
       </figure>
       <figure class="gw r">
-        <svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="104" r="74" fill="#161c25" stroke="#c8a06a" stroke-width="6"/><rect x="92" y="18" width="16" height="14" rx="3" fill="#c8a06a"/><circle cx="100" cy="34" r="9" fill="none" stroke="#c8a06a" stroke-width="4"/><circle cx="100" cy="104" r="60" fill="#0c1015"/><g stroke="#7d8a99" stroke-width="2"><line x1="100" y1="50" x2="100" y2="60"/><line x1="154" y1="104" x2="144" y2="104"/><line x1="100" y1="158" x2="100" y2="148"/><line x1="46" y1="104" x2="56" y2="104"/></g><line x1="100" y1="104" x2="100" y2="66" stroke="#e7edf3" stroke-width="3.5" stroke-linecap="round"/><line x1="100" y1="104" x2="128" y2="120" stroke="#c8a06a" stroke-width="2.5" stroke-linecap="round"/><circle cx="100" cy="104" r="4.5" fill="#c8a06a"/></svg>
-        <figcaption>Da tasca · primo '900</figcaption>
+        <img src="/img/demo-orologiaio/g-tasca.webp" alt="Orologio da tasca da restaurare" loading="lazy" />
+        <figcaption>Da tasca · restauro</figcaption>
       </figure>
     </div>
   </section>
@@ -450,11 +450,13 @@ import '@fontsource-variable/space-grotesk';
     #handSec{transition:none}
 
     /* SECTIONS */
-    .csection{max-width:1180px;margin:0 auto;padding:clamp(3.5rem,8vw,6.5rem) clamp(1.2rem,5vw,3rem)}
-    .chead{text-align:center;max-width:680px;margin:0 auto clamp(2rem,4vw,3rem)}
-    .ckicker{display:inline-block;font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--bronze);margin-bottom:.9rem}
+    .csection{max-width:1180px;margin:0 auto;padding:clamp(3.5rem,8vw,6.5rem) clamp(1.2rem,5vw,3rem);
+      background-image:radial-gradient(rgba(159,179,200,.05) 1px,transparent 1px);background-size:30px 30px}
+    .chead{text-align:left;max-width:880px;margin:0 0 clamp(2rem,4vw,3rem);padding-bottom:1.1rem;border-bottom:1px solid var(--line)}
+    .ckicker{display:inline-block;font-family:var(--sans);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--bronze);margin-bottom:.9rem;border:1px solid var(--line);border-radius:6px;padding:.32rem .7rem}
+    .ckicker::before{content:'// ';opacity:.6}
     .chead h2,.lab-text h2,.ccta h2{font-size:clamp(1.9rem,4.6vw,3.1rem)}
-    .clead{color:var(--muted);margin-top:.7rem;font-size:1.05rem}
+    .clead{color:var(--muted);margin-top:.7rem;font-size:1.05rem;max-width:64ch}
 
     /* PREVENTIVO */
     .prev-card{display:grid;grid-template-columns:1.25fr .75fr;border:1px solid var(--line);border-radius:20px;overflow:hidden;background:linear-gradient(180deg,var(--panel),var(--bg2))}
@@ -505,6 +507,8 @@ import '@fontsource-variable/space-grotesk';
     .gw:hover{transform:translateY(-6px);border-color:var(--bronze)}
     .gw svg{width:74%;margin:0 auto .8rem;transition:transform .5s var(--ease)}
     .gw:hover svg{transform:rotate(8deg)}
+    .gw img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;margin:0 0 .8rem;transition:transform .5s var(--ease)}
+    .gw:hover img{transform:scale(1.06)}
     .gw figcaption{color:var(--muted);font-size:.86rem}
 
     /* TRUST */
@@ -603,10 +607,12 @@ import '@fontsource-variable/space-grotesk';
     .faq-i[open]{border-color:var(--bronze)}
     .faq-i summary{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.1rem 1.3rem;cursor:pointer;font-family:var(--disp);font-size:1.06rem;color:var(--ink);list-style:none}
     .faq-i summary::-webkit-details-marker{display:none}
-    .faq-x{position:relative;width:18px;height:18px;flex:none}
+    /* toggle FAQ: box tecnico squadrato (firma Cronos) */
+    .faq-x{position:relative;width:24px;height:24px;flex:none;border:1px solid var(--line);border-radius:4px;background:rgba(0,0,0,.25);transition:border-color .3s}
     .faq-x::before,.faq-x::after{content:'';position:absolute;background:var(--bronze);transition:transform .3s var(--ease),opacity .3s}
-    .faq-x::before{top:8px;left:0;width:18px;height:2px}
-    .faq-x::after{top:0;left:8px;width:2px;height:18px}
+    .faq-x::before{top:11px;left:6px;width:12px;height:2px}
+    .faq-x::after{top:5px;left:11px;width:2px;height:12px}
+    .faq-i[open] .faq-x{border-color:var(--bronze)}
     .faq-i[open] .faq-x::after{transform:rotate(90deg);opacity:0}
     .faq-a{padding:0 1.3rem 1.2rem;color:var(--muted);font-size:.95rem}
 
@@ -648,7 +654,8 @@ import '@fontsource-variable/space-grotesk';
     @keyframes wapulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.6);opacity:0}}
 
     /* reveal */
-    .r{opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+    /* Reveal — ingresso laterale "da blueprint", firma di Cronos */
+    .r{opacity:0;transform:translateX(-30px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
     .r.in{opacity:1;transform:none}
 
     @media (max-width:960px){
@@ -661,6 +668,7 @@ import '@fontsource-variable/space-grotesk';
     }
     @media (max-width:680px){
       .clinks{display:none}.cnav-toggle{display:grid;place-items:center}
+      .cnav>.cbtn-solid{display:none}
       .cnav.open .clinks{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1.1rem;background:rgba(12,16,21,.98);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:1.2rem clamp(1.2rem,5vw,3rem) 1.5rem;margin:0}
       .opts-grid{grid-template-columns:1fr}.lab-stats{grid-template-columns:1fr 1fr}
       .lead-row{grid-template-columns:1fr}.tstep-lbl{font-size:.62rem}

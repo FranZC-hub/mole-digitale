@@ -108,7 +108,8 @@ main:focus { outline: none; }
 
 /* Barra CTA fissa su mobile */
 .mobile-cta { position:fixed; left:0; right:0; bottom:0; z-index:860; display:none; gap:.6rem; padding:.6rem .7rem calc(.6rem + env(safe-area-inset-bottom,0px)); background:rgba(8,12,22,.92); backdrop-filter:blur(12px); border-top:1px solid var(--border); }
-.mobile-cta a { flex:1; display:flex; align-items:center; justify-content:center; gap:.4rem; padding:.85rem; border-radius:12px; font-weight:700; font-size:.95rem; text-decoration:none; }
+.mobile-cta a { flex:1; display:flex; align-items:center; justify-content:center; gap:.35rem; padding:.8rem .5rem; border-radius:12px; font-weight:700; font-size:.9rem; white-space:nowrap; text-decoration:none; }
+@media (max-width:380px){ .mobile-cta a { font-size:.82rem; } }
 .mobile-cta .mc-wa { background:#25d366; color:#06251a; }
 .mobile-cta .mc-prev { background:var(--c2); color:#06121a; }
 @media (max-width:760px) {

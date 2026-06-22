@@ -3,13 +3,13 @@ import Layout from '../layouts/Layout.astro';
 ---
 <Layout
   title="Preventivo gratis — quanto costa il tuo sito | Mole Digitale"
-  description="Calcola in 30 secondi quanto costa il tuo sito con Mole Digitale: scegli il pacchetto, aggiungi gli extra e ricevi subito una stima chiara, senza impegno."
+  description="Calcola in un minuto quanto costa il tuo sito con Mole Digitale: scegli il pacchetto, aggiungi grafica, funzioni e marketing e ricevi subito una stima chiara con tempi di consegna. Senza impegno."
 >
   <section class="section" style="padding-top:8rem;">
     <div class="section-head" data-reveal>
       <span class="kicker">Preventivo</span>
       <h1>Quanto costa il <span class="grad">tuo sito?</span></h1>
-      <p class="section-lead">Scegli il pacchetto e aggiungi solo ciò che ti serve: la stima si aggiorna in tempo reale. Senza impegno — la cifra definitiva te la confermiamo noi, e la prima bozza è gratis.</p>
+      <p class="section-lead">Scegli il pacchetto e aggiungi solo ciò che ti serve: la stima e i tempi di consegna si aggiornano in tempo reale. Senza impegno — la cifra definitiva te la confermiamo noi, e la prima bozza è gratis.</p>
     </div>
 
     <div class="prev-wrap">
@@ -19,29 +19,70 @@ import Layout from '../layouts/Layout.astro';
           <label class="opt pack"><input type="radio" name="tipo" value="390" data-pack="essenziale" checked />
             <span><b class="opt-t">Essenziale</b><small>Onepage · contatti, mappa, WhatsApp</small></span> <b class="opt-p">€390</b></label>
           <label class="opt pack"><input type="radio" name="tipo" value="690" data-pack="attivita" />
-            <span><b class="opt-t">Attività <i class="tag">consigliato</i></b><small>Fino a 6 pagine · menu, prenotazioni, SEO locale, galleria pro</small></span> <b class="opt-p">€690</b></label>
+            <span><b class="opt-t">Attività <i class="opt-tag">consigliato</i></b><small>Fino a 6 pagine · menu, prenotazioni, SEO locale, galleria pro</small></span> <b class="opt-p">€690</b></label>
           <label class="opt pack"><input type="radio" name="tipo" value="1200" data-pack="ecommerce" />
-            <span><b class="opt-t">E-commerce</b><small>Shop con carrello, schede prodotto e pagamenti</small></span> <b class="opt-p">da €1200</b></label>
+            <span><b class="opt-t">E-commerce</b><small>Shop con carrello, schede prodotto e pagamenti online</small></span> <b class="opt-p">da €1200</b></label>
+          <label class="opt pack"><input type="radio" name="tipo" value="2500" data-pack="gestionale" />
+            <span><b class="opt-t">Gestionale su misura</b><small>Web app / area riservata · prenotazioni, ordini, magazzino o clienti — sviluppato per te</small></span> <b class="opt-p">da €2500</b></label>
+          <p class="pack-incl" id="packIncl"></p>
         </fieldset>
 
         <fieldset>
-          <legend>2 · Pagine extra?</legend>
-          <label class="opt"><input type="radio" name="pagine" value="0" checked /> <span>Vanno bene quelle incluse</span> <b>incluse</b></label>
-          <label class="opt"><input type="radio" name="pagine" value="120" /> <span>+2 pagine</span> <b>+€120</b></label>
-          <label class="opt"><input type="radio" name="pagine" value="240" /> <span>+4 pagine</span> <b>+€240</b></label>
+          <legend>2 · Pagine aggiuntive</legend>
+          <div class="opt opt-static">
+            <span>Oltre a quelle incluse nel pacchetto<small>Es. servizi dettagliati, chi siamo, blog, landing dedicate…</small></span>
+            <div class="stepper">
+              <button type="button" class="step-btn" data-step="-1" aria-label="Togli una pagina">−</button>
+              <input type="text" id="pagineN" value="0" inputmode="numeric" readonly aria-label="Numero di pagine aggiuntive" />
+              <button type="button" class="step-btn" data-step="1" aria-label="Aggiungi una pagina">+</button>
+            </div>
+          </div>
+          <p class="field-hint">€60 a pagina · le pagine incluse nel pacchetto restano gratis</p>
         </fieldset>
 
         <fieldset>
-          <legend>3 · Funzioni extra</legend>
-          <label class="opt" data-feat="prenotazioni"><input type="checkbox" name="extra" value="90" /> <span>Prenotazioni / appuntamenti</span> <b class="x-price">+€90</b></label>
-          <label class="opt" data-feat="menu"><input type="checkbox" name="extra" value="60" /> <span>Menu / catalogo digitale</span> <b class="x-price">+€60</b></label>
-          <label class="opt" data-feat="galleria"><input type="checkbox" name="extra" value="50" /> <span>Galleria foto pro</span> <b class="x-price">+€50</b></label>
-          <label class="opt" data-feat="lingue"><input type="checkbox" name="extra" value="150" /> <span>Sito in più lingue</span> <b class="x-price">+€150</b></label>
+          <legend>3 · Grafica &amp; contenuti</legend>
+          <label class="opt" data-feat="logo"><input type="checkbox" value="150" /> <span>Logo o restyling del logo<small>Identità grafica coordinata: colori, font, biglietto da visita digitale</small></span> <b class="x-price">+€150</b></label>
+          <label class="opt" data-feat="testi"><input type="checkbox" value="120" /> <span>Stesura testi professionali<small>Scriviamo noi i testi del sito, pensati per farti scegliere dai clienti</small></span> <b class="x-price">+€120</b></label>
+          <label class="opt" data-feat="foto"><input type="checkbox" value="200" /> <span>Servizio fotografico dell'attività<small>Foto professionali di locale, prodotti o team, ottimizzate per il web</small></span> <b class="x-price">+€200</b></label>
         </fieldset>
 
         <fieldset>
-          <legend>4 · Hosting &amp; dominio <i class="tag">sempre incluso</i></legend>
-          <label class="opt opt-static"><span>Server veloce, dominio, certificato SSL, backup e assistenza tecnica</span> <b>€29/mese + IVA</b></label>
+          <legend>4 · Funzioni del sito</legend>
+          <label class="opt" data-feat="prenotazioni"><input type="checkbox" value="90" /> <span>Prenotazioni / appuntamenti</span> <b class="x-price">+€90</b></label>
+          <label class="opt" data-feat="menu"><input type="checkbox" value="60" /> <span>Menu / catalogo digitale</span> <b class="x-price">+€60</b></label>
+          <label class="opt" data-feat="galleria"><input type="checkbox" value="50" /> <span>Galleria foto pro</span> <b class="x-price">+€50</b></label>
+          <label class="opt" data-feat="blog"><input type="checkbox" value="90" /> <span>Blog / sezione news<small>Per pubblicare novità e farti trovare su Google</small></span> <b class="x-price">+€90</b></label>
+          <label class="opt" data-feat="newsletter"><input type="checkbox" value="80" /> <span>Newsletter / email marketing</span> <b class="x-price">+€80</b></label>
+          <label class="opt" data-feat="form"><input type="checkbox" value="70" /> <span>Modulo preventivi / form avanzato</span> <b class="x-price">+€70</b></label>
+          <label class="opt" data-feat="area"><input type="checkbox" value="200" /> <span>Area riservata / login clienti</span> <b class="x-price">+€200</b></label>
+          <label class="opt" data-feat="lingue"><input type="checkbox" value="150" /> <span>Sito in più lingue</span> <b class="x-price">+€150</b></label>
+        </fieldset>
+
+        <fieldset id="ecomFields" hidden>
+          <legend>5 · Solo per l'e-commerce <i class="opt-tag">shop</i></legend>
+          <span class="field-sub">Quanti prodotti vuoi vendere?</span>
+          <label class="opt"><input type="radio" name="prodotti" value="0" data-label="fino a 20 prodotti" checked /> <span>Fino a 20 prodotti</span> <b>incluso</b></label>
+          <label class="opt"><input type="radio" name="prodotti" value="150" data-label="fino a 50 prodotti" /> <span>Fino a 50 prodotti</span> <b>+€150</b></label>
+          <label class="opt"><input type="radio" name="prodotti" value="350" data-label="fino a 200 prodotti" /> <span>Fino a 200 prodotti</span> <b>+€350</b></label>
+          <label class="opt"><input type="radio" name="prodotti" value="600" data-label="oltre 200 prodotti" /> <span>Oltre 200 prodotti</span> <b>+€600</b></label>
+          <span class="field-sub" style="margin-top:.8rem;">Extra dello shop</span>
+          <label class="opt" data-feat="spedizioni"><input type="checkbox" value="90" /> <span>Spedizioni e corrieri<small>Calcolo automatico costi, tracking, ritiro in negozio</small></span> <b class="x-price">+€90</b></label>
+          <label class="opt" data-feat="sconti"><input type="checkbox" value="60" /> <span>Codici sconto e promozioni</span> <b class="x-price">+€60</b></label>
+        </fieldset>
+
+        <fieldset>
+          <legend>6 · Visibilità &amp; marketing</legend>
+          <label class="opt" data-feat="google"><input type="checkbox" value="90" /> <span>Scheda Google Business<small>Creazione e ottimizzazione del profilo che appare su Maps e Ricerca</small></span> <b class="x-price">+€90</b></label>
+          <label class="opt" data-feat="seo"><input type="checkbox" value="120" /> <span>SEO locale avanzata<small>Per farti trovare quando a Torino cercano cosa offri</small></span> <b class="x-price">+€120</b></label>
+          <label class="opt" data-feat="recensioni"><input type="checkbox" value="50" /> <span>Widget recensioni Google</span> <b class="x-price">+€50</b></label>
+          <label class="opt" data-feat="social"><input type="checkbox" value="50" /> <span>Collegamento social (Instagram/Facebook)</span> <b class="x-price">+€50</b></label>
+        </fieldset>
+
+        <fieldset>
+          <legend>7 · Hosting &amp; gestione <i class="opt-tag">canone mensile</i></legend>
+          <label class="opt"><input type="radio" name="canone" value="29" data-label="Hosting & assistenza" checked /> <span><b class="opt-t">Hosting &amp; assistenza</b><small>Server veloce, dominio, certificato SSL, backup e assistenza tecnica</small></span> <b class="opt-p">€29/mese</b></label>
+          <label class="opt"><input type="radio" name="canone" value="49" data-label="Cura completa" /> <span><b class="opt-t">Cura completa <i class="opt-tag">comodo</i></b><small>Tutto il precedente + fino a 1 ora di modifiche al mese e report periodico</small></span> <b class="opt-p">€49/mese</b></label>
         </fieldset>
       </form>
 
@@ -49,9 +90,10 @@ import Layout from '../layouts/Layout.astro';
         <span class="kicker">La tua stima</span>
         <div class="prev-total"><span class="from-tag" id="prevFrom" hidden>da&nbsp;</span><span class="cur">€</span><span id="prevAmount">390</span></div>
         <p class="prev-once">una tantum + IVA</p>
+        <p class="prev-delivery" id="prevDelivery">⏱️ Pronto in circa 5 giorni lavorativi</p>
         <ul class="prev-breakdown" id="prevBreak"></ul>
-        <p class="prev-canone-line">+ <b>€29/mese + IVA</b> · hosting, dominio, SSL e assistenza</p>
-        <p class="prev-note">Stima indicativa: la cifra definitiva te la confermiamo dopo una chiacchierata. Prima bozza gratis, nessun anticipo.</p>
+        <p class="prev-canone-line" id="prevCanone">+ <b>€29/mese + IVA</b> · hosting, dominio, SSL e assistenza</p>
+        <p class="prev-note">Stima indicativa: la cifra definitiva te la confermiamo dopo una chiacchierata. Prima bozza gratis, nessun anticipo. Tutti i prezzi sono IVA esclusa.</p>
         <a href="/#contatti" class="btn btn-primary btn-block btn-lg btn-magnetic">Richiedi questo preventivo →</a>
         <a id="prevWa" href="https://wa.me/393662102203" target="_blank" rel="noopener" class="btn btn-ghost btn-block">Chiedi su WhatsApp</a>
       </aside>
@@ -60,34 +102,49 @@ import Layout from '../layouts/Layout.astro';
 
   <style>
     .prev-wrap { display:grid; grid-template-columns:1.4fr 1fr; gap:2rem; align-items:start; max-width:1000px; margin:0 auto; }
+    .prev-wrap > * { min-width:0; }
     .prev-form { display:flex; flex-direction:column; gap:1.4rem; }
-    .prev-form fieldset { border:1px solid var(--border); border-radius:var(--radius-sm); padding:1.2rem 1.3rem; }
+    .prev-form fieldset { border:1px solid var(--border); border-radius:var(--radius-sm); padding:1.2rem 1.3rem; min-inline-size:0; }
+    .prev-form, .prev-form fieldset { max-width:100%; }
     .prev-form legend { font-family:'Space Grotesk Variable','Space Grotesk'; font-weight:600; padding:0 .5rem; color:var(--c2); font-size:.95rem; }
     .opt { display:flex; align-items:center; gap:.7rem; padding:.6rem .2rem; cursor:pointer; border-bottom:1px solid rgba(255,255,255,.05); }
     .opt:last-child { border-bottom:0; }
     .opt input { accent-color:var(--c1); width:18px; height:18px; flex:none; }
-    .opt span { flex:1; font-size:.98rem; }
+    .opt span { flex:1; min-width:0; font-size:.98rem; }
     .opt b { color:var(--muted); font-size:.9rem; font-family:'Space Grotesk Variable','Space Grotesk'; }
+    .opt small { display:block; color:var(--muted-2); font-size:.82rem; margin-top:.18rem; font-weight:400; line-height:1.4; }
     /* pacchetti */
     .opt.pack { align-items:flex-start; padding:.8rem .2rem; }
     .opt .opt-t { display:block; font-size:1rem; color:var(--text,#f3f3f7); }
-    .opt small { display:block; color:var(--muted-2); font-size:.82rem; margin-top:.18rem; font-weight:400; line-height:1.4; }
-    .opt .opt-p { color:var(--c2); font-size:1rem; white-space:nowrap; }
-    .tag { font-style:normal; font-size:.64rem; text-transform:uppercase; letter-spacing:.07em; color:var(--c1); border:1px solid var(--c1); padding:.06rem .42rem; border-radius:999px; margin-left:.4rem; vertical-align:middle; font-family:'Space Grotesk Variable','Space Grotesk'; }
+    .opt .opt-p { color:var(--c2); font-size:1rem; white-space:nowrap; flex:none; }
+    .opt-tag { position:static; display:inline-block; font-style:normal; font-size:.64rem; text-transform:uppercase; letter-spacing:.07em; color:var(--c1); border:1px solid var(--c1); padding:.06rem .42rem; border-radius:999px; margin-left:.4rem; vertical-align:middle; font-family:'Space Grotesk Variable','Space Grotesk'; }
+    .pack-incl { margin:.9rem 0 0; padding-top:.8rem; border-top:1px solid var(--border); color:var(--muted); font-size:.84rem; line-height:1.5; }
+    .pack-incl b { color:var(--c1); font-weight:600; }
     /* extra inclusa nel pacchetto */
     .opt.is-incl { opacity:.72; cursor:default; }
     .opt.is-incl .x-price { color:var(--c1); font-style:italic; }
     .opt-static { cursor:default; }
+    .field-hint { color:var(--muted-2); font-size:.8rem; margin:.6rem 0 0; }
+    .field-sub { display:block; font-size:.82rem; color:var(--muted); margin:.2rem 0 .3rem; font-weight:500; }
+    /* stepper */
+    .stepper { display:flex; align-items:center; gap:.5rem; flex:none; }
+    .step-btn { width:36px; height:36px; border-radius:9px; border:1px solid var(--border); background:transparent; color:var(--text,#f3f3f7); font-size:1.3rem; line-height:1; cursor:pointer; transition:border-color .2s, color .2s; }
+    .step-btn:hover { border-color:var(--c1); color:var(--c1); }
+    .stepper input { width:48px; height:36px; text-align:center; background:transparent; border:1px solid var(--border); border-radius:9px; color:var(--text,#f3f3f7); font-family:'Space Grotesk Variable','Space Grotesk'; font-size:1.05rem; }
+    /* e-commerce highlight */
+    #ecomFields { border-color:color-mix(in srgb, var(--c1) 45%, var(--border)); background:color-mix(in srgb, var(--c1) 5%, transparent); }
+    /* output */
     .prev-out { position:sticky; top:90px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.8rem; text-align:center; backdrop-filter:blur(10px); }
     .prev-total { font-family:'Space Grotesk Variable','Space Grotesk'; font-size:3.4rem; font-weight:700; line-height:1; margin:.6rem 0 .2rem; background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; display:inline-flex; align-items:flex-start; gap:.1rem; }
     .prev-total .cur { font-size:1.6rem; margin-top:.4rem; }
     .prev-total .from-tag { font-size:1.5rem; margin-top:.5rem; }
-    .prev-once { color:var(--muted); font-size:.9rem; margin-bottom:1rem; }
+    .prev-once { color:var(--muted); font-size:.9rem; margin-bottom:.7rem; }
+    .prev-delivery { font-size:.86rem; color:var(--c1); background:color-mix(in srgb, var(--c1) 10%, transparent); border:1px solid color-mix(in srgb, var(--c1) 30%, transparent); border-radius:999px; padding:.4rem .8rem; display:inline-block; margin-bottom:1.1rem; }
     .prev-breakdown { list-style:none; text-align:left; margin:0 0 1rem; display:grid; gap:.45rem; font-size:.9rem; border-top:1px solid var(--border); padding-top:1rem; }
     .prev-breakdown li { display:flex; justify-content:space-between; gap:1rem; color:var(--muted); }
     .prev-breakdown li b { color:var(--c2); font-family:'Space Grotesk Variable','Space Grotesk'; white-space:nowrap; }
     .prev-breakdown li.bd-base span, .prev-breakdown li.bd-base b { color:var(--text,#f3f3f7); font-weight:600; }
-    .prev-canone-line { color:var(--muted); font-size:.86rem; margin-bottom:1rem; }
+    .prev-canone-line { color:var(--muted); font-size:.86rem; margin-bottom:1rem; border-top:1px dashed var(--border); padding-top:1rem; }
     .prev-canone-line b { color:var(--c2); }
     .prev-note { color:var(--muted-2); font-size:.84rem; margin:0 0 1.4rem; }
     .prev-out .btn { margin-bottom:.7rem; }
@@ -100,29 +157,72 @@ import Layout from '../layouts/Layout.astro';
     const fromEl = document.getElementById('prevFrom');
     const breakEl = document.getElementById('prevBreak');
     const waEl = document.getElementById('prevWa');
-    const CANONE = 29;
+    const pagineN = document.getElementById('pagineN');
+    const ecomFields = document.getElementById('ecomFields');
+    const canoneLineEl = document.getElementById('prevCanone');
+    const deliveryEl = document.getElementById('prevDelivery');
+    const packInclEl = document.getElementById('packIncl');
 
-    const PACK_LABEL = { 390: 'Essenziale (onepage)', 690: 'Attività (sito completo)', 1200: 'E-commerce' };
+    const PACKS = {
+      390:  { pack: 'essenziale', label: 'Essenziale (onepage)',       days: 5 },
+      690:  { pack: 'attivita',   label: 'Attività (sito completo)',    days: 9 },
+      1200: { pack: 'ecommerce',  label: 'E-commerce',                  days: 12 },
+      2500: { pack: 'gestionale', label: 'Gestionale su misura',        days: 35 },
+    };
+    // pacchetti con prezzo "da €" (di partenza), non fisso
+    const FROM_PACKS = ['ecommerce', 'gestionale'];
     // funzioni già incluse in ciascun pacchetto: non si pagano due volte
-    const INCLUDED = { essenziale: [], attivita: ['prenotazioni', 'menu', 'galleria'], ecommerce: ['prenotazioni', 'menu', 'galleria'] };
-    const FEAT_LABEL = { prenotazioni: 'Prenotazioni', menu: 'Menu / catalogo', galleria: 'Galleria pro', lingue: 'Più lingue' };
+    const INCLUDED = {
+      essenziale: [],
+      attivita:   ['prenotazioni', 'menu', 'galleria', 'google'],
+      ecommerce:  ['prenotazioni', 'menu', 'galleria', 'google'],
+      gestionale: ['area', 'form', 'prenotazioni', 'google'],
+    };
+    const PACK_INCL_TXT = {
+      essenziale: 'Incluso: <b>onepage</b>, contatti, mappa, WhatsApp, versione mobile e desktop.',
+      attivita:   'Incluso: <b>fino a 6 pagine</b>, menu/catalogo, prenotazioni, galleria pro, scheda Google e SEO locale.',
+      ecommerce:  'Incluso: <b>shop con carrello</b>, schede prodotto, pagamenti online, prenotazioni, menu, galleria e scheda Google.',
+      gestionale: 'Incluso: <b>web app su misura</b>, area riservata con login, gestione dei dati (prenotazioni, ordini, clienti o magazzino), form avanzati e sviluppo dedicato. La cifra dipende dalle funzioni: la definiamo insieme.',
+    };
+    const FEAT_LABEL = {
+      logo: 'Logo', testi: 'Testi pro', foto: 'Servizio foto',
+      prenotazioni: 'Prenotazioni', menu: 'Menu / catalogo', galleria: 'Galleria pro',
+      blog: 'Blog / news', newsletter: 'Newsletter', form: 'Form avanzato', area: 'Area riservata', lingue: 'Più lingue',
+      spedizioni: 'Spedizioni shop', sconti: 'Codici sconto',
+      google: 'Google Business', seo: 'SEO avanzata', recensioni: 'Recensioni Google', social: 'Social',
+    };
+
+    function fmtDays(d) {
+      d = Math.round(d);
+      if (d <= 20) return 'circa ' + d + ' giorni lavorativi';
+      return 'circa ' + Math.round(d / 5) + ' settimane';
+    }
 
     function calc() {
       const tipoInput = form.querySelector('input[name="tipo"]:checked');
       const tipo = Number(tipoInput.value);
-      const pack = tipoInput.dataset.pack;
+      const meta = PACKS[tipo];
+      const pack = meta.pack;
       const included = INCLUDED[pack] || [];
       const isEcom = pack === 'ecommerce';
+      const isFrom = FROM_PACKS.includes(pack);
 
       let total = tipo;
-      const lines = [{ label: PACK_LABEL[tipo], val: tipo, base: true }];
+      let days = meta.days;
+      const lines = [{ label: meta.label, val: tipo, base: true }];
 
-      // pagine extra
-      const pagine = Number(form.querySelector('input[name="pagine"]:checked').value);
-      if (pagine) { total += pagine; lines.push({ label: 'Pagine extra', val: pagine }); }
+      packInclEl.innerHTML = PACK_INCL_TXT[pack];
 
-      // funzioni extra (con gestione "incluso nel pacchetto")
+      // pagine extra (stepper)
+      const np = Number(pagineN.value) || 0;
+      if (np > 0) { const v = np * 60; total += v; days += Math.ceil(np / 2); lines.push({ label: 'Pagine aggiuntive ×' + np, val: v }); }
+
+      // mostra/nascondi blocco e-commerce PRIMA di leggere le funzioni
+      ecomFields.hidden = !isEcom;
+
+      // funzioni a checkbox (grafica, funzioni, marketing, extra shop)
       form.querySelectorAll('label[data-feat]').forEach((lab) => {
+        if (lab.closest('[hidden]')) return; // ignora gli extra shop quando non è e-commerce
         const feat = lab.dataset.feat;
         const cb = lab.querySelector('input');
         const priceEl = lab.querySelector('.x-price');
@@ -130,25 +230,56 @@ import Layout from '../layouts/Layout.astro';
           if (!cb.disabled) cb.dataset.auto = cb.checked ? '0' : '1';
           cb.checked = true; cb.disabled = true;
           lab.classList.add('is-incl');
-          priceEl.textContent = 'incluso';
+          if (priceEl) priceEl.textContent = 'incluso';
         } else {
           if (cb.disabled) { cb.disabled = false; if (cb.dataset.auto === '1') cb.checked = false; delete cb.dataset.auto; }
           lab.classList.remove('is-incl');
-          priceEl.textContent = '+€' + cb.value;
-          if (cb.checked) { total += Number(cb.value); lines.push({ label: FEAT_LABEL[feat], val: Number(cb.value) }); }
+          if (priceEl) priceEl.textContent = '+€' + cb.value;
+          if (cb.checked) { total += Number(cb.value); days += 1; lines.push({ label: FEAT_LABEL[feat], val: Number(cb.value) }); }
         }
       });
 
-      // output
-      fromEl.hidden = !isEcom;
+      // numero prodotti (solo e-commerce)
+      if (isEcom) {
+        const prod = form.querySelector('input[name="prodotti"]:checked');
+        const pv = Number(prod.value);
+        days += 3;
+        if (pv > 0) { total += pv; lines.push({ label: 'Catalogo: ' + prod.dataset.label, val: pv }); }
+      }
+
+      // output principale
+      fromEl.hidden = !isFrom;
       amountEl.textContent = total;
       breakEl.innerHTML = lines.map((l) =>
-        `<li class="${l.base ? 'bd-base' : ''}"><span>${l.label}</span><b>${l.base && isEcom ? 'da €' : '€'}${l.val}</b></li>`
+        `<li class="${l.base ? 'bd-base' : ''}"><span>${l.label}</span><b>${l.base && isFrom ? 'da €' : '€'}${l.val}</b></li>`
       ).join('');
 
-      const msg = `Ciao! Dal preventivo online: ${PACK_LABEL[tipo]} ${isEcom ? 'da ' : ''}~€${total} + IVA una tantum, più €${CANONE}/mese + IVA di hosting. Possiamo sentirci?`;
+      // canone mensile
+      const canoneInput = form.querySelector('input[name="canone"]:checked');
+      const canone = Number(canoneInput.value);
+      canoneLineEl.innerHTML = `+ <b>€${canone}/mese + IVA</b> · ${canone === 29 ? 'hosting, dominio, SSL e assistenza' : 'hosting + fino a 1 ora di modifiche al mese'}`;
+
+      // tempo di consegna
+      deliveryEl.textContent = '⏱️ Pronto in ' + fmtDays(days);
+
+      // messaggio WhatsApp precompilato
+      const extras = lines.slice(1).map((l) => l.label).join(', ') || 'nessuno';
+      const msg =
+        `Ciao! Dal preventivo online di Mole Digitale:\n` +
+        `• ${meta.label}: ${isFrom ? 'da ' : ''}~€${total} + IVA una tantum\n` +
+        `• Canone ${canoneInput.dataset.label}: €${canone}/mese + IVA\n` +
+        `• Consegna stimata: ${fmtDays(days)}\n` +
+        `• Extra: ${extras}\n` +
+        `Possiamo sentirci?`;
       waEl.href = 'https://wa.me/393662102203?text=' + encodeURIComponent(msg);
     }
+
+    // stepper pagine
+    document.querySelectorAll('.step-btn').forEach((b) => b.addEventListener('click', () => {
+      const n = Math.max(0, Math.min(12, (Number(pagineN.value) || 0) + Number(b.dataset.step)));
+      pagineN.value = n;
+      calc();
+    }));
 
     form.addEventListener('change', calc);
     calc();

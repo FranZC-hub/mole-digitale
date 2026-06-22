@@ -11,7 +11,7 @@ const { post } = Astro.props;
 const { Content } = await render(post);
 const fmt = post.data.date.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
 ---
-<Layout title={post.data.title} description={post.data.description}>
+<Layout title={post.data.title} description={post.data.description} article={{ datePublished: post.data.date.toISOString() }}>
   <article class="section blog-article" style="padding-top:8rem;">
     <a href="/blog" class="blog-back" data-reveal>← Tutti gli articoli</a>
     <time class="kicker" datetime={post.data.date.toISOString().slice(0, 10)} data-reveal>{fmt}</time>

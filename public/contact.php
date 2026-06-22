@@ -71,10 +71,11 @@ if (!is_array($config)) {
 // Input: JSON (fetch) oppure form classico (senza JS)
 $data = $isJson ? $jsonIn : $_POST;
 
-$nome      = trim($data['nome']      ?? '');
-$attivita  = trim($data['attivita']  ?? '');
-$telefono  = trim($data['telefono']  ?? '');
-$messaggio = trim($data['messaggio'] ?? '');
+// Tetti di lunghezza: evitano abusi e payload enormi
+$nome      = mb_substr(trim($data['nome']      ?? ''), 0, 120);
+$attivita  = mb_substr(trim($data['attivita']  ?? ''), 0, 120);
+$telefono  = mb_substr(trim($data['telefono']  ?? ''), 0, 120);
+$messaggio = mb_substr(trim($data['messaggio'] ?? ''), 0, 3000);
 $website   = $data['website'] ?? ''; // honeypot anti-spam
 
 // Un bot ha compilato il campo nascosto: rispondiamo "ok" senza inviare.
@@ -85,7 +86,13 @@ if ($nome === '' || $attivita === '' || $telefono === '') {
 }
 
 // Backup del lead su CSV (sopra la cartella pubblica): non si perde nulla anche se l'email fallisce.
-$clean = fn($s) => str_replace('"', "'", $s);
+// Una riga = un lead (niente a-capo) e neutralizzo la CSV/formula-injection di Excel.
+$clean = function ($s) {
+  $s = str_replace(["\r", "\n", "\t"], ' ', (string) $s);
+  $s = str_replace('"', "'", $s);
+  if ($s !== '' && in_array($s[0], ['=', '+', '-', '@'], true)) { $s = "'" . $s; }
+  return $s;
+};
 @file_put_contents(
   __DIR__ . '/../leads.csv',
   '"' . date('Y-m-d H:i') . '","' . $clean($nome) . '","' . $clean($attivita) . '","' . $clean($telefono) . '","' . $clean($messaggio) . "\"\n",

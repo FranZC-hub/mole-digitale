@@ -32,6 +32,7 @@ import '@fontsource-variable/playfair-display';
       <a href="#galleria">Galleria</a>
       <a href="#contatti">Contatti</a>
     </nav>
+    <button class="dnav-toggle" id="dtoggle" aria-label="Apri il menu" aria-expanded="false"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     <a href="#contatti" class="dbtn dbtn-solid dmag">Prenota</a>
   </header>
 
@@ -189,6 +190,8 @@ import '@fontsource-variable/playfair-display';
     .dlinks a{font-size:.95rem;color:var(--muted);position:relative;transition:color .25s}
     .dlinks a::after{content:'';position:absolute;left:0;bottom:-5px;height:1px;width:0;background:var(--gold);transition:width .3s var(--easel)}
     .dlinks a:hover{color:var(--cream)} .dlinks a:hover::after{width:100%}
+    .dnav-toggle{display:none;background:none;border:0;color:var(--cream);cursor:pointer;width:44px;height:44px;border-radius:10px;place-items:center;margin-left:auto}
+    .dnav-toggle:hover{background:rgba(246,239,228,.08)}
 
     .dbtn{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.6rem;border-radius:999px;font-weight:600;font-size:.95rem;cursor:pointer;transition:transform .25s var(--easel),background .25s,color .25s;white-space:nowrap}
     .dbtn-solid{background:var(--gold);color:#241a0c;box-shadow:0 12px 30px -10px rgba(216,166,87,.7)}
@@ -283,6 +286,9 @@ import '@fontsource-variable/playfair-display';
       .dmenu-grid{grid-template-columns:1fr}
       .dgal-grid{grid-template-columns:repeat(2,1fr)}
       .dlinks{display:none}
+      .dnav>.dbtn{display:none}
+      .dnav-toggle{display:grid}
+      .dnav.dopen .dlinks{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1.1rem;background:rgba(20,17,13,.97);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:1.2rem clamp(1.2rem,5vw,3rem) 1.5rem}
     }
     @media (prefers-reduced-motion:reduce){
       .r,.hl{opacity:1!important;transform:none!important}
@@ -304,6 +310,13 @@ import '@fontsource-variable/playfair-display';
     // Nav solid on scroll
     const dnav = document.getElementById('dnav');
     const onScroll = (y) => dnav.classList.toggle('solid', y > 40);
+
+    // menu mobile (hamburger)
+    const dtoggle = document.querySelector('.dnav-toggle');
+    if (dtoggle) {
+      dtoggle.addEventListener('click', () => { const o = dnav.classList.toggle('dopen'); dtoggle.setAttribute('aria-expanded', String(o)); });
+      document.querySelectorAll('.dlinks a').forEach((a) => a.addEventListener('click', () => dnav.classList.remove('dopen')));
+    }
 
     if (!reduced) {
       const lenis = new Lenis({ lerp: 0.1 });
