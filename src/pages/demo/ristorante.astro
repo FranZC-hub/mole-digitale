@@ -22,16 +22,16 @@ import '@fontsource-variable/playfair-display';
 
   <!-- NAV -->
   <header class="dnav" id="dnav">
-    <a href="#top" class="dbrand">
-      <span class="sun" aria-hidden="true"></span>
-      Trattoria <em>del Sole</em>
-    </a>
     <nav class="dlinks">
       <a href="#storia">Storia</a>
       <a href="#menu">Menu</a>
       <a href="#galleria">Galleria</a>
       <a href="#contatti">Contatti</a>
     </nav>
+    <a href="#top" class="dbrand">
+      <span class="sun" aria-hidden="true"></span>
+      Trattoria <em>del Sole</em>
+    </a>
     <button class="dnav-toggle" id="dtoggle" aria-label="Apri il menu" aria-expanded="false"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     <a href="#contatti" class="dbtn dbtn-solid dmag">Prenota</a>
   </header>
@@ -180,13 +180,15 @@ import '@fontsource-variable/playfair-display';
     .demo-flag b{color:var(--gold)}
 
     /* NAV */
-    .dnav{position:fixed;top:31px;left:0;right:0;z-index:150;display:flex;align-items:center;gap:1.5rem;
+    /* NAV a brand CENTRATO (firma della trattoria): link a sx · marchio al centro · CTA a dx */
+    .dnav{position:fixed;top:31px;left:0;right:0;z-index:150;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:1rem;
       padding:1.1rem clamp(1rem,4vw,3rem);transition:.4s var(--easel)}
     .dnav.solid{top:31px;background:rgba(20,17,13,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding-top:.8rem;padding-bottom:.8rem}
-    .dbrand{font-family:var(--serif);font-size:1.4rem;font-weight:600;display:inline-flex;align-items:center;gap:.6rem}
+    .dbrand{grid-column:2;justify-self:center;font-family:var(--serif);font-size:1.5rem;font-weight:600;display:inline-flex;align-items:center;gap:.6rem;text-align:center}
     .dbrand em{font-style:italic;color:var(--gold);margin-left:-.15rem}
     .sun{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle,#f1c27a,var(--gold));box-shadow:0 0 0 3px rgba(216,166,87,.25),0 0 18px rgba(216,166,87,.6);flex:none}
-    .dlinks{display:flex;gap:1.8rem;margin-left:auto}
+    .dlinks{grid-column:1;justify-self:start;display:flex;gap:1.8rem}
+    .dnav>.dbtn{grid-column:3;justify-self:end}
     .dlinks a{font-size:.95rem;color:var(--muted);position:relative;transition:color .25s}
     .dlinks a::after{content:'';position:absolute;left:0;bottom:-5px;height:1px;width:0;background:var(--gold);transition:width .3s var(--easel)}
     .dlinks a:hover{color:var(--cream)} .dlinks a:hover::after{width:100%}
@@ -285,9 +287,11 @@ import '@fontsource-variable/playfair-display';
       .dmedia img{height:360px}
       .dmenu-grid{grid-template-columns:1fr}
       .dgal-grid{grid-template-columns:repeat(2,1fr)}
+      .dnav{grid-template-columns:1fr auto}
+      .dbrand{grid-column:1;justify-self:start;font-size:1.35rem}
       .dlinks{display:none}
       .dnav>.dbtn{display:none}
-      .dnav-toggle{display:grid}
+      .dnav-toggle{grid-column:2;justify-self:end;display:grid}
       .dnav.dopen .dlinks{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1.1rem;background:rgba(20,17,13,.97);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:1.2rem clamp(1.2rem,5vw,3rem) 1.5rem}
     }
     @media (prefers-reduced-motion:reduce){

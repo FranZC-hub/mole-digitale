@@ -2,7 +2,7 @@
 // DEMO — Bottega Subalpina (e-commerce gourmet). Tema CHIARO / terracotta.
 // Sito a sé (non usa il Layout di Mole Digitale): carrello funzionante in vanilla JS.
 import '@fontsource-variable/inter';
-import '@fontsource-variable/playfair-display';
+import '@fontsource-variable/space-grotesk';
 
 const prodotti = [
   { id: 'pizzette',    nome: 'Pizzette Margherita · 4 pz',     cat: 'pizze', prezzo: 8,  img: '/img/demo/piatto-1.webp',  desc: 'Mini pizze pomodoro, mozzarella e basilico' },
@@ -47,17 +47,22 @@ const prodotti = [
   <!-- HERO -->
   <section class="hero" id="top">
     <div class="hero-text r">
-      <p class="eyebrow">Cucina fresca · consegna a Torino</p>
-      <h1>La cucina di casa,<br/><span class="it">pronta da gustare.</span></h1>
-      <p class="hsub">Pizze, primi e dolci preparati ogni giorno e consegnati caldi dove vuoi tu. Niente di surgelato, solo roba buona.</p>
+      <p class="eyebrow">Bottega gastronomica · Torino</p>
+      <h1>Piatti freschi,<br/>a casa tua in giornata.</h1>
+      <p class="hsub">Pizze, primi e dolci preparati ogni mattina e consegnati caldi. Ordini online, pensiamo a tutto noi.</p>
       <div class="hcta">
         <a href="#negozio" class="btn btn-solid">Ordina ora</a>
         <a href="#storia" class="btn btn-ghost">La nostra storia</a>
       </div>
       <p class="hship">🚚 Consegna <b>gratis</b> sopra i 30€ · pronta in giornata</p>
     </div>
-    <div class="hero-img r">
-      <img src="/img/demo/hero.webp" alt="Pizza appena sfornata della Bottega Subalpina" />
+    <div class="hero-shop r">
+      {prodotti.slice(0, 4).map((p) => (
+        <a href="#negozio" class="hp">
+          <div class="hp-img"><img src={p.img} alt={p.nome} loading="lazy" /></div>
+          <div class="hp-row"><span class="hp-name">{p.nome.split(' · ')[0]}</span><b class="hp-price">€{p.prezzo.toFixed(2)}</b></div>
+        </a>
+      ))}
       <span class="hero-badge">★ 4,9 · 1.200+ ordini</span>
     </div>
   </section>
@@ -154,8 +159,8 @@ const prodotti = [
     *{margin:0;padding:0;box-sizing:border-box}
     html{scroll-behavior:smooth;scroll-padding-top:84px}
     body{font-family:'Inter Variable','Inter',sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
-    h1,h2,h3,.brand{font-family:'Playfair Display Variable','Playfair Display',serif;font-weight:700;line-height:1.08;letter-spacing:-.01em}
-    .it{font-style:italic;color:var(--terra)}
+    h1,h2,h3,.brand{font-family:'Space Grotesk Variable','Space Grotesk',sans-serif;font-weight:700;line-height:1.04;letter-spacing:-.02em}
+    .it{color:var(--terra)}
     img{max-width:100%;display:block}
     a{color:inherit;text-decoration:none}
     section{padding:clamp(3rem,7vw,6rem) clamp(1.1rem,5vw,3rem);max-width:1180px;margin:0 auto}
@@ -183,9 +188,17 @@ const prodotti = [
     .hsub{color:var(--muted);font-size:1.12rem;margin:1.2rem 0 1.8rem;max-width:46ch}
     .hcta{display:flex;gap:.8rem;flex-wrap:wrap}
     .hship{margin-top:1.4rem;font-size:.92rem;color:var(--muted)}.hship b{color:var(--green)}
-    .hero-img{position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);aspect-ratio:4/5}
-    .hero-img img{width:100%;height:100%;object-fit:cover}
-    .hero-badge{position:absolute;left:1rem;bottom:1rem;background:rgba(255,253,249,.94);backdrop-filter:blur(6px);padding:.5rem .9rem;border-radius:999px;font-size:.85rem;font-weight:600;box-shadow:var(--shadow)}
+    /* HERO shop-window: griglia 2x2 di prodotti (firma e-commerce, niente foto singola) */
+    .hero-shop{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+    .hp{display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);transition:transform .25s var(--ease),box-shadow .25s}
+    .hp:hover{transform:translateY(-5px)}
+    .hp-img{aspect-ratio:1/1;overflow:hidden}
+    .hp-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease)}
+    .hp:hover .hp-img img{transform:scale(1.06)}
+    .hp-row{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.55rem .75rem .65rem}
+    .hp-name{font-size:.8rem;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .hp-price{font-family:'Space Grotesk Variable','Space Grotesk';font-size:.95rem;color:var(--terra);flex:none}
+    .hero-badge{position:absolute;left:50%;bottom:-14px;transform:translateX(-50%);white-space:nowrap;background:var(--ink);color:#fff;padding:.5rem 1rem;border-radius:999px;font-size:.85rem;font-weight:600;box-shadow:var(--shadow)}
 
     /* buttons */
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;font-weight:600;font-size:.96rem;
@@ -214,7 +227,7 @@ const prodotti = [
     .card-body h3{font-size:1.18rem}
     .card-desc{color:var(--muted);font-size:.88rem;flex:1}
     .card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:.7rem}
-    .price{font-family:'Playfair Display Variable','Playfair Display';font-size:1.4rem;font-weight:700}
+    .price{font-family:'Space Grotesk Variable','Space Grotesk';font-size:1.4rem;font-weight:700}
     .add{background:var(--ink);color:#fff;border:0;padding:.55rem 1rem;border-radius:999px;font-weight:600;font-size:.88rem;cursor:pointer;font-family:'Inter Variable';transition:background .2s,transform .15s}
     .add:hover{background:var(--terra)}
     .add:active{transform:scale(.94)}
@@ -270,7 +283,7 @@ const prodotti = [
     .cart-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--muted);padding:2rem;gap:.4rem}
     .drawer-foot{padding:1.1rem 1.3rem 1.4rem;border-top:1px solid var(--line)}
     .subtot{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;font-size:1.05rem}
-    .subtot b{font-family:'Playfair Display Variable','Playfair Display';font-size:1.6rem}
+    .subtot b{font-family:'Space Grotesk Variable','Space Grotesk';font-size:1.6rem}
     .securenote{text-align:center;font-size:.76rem;color:var(--muted);margin-top:.7rem}
 
     /* toast */
@@ -284,7 +297,7 @@ const prodotti = [
     @media (prefers-reduced-motion:reduce){.r{opacity:1;transform:none;transition:none}}
 
     @media (max-width:900px){
-      .hero{grid-template-columns:1fr}.hero-img{order:-1;aspect-ratio:16/10}
+      .hero{grid-template-columns:1fr}
       .story{grid-template-columns:1fr}.story-img{order:-1}
       .trust{grid-template-columns:repeat(2,1fr);gap:1.4rem}
       .nav-toggle{display:grid;place-items:center;margin-left:auto;margin-right:.2rem}
