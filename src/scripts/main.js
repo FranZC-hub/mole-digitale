@@ -214,11 +214,11 @@ if (compare && after && handle) {
     handle.style.left = p + '%';
     compare.setAttribute('aria-valuenow', String(Math.round(p)));
   };
-  const startDrag = () => { dragging = true; compare.style.cursor = 'grabbing'; };
-  const stopDrag = () => { dragging = false; compare.style.cursor = 'ew-resize'; };
+  const startDrag = () => { dragging = true; compare.style.cursor = 'grabbing'; if (lenis) lenis.stop(); };
+  const stopDrag = () => { if (!dragging) return; dragging = false; compare.style.cursor = 'ew-resize'; if (lenis) lenis.start(); };
   const move = (e) => { if (!dragging) return; if (e.cancelable) e.preventDefault(); setPos(e.touches ? e.touches[0].clientX : e.clientX); };
   compare.addEventListener('mousedown', (e) => { startDrag(); setPos(e.clientX); });
-  compare.addEventListener('touchstart', (e) => { startDrag(); setPos(e.touches[0].clientX); }, { passive: false });
+  compare.addEventListener('touchstart', (e) => { if (e.cancelable) e.preventDefault(); startDrag(); setPos(e.touches[0].clientX); }, { passive: false });
   addEventListener('mousemove', move);
   addEventListener('touchmove', move, { passive: false });
   addEventListener('mouseup', stopDrag);

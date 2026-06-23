@@ -337,6 +337,9 @@ main:focus { outline: none; }
   border-radius:var(--radius); overflow:hidden; border:1px solid var(--border);
   box-shadow:var(--shadow); cursor:ew-resize; user-select:none; touch-action:none;
 }
+/* touch-action:none su TUTTI i figli: se il dito parte su immagine/tag/handle
+   (non sul contenitore) il browser non deve scrollare la pagina durante il drag */
+.compare, .compare * { touch-action:none; }
 .compare-img { position:absolute; inset:0; }
 .compare-img.after { width:50%; overflow:hidden; border-right:2px solid #fff; }
 /* Immagini reali nello slider Prima/Dopo (--cw = larghezza reale del box, da JS) */
