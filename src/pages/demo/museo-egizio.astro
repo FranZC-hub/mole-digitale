@@ -71,9 +71,9 @@ const mostre = [
       </div>
     </div>
     <div class="hero-facts r">
-      <div><b class="count" data-to="40000" data-sep="." data-suffix="+">0</b><span>reperti</span></div>
-      <div><b class="count" data-to="1824">0</b><span>fondato nel</span></div>
-      <div><b class="count" data-to="2" data-suffix="°">0</b><span>al mondo</span></div>
+      <span class="hf-now"><span class="hf-dot"></span>Aperto oggi · 9:00–18:30</span>
+      <span class="hf-item"><span class="hf-k">In mostra ora</span><b>Volti dell'eternità</b></span>
+      <span class="hf-item"><span class="hf-k">Dove</span><b>Via Accademia delle Scienze, Torino</b></span>
     </div>
   </section>
 
@@ -364,10 +364,15 @@ const mostre = [
     .hero h1{font-size:clamp(2.8rem,7vw,5.4rem)}
     .hsub{color:#d8cfbe;font-size:clamp(1.05rem,1.6vw,1.25rem);margin:1.5rem 0 2.2rem;max-width:46ch}
     .hcta{display:flex;gap:.9rem;flex-wrap:wrap}
-    .hero-facts{position:relative;z-index:2;display:flex;gap:clamp(1.5rem,4vw,3.5rem);margin-top:3.5rem}
-    .hero-facts div{display:flex;flex-direction:column}
-    .hero-facts b{font-family:'Playfair Display Variable','Playfair Display';font-size:clamp(1.7rem,3vw,2.4rem);color:var(--gold-2)}
-    .hero-facts span{color:var(--muted);font-size:.85rem;text-transform:uppercase;letter-spacing:.12em}
+    /* info-bar museale (al posto delle metriche): orari, mostra in corso, sede */
+    .hero-facts{position:relative;z-index:2;display:flex;gap:clamp(1rem,3vw,2rem);margin-top:3.2rem;flex-wrap:wrap;align-items:center}
+    .hf-now{display:inline-flex;align-items:center;gap:.55rem;font-size:.9rem;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:.5rem 1.05rem}
+    .hf-dot{width:8px;height:8px;border-radius:50%;background:#5bbd7a;flex:none;box-shadow:0 0 0 0 rgba(91,189,122,.6);animation:hfpulse 2.2s infinite}
+    @keyframes hfpulse{0%{box-shadow:0 0 0 0 rgba(91,189,122,.5)}70%{box-shadow:0 0 0 8px rgba(91,189,122,0)}100%{box-shadow:0 0 0 0 rgba(91,189,122,0)}}
+    @media (prefers-reduced-motion:reduce){.hf-dot{animation:none}}
+    .hf-item{display:flex;flex-direction:column;gap:.12rem}
+    .hf-item .hf-k{color:var(--muted);font-size:.68rem;text-transform:uppercase;letter-spacing:.14em}
+    .hf-item b{font-family:'Playfair Display Variable','Playfair Display';font-size:1.05rem;color:var(--gold-2);font-weight:600}
 
     /* head sezioni */
     .head{margin-bottom:2.8rem;max-width:760px}

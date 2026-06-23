@@ -80,9 +80,9 @@ const quote = [
           <a href="tel:+390110000000" class="abtn abtn-ghost">📞 011 000 0000</a>
         </div>
         <ul class="ahero-trust hl">
-          <li>✓ Iscritti OAM</li>
-          <li>✓ Bilancia certificata</li>
-          <li>✓ Massima riservatezza</li>
+          <li><span class="seal" aria-hidden="true">✓</span>Iscritti OAM</li>
+          <li><span class="seal" aria-hidden="true">✓</span>Bilancia certificata</li>
+          <li><span class="seal" aria-hidden="true">✓</span>Massima riservatezza</li>
         </ul>
       </div>
     </div>
@@ -409,8 +409,10 @@ const quote = [
     .ahero-sub{max-width:520px;font-size:1.15rem;color:#e6dcc9;margin-bottom:2.2rem}
     .ahero-sub b{color:var(--cream)}
     .ahero-cta{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.6rem}
-    .ahero-trust{list-style:none;display:flex;gap:1.4rem;flex-wrap:wrap;color:var(--muted);font-size:.9rem}
-    .ahero-trust li{white-space:nowrap}
+    /* chip-sigillo (trust/credentials) — firma distinta dell'hero Aureo */
+    .ahero-trust{list-style:none;display:flex;gap:.6rem;flex-wrap:wrap}
+    .ahero-trust li{white-space:nowrap;display:inline-flex;align-items:center;gap:.5rem;border:1px solid var(--line);border-radius:999px;padding:.45rem .95rem .45rem .55rem;font-size:.82rem;color:var(--cream);background:rgba(244,236,221,.03)}
+    .ahero-trust .seal{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:rgba(232,195,114,.16);color:var(--gold);font-size:.7rem;font-weight:700;flex:none}
     .ahero-art{position:relative}
     .goldstack{width:100%;height:auto;filter:drop-shadow(0 30px 50px rgba(0,0,0,.5))}
     .goldstack .bar,.goldstack .coin{transform-box:fill-box;transform-origin:center}

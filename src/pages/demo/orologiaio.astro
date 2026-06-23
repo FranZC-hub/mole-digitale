@@ -45,10 +45,10 @@ import '@fontsource-variable/space-grotesk';
           <a href="#preventivo" class="cbtn cbtn-solid">Richiedi un preventivo</a>
           <a href="#listino" class="cbtn cbtn-ghost">Vedi il listino</a>
         </div>
-        <ul class="chero-trust r">
-          <li><b>24</b> mesi di garanzia</li>
-          <li><b>10'</b> per la batteria</li>
-          <li><b>45+</b> marche trattate</li>
+        <ul class="chero-trust r" aria-label="In sintesi">
+          <li><span class="ct-lbl">Garanzia</span><b>24<i>mesi</i></b></li>
+          <li><span class="ct-lbl">Batteria</span><b>10<i>min</i></b></li>
+          <li><span class="ct-lbl">Marche</span><b>45<i>+</i></b></li>
         </ul>
       </div>
 
@@ -442,8 +442,12 @@ import '@fontsource-variable/space-grotesk';
     .chero-title{font-size:clamp(2.6rem,6.4vw,4.8rem)}
     .chero-sub{color:var(--muted);font-size:1.15rem;margin:1.4rem 0 2rem;max-width:48ch}
     .chero-cta{display:flex;gap:.8rem;flex-wrap:wrap}
-    .chero-trust{list-style:none;display:flex;gap:1.8rem;margin-top:2.2rem;flex-wrap:wrap;color:var(--muted);font-size:.9rem}
-    .chero-trust b{font-family:var(--disp);color:var(--ink);font-size:1.15rem;margin-right:.25rem}
+    /* readout strumentali (al posto della strip di numeri) — look da quadrante tecnico */
+    .chero-trust{list-style:none;display:flex;gap:.7rem;margin-top:2.4rem;flex-wrap:wrap}
+    .chero-trust li{flex:1;min-width:96px;border:1px solid var(--line);border-radius:8px;padding:.7rem .85rem;background:rgba(159,179,200,.045)}
+    .chero-trust .ct-lbl{display:block;font-family:var(--disp);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.35rem}
+    .chero-trust b{font-family:var(--disp);color:var(--ink);font-size:1.5rem;line-height:1;display:flex;align-items:baseline;gap:.15rem;font-weight:600}
+    .chero-trust b i{font-style:normal;font-size:.68rem;color:var(--steel);letter-spacing:.04em}
     .chero-watch{position:relative;display:grid;place-items:center}
     .watch{width:min(420px,82vw);height:auto;filter:drop-shadow(0 30px 50px rgba(0,0,0,.6));position:relative;z-index:1}
     .watch-glow{position:absolute;width:70%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(200,160,106,.25),transparent 70%);filter:blur(20px);z-index:0}
