@@ -23,6 +23,14 @@ const {
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(image ?? '/og-image.png', Astro.site);
 
+// Pagina corrente per evidenziare la voce di nav attiva (accessibilità + orientamento)
+const navPath = Astro.url.pathname.replace(/(.)\/$/, '$1');
+const isActive = (href: string) => {
+  const base = href.split('#')[0].replace(/(.)\/$/, '$1');
+  if (base === '/' || base === '') return false;
+  return navPath === base || navPath.startsWith(base + '/');
+};
+
 // Analytics privacy-friendly (Cloudflare Web Analytics: gratis, niente cookie, GDPR-ok).
 // Incolla qui il token dal pannello Cloudflare per attivarlo. Vuoto = disattivato.
 const cfAnalyticsToken = '';
@@ -216,11 +224,11 @@ const articleSchema = article ? {
     <nav class="nav-links" aria-label="Principale">
       <a href="/#servizi">Servizi</a>
       <a href="/#prezzi">Prezzi</a>
-      <a href="/demo">Esempi</a>
-      <a href="/blog">Blog</a>
-      <a href="/chi-siamo">Chi siamo</a>
+      <a href="/demo" class={isActive('/demo') ? 'active' : undefined} aria-current={isActive('/demo') ? 'page' : undefined}>Esempi</a>
+      <a href="/blog" class={isActive('/blog') ? 'active' : undefined} aria-current={isActive('/blog') ? 'page' : undefined}>Blog</a>
+      <a href="/chi-siamo" class={isActive('/chi-siamo') ? 'active' : undefined} aria-current={isActive('/chi-siamo') ? 'page' : undefined}>Chi siamo</a>
     </nav>
-    <a href="/preventivo" class="btn btn-primary btn-magnetic nav-cta">Preventivo gratis</a>
+    <a href="/preventivo" class="btn btn-primary btn-magnetic nav-cta" aria-current={isActive('/preventivo') ? 'page' : undefined}>Preventivo gratis</a>
     <button class="nav-toggle" aria-label="Apri menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>

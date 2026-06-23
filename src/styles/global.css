@@ -192,6 +192,11 @@ main:focus { outline: none; }
 }
 .btn-lg { padding: 1rem 1.8rem; font-size: 1.02rem; }
 .btn-block { width: 100%; justify-content: center; }
+.btn:disabled { opacity: .75; cursor: progress; }
+/* spinner di caricamento per il bottone "Invia" (feedback in-place) */
+.btn-spin { display: inline-block; width: 1em; height: 1em; border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%; vertical-align: -2px; animation: btnspin .6s linear infinite; }
+@keyframes btnspin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .btn-spin { animation: none; } }
 .btn-primary { background: var(--grad); color: #fff; box-shadow: 0 10px 30px -8px rgba(124,92,255,.6); }
 .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 18px 42px -10px rgba(124,92,255,.8); }
 .btn-ghost { background: var(--surface); color: var(--text); border-color: var(--border); backdrop-filter: blur(10px); }
