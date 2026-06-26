@@ -293,11 +293,11 @@ import '@fontsource-variable/playfair-display';
       .dmedia img{height:360px}
       .dmenu-grid{grid-template-columns:1fr}
       .dgal-grid{grid-template-columns:repeat(2,1fr)}
-      .dnav{grid-template-columns:1fr auto}
-      .dbrand{grid-column:1;justify-self:start;font-size:1.35rem}
+      .dnav{display:flex;align-items:center;gap:.6rem}
+      .dbrand{font-size:1.2rem;margin-right:auto}
       .dlinks{display:none}
-      .dnav>.dbtn{display:none}
-      .dnav-toggle{grid-column:2;justify-self:end;display:grid}
+      .dnav>.dbtn{padding:.5rem .9rem;font-size:.8rem}
+      .dnav-toggle{display:grid}
       .dnav.dopen .dlinks{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1.1rem;background:rgba(20,17,13,.97);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:1.2rem clamp(1.2rem,5vw,3rem) 1.5rem}
     }
     @media (prefers-reduced-motion:reduce){
