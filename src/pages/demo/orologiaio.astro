@@ -400,7 +400,7 @@ import '@fontsource-variable/space-grotesk';
       --ease:cubic-bezier(.2,.7,.2,1);
     }
     *{margin:0;padding:0;box-sizing:border-box}
-    html{scroll-behavior:smooth;scroll-padding-top:88px}
+    html{scroll-behavior:smooth;scroll-padding-top:88px;overflow-x:clip}
     @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
     body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
     svg,img{display:block;max-width:100%}
@@ -695,6 +695,8 @@ import '@fontsource-variable/space-grotesk';
       const toggle = document.getElementById('navToggle');
       toggle.addEventListener('click', () => { const o = cnav.classList.toggle('open'); toggle.setAttribute('aria-expanded', String(o)); });
       document.querySelectorAll('#clinks a').forEach((a) => a.addEventListener('click', () => cnav.classList.remove('open')));
+      document.addEventListener('click', (e) => { if (cnav.classList.contains('open') && !cnav.contains(e.target)) { cnav.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); } });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && cnav.classList.contains('open')) { cnav.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); } });
 
       /* ---- Hour markers (generati) ---- */
       const mk = document.getElementById('markers');

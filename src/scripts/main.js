@@ -84,6 +84,9 @@ if (toggle && nav) {
     const open = nav.classList.toggle('menu-open');
     toggle.setAttribute('aria-expanded', String(open));
   });
+  // chiudi il menu cliccando fuori o con Esc
+  document.addEventListener('click', (e) => { if (nav.classList.contains('menu-open') && !nav.contains(e.target)) { nav.classList.remove('menu-open'); toggle.setAttribute('aria-expanded', 'false'); } });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && nav.classList.contains('menu-open')) { nav.classList.remove('menu-open'); toggle.setAttribute('aria-expanded', 'false'); } });
 }
 
 /* ---------- Contatori animati ---------- */
