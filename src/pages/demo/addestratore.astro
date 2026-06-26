@@ -1,0 +1,569 @@
+---
+// DEMO standalone — "Coda Felice", educatore/addestratore cinofilo a Torino.
+// Tema CHIARO outdoor (verde erba + arancio sole), amichevole e rounded. Sito a sé.
+// JS vanilla: menu mobile, reveal, configuratore "trova il percorso", FAQ, contatori.
+import '@fontsource-variable/inter';
+import '@fontsource-variable/space-grotesk';
+
+const problemi = [
+  { t: 'Tira al guinzaglio', d: 'Passeggiate impossibili? Gli insegniamo a camminare al tuo fianco, rilassato.' },
+  { t: 'Non torna al richiamo', d: 'Un richiamo affidabile per lasciarlo libero in sicurezza, anche al parco.' },
+  { t: 'Salta addosso e abbaia', d: 'Buone maniere con ospiti e per strada: stop a salti, tirate e abbai eccessivi.' },
+  { t: 'Ansia da separazione', d: 'Lo aiutiamo a stare sereno quando resta solo, senza stress né danni in casa.' },
+  { t: 'Reattività e paure', d: 'Percorso graduale per cani che reagiscono ad altri cani, persone o rumori.' },
+  { t: 'Cucciolo da educare', d: 'Partire col piede giusto: bisogni, socializzazione e prime regole di casa.' },
+];
+
+const servizi = [
+  { ic: 'paw',   t: 'Puppy Class',            d: 'Per cuccioli 2–6 mesi: socializzazione, gioco e prime regole in piccolo gruppo.', p: 'da 25€', dur: 'lezione di gruppo' },
+  { ic: 'bone',  t: 'Educazione di base',     d: 'Seduto, terra, resta, richiamo e guinzaglio: le basi per una convivenza serena.', p: 'da 40€', dur: 'percorso 1-a-1' },
+  { ic: 'heart', t: 'Percorso comportamentale', d: 'Per problemi specifici (paure, reattività, ansia): valutazione e piano su misura.', p: 'da 55€', dur: 'a domicilio' },
+  { ic: 'star',  t: 'Obbedienza avanzata',    d: 'Controllo a distanza, esercizi di precisione e stabilità anche con distrazioni.', p: 'da 45€', dur: 'percorso 1-a-1' },
+  { ic: 'jump',  t: 'Sport cinofili · Agility', d: 'Sfoga energia e rinforza il legame con percorsi di agility e attività di fiuto.', p: 'da 35€', dur: 'campo attrezzato' },
+  { ic: 'walk',  t: 'Passeggiate educative',  d: 'Uscite di gruppo guidate per socializzare e allenare le buone maniere fuori casa.', p: 'da 18€', dur: 'di gruppo' },
+];
+
+const recensioni = [
+  { n: 'Giulia & Mango', av: 'G', txt: 'In 6 settimane Mango ha smesso di tirare e ora torna al richiamo. Marco è gentile e competente, niente metodi bruschi.' },
+  { n: 'Davide & Luna', av: 'D', txt: 'Luna aveva paura di tutto. Il percorso comportamentale a domicilio ci ha cambiato la vita. Consigliatissimo.' },
+  { n: 'Sara & Pepe', av: 'S', txt: 'Puppy class fantastica: Pepe ha imparato a socializzare e noi a capirlo. Lezioni divertenti per cane e padroni.' },
+];
+
+const faq = [
+  { q: 'A che età posso iniziare?', a: 'Si parte già da cucciolo (2–3 mesi) con la Puppy Class. Ma non è mai troppo tardi: lavoriamo con cani di ogni età.' },
+  { q: 'Usate metodi coercitivi o collari a strangolo?', a: 'No, mai. Lavoriamo solo con metodi gentili basati sul rinforzo positivo, rispettando i tempi e l’emotività del cane.' },
+  { q: 'Dove si svolgono le lezioni?', a: 'Al campo attrezzato a Torino, a domicilio o nei parchi della città, in base al percorso e al problema da affrontare.' },
+  { q: 'Quante lezioni servono?', a: 'Dipende dall’obiettivo: l’educazione di base parte da 5 incontri, i percorsi comportamentali si valutano dopo la prima seduta gratuita.' },
+  { q: 'Devo esserci anch’io alle lezioni?', a: 'Sì, ed è fondamentale: addestriamo voi due insieme. Il cane impara più in fretta se la famiglia è coinvolta.' },
+];
+
+// Icone SVG (line) per i percorsi
+function icon(name) {
+  const wrap = (p) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+  const m = {
+    paw: '<circle cx="6" cy="11" r="1.7"/><circle cx="10" cy="7.4" r="1.7"/><circle cx="14" cy="7.4" r="1.7"/><circle cx="18" cy="11" r="1.7"/><path d="M12 12.2c-2.4 0-4.2 1.8-4.2 3.6 0 1.7 1.8 2.5 4.2 2.5s4.2-.8 4.2-2.5c0-1.8-1.8-3.6-4.2-3.6z"/>',
+    bone: '<path d="M3 10.5 9 5l1.6 1.6L18 14l1.4-1.4"/><path d="M2 9.5 4.5 7M4.5 12 7 9.5M17 17l2.5-2.5M19.5 19.5 22 17"/>',
+    heart: '<path d="M12 20s-7-4.6-9.3-9C1.2 8 2.6 5 5.6 5 7.6 5 9 6.3 12 9c3-2.7 4.4-4 6.4-4 3 0 4.4 3 2.9 6-2.3 4.4-9.3 9-9.3 9z"/>',
+    star: '<path d="M12 3.2l2.5 5.4 5.9.7-4.4 4 1.2 5.8L12 16.9 6.8 19.1l1.2-5.8-4.4-4 5.9-.7z"/>',
+    jump: '<path d="M4 20V9M20 20V9M4 9h16"/><path d="M6.5 9c1.2-4.5 9.8-4.5 11 0"/>',
+    walk: '<path d="M5 19a3 3 0 0 0 3-3V8a3 3 0 0 1 6 0v8a3 3 0 0 0 6 0"/>',
+  };
+  return wrap(m[name] || m.paw);
+}
+---
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Coda Felice — Educatore cinofilo e addestratore a Torino</title>
+  <meta name="description" content="Coda Felice, educatore cinofilo a Torino: educazione di base, problemi di comportamento, puppy class e sport cinofili con metodi gentili. Prima lezione di prova gratuita." />
+  <meta name="theme-color" content="#2f7d4f" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='7' cy='9' r='2' fill='%232f7d4f'/><circle cx='12' cy='6.5' r='2' fill='%232f7d4f'/><circle cx='17' cy='9' r='2' fill='%232f7d4f'/><path d='M12 12c-3 0-5 2-5 4.2C7 18 9 19 12 19s5-1 5-2.8C17 14 15 12 12 12z' fill='%232f7d4f'/></svg>" />
+</head>
+<body>
+  <a class="demo-flag" href="/">★ Demo realizzata da <b>Mole Digitale</b> · torna al sito ↩</a>
+
+  <header class="knav" id="knav">
+    <a href="#top" class="kbrand"><span class="kpaw" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="26" height="26"><circle cx="7" cy="9" r="2.1"/><circle cx="12" cy="6.4" r="2.1"/><circle cx="17" cy="9" r="2.1"/><path d="M12 12c-3 0-5.2 2-5.2 4.3C6.8 18.2 9 19.2 12 19.2s5.2-1 5.2-2.9C17.2 14 15 12 12 12z"/></svg>
+    </span>Coda <em>Felice</em></a>
+    <nav class="klinks" id="klinks">
+      <a href="#problemi">Problemi</a>
+      <a href="#servizi">Percorsi</a>
+      <a href="#come">Come funziona</a>
+      <a href="#chi">Chi sono</a>
+      <a href="#recensioni">Recensioni</a>
+    </nav>
+    <button class="knav-toggle" id="kToggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="klinks">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <a href="#prova" class="kbtn kbtn-solid">Prova gratuita</a>
+  </header>
+
+  <main id="main">
+  <!-- HERO -->
+  <section class="khero" id="top">
+    <div class="khero-bg" aria-hidden="true"><img src="/img/demo-cani/hero.webp" alt="" /><div class="khero-veil"></div></div>
+    <div class="khero-in">
+      <span class="kbadge r"><span class="kdot"></span>Educatore cinofilo certificato · Torino</span>
+      <h1 class="r">Un cane <span class="kmark">sereno</span>,<br/>una famiglia <span class="kmark">felice</span>.</h1>
+      <p class="khero-sub r">Educazione gentile e percorsi su misura per cuccioli e adulti. Niente metodi bruschi: solo rinforzo positivo, pazienza e risultati che durano.</p>
+      <div class="khero-cta r">
+        <a href="#prova" class="kbtn kbtn-solid kbtn-lg">Prenota la prima lezione gratis</a>
+        <a href="#come" class="kbtn kbtn-ghost kbtn-lg">Come funziona →</a>
+      </div>
+      <ul class="khero-trust r">
+        <li>✓ Metodi gentili (rinforzo positivo)</li>
+        <li>✓ A domicilio, parco o campo</li>
+        <li>★ 4,9 su Google</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- STAT STRIP -->
+  <section class="kstats">
+    <div class="kstats-in">
+      <div class="r"><b data-count="450" data-suffix="+">0</b><span>cani educati</span></div>
+      <div class="r"><b data-count="11" data-suffix=" anni">0</b><span>di esperienza</span></div>
+      <div class="r"><b data-count="4" data-dec="9">0</b><span>★ su Google</span></div>
+      <div class="r"><b>1ª</b><span>lezione gratis</span></div>
+    </div>
+  </section>
+
+  <!-- PROBLEMI -->
+  <section class="ksection" id="problemi">
+    <div class="khead">
+      <span class="kkick r">Ti riconosci?</span>
+      <h2 class="r">I problemi che <span class="kmark">risolviamo insieme</span></h2>
+      <p class="klead r">Ogni comportamento ha una causa. Lavoriamo su quella — non sul sintomo — così il risultato resta nel tempo.</p>
+    </div>
+    <div class="kgrid kgrid-3">
+      {problemi.map((p) => (
+        <article class="kcard r">
+          <span class="kcheck" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+          <h3>{p.t}</h3>
+          <p>{p.d}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- SERVIZI / PERCORSI -->
+  <section class="ksection kservizi" id="servizi">
+    <div class="khead">
+      <span class="kkick r">I percorsi</span>
+      <h2 class="r">Un programma <span class="kmark">per ogni cane</span></h2>
+      <p class="klead r">Dalla puppy class allo sport: scegliamo insieme il percorso giusto per voi.</p>
+    </div>
+    <div class="kgrid kgrid-3">
+      {servizi.map((s) => (
+        <article class="ksvc r">
+          <span class="ksvc-ic" aria-hidden="true" set:html={icon(s.ic)}></span>
+          <h3>{s.t}</h3>
+          <p>{s.d}</p>
+          <div class="ksvc-foot"><span class="ksvc-dur">{s.dur}</span><b class="ksvc-p">{s.p}</b></div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- CONFIGURATORE -->
+  <section class="ksection kconf-sec" id="trova">
+    <div class="kconf r">
+      <div class="kconf-head">
+        <span class="kkick">Consiglio gratis</span>
+        <h2>Qual è il percorso giusto per il <span class="kmark">tuo cane?</span></h2>
+        <p>Due domande veloci e ti diciamo da dove partire (e quanto costa, più o meno).</p>
+      </div>
+      <div class="kconf-body">
+        <div class="kconf-q">
+          <span class="kconf-lbl">1 · Quanti anni ha?</span>
+          <div class="kconf-opts" id="qEta">
+            <button class="kopt is-on" data-eta="cucciolo">Cucciolo (0–6 mesi)</button>
+            <button class="kopt" data-eta="giovane">Giovane / adulto</button>
+            <button class="kopt" data-eta="senior">Senior (7+)</button>
+          </div>
+        </div>
+        <div class="kconf-q">
+          <span class="kconf-lbl">2 · Cosa ti serve?</span>
+          <div class="kconf-opts" id="qObi">
+            <button class="kopt is-on" data-obi="base">Le basi / buone maniere</button>
+            <button class="kopt" data-obi="problema">Risolvere un problema</button>
+            <button class="kopt" data-obi="sport">Sport e attività</button>
+            <button class="kopt" data-obi="socializz">Socializzare</button>
+          </div>
+        </div>
+        <div class="kconf-out" id="confOut" aria-live="polite">
+          <div class="kconf-res">
+            <span class="kconf-tag">Consigliato per voi</span>
+            <h4 id="confTitle">Educazione di base</h4>
+            <p id="confDesc">Le fondamenta per una convivenza serena: seduto, resta, richiamo e guinzaglio.</p>
+            <div class="kconf-resfoot"><b id="confPrice">da 40€ / lezione</b><a href="#prova" class="kbtn kbtn-solid">Prenota la prova gratuita</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COME FUNZIONA -->
+  <section class="ksection kcome" id="come">
+    <div class="khead">
+      <span class="kkick r">Come funziona</span>
+      <h2 class="r">Semplice, dal primo <span class="kmark">scodinzolio</span></h2>
+    </div>
+    <ol class="ksteps">
+      <li class="kstep r"><span class="kstep-n">1</span><h3>Lezione di prova gratuita</h3><p>Ci conosciamo, valuto il tuo cane e capiamo insieme gli obiettivi. Nessun impegno.</p></li>
+      <li class="kstep r"><span class="kstep-n">2</span><h3>Percorso su misura</h3><p>Costruisco un piano adatto a carattere, età e vita quotidiana del tuo cane.</p></li>
+      <li class="kstep r"><span class="kstep-n">3</span><h3>Lezioni pratiche</h3><p>Esercizi concreti al parco, a casa o al campo. Coinvolgo tutta la famiglia.</p></li>
+      <li class="kstep r"><span class="kstep-n">4</span><h3>Risultati che restano</h3><p>Ti lascio gli strumenti per mantenerli. Restiamo in contatto anche dopo.</p></li>
+    </ol>
+  </section>
+
+  <!-- CHI SONO -->
+  <section class="ksection kchi" id="chi">
+    <div class="kchi-grid">
+      <div class="kchi-media r"><img src="/img/demo-cani/trainer.webp" alt="Marco, educatore cinofilo, durante una lezione con un cane" loading="lazy" /></div>
+      <div class="kchi-text">
+        <span class="kkick r">Chi sono</span>
+        <h2 class="r">Ciao, sono <span class="kmark">Marco</span></h2>
+        <p class="r">Da oltre dieci anni aiuto cani e famiglie di Torino a capirsi meglio. Credo in un’educazione fatta di ascolto, coerenza e rispetto — mai di paura.</p>
+        <p class="r">Ogni cane è diverso: per questo non esistono ricette pronte, ma percorsi costruiti su di lui e su di te.</p>
+        <ul class="kcreds r">
+          <li><b>Educatore cinofilo</b> certificato (metodo gentile)</li>
+          <li><b>Istruttore</b> di sport cinofili e agility</li>
+          <li><b>Aggiornamento</b> continuo su comportamento e benessere</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERIA -->
+  <section class="ksection kgal-sec">
+    <div class="khead"><span class="kkick r">In azione</span><h2 class="r">I nostri <span class="kmark">amici a quattro zampe</span></h2></div>
+    <div class="kgal">
+      <img class="r" src="/img/demo-cani/educazione.webp" alt="Gruppo di cani durante una lezione di educazione" loading="lazy" />
+      <img class="r" src="/img/demo-cani/agility.webp" alt="Cane che salta un ostacolo di agility" loading="lazy" />
+      <img class="r" src="/img/demo-cani/puppy.webp" alt="Cucciolo che riposa" loading="lazy" />
+      <img class="r" src="/img/demo-cani/g1.webp" alt="Border collie in un campo" loading="lazy" />
+      <img class="r" src="/img/demo-cani/passeggiata.webp" alt="Passeggiata educativa al guinzaglio" loading="lazy" />
+      <img class="r" src="/img/demo-cani/g2.webp" alt="Cane che gioca a riportare la palla" loading="lazy" />
+    </div>
+  </section>
+
+  <!-- RECENSIONI -->
+  <section class="ksection krev-sec" id="recensioni">
+    <div class="khead"><span class="kkick r">Dicono di noi</span><h2 class="r">Famiglie più <span class="kmark">serene</span></h2></div>
+    <div class="kgrid kgrid-3">
+      {recensioni.map((r) => (
+        <blockquote class="krev r">
+          <div class="krev-stars" aria-label="5 stelle">★★★★★</div>
+          <p>«{r.txt}»</p>
+          <footer><span class="krev-av">{r.av}</span><b>{r.n}</b></footer>
+        </blockquote>
+      ))}
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="ksection kfaq-sec" id="faq">
+    <div class="khead"><span class="kkick r">Domande frequenti</span><h2 class="r">Le risposte, <span class="kmark">subito</span></h2></div>
+    <div class="kfaq r">
+      {faq.map((f, i) => (
+        <details class="kq" open={i === 0}>
+          <summary>{f.q}<span class="kq-ic" aria-hidden="true"></span></summary>
+          <div class="kq-a"><p>{f.a}</p></div>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <!-- PROVA / CONTATTI -->
+  <section class="kcta" id="prova">
+    <div class="kcta-in r">
+      <div class="kcta-text">
+        <span class="kkick">Prima lezione gratis</span>
+        <h2>Prenota la <span class="kmark2">prova gratuita</span></h2>
+        <p>Raccontami del tuo cane: ti ricontatto entro 24 ore per fissare il primo incontro, senza impegno.</p>
+        <div class="kcta-side">
+          <a href="tel:+390110000000" class="kbtn kbtn-solid kbtn-lg">📞 011 000 0000</a>
+          <a href="#prova" class="kbtn kbtn-ghost-l kbtn-lg">WhatsApp</a>
+        </div>
+        <p class="kcta-note">📍 Torino e prima cintura · Lun–Sab</p>
+      </div>
+      <form class="kform" onsubmit="return false">
+        <label>Il tuo nome<input type="text" placeholder="Mario Rossi" autocomplete="name" /></label>
+        <label>Telefono<input type="tel" placeholder="333 000 0000" autocomplete="tel" /></label>
+        <div class="kform-row">
+          <label>Nome del cane<input type="text" placeholder="Mango" /></label>
+          <label>Età<select><option>Cucciolo</option><option>1–7 anni</option><option>7+ anni</option></select></label>
+        </div>
+        <label>Cosa vorresti migliorare?
+          <select><option>Educazione di base</option><option>Tira al guinzaglio</option><option>Richiamo</option><option>Paure / reattività</option><option>Ansia da separazione</option><option>Sport / agility</option><option>Altro</option></select>
+        </label>
+        <button class="kbtn kbtn-solid kbtn-lg kbtn-block" type="submit">Richiedi la prova gratuita →</button>
+        <p class="kform-note">🔒 È una demo: nessun dato viene inviato.</p>
+      </form>
+    </div>
+  </section>
+  </main>
+
+  <footer class="kfoot">
+    <div><b>Coda Felice</b> · Educatore cinofilo a Torino</div>
+    <div>Demo · <a href="/">Mole Digitale</a></div>
+  </footer>
+
+  <a class="kwa" href="#prova" aria-label="Scrivici su WhatsApp">
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.5-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c2.3 1 2.3.7 2.7.6a2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1z"/></svg>
+  </a>
+
+  <style is:global>
+    :root{
+      --bg:#faf6ee; --bg2:#f1ebdb; --card:#ffffff; --ink:#22301f; --muted:#6f7a64;
+      --green:#2f7d4f; --green-d:#235f3c; --amber:#ef9d2e; --amber-d:#d9851a;
+      --line:rgba(34,48,31,.12); --soft:0 18px 40px -22px rgba(35,60,40,.4);
+      --head:'Space Grotesk Variable','Space Grotesk',sans-serif;
+      --sans:'Inter Variable',system-ui,sans-serif; --e:cubic-bezier(.2,.7,.2,1);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:80px}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    img{display:block;max-width:100%}a{color:inherit;text-decoration:none}
+    h1,h2,h3,h4,.kbrand{font-family:var(--head);font-weight:700;line-height:1.08;letter-spacing:-.02em}
+    .kmark{color:var(--green)} .kmark2{color:var(--amber)}
+
+    .demo-flag{position:fixed;top:0;left:0;right:0;z-index:300;text-align:center;font-size:.8rem;padding:.4rem;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);color:var(--muted)}
+    .demo-flag b{color:var(--green)}
+
+    /* NAV */
+    .knav{position:fixed;top:27px;left:0;right:0;z-index:200;display:flex;align-items:center;gap:1.2rem;padding:.85rem clamp(1rem,4vw,2.6rem);transition:.35s var(--e)}
+    .knav.solid{background:rgba(250,246,238,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);box-shadow:0 8px 24px -20px rgba(35,60,40,.6)}
+    .kbrand{display:inline-flex;align-items:center;gap:.5rem;font-size:1.4rem}
+    .kbrand em{font-style:normal;color:var(--green)}
+    .kpaw{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:rgba(47,125,79,.12);color:var(--green);flex:none}
+    .klinks{display:flex;gap:1.6rem;margin-left:auto}
+    .klinks a{font-size:.95rem;font-weight:500;color:var(--ink);position:relative;transition:color .2s}
+    .klinks a::after{content:'';position:absolute;left:0;bottom:-5px;height:2px;width:0;background:var(--amber);border-radius:2px;transition:width .3s var(--e)}
+    .klinks a:hover{color:var(--green)} .klinks a:hover::after{width:100%}
+    .knav-toggle{display:none;background:none;border:0;color:var(--ink);cursor:pointer;width:44px;height:44px;border-radius:12px;place-items:center}
+    .knav-toggle:hover{background:rgba(34,48,31,.06)}
+
+    .kbtn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;font-family:var(--head);font-weight:600;font-size:.95rem;padding:.7rem 1.3rem;border-radius:999px;cursor:pointer;border:2px solid transparent;transition:transform .2s var(--e),background .2s,box-shadow .2s;white-space:nowrap}
+    .kbtn-solid{background:var(--green);color:#fff;box-shadow:0 12px 26px -12px rgba(47,125,79,.8)}
+    .kbtn-solid:hover{background:var(--green-d);transform:translateY(-3px)}
+    .kbtn-ghost{border-color:var(--line);color:var(--ink)}.kbtn-ghost:hover{border-color:var(--green);color:var(--green);transform:translateY(-3px)}
+    .kbtn-ghost-l{border-color:rgba(255,255,255,.5);color:#fff}.kbtn-ghost-l:hover{background:rgba(255,255,255,.12);transform:translateY(-3px)}
+    .kbtn-lg{padding:.95rem 1.7rem;font-size:1.02rem}
+    .kbtn-block{width:100%}
+
+    /* HERO */
+    .khero{position:relative;min-height:96vh;display:flex;align-items:center;overflow:hidden}
+    .khero-bg{position:absolute;inset:0;z-index:0}
+    .khero-bg img{width:100%;height:100%;object-fit:cover}
+    .khero-veil{position:absolute;inset:0;background:linear-gradient(100deg,rgba(250,246,238,.97) 32%,rgba(250,246,238,.7) 52%,rgba(47,125,79,.15)),linear-gradient(0deg,rgba(250,246,238,.6),transparent 40%)}
+    .khero-in{position:relative;z-index:1;max-width:1180px;width:100%;margin:0 auto;padding:7rem clamp(1.2rem,5vw,3rem) 4rem}
+    .kbadge{display:inline-flex;align-items:center;gap:.5rem;background:#fff;border:1px solid var(--line);border-radius:999px;padding:.45rem .9rem;font-size:.82rem;font-weight:600;color:var(--green-d);box-shadow:var(--soft);margin-bottom:1.4rem}
+    .kdot{width:8px;height:8px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 0 rgba(239,157,46,.6);animation:kpulse 2.2s infinite}
+    @keyframes kpulse{0%{box-shadow:0 0 0 0 rgba(239,157,46,.5)}70%{box-shadow:0 0 0 8px rgba(239,157,46,0)}100%{box-shadow:0 0 0 0 rgba(239,157,46,0)}}
+    .khero h1{font-size:clamp(2.7rem,7vw,5.4rem);max-width:14ch;margin-bottom:1.4rem}
+    .khero-sub{max-width:48ch;font-size:1.2rem;color:#4a5742;margin-bottom:2rem}
+    .khero-cta{display:flex;gap:.9rem;flex-wrap:wrap}
+    .khero-trust{list-style:none;display:flex;gap:1.4rem;flex-wrap:wrap;margin-top:2rem;color:#4a5742;font-size:.92rem;font-weight:500}
+    .khero-trust li{display:inline-flex;align-items:center;gap:.3rem}
+
+    /* STAT STRIP */
+    .kstats{background:var(--green);color:#fff}
+    .kstats-in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;padding:2.2rem clamp(1.2rem,5vw,3rem)}
+    .kstats-in>div{text-align:center;border-left:1px solid rgba(255,255,255,.18)}
+    .kstats-in>div:first-child{border-left:none}
+    .kstats b{font-family:var(--head);font-size:clamp(1.8rem,3.4vw,2.6rem);display:block;line-height:1}
+    .kstats span{font-size:.85rem;opacity:.85;text-transform:uppercase;letter-spacing:.06em}
+
+    /* SECTIONS */
+    .ksection{max-width:1180px;margin:0 auto;padding:clamp(3.5rem,8vw,6.5rem) clamp(1.2rem,5vw,3rem)}
+    .khead{max-width:680px;margin:0 auto clamp(2.2rem,4vw,3.4rem);text-align:center}
+    .kkick{display:inline-block;font-family:var(--head);font-size:.78rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--amber-d);background:rgba(239,157,46,.12);padding:.35rem .8rem;border-radius:999px;margin-bottom:1rem}
+    .khead h2,.kchi h2,.kconf h2,.kcta h2{font-size:clamp(1.9rem,4.4vw,3rem)}
+    .klead{color:var(--muted);font-size:1.1rem;margin-top:.9rem}
+
+    .kgrid{display:grid;gap:1.3rem}
+    .kgrid-3{grid-template-columns:repeat(3,1fr)}
+    /* evita overflow da min-width:auto sui figli di grid/flex (es. a 320px) */
+    .kgrid>*,.kchi-grid>*,.kcta-in>*,.ksteps>*,.kform-row>*,.kconf-resfoot>*{min-width:0}
+    .kform input,.kform select{min-width:0;width:100%}
+
+    /* PROBLEMI */
+    .kcard{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.6rem;transition:transform .25s var(--e),box-shadow .25s}
+    .kcard:hover{transform:translateY(-5px);box-shadow:var(--soft)}
+    .kcheck{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:rgba(47,125,79,.12);color:var(--green);margin-bottom:1rem}
+    .kcheck svg{width:22px;height:22px}
+    .kcard h3{font-size:1.2rem;margin-bottom:.4rem}
+    .kcard p{color:var(--muted);font-size:.96rem}
+
+    /* SERVIZI */
+    .kservizi{background:var(--bg2);max-width:none}
+    .kservizi>.khead,.kservizi>.kgrid{max-width:1180px;margin-left:auto;margin-right:auto}
+    .ksvc{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:1.7rem;display:flex;flex-direction:column;transition:transform .25s var(--e),box-shadow .25s}
+    .ksvc:hover{transform:translateY(-5px);box-shadow:var(--soft)}
+    .ksvc-ic{display:grid;place-items:center;width:52px;height:52px;border-radius:14px;background:var(--green);color:#fff;margin-bottom:1.1rem}
+    .ksvc-ic svg{width:28px;height:28px}
+    .ksvc h3{font-size:1.25rem;margin-bottom:.4rem}
+    .ksvc p{color:var(--muted);font-size:.96rem;flex:1}
+    .ksvc-foot{display:flex;align-items:center;justify-content:space-between;margin-top:1.1rem;padding-top:1rem;border-top:1px solid var(--line)}
+    .ksvc-dur{font-size:.82rem;color:var(--muted)}
+    .ksvc-p{font-family:var(--head);font-size:1.25rem;color:var(--green)}
+
+    /* CONFIGURATORE */
+    .kconf-sec{max-width:none;background:var(--ink);color:#fff}
+    .kconf{max-width:1000px;margin:0 auto;background:linear-gradient(160deg,#2a3a26,#202c1d);border:1px solid rgba(255,255,255,.1);border-radius:28px;padding:clamp(1.6rem,4vw,3rem);box-shadow:0 40px 80px -40px rgba(0,0,0,.6)}
+    .kconf-head{text-align:center;max-width:640px;margin:0 auto 2rem}
+    .kconf-head .kkick{background:rgba(239,157,46,.2)}
+    .kconf-head p{color:#c7d2bd;margin-top:.7rem}
+    .kconf-q{margin-bottom:1.4rem}
+    .kconf-lbl{display:block;font-family:var(--head);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:#9fb195;margin-bottom:.7rem}
+    .kconf-opts{display:flex;gap:.6rem;flex-wrap:wrap}
+    .kopt{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);color:#eaf0e4;font-family:var(--sans);font-weight:600;font-size:.92rem;padding:.7rem 1.1rem;border-radius:999px;cursor:pointer;transition:.2s}
+    .kopt:hover{border-color:var(--amber)}
+    .kopt.is-on{background:var(--amber);color:#3a2607;border-color:var(--amber)}
+    .kconf-out{margin-top:1.8rem}
+    .kconf-res{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:1.5rem 1.6rem}
+    .kconf-tag{display:inline-block;font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);margin-bottom:.5rem}
+    .kconf-res h4{font-size:1.5rem;margin-bottom:.4rem}
+    .kconf-res>p{color:#c7d2bd}
+    .kconf-resfoot{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-top:1.2rem}
+    .kconf-resfoot b{font-family:var(--head);font-size:1.25rem;color:#fff}
+
+    /* COME FUNZIONA */
+    .ksteps{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;counter-reset:k}
+    .kstep{position:relative;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.6rem}
+    .kstep-n{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--amber);color:#3a2607;font-family:var(--head);font-weight:700;font-size:1.2rem;margin-bottom:1rem}
+    .kstep h3{font-size:1.12rem;margin-bottom:.35rem}
+    .kstep p{color:var(--muted);font-size:.94rem}
+
+    /* CHI SONO */
+    .kchi-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(1.6rem,4vw,3.5rem);align-items:center}
+    .kchi-media{border-radius:24px;overflow:hidden;box-shadow:var(--soft);aspect-ratio:4/5}
+    .kchi-media img{width:100%;height:100%;object-fit:cover}
+    .kchi-text p{color:var(--muted);margin-top:1rem}
+    .kchi-text h2{margin-top:.4rem}
+    .kcreds{list-style:none;margin-top:1.6rem;display:grid;gap:.7rem}
+    .kcreds li{position:relative;padding-left:1.8rem;color:var(--muted)}
+    .kcreds li::before{content:'🐾';position:absolute;left:0;top:0}
+    .kcreds b{color:var(--ink)}
+
+    /* GALLERIA */
+    .kgal{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+    .kgal img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:18px;transition:transform .5s var(--e)}
+    .kgal img:hover{transform:scale(1.04)}
+
+    /* RECENSIONI */
+    .krev{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.6rem;display:flex;flex-direction:column;gap:.8rem}
+    .krev-stars{color:var(--amber);letter-spacing:2px}
+    .krev p{color:var(--ink);font-size:1.02rem;flex:1}
+    .krev footer{display:flex;align-items:center;gap:.6rem;margin-top:.4rem}
+    .krev-av{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--green);color:#fff;font-family:var(--head);font-weight:700;flex:none}
+
+    /* FAQ */
+    .kfaq{max-width:780px;margin:0 auto;display:grid;gap:.8rem}
+    .kq{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+    .kq summary{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.1rem 1.3rem;cursor:pointer;font-family:var(--head);font-weight:600;font-size:1.05rem;list-style:none}
+    .kq summary::-webkit-details-marker{display:none}
+    .kq-ic{position:relative;width:18px;height:18px;flex:none}
+    .kq-ic::before,.kq-ic::after{content:'';position:absolute;background:var(--green);border-radius:2px;transition:transform .3s var(--e)}
+    .kq-ic::before{top:8px;left:0;width:18px;height:2px}
+    .kq-ic::after{left:8px;top:0;width:2px;height:18px}
+    .kq[open] .kq-ic::after{transform:scaleY(0)}
+    .kq-a{padding:0 1.3rem 1.2rem;color:var(--muted)}
+
+    /* CTA / PROVA */
+    .kcta{max-width:none;background:linear-gradient(150deg,var(--green),var(--green-d))}
+    .kcta-in{max-width:1100px;margin:0 auto;padding:clamp(3rem,7vw,5.5rem) clamp(1.2rem,5vw,3rem);display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4rem);align-items:center;color:#fff}
+    .kcta .kkick{background:rgba(255,255,255,.16);color:#fff}
+    .kcta-text>p{color:rgba(255,255,255,.85);margin:.8rem 0 1.6rem;max-width:42ch}
+    .kcta-side{display:flex;gap:.8rem;flex-wrap:wrap}
+    .kcta-note{margin-top:1.4rem;font-size:.9rem;color:rgba(255,255,255,.8)}
+    .kform{background:#fff;border-radius:24px;padding:clamp(1.4rem,3vw,2rem);box-shadow:0 40px 80px -40px rgba(0,0,0,.5);display:flex;flex-direction:column;gap:.9rem;color:var(--ink)}
+    .kform label{display:flex;flex-direction:column;gap:.35rem;font-size:.85rem;font-weight:600;color:var(--ink)}
+    .kform input,.kform select{padding:.8rem .9rem;border:1px solid var(--line);border-radius:12px;font-family:var(--sans);font-size:1rem;background:var(--bg);color:var(--ink)}
+    .kform input:focus,.kform select:focus{outline:2px solid var(--green);border-color:transparent}
+    .kform-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+    .kform-note{font-size:.78rem;color:var(--muted);text-align:center;font-weight:400}
+
+    .kfoot{max-width:1180px;margin:0 auto;padding:2rem clamp(1.2rem,5vw,3rem);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.88rem;border-top:1px solid var(--line)}
+    .kfoot b{color:var(--ink);font-family:var(--head)}.kfoot a{color:var(--green);font-weight:600}
+
+    .kwa{position:fixed;right:18px;bottom:18px;z-index:250;width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 30px -10px rgba(37,211,102,.7);transition:transform .2s var(--e)}
+    .kwa:hover{transform:scale(1.08)}
+
+    /* reveal */
+    .r{opacity:0;transform:translateY(24px);transition:opacity .7s var(--e),transform .7s var(--e)}
+    .r.in{opacity:1;transform:none}
+    @media (prefers-reduced-motion:reduce){.r{opacity:1;transform:none;transition:none}.kdot{animation:none}}
+
+    /* RESPONSIVE */
+    @media (max-width:900px){
+      .knav{gap:.8rem}
+      .klinks{display:none}
+      .knav.kopen .klinks{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1.1rem;background:rgba(250,246,238,.98);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:1.2rem clamp(1.2rem,5vw,3rem) 1.5rem}
+      .knav>.kbtn-solid{display:none}
+      .knav-toggle{display:grid}
+      .kgrid-3{grid-template-columns:1fr 1fr}
+      .ksteps{grid-template-columns:1fr 1fr}
+      .kchi-grid{grid-template-columns:1fr}.kchi-media{aspect-ratio:16/11;order:-1}
+      .kcta-in{grid-template-columns:1fr}
+      .kstats-in{grid-template-columns:1fr 1fr;gap:1.4rem 1rem}
+      .kstats-in>div:nth-child(3){border-left:none}
+    }
+    @media (max-width:560px){
+      .kgrid-3{grid-template-columns:1fr}
+      .ksteps{grid-template-columns:1fr}
+      .kgal{grid-template-columns:1fr 1fr}
+      .kform-row{grid-template-columns:1fr}
+      .khero-trust{gap:.4rem 1.1rem}
+      .kconf-resfoot{flex-direction:column;align-items:stretch}
+      .kconf-resfoot .kbtn{justify-content:center}
+    }
+  </style>
+
+  <script>
+    const fnGet = (id) => document.getElementById(id);
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // nav solid + mobile menu
+    const knav = fnGet('knav');
+    addEventListener('scroll', () => knav.classList.toggle('solid', scrollY > 30), { passive: true });
+    const kt = fnGet('kToggle');
+    kt.addEventListener('click', () => { const o = knav.classList.toggle('kopen'); kt.setAttribute('aria-expanded', String(o)); });
+    document.querySelectorAll('.klinks a').forEach((a) => a.addEventListener('click', () => knav.classList.remove('kopen')));
+
+    // reveal
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12 });
+    document.querySelectorAll('.r').forEach((el) => io.observe(el));
+
+    // contatori
+    document.querySelectorAll('[data-count]').forEach((el) => {
+      const target = +el.dataset.count, dec = el.dataset.dec, suf = el.dataset.suffix || '';
+      const end = dec ? target + +dec / 10 : target;
+      const show = (v) => el.textContent = (dec ? v.toFixed(1).replace('.', ',') : Math.round(v)) + suf;
+      if (reduced) { show(end); return; }
+      const o2 = new IntersectionObserver((es) => es.forEach((e) => {
+        if (!e.isIntersecting) return; o2.unobserve(el);
+        const t0 = performance.now(), D = 1400;
+        const tick = (t) => { const k = Math.min(1, (t - t0) / D); show(end * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(tick); };
+        requestAnimationFrame(tick);
+      }), { threshold: 0.5 });
+      o2.observe(el);
+    });
+
+    // configuratore
+    const RES = {
+      'cucciolo|base': ['Puppy Class', 'Socializzazione, gioco e prime regole nel periodo più importante della sua vita.', 'da 25€ / lezione'],
+      'cucciolo|socializz': ['Puppy Class', 'Incontri in piccolo gruppo per crescere un cane equilibrato e sicuro.', 'da 25€ / lezione'],
+      'cucciolo|problema': ['Educazione di base', 'Da cucciolo si previene: impostiamo subito le basi corrette per evitare problemi.', 'da 40€ / lezione'],
+      'cucciolo|sport': ['Educazione di base', 'Prima le fondamenta, poi lo sport: il fisico del cucciolo va rispettato.', 'da 40€ / lezione'],
+      'giovane|base': ['Educazione di base', 'Seduto, resta, richiamo e guinzaglio: la convivenza serena parte da qui.', 'da 40€ / lezione'],
+      'giovane|problema': ['Percorso comportamentale', 'Valutazione a domicilio e piano su misura per il problema specifico.', 'da 55€ / seduta'],
+      'giovane|sport': ['Sport cinofili · Agility', 'Energia e affiatamento: percorsi di agility e attività di fiuto.', 'da 35€ / lezione'],
+      'giovane|socializz': ['Passeggiate educative', 'Uscite di gruppo guidate per socializzare in sicurezza.', 'da 18€ / uscita'],
+      'senior|base': ['Educazione di base', 'Mai troppo tardi: esercizi dolci adatti a un cane maturo.', 'da 40€ / lezione'],
+      'senior|problema': ['Percorso comportamentale', 'Affrontiamo paure e abitudini consolidate con gradualità e rispetto.', 'da 55€ / seduta'],
+      'senior|sport': ['Passeggiate educative', 'Attività dolci per tenerlo attivo nel corpo e nella mente.', 'da 18€ / uscita'],
+      'senior|socializz': ['Passeggiate educative', 'Socializzazione tranquilla, su misura per i suoi tempi.', 'da 18€ / uscita'],
+    };
+    let eta = 'cucciolo', obi = 'base';
+    const upd = () => {
+      const r = RES[eta + '|' + obi] || RES['giovane|base'];
+      fnGet('confTitle').textContent = r[0]; fnGet('confDesc').textContent = r[1]; fnGet('confPrice').textContent = r[2];
+    };
+    fnGet('qEta').addEventListener('click', (e) => { const b = e.target.closest('.kopt'); if (!b) return; fnGet('qEta').querySelectorAll('.kopt').forEach((x) => x.classList.remove('is-on')); b.classList.add('is-on'); eta = b.dataset.eta; upd(); });
+    fnGet('qObi').addEventListener('click', (e) => { const b = e.target.closest('.kopt'); if (!b) return; fnGet('qObi').querySelectorAll('.kopt').forEach((x) => x.classList.remove('is-on')); b.classList.add('is-on'); obi = b.dataset.obi; upd(); });
+
+    // accordion FAQ: una aperta alla volta
+    document.querySelectorAll('.kq').forEach((d) => d.addEventListener('toggle', () => {
+      if (d.open) document.querySelectorAll('.kq').forEach((o) => { if (o !== d) o.open = false; });
+    }));
+  </script>
+</body>
+</html>
