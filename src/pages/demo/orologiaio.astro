@@ -673,7 +673,9 @@ import '@fontsource-variable/space-grotesk';
     }
     @media (max-width:680px){
       .clinks{display:none}.cnav-toggle{display:grid;place-items:center}
-      .cnav>.cbtn-solid{padding:.5rem .85rem;font-size:.78rem}
+      .cbrand-sub,.cbrand em{display:none}
+      .cnav{gap:.6rem}
+      .cnav>.cbtn-solid{padding:.5rem .8rem;font-size:.76rem;white-space:nowrap}
       .cnav.open .clinks{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1.1rem;background:rgba(12,16,21,.98);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:1.2rem clamp(1.2rem,5vw,3rem) 1.5rem;margin:0}
       .opts-grid{grid-template-columns:1fr}.lab-stats{grid-template-columns:1fr 1fr}
       .lead-row{grid-template-columns:1fr}.tstep-lbl{font-size:.62rem}
