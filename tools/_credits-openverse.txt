@@ -1,2 +1,2 @@
-img/demo-officina/hero.webp: "A mechanic is engaged in adjusting a vehicle lift while working in a well-lit workshop" — by 2.0 via flickr (Openverse) — https://live.staticflickr.com/65535/54577023124_386c3f725d_b.jpg
-img/demo-officina/interno.webp: "Car Floor jack" — by-sa 4.0 via wikimedia (Openverse) — https://upload.wikimedia.org/wikipedia/commons/e/ec/Car_Floor_jack.jpg
+img/demo-salone/taglio-1.webp: "New bob" — by 2.0 via flickr (Openverse) — https://live.staticflickr.com/3158/2594250674_ff1ee87976_b.jpg
+img/demo-salone/taglio-4.webp: "" — by 2.0 via flickr (Openverse) — https://live.staticflickr.com/6109/6284139226_9416536cb0_b.jpg
