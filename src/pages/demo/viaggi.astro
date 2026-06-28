@@ -1,0 +1,343 @@
+---
+// DEMO standalone — "Vàgo", agenzia viaggi a Torino. Tema vivace blu/arancio.
+// STRUTTURA distinta: hero full-bleed con barra ricerca, bento destinazioni, pill tipologie, timeline.
+// Responsive solo flusso (grid/clamp/flex), niente badge absolute decorativi. Sito a sé.
+import '@fontsource-variable/space-grotesk';
+import '@fontsource-variable/inter';
+
+const dest = [
+  { img: '/img/demo-viaggi/d1.webp', n: 'Maldive',  s: 'Atolli & overwater', p: 'da 1.290€', big: true },
+  { img: '/img/demo-viaggi/d2.webp', n: 'Giappone', s: 'Tokyo & Kyoto',      p: 'da 1.850€' },
+  { img: '/img/demo-viaggi/d3.webp', n: 'Islanda',  s: 'Aurore & natura',    p: 'da 990€' },
+  { img: '/img/demo-viaggi/d4.webp', n: 'New York', s: 'La grande mela',      p: 'da 850€' },
+  { img: '/img/demo-viaggi/d5.webp', n: 'Marocco',  s: 'Deserto & medine',   p: 'da 690€' },
+];
+const tipi = [
+  { ic: 'wave',   t: 'Mare' },
+  { ic: 'city',   t: 'Città' },
+  { ic: 'mount',  t: 'Avventura' },
+  { ic: 'spa',    t: 'Relax' },
+  { ic: 'family', t: 'Famiglia' },
+  { ic: 'heart',  t: 'Luna di miele' },
+];
+const steps = [
+  { n: '01', t: 'Ci racconti il sogno', d: 'Dove vorresti andare, con chi, quando e con che budget. Ti ascoltiamo davvero.' },
+  { n: '02', t: 'Disegniamo il viaggio', d: 'Voli, hotel, esperienze e tempi: un itinerario su misura, senza sorprese.' },
+  { n: '03', t: 'Parti sereno', d: 'Assistenza prima e durante. Tu pensa a goderti il viaggio, al resto pensiamo noi.' },
+];
+const reviews = [
+  { n: 'Paolo & Sara', av: 'P', txt: 'Luna di miele alle Maldive organizzata nei minimi dettagli. Zero pensieri, solo meraviglia.' },
+  { n: 'Federica G.', av: 'F', txt: 'Giappone su misura, fuori dai soliti percorsi. Hanno capito esattamente cosa cercavamo.' },
+  { n: 'Marco T.', av: 'M', txt: 'Preventivo chiaro e onesto, assistenza impeccabile anche durante il viaggio. Torno solo da loro.' },
+];
+function icon(n) {
+  const w = (p) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+  const m = {
+    wave: '<path d="M2 16c2 0 2-1.5 4-1.5s2 1.5 4 1.5 2-1.5 4-1.5 2 1.5 4 1.5M2 11c2 0 2-1.5 4-1.5s2 1.5 4 1.5 2-1.5 4-1.5 2 1.5 4 1.5"/>',
+    city: '<path d="M3 21h18M5 21V8l5-3v16M14 21V10l5 3v8M8 9v0M8 12v0M8 15v0"/>',
+    mount: '<path d="M3 20h18L14 7l-3 5-2-3z"/><circle cx="17" cy="6" r="1.5"/>',
+    spa: '<path d="M12 21c-4 0-7-2.5-7-5 1.8-.4 3.4 0 4.7.9C9 13 10.2 11 12 9.5c1.8 1.5 3 3.5 2.3 6.4 1.3-.9 2.9-1.3 4.7-.9 0 2.5-3 5-7 5z"/>',
+    family: '<circle cx="8" cy="7" r="2"/><circle cx="16" cy="7" r="2"/><path d="M5 21v-4a3 3 0 0 1 6 0v4M13 21v-4a3 3 0 0 1 6 0v4"/>',
+    heart: '<path d="M12 20s-6-4-8-8a4.5 4.5 0 0 1 8-2 4.5 4.5 0 0 1 8 2c-2 4-8 8-8 8z"/>',
+    plane: '<path d="M10 16 4 14l1-2 5 1 4-6 2 1-2 6 4 2-1 2-5-1-2 3h-2z"/>',
+  };
+  return w(m[n] || m.plane);
+}
+---
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Vàgo — Agenzia viaggi su misura a Torino</title>
+  <meta name="description" content="Vàgo, agenzia viaggi a Torino: viaggi su misura, lune di miele, mare, città e avventura. Ti ascoltiamo, progettiamo l'itinerario e ti assistiamo prima e durante." />
+  <meta name="theme-color" content="#0e7cc4" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M10 16 4 14l1-2 5 1 4-6 2 1-2 6 4 2-1 2-5-1-2 3h-2z' fill='%23ff7a30'/></svg>" />
+</head>
+<body>
+  <a class="demo-flag" href="/">★ Demo realizzata da <b>Mole Digitale</b> · torna al sito ↩</a>
+
+  <header class="vgnav" id="vgnav">
+    <a href="#top" class="vgbrand"><span class="vgbrand-ic" aria-hidden="true" set:html={icon('plane')}></span>Vàgo</a>
+    <nav class="vglinks" id="vglinks">
+      <a href="#destinazioni">Destinazioni</a>
+      <a href="#tipi">Che viaggio</a>
+      <a href="#come">Come funziona</a>
+      <a href="#contatti">Contatti</a>
+    </nav>
+    <button class="vgnav-toggle" id="vgToggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="vglinks"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <a href="#contatti" class="vgbtn vgbtn-solid">Preventivo</a>
+  </header>
+
+  <main id="main">
+  <!-- HERO FULL-BLEED -->
+  <section class="vghero" id="top">
+    <div class="vghero-bg"></div>
+    <div class="vghero-inner">
+      <span class="vgeyebrow r">✈ Agenzia viaggi · Torino</span>
+      <h1 class="r">Il mondo<br/>ti <span class="vgmark">aspetta</span>.</h1>
+      <p class="vghero-sub r">Viaggi cuciti su di te: dalle Maldive al Giappone, niente pacchetti preconfezionati. Solo il tuo viaggio, come lo sogni.</p>
+      <form class="vgsearch r" onsubmit="return false" aria-label="Cerca un viaggio">
+        <label class="vgsearch-f"><span>Destinazione</span><input type="text" placeholder="Es. Giappone" /></label>
+        <label class="vgsearch-f"><span>Quando</span><input type="text" placeholder="Es. Settembre" /></label>
+        <label class="vgsearch-f"><span>Viaggiatori</span><input type="text" placeholder="2 adulti" /></label>
+        <button class="vgbtn vgbtn-solid vgsearch-btn" type="submit">Cerca →</button>
+      </form>
+      <ul class="vghero-trust r"><li>★ 4,9 su Google</li><li>✦ 2.500+ viaggi creati</li><li>✦ Assistenza 24/7 in viaggio</li></ul>
+    </div>
+  </section>
+
+  <!-- DESTINAZIONI BENTO -->
+  <section class="vgsection" id="destinazioni">
+    <div class="vghead">
+      <div>
+        <span class="vgkick r">Destinazioni del momento</span>
+        <h2 class="r">Dove ti <span class="vgmark">portiamo</span></h2>
+      </div>
+      <p class="vghead-p r">Una selezione di mete amate dai nostri viaggiatori. Ognuna, ovviamente, è personalizzabile.</p>
+    </div>
+    <div class="vgbento">
+      {dest.map((d) => (
+        <a class={`vgdest r${d.big ? ' vgdest-big' : ''}`} href="#contatti" style={`background-image:url(${d.img})`}>
+          <div class="vgdest-cap">
+            <div><b>{d.n}</b><span>{d.s}</span></div>
+            <span class="vgdest-p">{d.p}</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- TIPOLOGIE (PILL) -->
+  <section class="vgtipi-sec" id="tipi">
+    <div class="vgtipi-in">
+      <div class="vgtipi-head r">
+        <span class="vgkick light">Che viaggiatore sei?</span>
+        <h2>Ogni viaggio ha <span class="vgmark2">il suo ritmo</span></h2>
+        <p>Dimmi come ti piace viaggiare e ti propongo l'esperienza giusta.</p>
+      </div>
+      <div class="vgtipi r">
+        {tipi.map((t) => (
+          <button class="vgpill" type="button"><span class="vgpill-ic" set:html={icon(t.ic)} aria-hidden="true"></span>{t.t}</button>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- COME FUNZIONA (TIMELINE) -->
+  <section class="vgsection" id="come">
+    <div class="vghead vghead-c">
+      <span class="vgkick r">Come funziona</span>
+      <h2 class="r">Dal sogno alla <span class="vgmark">partenza</span></h2>
+    </div>
+    <ol class="vgtimeline">
+      {steps.map((s) => (
+        <li class="vgstep r">
+          <span class="vgstep-n">{s.n}</span>
+          <h3>{s.t}</h3>
+          <p>{s.d}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <!-- RECENSIONI -->
+  <section class="vgsection vgrev-sec">
+    <div class="vghead vghead-c"><span class="vgkick r">Viaggiatori felici</span><h2 class="r">Storie di chi è <span class="vgmark">già partito</span></h2></div>
+    <div class="vgrevs">
+      {reviews.map((r) => (
+        <blockquote class="vgrev r"><div class="vgstars">★★★★★</div><p>«{r.txt}»</p><footer><span class="vgav">{r.av}</span><b>{r.n}</b></footer></blockquote>
+      ))}
+    </div>
+  </section>
+
+  <!-- CTA / CONTATTI -->
+  <section class="vgcta" id="contatti">
+    <div class="vgcta-in r">
+      <div class="vgcta-text">
+        <span class="vgkick light">Preventivo gratuito</span>
+        <h2>Raccontaci il tuo <span class="vgmark2">prossimo viaggio</span></h2>
+        <p>Compila e ti ricontattiamo entro 24 ore con una prima proposta su misura. Senza impegno, ovviamente.</p>
+        <ul class="vgcta-list">
+          <li>✦ Preventivo gratuito e personalizzato</li>
+          <li>✦ Voli, hotel ed esperienze in un'unica soluzione</li>
+          <li>✦ Un consulente dedicato dall'inizio alla fine</li>
+        </ul>
+        <p class="vgcta-note">📍 Via Garibaldi 30, Torino · Lun–Sab 9:30–19:00</p>
+      </div>
+      <form class="vgform" onsubmit="return false">
+        <label>Il tuo nome<input type="text" placeholder="Mario Rossi" autocomplete="name" /></label>
+        <div class="vgform-row">
+          <label>Destinazione<input type="text" placeholder="Es. Thailandia" /></label>
+          <label>Periodo<input type="text" placeholder="Es. Agosto" /></label>
+        </div>
+        <label>Telefono<input type="tel" placeholder="333 000 0000" autocomplete="tel" /></label>
+        <button class="vgbtn vgbtn-solid vgbtn-block vgbtn-lg" type="submit">Richiedi il preventivo →</button>
+        <p class="vgform-note">🔒 È una demo: nessun dato viene inviato.</p>
+      </form>
+    </div>
+  </section>
+  </main>
+
+  <footer class="vgfoot"><div><b>Vàgo</b> · Agenzia viaggi su misura a Torino</div><div>Demo · <a href="/">Mole Digitale</a></div></footer>
+
+  <a class="wa-fab" href="https://wa.me/390110000000" target="_blank" rel="noopener" aria-label="Scrivici su WhatsApp"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.5-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c2.3 1 2.3.7 2.7.6a2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1z"/></svg></a>
+
+  <style is:global>
+    :root{
+      --bg:#ffffff;--bg2:#eef6fc;--ink:#0f2233;--muted:#5b6b78;
+      --blue:#0e7cc4;--blue-d:#0a5e96;--navy:#0d2236;--orange:#ff7a30;--orange-d:#e8631a;
+      --line:rgba(15,34,51,.12);--soft:0 20px 46px -24px rgba(13,40,65,.45);
+      --disp:'Space Grotesk Variable',system-ui,sans-serif;--sans:'Inter Variable',system-ui,sans-serif;--e:cubic-bezier(.2,.7,.2,1);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:84px;overflow-x:clip}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    img{display:block;max-width:100%}a{color:inherit;text-decoration:none}
+    h1,h2,h3{font-family:var(--disp);font-weight:700;line-height:1.05;letter-spacing:-.02em}
+    .vgmark{color:var(--orange)}.vgmark2{color:#ffd9c2}
+
+    .demo-flag{position:fixed;top:0;left:0;right:0;z-index:300;text-align:center;font-size:.8rem;padding:.4rem;background:rgba(13,34,54,.75);backdrop-filter:blur(8px);color:#dce8f2}
+    .demo-flag b{color:#fff}
+
+    .vgnav{position:fixed;top:27px;left:0;right:0;z-index:200;display:flex;align-items:center;gap:1.2rem;padding:.85rem clamp(1rem,4vw,2.6rem);transition:background .35s var(--e),box-shadow .35s}
+    .vgnav.solid{background:rgba(255,255,255,.92);backdrop-filter:blur(14px);box-shadow:0 6px 24px -16px rgba(0,0,0,.5)}
+    .vgbrand{font-family:var(--disp);font-size:1.5rem;font-weight:700;display:inline-flex;align-items:center;gap:.5rem;color:#fff;transition:color .35s}
+    .vgbrand-ic{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--orange);color:#fff}.vgbrand-ic svg{width:20px;height:20px}
+    .vgnav.solid .vgbrand{color:var(--navy)}
+    .vglinks{display:flex;gap:1.7rem;margin-left:auto}
+    .vglinks a{font-size:.95rem;font-weight:600;color:#fff;position:relative;transition:color .2s}
+    .vgnav.solid .vglinks a{color:var(--ink)}
+    .vglinks a::after{content:'';position:absolute;left:0;bottom:-5px;height:2px;width:0;background:var(--orange);transition:width .3s var(--e)}
+    .vglinks a:hover::after{width:100%}
+    .vgnav-toggle{display:none;background:none;border:0;color:#fff;cursor:pointer;width:44px;height:44px;border-radius:12px;place-items:center;margin-left:auto}
+    .vgnav.solid .vgnav-toggle{color:var(--navy)}
+
+    .vgbtn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;font-weight:700;font-size:.92rem;padding:.7rem 1.3rem;border-radius:12px;cursor:pointer;border:0;transition:transform .2s var(--e),background .2s;white-space:nowrap;font-family:var(--sans)}
+    .vgbtn-solid{background:var(--orange);color:#fff;box-shadow:0 12px 26px -12px var(--orange)}.vgbtn-solid:hover{background:var(--orange-d);transform:translateY(-3px)}
+    .vgbtn-lg{padding:.95rem 1.7rem;font-size:1rem}.vgbtn-block{width:100%}
+
+    /* HERO */
+    .vghero{position:relative;min-height:100svh;display:flex;align-items:center;padding:7.5rem clamp(1.2rem,5vw,3rem) 3rem;overflow:hidden}
+    .vghero-bg{position:absolute;inset:0;background:linear-gradient(115deg,rgba(13,34,54,.82),rgba(14,124,196,.5)),url('/img/demo-viaggi/hero.webp');background-size:cover;background-position:center;z-index:0}
+    .vghero-inner{position:relative;z-index:1;max-width:1180px;margin:0 auto;width:100%;color:#fff}
+    .vgeyebrow{display:inline-block;font-weight:700;font-size:.85rem;letter-spacing:.04em;background:rgba(255,255,255,.16);backdrop-filter:blur(6px);padding:.45rem .9rem;border-radius:999px;margin-bottom:1.3rem}
+    .vghero h1{font-size:clamp(3rem,8vw,6rem);margin-bottom:1.2rem;text-shadow:0 6px 30px rgba(0,0,0,.3)}
+    .vghero-sub{font-size:1.2rem;max-width:48ch;margin-bottom:2rem;color:#eaf3fa}
+    .vgsearch{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:.6rem;background:rgba(255,255,255,.97);border-radius:16px;padding:.7rem;box-shadow:var(--soft);max-width:820px}
+    .vgsearch-f{display:flex;flex-direction:column;gap:.15rem;padding:.5rem .8rem;border-radius:10px;min-width:0}
+    .vgsearch-f span{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--blue)}
+    .vgsearch-f input{border:0;background:none;font-family:var(--sans);font-size:.98rem;color:var(--ink);min-width:0;width:100%}
+    .vgsearch-f input:focus{outline:none}
+    .vgsearch-f+.vgsearch-f{border-left:1px solid var(--line)}
+    .vgsearch-btn{align-self:stretch}
+    .vghero-trust{list-style:none;display:flex;gap:1.4rem;flex-wrap:wrap;margin-top:1.6rem;font-size:.9rem;font-weight:600;color:#eaf3fa}
+
+    /* SECTION base */
+    .vgsection{max-width:1180px;margin:0 auto;padding:clamp(3.5rem,8vw,6rem) clamp(1.2rem,5vw,3rem)}
+    .vghead{display:flex;justify-content:space-between;align-items:flex-end;gap:1.5rem;flex-wrap:wrap;margin-bottom:clamp(1.8rem,4vw,2.8rem)}
+    .vghead-c{flex-direction:column;align-items:center;text-align:center}
+    .vghead-p{max-width:38ch;color:var(--muted)}
+    .vgkick{display:inline-block;font-weight:700;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:.7rem}
+    .vgkick.light{color:#ffd9c2}
+    .vghead h2,.vgtipi-head h2,.vgcta h2{font-size:clamp(1.9rem,4.6vw,3.2rem)}
+
+    /* BENTO */
+    .vgbento{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:clamp(140px,18vw,210px);gap:1rem}
+    .vgdest{position:relative;border-radius:20px;overflow:hidden;display:flex;align-items:flex-end;padding:1.2rem;background-size:cover;background-position:center;color:#fff;min-width:0;transition:transform .3s var(--e),box-shadow .3s}
+    .vgdest::before{content:'';position:absolute;inset:0;background:linear-gradient(transparent 35%,rgba(8,22,36,.82));z-index:0}
+    .vgdest:hover{transform:translateY(-4px);box-shadow:var(--soft)}
+    .vgdest-big{grid-column:span 2;grid-row:span 2}
+    .vgdest-cap{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-end;gap:.6rem;width:100%}
+    .vgdest-cap b{font-family:var(--disp);font-size:1.3rem;display:block}
+    .vgdest-cap span{font-size:.85rem;color:#d7e6f2}
+    .vgdest-big .vgdest-cap b{font-size:1.9rem}
+    .vgdest-p{flex:none;background:var(--orange);color:#fff;font-weight:700;font-size:.82rem;padding:.35rem .7rem;border-radius:999px;white-space:nowrap}
+
+    /* TIPI */
+    .vgtipi-sec{background:linear-gradient(150deg,var(--navy),var(--blue-d));color:#fff}
+    .vgtipi-in{max-width:1180px;margin:0 auto;padding:clamp(3.5rem,8vw,6rem) clamp(1.2rem,5vw,3rem)}
+    .vgtipi-head{max-width:620px;margin-bottom:2.2rem}
+    .vgtipi-head p{color:#cdddea;margin-top:.7rem}
+    .vgtipi{display:flex;flex-wrap:wrap;gap:.9rem}
+    .vgpill{display:inline-flex;align-items:center;gap:.6rem;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#fff;font-family:var(--sans);font-weight:600;font-size:1rem;padding:.8rem 1.3rem;border-radius:999px;cursor:pointer;transition:background .2s,transform .2s var(--e)}
+    .vgpill:hover{background:var(--orange);border-color:var(--orange);transform:translateY(-3px)}
+    .vgpill-ic{display:grid;place-items:center;width:24px;height:24px}.vgpill-ic svg{width:22px;height:22px}
+
+    /* TIMELINE */
+    .vgtimeline{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;counter-reset:s}
+    .vgtimeline>*{min-width:0}
+    .vgstep{position:relative;background:var(--bg2);border-radius:18px;padding:2rem 1.6rem}
+    .vgstep-n{font-family:var(--disp);font-size:2.4rem;font-weight:700;color:var(--blue);display:block;margin-bottom:.5rem}
+    .vgstep h3{font-size:1.3rem;margin-bottom:.4rem}.vgstep p{color:var(--muted);font-size:.96rem}
+
+    /* RECENSIONI */
+    .vgrev-sec .vgrevs{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem}
+    .vgrev-sec .vgrevs>*{min-width:0}
+    .vgrev{background:#fff;border:1px solid var(--line);border-radius:18px;padding:1.6rem;display:flex;flex-direction:column;gap:.8rem;box-shadow:var(--soft)}
+    .vgstars{color:var(--orange);letter-spacing:2px}.vgrev p{flex:1}
+    .vgrev footer{display:flex;align-items:center;gap:.6rem}
+    .vgav{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--blue);color:#fff;font-family:var(--disp);font-weight:700;flex:none}
+
+    /* CTA */
+    .vgcta{background:linear-gradient(140deg,var(--orange),var(--orange-d))}
+    .vgcta-in{max-width:1100px;margin:0 auto;padding:clamp(3rem,7vw,5.5rem) clamp(1.2rem,5vw,3rem);display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4rem);align-items:center;color:#fff}
+    .vgcta-in>*{min-width:0}
+    .vgcta-text>p{color:rgba(255,255,255,.92);margin:.8rem 0 1.4rem;max-width:42ch}
+    .vgcta-list{list-style:none;display:grid;gap:.6rem;margin-bottom:1.4rem;font-weight:600}
+    .vgcta-note{font-size:.9rem;color:rgba(255,255,255,.88)}
+    .vgform{background:#fff;border-radius:20px;padding:clamp(1.4rem,3vw,2rem);box-shadow:0 40px 80px -40px rgba(0,0,0,.5);display:flex;flex-direction:column;gap:.9rem;color:var(--ink)}
+    .vgform-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}.vgform-row>*{min-width:0}
+    .vgform label{display:flex;flex-direction:column;gap:.35rem;font-size:.85rem;font-weight:700}
+    .vgform input{min-width:0;width:100%;padding:.8rem .9rem;border:1px solid var(--line);border-radius:10px;font-family:var(--sans);font-size:1rem;background:var(--bg2);color:var(--ink)}
+    .vgform input:focus{outline:2px solid var(--orange);border-color:transparent}
+    .vgform-note{font-size:.78rem;color:var(--muted);text-align:center;font-weight:500}
+
+    .vgfoot{max-width:1180px;margin:0 auto;padding:2rem clamp(1.2rem,5vw,3rem);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.88rem;border-top:1px solid var(--line)}
+    .vgfoot b{color:var(--ink);font-family:var(--disp)}.vgfoot a{color:var(--blue)}
+
+    .wa-fab{position:fixed;right:18px;bottom:18px;z-index:160;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 30px -10px rgba(37,211,102,.7);transition:transform .2s var(--e)}
+    .wa-fab:hover{transform:scale(1.08)}
+
+    .r{opacity:0;transform:translateY(22px);transition:opacity .7s var(--e),transform .7s var(--e)}
+    .r.in{opacity:1;transform:none}
+    @media (prefers-reduced-motion:reduce){.r{opacity:1;transform:none;transition:none}}
+
+    @media (max-width:900px){
+      .vglinks{display:none}
+      .vgnav.vgopen .vglinks{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1.1rem;background:rgba(255,255,255,.98);backdrop-filter:blur(14px);box-shadow:var(--soft);padding:1.2rem clamp(1.2rem,5vw,3rem) 1.5rem}
+      .vgnav.vgopen .vglinks a{color:var(--ink)}
+      .vgnav-toggle{display:grid}
+      .vgsearch{grid-template-columns:1fr 1fr}
+      .vgsearch-f:nth-child(2)+.vgsearch-f{border-left:0}
+      .vgsearch-btn{grid-column:1 / -1}
+      .vgtimeline{grid-template-columns:1fr}
+      .vgrev-sec .vgrevs{grid-template-columns:1fr}
+      .vgcta-in{grid-template-columns:1fr}
+      .vgbento{grid-auto-rows:clamp(120px,30vw,180px)}
+    }
+    @media (max-width:560px){
+      .vgsearch{grid-template-columns:1fr}.vgsearch-f+.vgsearch-f{border-left:0;border-top:1px solid var(--line)}
+      .vgbento{grid-template-columns:1fr 1fr}
+      .vgdest-big{grid-column:span 2;grid-row:span 1}
+      .vgform-row{grid-template-columns:1fr}
+      .vghero h1{font-size:clamp(2.6rem,11vw,4rem)}
+    }
+  </style>
+
+  <script>
+    const vgnav = document.getElementById('vgnav');
+    addEventListener('scroll', () => vgnav.classList.toggle('solid', scrollY > 30), { passive: true });
+    const vt = document.getElementById('vgToggle');
+    vt.addEventListener('click', () => { const o = vgnav.classList.toggle('vgopen'); vt.setAttribute('aria-expanded', String(o)); });
+    document.querySelectorAll('.vglinks a').forEach((a) => a.addEventListener('click', () => vgnav.classList.remove('vgopen')));
+    document.addEventListener('click', (e) => { if (vgnav.classList.contains('vgopen') && !vgnav.contains(e.target)) { vgnav.classList.remove('vgopen'); vt.setAttribute('aria-expanded', 'false'); } });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { vgnav.classList.remove('vgopen'); vt.setAttribute('aria-expanded', 'false'); } });
+    document.querySelectorAll('.vgpill').forEach((p) => p.addEventListener('click', () => { document.querySelectorAll('.vgpill').forEach((o) => o.removeAttribute('data-on')); p.setAttribute('data-on', '1'); }));
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.1 });
+    document.querySelectorAll('.r').forEach((el) => io.observe(el));
+  </script>
+</body>
+</html>

@@ -1,0 +1,290 @@
+---
+// DEMO standalone — "Lúnula", nail studio a Torino. Tema rosa/viola, gioco-chic.
+// STRUTTURA distinta: hero centrato + showcase strip, listino prezzi a menu, gallery masonry.
+// Responsive solo flusso (grid/columns/clamp), niente badge absolute decorativi. Sito a sé.
+import '@fontsource-variable/outfit';
+import '@fontsource-variable/inter';
+
+const listino = [
+  { cat: 'Manicure', items: [['Manicure classica', '15€'], ['Semipermanente', '22€'], ['Semiperm. + nail art', '28€']] },
+  { cat: 'Ricostruzione', items: [['Gel su unghia naturale', '35€'], ['Ricostruzione completa', '45€'], ['Refill', '35€']] },
+  { cat: 'Pedicure', items: [['Pedicure estetico', '25€'], ['Pedicure + semipermanente', '38€'], ['Spa pedicure', '42€']] },
+  { cat: 'Extra & dettagli', items: [['Nail art (a dito)', '2€'], ['French / baby boomer', '+5€'], ['Rimozione', '10€']] },
+];
+const perks = [
+  { ic: 'shield', t: 'Igiene certificata', d: 'Strumenti sterilizzati e monouso. La tua sicurezza prima di tutto.' },
+  { ic: 'leaf',   t: 'Prodotti vegan', d: 'Smalti e gel cruelty-free, delicati su unghie e cuticole.' },
+  { ic: 'spark',  t: 'Nail artist dedicate', d: 'Designer specializzate: porti un’idea, la rendiamo realtà.' },
+];
+const reviews = [
+  { n: 'Aurora B.', txt: 'Le mie unghie non sono mai durate così a lungo. Precisione maniacale e idee bellissime!' },
+  { n: 'Giada R.', txt: 'Ambiente curatissimo, ragazze super gentili. Esco sempre con la manicure dei sogni.' },
+  { n: 'Sofia M.', txt: 'Ho portato una foto Pinterest impossibile e l’hanno ricreata identica. Magiche.' },
+];
+const gallery = ['n1', 'n2', 'n3', 'n4', 'n5', 'n6'];
+function icon(n) {
+  const w = (p) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+  const m = {
+    shield: '<path d="M12 3l7 3v5c0 4.4-3 7.7-7 9-4-1.3-7-4.6-7-9V6z"/><path d="M9.5 12l1.8 1.8L15 10"/>',
+    leaf: '<path d="M12 21c5-2 8-6 8-12 0-1.5-.2-3-.6-4-3 .5-6 1.8-8 4s-3 5-3 8c1.5 0 3-.2 4-.6"/><path d="M5 21c1-4 3.5-7 7-9"/>',
+    spark: '<path d="M12 3l1.6 5.4L19 10l-5.4 1.6L12 17l-1.6-5.4L5 10l5.4-1.6z"/><path d="M18 16l.6 2 2 .6-2 .6L18 22l-.6-1.8-2-.6 2-.6z"/>',
+  };
+  return w(m[n] || m.spark);
+}
+---
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Lúnula — Nail studio a Torino</title>
+  <meta name="description" content="Lúnula, nail studio a Torino: manicure, semipermanente, ricostruzione gel, nail art e pedicure. Prodotti vegan, igiene certificata, nail artist dedicate." />
+  <meta name="theme-color" content="#e0559b" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 3l1.6 5.4L19 10l-5.4 1.6L12 17l-1.6-5.4L5 10z' fill='%23e0559b'/></svg>" />
+</head>
+<body>
+  <a class="demo-flag" href="/">★ Demo realizzata da <b>Mole Digitale</b> · torna al sito ↩</a>
+
+  <header class="nlnav" id="nlnav">
+    <a href="#top" class="nlbrand">Lúnula<span aria-hidden="true">◠</span></a>
+    <nav class="nllinks" id="nllinks">
+      <a href="#listino">Listino</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#perche">Perché noi</a>
+      <a href="#contatti">Contatti</a>
+    </nav>
+    <button class="nlnav-toggle" id="nlToggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="nllinks"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <a href="#contatti" class="nlbtn nlbtn-solid">Prenota</a>
+  </header>
+
+  <main id="main">
+  <!-- HERO centrato + showcase strip -->
+  <section class="nlhero" id="top">
+    <span class="nleyebrow r">💅 Nail studio · Torino</span>
+    <h1 class="r">Unghie che<br/>fanno <span class="nlmark">girare la testa</span>.</h1>
+    <p class="nlhero-sub r">Manicure, semipermanente, ricostruzione e nail art che durano e si fanno notare. Porti un’idea — noi la trasformiamo in opera d’arte.</p>
+    <div class="nlhero-cta r">
+      <a href="#contatti" class="nlbtn nlbtn-solid nlbtn-lg">Prenota il tuo appuntamento</a>
+      <a href="#listino" class="nlbtn nlbtn-ghost nlbtn-lg">Vedi il listino</a>
+    </div>
+    <div class="nlstrip r">
+      <img src="/img/demo-nails/n1.webp" alt="Nail art rosa" loading="lazy" />
+      <img src="/img/demo-nails/n2.webp" alt="Manicure semipermanente" loading="lazy" />
+      <img src="/img/demo-nails/n3.webp" alt="Unghie decorate" loading="lazy" />
+    </div>
+  </section>
+
+  <!-- LISTINO menu -->
+  <section class="nlsection" id="listino">
+    <div class="nlhead r"><span class="nlkick">Listino</span><h2>Trasparenza, <span class="nlmark">anche sui prezzi</span></h2><p>Niente sorprese: questi sono i nostri prezzi. La nail art si quota insieme, in base al tuo design.</p></div>
+    <div class="nlmenu">
+      {listino.map((c) => (
+        <div class="nlmenu-col r">
+          <h3 class="nlmenu-cat">{c.cat}</h3>
+          <ul>
+            {c.items.map((it) => (
+              <li><span class="nlmenu-n">{it[0]}</span><span class="nlmenu-dots" aria-hidden="true"></span><span class="nlmenu-p">{it[1]}</span></li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- GALLERY masonry -->
+  <section class="nlgal-sec" id="gallery">
+    <div class="nlhead nlhead-c r"><span class="nlkick">La gallery</span><h2>Le nostre <span class="nlmark">creazioni</span></h2><p>Una piccola parte di ciò che amiamo fare. La prossima potrebbe essere la tua.</p></div>
+    <div class="nlmasonry r">
+      {gallery.map((g, i) => (
+        <img src={`/img/demo-nails/${g}.webp`} alt={`Nail art Lúnula ${i + 1}`} loading="lazy" />
+      ))}
+    </div>
+  </section>
+
+  <!-- PERCHE inline -->
+  <section class="nlsection nlperks-sec" id="perche">
+    <div class="nlhead nlhead-c r"><span class="nlkick">Perché Lúnula</span><h2>Belle, ma <span class="nlmark">in sicurezza</span></h2></div>
+    <div class="nlperks">
+      {perks.map((p) => (
+        <article class="nlperk r"><span class="nlperk-ic" set:html={icon(p.ic)} aria-hidden="true"></span><h3>{p.t}</h3><p>{p.d}</p></article>
+      ))}
+    </div>
+  </section>
+
+  <!-- RECENSIONI band -->
+  <section class="nlrev-sec">
+    <div class="nlrev-in">
+      <div class="nlhead nlhead-c r"><span class="nlkick light">Dicono di noi</span><h2 class="nlrev-h">Clienti (e unghie) <span class="nlmark2">felici</span></h2></div>
+      <div class="nlrevs">
+        {reviews.map((r) => (
+          <blockquote class="nlrev r"><div class="nlstars">★★★★★</div><p>«{r.txt}»</p><b>— {r.n}</b></blockquote>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA / CONTATTI -->
+  <section class="nlcta" id="contatti">
+    <div class="nlcta-in r">
+      <div class="nlcta-text">
+        <span class="nlkick">Prenota ora</span>
+        <h2>Pronta a <span class="nlmark">brillare</span>?</h2>
+        <p>Scrivici per fissare il tuo appuntamento: ti rispondiamo in giornata. Porta pure le tue ispirazioni!</p>
+        <div class="nlcta-side">
+          <a href="tel:+390110000000" class="nlbtn nlbtn-solid nlbtn-lg">📞 011 000 0000</a>
+          <a href="#contatti" class="nlbtn nlbtn-ghost nlbtn-lg">WhatsApp</a>
+        </div>
+        <p class="nlcta-note">📍 Via Lagrange 8, Torino · Mar–Sab 9:30–19:30</p>
+      </div>
+      <form class="nlform" onsubmit="return false">
+        <label>Il tuo nome<input type="text" placeholder="Giulia Bianchi" autocomplete="name" /></label>
+        <label>Telefono<input type="tel" placeholder="333 000 0000" autocomplete="tel" /></label>
+        <label>Servizio
+          <select><option>Manicure / Semipermanente</option><option>Ricostruzione gel</option><option>Nail art</option><option>Pedicure</option><option>Non so, consigliatemi</option></select>
+        </label>
+        <button class="nlbtn nlbtn-solid nlbtn-lg nlbtn-block" type="submit">Richiedi appuntamento →</button>
+        <p class="nlform-note">🔒 È una demo: nessun dato viene inviato.</p>
+      </form>
+    </div>
+  </section>
+  </main>
+
+  <footer class="nlfoot"><div><b>Lúnula</b> · Nail studio a Torino</div><div>Demo · <a href="/">Mole Digitale</a></div></footer>
+
+  <a class="wa-fab" href="https://wa.me/390110000000" target="_blank" rel="noopener" aria-label="Scrivici su WhatsApp"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.5-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c2.3 1 2.3.7 2.7.6a2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1z"/></svg></a>
+
+  <style is:global>
+    :root{
+      --bg:#fdf3f9;--bg2:#f8e6f1;--card:#ffffff;--ink:#2a1b33;--muted:#8a6f86;
+      --pink:#e0559b;--pink-d:#c83a82;--purple:#7c4dff;--purple-d:#5e34d6;
+      --line:rgba(42,27,51,.1);--soft:0 20px 46px -24px rgba(120,40,100,.45);
+      --disp:'Outfit Variable',system-ui,sans-serif;--sans:'Inter Variable',system-ui,sans-serif;--e:cubic-bezier(.2,.7,.2,1);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:84px;overflow-x:clip}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    img{display:block;max-width:100%}a{color:inherit;text-decoration:none}
+    h1,h2,h3{font-family:var(--disp);font-weight:700;line-height:1.06;letter-spacing:-.02em}
+    .nlmark{background:linear-gradient(90deg,var(--pink),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .nlmark2{color:#ffe3f1}
+
+    .demo-flag{position:fixed;top:0;left:0;right:0;z-index:300;text-align:center;font-size:.8rem;padding:.4rem;background:rgba(253,243,249,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);color:var(--muted)}
+    .demo-flag b{color:var(--pink-d)}
+
+    .nlnav{position:fixed;top:27px;left:0;right:0;z-index:200;display:flex;align-items:center;gap:1.2rem;padding:.85rem clamp(1rem,4vw,2.6rem);transition:background .35s var(--e),box-shadow .35s}
+    .nlnav.solid{background:rgba(253,243,249,.92);backdrop-filter:blur(14px);box-shadow:0 6px 24px -16px rgba(120,40,100,.5)}
+    .nlbrand{font-family:var(--disp);font-size:1.55rem;font-weight:800;display:inline-flex;align-items:center;gap:.3rem}.nlbrand span{color:var(--pink)}
+    .nllinks{display:flex;gap:1.6rem;margin-left:auto}
+    .nllinks a{font-size:.95rem;font-weight:600;color:var(--ink);position:relative;transition:color .2s}
+    .nllinks a::after{content:'';position:absolute;left:0;bottom:-5px;height:2px;width:0;background:var(--pink);transition:width .3s var(--e)}
+    .nllinks a:hover{color:var(--pink-d)}.nllinks a:hover::after{width:100%}
+    .nlnav-toggle{display:none;background:none;border:0;color:var(--ink);cursor:pointer;width:44px;height:44px;border-radius:12px;place-items:center;margin-left:auto}
+
+    .nlbtn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;font-weight:700;font-size:.92rem;padding:.7rem 1.3rem;border-radius:999px;cursor:pointer;border:1px solid transparent;transition:transform .2s var(--e),background .2s,box-shadow .2s;white-space:nowrap;font-family:var(--sans)}
+    .nlbtn-solid{background:linear-gradient(90deg,var(--pink),var(--purple));color:#fff;box-shadow:0 12px 26px -12px var(--purple)}.nlbtn-solid:hover{transform:translateY(-3px);box-shadow:0 18px 34px -14px var(--purple)}
+    .nlbtn-ghost{border-color:var(--pink);color:var(--pink-d);background:#fff}.nlbtn-ghost:hover{background:var(--bg2);transform:translateY(-3px)}
+    .nlbtn-lg{padding:.95rem 1.7rem;font-size:1rem}.nlbtn-block{width:100%}
+
+    /* HERO centrato */
+    .nlhero{max-width:1100px;margin:0 auto;text-align:center;padding:8rem clamp(1.2rem,5vw,3rem) 3.5rem}
+    .nleyebrow{display:inline-block;font-weight:700;font-size:.85rem;background:var(--bg2);color:var(--pink-d);padding:.45rem 1rem;border-radius:999px;margin-bottom:1.4rem}
+    .nlhero h1{font-size:clamp(2.7rem,7vw,5rem);margin-bottom:1.2rem;font-weight:800}
+    .nlhero-sub{font-size:1.2rem;color:var(--muted);max-width:54ch;margin:0 auto 2rem}
+    .nlhero-cta{display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center;margin-bottom:3rem}
+    .nlstrip{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+    .nlstrip img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:22px;box-shadow:var(--soft)}
+    .nlstrip img:nth-child(2){transform:translateY(-18px)}
+
+    .nlsection{max-width:1180px;margin:0 auto;padding:clamp(3.5rem,8vw,6rem) clamp(1.2rem,5vw,3rem)}
+    .nlhead{max-width:640px;margin-bottom:clamp(2rem,4vw,3rem)}
+    .nlhead-c{margin-left:auto;margin-right:auto;text-align:center}
+    .nlkick{display:inline-block;font-weight:700;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--purple);background:rgba(124,77,255,.1);padding:.35rem .8rem;border-radius:999px;margin-bottom:.9rem}
+    .nlkick.light{background:rgba(255,255,255,.2);color:#fff}
+    .nlhead h2{font-size:clamp(1.9rem,4.6vw,3.1rem)}.nlhead p{color:var(--muted);margin-top:.8rem;font-size:1.05rem}
+
+    /* LISTINO */
+    .nlmenu{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.6rem,4vw,3.5rem) clamp(2rem,6vw,5rem)}
+    .nlmenu>*{min-width:0}
+    .nlmenu-cat{font-size:1.35rem;color:var(--pink-d);margin-bottom:1rem;padding-bottom:.6rem;border-bottom:2px solid var(--bg2)}
+    .nlmenu-col ul{list-style:none;display:grid;gap:.85rem}
+    .nlmenu-col li{display:flex;align-items:baseline;gap:.5rem}
+    .nlmenu-n{font-weight:600}.nlmenu-p{font-family:var(--disp);font-weight:700;color:var(--purple)}
+    .nlmenu-dots{flex:1;border-bottom:2px dotted var(--line);transform:translateY(-4px)}
+
+    /* MASONRY */
+    .nlgal-sec{background:var(--bg2);padding:clamp(3.5rem,8vw,6rem) clamp(1.2rem,5vw,3rem)}
+    .nlgal-sec>.nlhead{max-width:1180px}
+    .nlmasonry{max-width:1180px;margin:0 auto;column-count:3;column-gap:1rem}
+    .nlmasonry img{width:100%;margin-bottom:1rem;border-radius:18px;break-inside:avoid;box-shadow:var(--soft);transition:transform .4s var(--e)}
+    .nlmasonry img:hover{transform:scale(1.03)}
+
+    /* PERKS */
+    .nlperks{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+    .nlperks>*{min-width:0}
+    .nlperk{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.8rem;text-align:center}
+    .nlperk-ic{display:inline-grid;place-items:center;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;margin-bottom:1rem}.nlperk-ic svg{width:28px;height:28px}
+    .nlperk h3{font-size:1.25rem;margin-bottom:.4rem}.nlperk p{color:var(--muted);font-size:.95rem}
+
+    /* RECENSIONI band */
+    .nlrev-sec{background:linear-gradient(140deg,var(--purple),var(--pink));color:#fff}
+    .nlrev-in{max-width:1180px;margin:0 auto;padding:clamp(3.5rem,8vw,6rem) clamp(1.2rem,5vw,3rem)}
+    .nlrev-h{color:#fff}
+    .nlrevs{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem}
+    .nlrevs>*{min-width:0}
+    .nlrev{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:18px;padding:1.6rem;display:flex;flex-direction:column;gap:.7rem}
+    .nlstars{color:#ffe3f1;letter-spacing:2px}.nlrev p{flex:1}.nlrev b{font-weight:700}
+
+    /* CTA */
+    .nlcta{padding:clamp(3rem,7vw,5rem) clamp(1.2rem,5vw,3rem)}
+    .nlcta-in{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4rem);align-items:center;background:var(--card);border:1px solid var(--line);border-radius:28px;padding:clamp(1.6rem,4vw,3rem);box-shadow:var(--soft)}
+    .nlcta-in>*{min-width:0}
+    .nlcta-text>p{color:var(--muted);margin:.8rem 0 1.4rem;max-width:40ch}
+    .nlcta-side{display:flex;gap:.8rem;flex-wrap:wrap}.nlcta-note{margin-top:1.3rem;font-size:.9rem;color:var(--muted)}
+    .nlform{display:flex;flex-direction:column;gap:.9rem}
+    .nlform label{display:flex;flex-direction:column;gap:.35rem;font-size:.85rem;font-weight:700}
+    .nlform input,.nlform select{min-width:0;width:100%;padding:.8rem .9rem;border:1px solid var(--line);border-radius:12px;font-family:var(--sans);font-size:1rem;background:var(--bg);color:var(--ink)}
+    .nlform input:focus,.nlform select:focus{outline:2px solid var(--pink);border-color:transparent}
+    .nlform-note{font-size:.78rem;color:var(--muted);text-align:center;font-weight:500}
+
+    .nlfoot{max-width:1180px;margin:0 auto;padding:2rem clamp(1.2rem,5vw,3rem);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.88rem;border-top:1px solid var(--line)}
+    .nlfoot b{color:var(--ink);font-family:var(--disp)}.nlfoot a{color:var(--pink-d)}
+
+    .wa-fab{position:fixed;right:18px;bottom:18px;z-index:160;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 30px -10px rgba(37,211,102,.7);transition:transform .2s var(--e)}
+    .wa-fab:hover{transform:scale(1.08)}
+
+    .r{opacity:0;transform:translateY(22px);transition:opacity .7s var(--e),transform .7s var(--e)}
+    .r.in{opacity:1;transform:none}
+    @media (prefers-reduced-motion:reduce){.r{opacity:1;transform:none;transition:none}}
+
+    @media (max-width:900px){
+      .nllinks{display:none}
+      .nlnav.nlopen .nllinks{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1.1rem;background:rgba(253,243,249,.98);backdrop-filter:blur(14px);box-shadow:var(--soft);padding:1.2rem clamp(1.2rem,5vw,3rem) 1.5rem}
+      .nlnav-toggle{display:grid}
+      .nlnav>.nlbtn-solid{padding:.5rem .9rem;font-size:.82rem}
+      .nlmenu{grid-template-columns:1fr}
+      .nlmasonry{column-count:2}
+      .nlperks{grid-template-columns:1fr}
+      .nlrevs{grid-template-columns:1fr}
+      .nlcta-in{grid-template-columns:1fr}
+    }
+    @media (max-width:560px){
+      .nlstrip{grid-template-columns:1fr 1fr}.nlstrip img:nth-child(3){display:none}.nlstrip img:nth-child(2){transform:none}
+      .nlmasonry{column-count:1}
+    }
+  </style>
+
+  <script>
+    const nlnav = document.getElementById('nlnav');
+    addEventListener('scroll', () => nlnav.classList.toggle('solid', scrollY > 30), { passive: true });
+    const nt = document.getElementById('nlToggle');
+    nt.addEventListener('click', () => { const o = nlnav.classList.toggle('nlopen'); nt.setAttribute('aria-expanded', String(o)); });
+    document.querySelectorAll('.nllinks a').forEach((a) => a.addEventListener('click', () => nlnav.classList.remove('nlopen')));
+    document.addEventListener('click', (e) => { if (nlnav.classList.contains('nlopen') && !nlnav.contains(e.target)) { nlnav.classList.remove('nlopen'); nt.setAttribute('aria-expanded', 'false'); } });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { nlnav.classList.remove('nlopen'); nt.setAttribute('aria-expanded', 'false'); } });
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.1 });
+    document.querySelectorAll('.r').forEach((el) => io.observe(el));
+  </script>
+</body>
+</html>

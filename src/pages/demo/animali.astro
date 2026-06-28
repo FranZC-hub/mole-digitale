@@ -1,0 +1,299 @@
+---
+// DEMO standalone — "Zampe Amiche", ambulatorio veterinario a Torino. Tema teal/corallo, amichevole.
+// STRUTTURA distinta: hero con info-chips, servizi a lista 2 colonne, banner urgenze 24h.
+// Responsive solo flusso (grid/flex/clamp), niente badge absolute decorativi. Sito a sé.
+import '@fontsource-variable/sora';
+import '@fontsource-variable/inter';
+
+const servizi = [
+  { ic: 'pulse',   t: 'Visite e check-up',     d: 'Controlli generali e medicina preventiva per cani, gatti e animali esotici.' },
+  { ic: 'syringe', t: 'Vaccinazioni',          d: 'Profilassi su misura e calendario vaccinale sempre aggiornato.' },
+  { ic: 'chip',    t: 'Microchip e anagrafe',  d: 'Identificazione e iscrizione all’anagrafe canina, in pochi minuti.' },
+  { ic: 'cross',   t: 'Chirurgia',             d: 'Sterilizzazioni e interventi in sala operatoria attrezzata e sicura.' },
+  { ic: 'scan',    t: 'Diagnostica',           d: 'Ecografia, radiologia ed esami di laboratorio interni, referti rapidi.' },
+  { ic: 'scissor', t: 'Toelettatura',          d: 'Igiene e bellezza del manto, con prodotti delicati e tanta pazienza.' },
+];
+const approccio = [
+  { t: 'Niente fretta, niente paura', d: 'Tempi giusti e modi gentili perché la visita non sia uno stress, per nessuno.' },
+  { t: 'Parliamo chiaro', d: 'Diagnosi e preventivi spiegati con parole semplici, sempre prima di procedere.' },
+  { t: 'Sempre reperibili', d: 'Un’urgenza non aspetta: siamo raggiungibili 24 ore su 24, tutti i giorni.' },
+];
+const reviews = [
+  { n: 'Chiara & Pepe', av: 'C', txt: 'Hanno trattato il mio gatto con una dolcezza incredibile. Competenti e umani: mi fido ciecamente.' },
+  { n: 'Luca & Maya', av: 'L', txt: 'Urgenza di notte risolta in mezz’ora. Professionisti veri, sempre presenti. Grazie di cuore.' },
+  { n: 'Marta & Otto', av: 'M', txt: 'Spiegano tutto con calma e senza farti spendere l’inutile. Il nostro cane li adora già.' },
+];
+function icon(n) {
+  const w = (p) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+  const m = {
+    pulse: '<path d="M3 12h3l2-5 3 10 2-7 2 4h6"/>',
+    syringe: '<path d="M14 4l6 6M17 7l-9 9-4 1 1-4 9-9M5 17l2 2"/>',
+    chip: '<rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/>',
+    cross: '<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/>',
+    scan: '<path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3"/>',
+    scissor: '<circle cx="6" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><path d="M8 8l12 10M8 16L20 6"/>',
+    paw: '<circle cx="6" cy="11" r="1.6"/><circle cx="10" cy="7" r="1.6"/><circle cx="14" cy="7" r="1.6"/><circle cx="18" cy="11" r="1.6"/><path d="M8 16c0-2.5 1.8-4 4-4s4 1.5 4 4-1.8 4-4 4-4-1.5-4-4z"/>',
+  };
+  return w(m[n] || m.paw);
+}
+---
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Zampe Amiche — Ambulatorio veterinario a Torino</title>
+  <meta name="description" content="Zampe Amiche, ambulatorio veterinario a Torino: visite, vaccinazioni, microchip, chirurgia, diagnostica e toelettatura. Urgenze 24/7, cure gentili per cani e gatti." />
+  <meta name="theme-color" content="#0e9aa7" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='6' cy='11' r='1.6' fill='%230e9aa7'/><circle cx='10' cy='7' r='1.6' fill='%230e9aa7'/><circle cx='14' cy='7' r='1.6' fill='%230e9aa7'/><circle cx='18' cy='11' r='1.6' fill='%230e9aa7'/><path d='M8 16c0-2.5 1.8-4 4-4s4 1.5 4 4-1.8 4-4 4-4-1.5-4-4z' fill='%23ff6b6b'/></svg>" />
+</head>
+<body>
+  <a class="demo-flag" href="/">★ Demo realizzata da <b>Mole Digitale</b> · torna al sito ↩</a>
+
+  <header class="annav" id="annav">
+    <a href="#top" class="anbrand"><span class="anbrand-ic" aria-hidden="true" set:html={icon('paw')}></span>Zampe Amiche</a>
+    <nav class="anlinks" id="anlinks">
+      <a href="#servizi">Servizi</a>
+      <a href="#approccio">Approccio</a>
+      <a href="#recensioni">Recensioni</a>
+      <a href="#contatti">Contatti</a>
+    </nav>
+    <button class="annav-toggle" id="anToggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="anlinks"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <a href="#contatti" class="anbtn anbtn-solid">Prenota visita</a>
+  </header>
+
+  <main id="main">
+  <!-- HERO split + info chips -->
+  <section class="anhero" id="top">
+    <div class="anhero-text">
+      <span class="ankick r"><span class="andot"></span>Ambulatorio veterinario · Torino</span>
+      <h1 class="r">Ci prendiamo cura<br/>di <span class="anmark">chi ami</span>.</h1>
+      <p class="anhero-sub r">Medicina veterinaria gentile per cani, gatti e animali esotici. Competenza, ascolto e tanta dolcezza — perché la salute parte dalla fiducia.</p>
+      <div class="anhero-cta r">
+        <a href="#contatti" class="anbtn anbtn-solid anbtn-lg">Prenota una visita</a>
+        <a href="tel:+390110000000" class="anbtn anbtn-ghost anbtn-lg">📞 Urgenze 24/7</a>
+      </div>
+      <ul class="anchips r">
+        <li><b>Cani & gatti</b><span>medicina e chirurgia</span></li>
+        <li><b>Esotici</b><span>conigli, uccelli, rettili</span></li>
+        <li><b>24/7</b><span>sempre reperibili</span></li>
+      </ul>
+    </div>
+    <div class="anhero-media r"><img src="/img/demo-animali/hero.webp" alt="Veterinario con un cane all'ambulatorio Zampe Amiche" /></div>
+  </section>
+
+  <!-- SERVIZI lista 2 colonne -->
+  <section class="ansection" id="servizi">
+    <div class="anhead r"><span class="ankick2">I servizi</span><h2>Tutto ciò che serve, <span class="anmark">sotto lo stesso tetto</span></h2><p>Dalla prevenzione alla chirurgia, fino alla toelettatura: un unico punto di riferimento per la salute del tuo amico.</p></div>
+    <div class="anserv">
+      {servizi.map((s) => (
+        <article class="anserv-row r">
+          <span class="anserv-ic" set:html={icon(s.ic)} aria-hidden="true"></span>
+          <div><h3>{s.t}</h3><p>{s.d}</p></div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- BANNER URGENZE 24h -->
+  <section class="anurg">
+    <div class="anurg-in r">
+      <div class="anurg-pulse" aria-hidden="true" set:html={icon('pulse')}></div>
+      <div class="anurg-text">
+        <span class="anurg-tag">Urgenze 24 ore su 24</span>
+        <h2>Un’emergenza? <span class="anmark2">Chiamaci subito.</span></h2>
+        <p>Reperibili giorno e notte, festivi compresi. In caso di urgenza, ogni minuto conta: noi ci siamo.</p>
+      </div>
+      <a href="tel:+390110000000" class="anbtn anbtn-light anbtn-lg">📞 011 000 0000</a>
+    </div>
+  </section>
+
+  <!-- APPROCCIO -->
+  <section class="ansection" id="approccio">
+    <div class="anhead anhead-c r"><span class="ankick2">Il nostro approccio</span><h2>Cure da <span class="anmark">professionisti</span>, modi da amici</h2></div>
+    <div class="anappr">
+      {approccio.map((a, i) => (
+        <article class="anappr-card r"><span class="anappr-n">{String(i + 1).padStart(2, '0')}</span><h3>{a.t}</h3><p>{a.d}</p></article>
+      ))}
+    </div>
+  </section>
+
+  <!-- RECENSIONI -->
+  <section class="ansection anrev-sec" id="recensioni">
+    <div class="anhead anhead-c r"><span class="ankick2">Dicono di noi</span><h2>Padroni (e amici a 4 zampe) <span class="anmark">felici</span></h2></div>
+    <div class="anrevs">
+      {reviews.map((r) => (
+        <blockquote class="anrev r"><div class="anstars">★★★★★</div><p>«{r.txt}»</p><footer><span class="anav">{r.av}</span><b>{r.n}</b></footer></blockquote>
+      ))}
+    </div>
+  </section>
+
+  <!-- CTA / CONTATTI -->
+  <section class="ancta" id="contatti">
+    <div class="ancta-in r">
+      <div class="ancta-text">
+        <span class="ankick2 light">Prenota ora</span>
+        <h2>Fissa la visita del <span class="anmark2">tuo amico</span></h2>
+        <p>Compila e ti ricontattiamo in giornata per confermare giorno e ora. Per le urgenze, chiama direttamente.</p>
+        <p class="ancta-note">📍 Via Cibrario 40, Torino · Lun–Sab 9:00–19:30 · Urgenze 24/7</p>
+      </div>
+      <form class="anform" onsubmit="return false">
+        <label>Il tuo nome<input type="text" placeholder="Mario Rossi" autocomplete="name" /></label>
+        <div class="anform-row">
+          <label>Nome dell’animale<input type="text" placeholder="Es. Pepe" /></label>
+          <label>Specie
+            <select><option>Cane</option><option>Gatto</option><option>Coniglio</option><option>Uccello</option><option>Rettile</option><option>Altro</option></select>
+          </label>
+        </div>
+        <label>Telefono<input type="tel" placeholder="333 000 0000" autocomplete="tel" /></label>
+        <button class="anbtn anbtn-solid anbtn-lg anbtn-block" type="submit">Richiedi appuntamento →</button>
+        <p class="anform-note">🔒 È una demo: nessun dato viene inviato.</p>
+      </form>
+    </div>
+  </section>
+  </main>
+
+  <footer class="anfoot"><div><b>Zampe Amiche</b> · Ambulatorio veterinario a Torino</div><div>Demo · <a href="/">Mole Digitale</a></div></footer>
+
+  <a class="wa-fab" href="https://wa.me/390110000000" target="_blank" rel="noopener" aria-label="Scrivici su WhatsApp"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.5-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c2.3 1 2.3.7 2.7.6a2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1z"/></svg></a>
+
+  <style is:global>
+    :root{
+      --bg:#f0fafa;--bg2:#dff2f2;--card:#ffffff;--ink:#16323a;--muted:#5a737a;
+      --teal:#0e9aa7;--teal-d:#0a7a85;--coral:#ff6b6b;--coral-d:#ea5050;
+      --line:rgba(22,50,58,.12);--soft:0 20px 46px -24px rgba(14,120,130,.4);
+      --disp:'Sora Variable',system-ui,sans-serif;--sans:'Inter Variable',system-ui,sans-serif;--e:cubic-bezier(.2,.7,.2,1);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:84px;overflow-x:clip}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    img{display:block;max-width:100%}a{color:inherit;text-decoration:none}
+    h1,h2,h3{font-family:var(--disp);font-weight:700;line-height:1.08;letter-spacing:-.015em}
+    .anmark{color:var(--teal)}.anmark2{color:#fff}
+
+    .demo-flag{position:fixed;top:0;left:0;right:0;z-index:300;text-align:center;font-size:.8rem;padding:.4rem;background:rgba(240,250,250,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);color:var(--muted)}
+    .demo-flag b{color:var(--teal-d)}
+
+    .annav{position:fixed;top:27px;left:0;right:0;z-index:200;display:flex;align-items:center;gap:1.2rem;padding:.85rem clamp(1rem,4vw,2.6rem);transition:background .35s var(--e),box-shadow .35s}
+    .annav.solid{background:rgba(240,250,250,.94);backdrop-filter:blur(14px);box-shadow:0 6px 24px -16px rgba(14,120,130,.5)}
+    .anbrand{font-family:var(--disp);font-size:1.3rem;font-weight:800;display:inline-flex;align-items:center;gap:.5rem}
+    .anbrand-ic{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--teal);color:#fff}.anbrand-ic svg{width:22px;height:22px}
+    .anlinks{display:flex;gap:1.6rem;margin-left:auto}
+    .anlinks a{font-size:.95rem;font-weight:600;color:var(--ink);position:relative;transition:color .2s}
+    .anlinks a::after{content:'';position:absolute;left:0;bottom:-5px;height:2px;width:0;background:var(--coral);transition:width .3s var(--e)}
+    .anlinks a:hover{color:var(--teal-d)}.anlinks a:hover::after{width:100%}
+    .annav-toggle{display:none;background:none;border:0;color:var(--ink);cursor:pointer;width:44px;height:44px;border-radius:12px;place-items:center;margin-left:auto}
+
+    .anbtn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;font-weight:700;font-size:.92rem;padding:.7rem 1.3rem;border-radius:14px;cursor:pointer;border:1px solid transparent;transition:transform .2s var(--e),background .2s;white-space:nowrap;font-family:var(--sans)}
+    .anbtn-solid{background:var(--teal);color:#fff;box-shadow:0 12px 26px -12px var(--teal)}.anbtn-solid:hover{background:var(--teal-d);transform:translateY(-3px)}
+    .anbtn-ghost{border-color:var(--line);color:var(--ink);background:#fff}.anbtn-ghost:hover{border-color:var(--coral);color:var(--coral-d);transform:translateY(-3px)}
+    .anbtn-light{background:#fff;color:var(--coral-d)}.anbtn-light:hover{transform:translateY(-3px)}
+    .anbtn-lg{padding:.95rem 1.7rem;font-size:1rem}.anbtn-block{width:100%}
+
+    /* HERO */
+    .anhero{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(1.6rem,4vw,3.5rem);align-items:center;padding:7.5rem clamp(1.2rem,5vw,3rem) 3.5rem}
+    .ankick{display:inline-flex;align-items:center;gap:.5rem;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-d);margin-bottom:1.2rem;font-weight:700}
+    .andot{width:8px;height:8px;border-radius:50%;background:var(--coral)}
+    .anhero h1{font-size:clamp(2.5rem,6vw,4.5rem);margin-bottom:1.2rem}
+    .anhero-sub{font-size:1.15rem;color:var(--muted);max-width:48ch;margin-bottom:1.7rem}
+    .anhero-cta{display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:1.8rem}
+    .anchips{list-style:none;display:flex;gap:.8rem;flex-wrap:wrap}
+    .anchips li{background:#fff;border:1px solid var(--line);border-radius:14px;padding:.7rem 1rem;min-width:0}
+    .anchips b{display:block;font-family:var(--disp);color:var(--teal-d)}.anchips span{font-size:.82rem;color:var(--muted)}
+    .anhero-media{border-radius:28px 28px 28px 80px;overflow:hidden;box-shadow:var(--soft);aspect-ratio:4/4.4;background:var(--bg2)}
+    .anhero-media img{width:100%;height:100%;object-fit:cover}
+
+    .ansection{max-width:1180px;margin:0 auto;padding:clamp(3.5rem,8vw,6rem) clamp(1.2rem,5vw,3rem)}
+    .anhead{max-width:680px;margin-bottom:clamp(2rem,4vw,3rem)}
+    .anhead-c{margin-left:auto;margin-right:auto;text-align:center}
+    .ankick2{display:inline-block;font-weight:700;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--coral-d);background:rgba(255,107,107,.13);padding:.35rem .8rem;border-radius:999px;margin-bottom:.9rem}
+    .ankick2.light{background:rgba(255,255,255,.2);color:#fff}
+    .anhead h2,.anurg h2,.ancta h2{font-size:clamp(1.9rem,4.6vw,3.1rem)}.anhead p{color:var(--muted);margin-top:.8rem;font-size:1.05rem}
+
+    /* SERVIZI lista */
+    .anserv{display:grid;grid-template-columns:1fr 1fr;gap:1rem 2rem}
+    .anserv>*{min-width:0}
+    .anserv-row{display:flex;gap:1.1rem;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1.4rem 1.5rem;transition:transform .25s var(--e),box-shadow .25s}
+    .anserv-row:hover{transform:translateY(-4px);box-shadow:var(--soft)}
+    .anserv-ic{flex:none;display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:rgba(14,154,167,.12);color:var(--teal);}.anserv-ic svg{width:26px;height:26px}
+    .anserv-row h3{font-size:1.2rem;margin-bottom:.25rem}.anserv-row p{color:var(--muted);font-size:.94rem}
+
+    /* URGENZE banner */
+    .anurg{background:linear-gradient(120deg,var(--coral),var(--coral-d));color:#fff}
+    .anurg-in{max-width:1180px;margin:0 auto;padding:clamp(2.4rem,5vw,3.4rem) clamp(1.2rem,5vw,3rem);display:flex;align-items:center;gap:1.6rem;flex-wrap:wrap}
+    .anurg-pulse{flex:none;display:grid;place-items:center;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.18)}.anurg-pulse svg{width:34px;height:34px}
+    .anurg-text{flex:1;min-width:240px}
+    .anurg-tag{display:inline-block;font-weight:700;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;background:rgba(255,255,255,.2);padding:.3rem .7rem;border-radius:999px;margin-bottom:.5rem}
+    .anurg-text h2{font-size:clamp(1.6rem,3.6vw,2.4rem)}.anurg-text p{color:rgba(255,255,255,.92);margin-top:.4rem;max-width:52ch}
+
+    /* APPROCCIO */
+    .anappr{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem}
+    .anappr>*{min-width:0}
+    .anappr-card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:2rem 1.7rem;border-top:4px solid var(--teal)}
+    .anappr-n{font-family:var(--disp);font-size:1.5rem;font-weight:800;color:var(--coral)}
+    .anappr-card h3{font-size:1.25rem;margin:.5rem 0 .4rem}.anappr-card p{color:var(--muted);font-size:.96rem}
+
+    /* RECENSIONI */
+    .anrev-sec .anrevs{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem}
+    .anrev-sec .anrevs>*{min-width:0}
+    .anrev{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.6rem;display:flex;flex-direction:column;gap:.8rem}
+    .anstars{color:var(--coral);letter-spacing:2px}.anrev p{flex:1}
+    .anrev footer{display:flex;align-items:center;gap:.6rem}
+    .anav{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--teal);color:#fff;font-family:var(--disp);font-weight:700;flex:none}
+
+    /* CTA */
+    .ancta{background:linear-gradient(140deg,var(--teal),var(--teal-d));padding:clamp(3rem,7vw,5rem) clamp(1.2rem,5vw,3rem)}
+    .ancta-in{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4rem);align-items:center;color:#fff}
+    .ancta-in>*{min-width:0}
+    .ancta-text>p{color:rgba(255,255,255,.92);margin:.8rem 0 1.2rem;max-width:42ch}
+    .ancta-note{font-size:.9rem;color:rgba(255,255,255,.85)}
+    .anform{background:#fff;border-radius:22px;padding:clamp(1.4rem,3vw,2rem);box-shadow:0 40px 80px -40px rgba(0,0,0,.4);display:flex;flex-direction:column;gap:.9rem;color:var(--ink)}
+    .anform-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}.anform-row>*{min-width:0}
+    .anform label{display:flex;flex-direction:column;gap:.35rem;font-size:.85rem;font-weight:700}
+    .anform input,.anform select{min-width:0;width:100%;padding:.8rem .9rem;border:1px solid var(--line);border-radius:12px;font-family:var(--sans);font-size:1rem;background:var(--bg);color:var(--ink)}
+    .anform input:focus,.anform select:focus{outline:2px solid var(--teal);border-color:transparent}
+    .anform-note{font-size:.78rem;color:var(--muted);text-align:center;font-weight:500}
+
+    .anfoot{max-width:1180px;margin:0 auto;padding:2rem clamp(1.2rem,5vw,3rem);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.88rem;border-top:1px solid var(--line)}
+    .anfoot b{color:var(--ink);font-family:var(--disp)}.anfoot a{color:var(--teal-d)}
+
+    .wa-fab{position:fixed;right:18px;bottom:18px;z-index:160;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 30px -10px rgba(37,211,102,.7);transition:transform .2s var(--e)}
+    .wa-fab:hover{transform:scale(1.08)}
+
+    .r{opacity:0;transform:translateY(22px);transition:opacity .7s var(--e),transform .7s var(--e)}
+    .r.in{opacity:1;transform:none}
+    @media (prefers-reduced-motion:reduce){.r{opacity:1;transform:none;transition:none}}
+
+    @media (max-width:900px){
+      .anlinks{display:none}
+      .annav.anopen .anlinks{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1.1rem;background:rgba(240,250,250,.98);backdrop-filter:blur(14px);box-shadow:var(--soft);padding:1.2rem clamp(1.2rem,5vw,3rem) 1.5rem}
+      .annav-toggle{display:grid}
+      .annav>.anbtn-solid{padding:.5rem .9rem;font-size:.8rem}
+      .anhero{grid-template-columns:1fr;padding-top:6.5rem}.anhero-media{order:-1;aspect-ratio:16/11;border-radius:28px}
+      .anserv{grid-template-columns:1fr}
+      .anurg-in{flex-direction:column;text-align:center}.anurg-text{min-width:0}
+      .anappr{grid-template-columns:1fr}
+      .anrev-sec .anrevs{grid-template-columns:1fr}
+      .ancta-in{grid-template-columns:1fr}
+    }
+    @media (max-width:560px){
+      .anchips{gap:.6rem}.anchips li{flex:1 1 100%}
+      .anform-row{grid-template-columns:1fr}
+    }
+  </style>
+
+  <script>
+    const annav = document.getElementById('annav');
+    addEventListener('scroll', () => annav.classList.toggle('solid', scrollY > 30), { passive: true });
+    const at = document.getElementById('anToggle');
+    at.addEventListener('click', () => { const o = annav.classList.toggle('anopen'); at.setAttribute('aria-expanded', String(o)); });
+    document.querySelectorAll('.anlinks a').forEach((a) => a.addEventListener('click', () => annav.classList.remove('anopen')));
+    document.addEventListener('click', (e) => { if (annav.classList.contains('anopen') && !annav.contains(e.target)) { annav.classList.remove('anopen'); at.setAttribute('aria-expanded', 'false'); } });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { annav.classList.remove('anopen'); at.setAttribute('aria-expanded', 'false'); } });
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.1 });
+    document.querySelectorAll('.r').forEach((el) => io.observe(el));
+  </script>
+</body>
+</html>
