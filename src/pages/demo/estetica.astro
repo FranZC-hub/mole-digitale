@@ -95,15 +95,18 @@ function icon(n) {
       <h2 class="r">Un percorso di <span class="esmark">bellezza</span></h2>
       <p class="eslead r">Dal viso al corpo, scegliamo insieme ciò che la tua pelle desidera davvero.</p>
     </div>
-    <div class="esgrid">
-      {tratt.map((t) => (
-        <article class="escard r">
-          <span class="escard-ic" set:html={icon(t.ic)} aria-hidden="true"></span>
-          <h3>{t.t}</h3>
-          <p>{t.d}</p>
-          <b class="escard-p">{t.p}</b>
-        </article>
-      ))}
+    <div class="estrack-wrap">
+      <div class="estrack">
+        {tratt.map((t) => (
+          <article class="escard r">
+            <span class="escard-ic" set:html={icon(t.ic)} aria-hidden="true"></span>
+            <h3>{t.t}</h3>
+            <p>{t.d}</p>
+            <b class="escard-p">{t.p}</b>
+          </article>
+        ))}
+      </div>
+      <p class="estrack-hint" aria-hidden="true">← scorri per vedere tutti i trattamenti →</p>
     </div>
   </section>
 
@@ -224,7 +227,7 @@ function icon(n) {
     .eshero-sub{font-size:1.15rem;color:var(--muted);max-width:46ch;margin-bottom:1.8rem}
     .eshero-cta{display:flex;gap:.8rem;flex-wrap:wrap}
     .eshero-trust{list-style:none;display:flex;gap:1.2rem;flex-wrap:wrap;margin-top:1.8rem;color:var(--bronze);font-size:.9rem;font-weight:500}
-    .eshero-media{border-radius:200px 200px 22px 22px;overflow:hidden;box-shadow:var(--soft);aspect-ratio:4/5}
+    .eshero-media{order:-1;border-radius:200px 200px 22px 22px;overflow:hidden;box-shadow:var(--soft);aspect-ratio:4/5}
     .eshero-media img{width:100%;height:100%;object-fit:cover}
 
     .esstats{background:var(--rose)}
@@ -241,6 +244,12 @@ function icon(n) {
 
     .esgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem}
     .esgrid>*{min-width:0}
+    /* trattamenti: carosello orizzontale snap */
+    .estrack-wrap{margin:0 calc(clamp(1.2rem,5vw,3rem) * -1)}
+    .estrack{display:grid;grid-auto-flow:column;grid-auto-columns:300px;gap:1.3rem;overflow-x:auto;scroll-snap-type:x mandatory;padding:.5rem clamp(1.2rem,5vw,3rem) 1.2rem;scroll-padding-left:clamp(1.2rem,5vw,3rem)}
+    .estrack>*{scroll-snap-align:start}
+    .estrack::-webkit-scrollbar{height:8px}.estrack::-webkit-scrollbar-thumb{background:rgba(201,138,125,.4);border-radius:99px}
+    .estrack-hint{text-align:center;color:var(--bronze);font-size:.82rem;letter-spacing:.04em;margin-top:.4rem}
     .escard{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.7rem;transition:transform .25s var(--e),box-shadow .25s}
     .escard:hover{transform:translateY(-5px);box-shadow:var(--soft)}
     .escard-ic{display:grid;place-items:center;width:50px;height:50px;border-radius:14px;background:rgba(201,138,125,.14);color:var(--rose-d);margin-bottom:1rem}

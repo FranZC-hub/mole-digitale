@@ -95,15 +95,18 @@ function icon(n) {
       <h2 class="r">Da dove nasce <span class="pfmark">il tuo profumo</span></h2>
       <p class="pflead r">Ogni fragranza appartiene a una famiglia. Capire quale ti appartiene è il primo passo per trovarla.</p>
     </div>
-    <div class="pfgrid">
-      {fam.map((f) => (
-        <article class="pfcard r">
-          <span class="pfcard-ic" set:html={icon(f.ic)} aria-hidden="true"></span>
-          <div class="pfcard-row"><h3>{f.t}</h3><b class="pfcard-tag">{f.p}</b></div>
-          <p>{f.d}</p>
-        </article>
+    <ol class="pfindex">
+      {fam.map((f, i) => (
+        <li class="pfrow r">
+          <span class="pfrow-no">{String(i + 1).padStart(2, '0')}</span>
+          <span class="pfrow-ic" set:html={icon(f.ic)} aria-hidden="true"></span>
+          <div class="pfrow-main">
+            <div class="pfrow-h"><h3>{f.t}</h3><b class="pfrow-tag">{f.p}</b></div>
+            <p>{f.d}</p>
+          </div>
+        </li>
       ))}
-    </div>
+    </ol>
   </section>
 
   <!-- PERCHE / FEATURE -->
@@ -239,6 +242,17 @@ function icon(n) {
 
     .pfgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
     .pfgrid>*{min-width:0}
+    /* famiglie: indice numerato verticale */
+    .pfindex{list-style:none;display:grid;border-top:1px solid var(--line)}
+    .pfrow{display:grid;grid-template-columns:auto 48px 1fr;align-items:center;gap:clamp(.9rem,2.5vw,1.6rem);padding:1.5rem .3rem;border-bottom:1px solid var(--line);transition:background .25s var(--e),padding .25s var(--e)}
+    .pfrow>*{min-width:0}
+    .pfrow:hover{background:rgba(200,163,90,.06);padding-left:1.1rem;padding-right:1.1rem}
+    .pfrow-no{font-family:var(--serif);font-size:1.7rem;color:var(--gold-d);font-weight:600;min-width:2rem}
+    .pfrow-ic{display:grid;place-items:center;width:48px;height:48px;border-radius:50%;border:1px solid var(--line);color:var(--gold-l)}.pfrow-ic svg{width:26px;height:26px}
+    .pfrow-h{display:flex;align-items:baseline;gap:.8rem;flex-wrap:wrap;margin-bottom:.15rem}
+    .pfrow-main h3{font-size:1.45rem;font-weight:600}
+    .pfrow-tag{font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+    .pfrow-main p{color:var(--muted);font-size:.95rem}
     .pfcard{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:1.7rem;transition:transform .25s var(--e),border-color .25s}
     .pfcard:hover{transform:translateY(-5px);border-color:var(--gold)}
     .pfcard-ic{display:grid;place-items:center;width:50px;height:50px;border-radius:50%;background:rgba(200,163,90,.12);color:var(--gold-l);margin-bottom:1.1rem;border:1px solid var(--line)}
@@ -310,6 +324,7 @@ function icon(n) {
     @media (max-width:560px){
       .pfgrid,.pfgrid-3{grid-template-columns:1fr}.pfgal{grid-template-columns:1fr 1fr}
       .pfhero-trust{gap:.4rem 1.1rem}
+      .pfrow{grid-template-columns:auto 1fr}.pfrow-ic{display:none}
     }
   </style>
 

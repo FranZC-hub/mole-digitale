@@ -95,14 +95,18 @@ function icon(n) {
       <h2 class="r">Trova il tuo <span class="msmark">benessere</span></h2>
       <p class="mslead r">Ogni corpo racconta qualcosa di diverso. Scegliamo insieme la manualità giusta per te, oggi.</p>
     </div>
-    <div class="msgrid">
-      {mass.map((t) => (
-        <article class="mscard r">
-          <span class="mscard-ic" set:html={icon(t.ic)} aria-hidden="true"></span>
-          <h3>{t.t}</h3>
-          <p>{t.d}</p>
-          <div class="mscard-foot"><span class="mscard-dur">{t.dur}</span><b class="mscard-p">{t.p}</b></div>
-        </article>
+    <div class="msacc">
+      {mass.map((t, i) => (
+        <details class="msitem r" open={i === 0}>
+          <summary>
+            <span class="msitem-ic" set:html={icon(t.ic)} aria-hidden="true"></span>
+            <span class="msitem-t">{t.t}</span>
+            <span class="msitem-dur">{t.dur}</span>
+            <b class="msitem-p">{t.p}</b>
+            <span class="msitem-chev" aria-hidden="true"></span>
+          </summary>
+          <div class="msitem-a"><p>{t.d}</p></div>
+        </details>
       ))}
     </div>
   </section>
@@ -242,6 +246,19 @@ function icon(n) {
 
     .msgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem}
     .msgrid>*{min-width:0}
+    /* massaggi: accordion */
+    .msacc{max-width:880px;margin:0 auto;display:grid;gap:.8rem}
+    .msitem{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;transition:box-shadow .25s}
+    .msitem[open]{box-shadow:var(--soft)}
+    .msitem summary{display:flex;align-items:center;gap:.9rem;padding:1.1rem 1.3rem;cursor:pointer;list-style:none}
+    .msitem summary::-webkit-details-marker{display:none}
+    .msitem-ic{flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:rgba(176,125,86,.13);color:var(--clay-d)}.msitem-ic svg{width:24px;height:24px}
+    .msitem-t{font-family:var(--serif);font-size:1.25rem;flex:1;min-width:0}
+    .msitem-dur{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+    .msitem-p{font-family:var(--serif);font-size:1.3rem;color:var(--clay-d);white-space:nowrap}
+    .msitem-chev{flex:none;width:11px;height:11px;border-right:2px solid var(--clay);border-bottom:2px solid var(--clay);transform:rotate(45deg);transition:transform .3s var(--e);margin-left:.1rem}
+    .msitem[open] .msitem-chev{transform:rotate(-135deg)}
+    .msitem-a{padding:0 1.3rem 1.2rem 4.2rem;color:var(--muted)}
     .mscard{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:1.7rem;display:flex;flex-direction:column;transition:transform .25s var(--e),box-shadow .25s}
     .mscard:hover{transform:translateY(-5px);box-shadow:var(--soft)}
     .mscard-ic{display:grid;place-items:center;width:52px;height:52px;border-radius:16px;background:rgba(176,125,86,.13);color:var(--clay-d);margin-bottom:1rem}
@@ -315,6 +332,7 @@ function icon(n) {
     @media (max-width:560px){
       .msgrid,.msgrid-3{grid-template-columns:1fr}.msgal{grid-template-columns:1fr 1fr}
       .mshero-trust{gap:.4rem 1.1rem}
+      .msitem summary{flex-wrap:wrap;gap:.6rem .8rem}.msitem-t{flex:1 1 60%}.msitem-dur{order:3;flex-basis:100%;padding-left:3.9rem}.msitem-a{padding-left:1.3rem}
     }
   </style>
 
@@ -329,6 +347,7 @@ function icon(n) {
     const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12 });
     document.querySelectorAll('.r').forEach((el) => io.observe(el));
     document.querySelectorAll('.msq').forEach((d) => d.addEventListener('toggle', () => { if (d.open) document.querySelectorAll('.msq').forEach((o) => { if (o !== d) o.open = false; }); }));
+    document.querySelectorAll('.msitem').forEach((d) => d.addEventListener('toggle', () => { if (d.open) document.querySelectorAll('.msitem').forEach((o) => { if (o !== d) o.open = false; }); }));
   </script>
 </body>
 </html>

@@ -95,12 +95,12 @@ function icon(n) {
       <h2 class="r">Molto più di <span class="famark">una farmacia</span></h2>
       <p class="falead r">Dai farmaci alle autoanalisi, fino al consiglio giusto al momento giusto.</p>
     </div>
-    <div class="fagrid">
-      {servizi.map((s) => (
-        <article class="facard r">
-          <span class="facard-ic" set:html={icon(s.ic)} aria-hidden="true"></span>
-          <h3>{s.t}</h3>
-          <p>{s.d}</p>
+    <div class="falist">
+      {servizi.map((s, i) => (
+        <article class="farow r">
+          <span class="farow-no">{String(i + 1).padStart(2, '0')}</span>
+          <span class="farow-ic" set:html={icon(s.ic)} aria-hidden="true"></span>
+          <div class="farow-tx"><h3>{s.t}</h3><p>{s.d}</p></div>
         </article>
       ))}
     </div>
@@ -229,6 +229,12 @@ function icon(n) {
     .falead{color:var(--muted);font-size:1.1rem;margin-top:.9rem}
 
     .fagrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem}.fagrid>*{min-width:0}
+    /* servizi: lista 2 colonne con numerazione */
+    .falist{display:grid;grid-template-columns:1fr 1fr;gap:.9rem 1.8rem}.falist>*{min-width:0}
+    .farow{display:flex;align-items:flex-start;gap:1rem;padding:1.2rem 0;border-top:1px solid var(--line)}
+    .farow-no{font-family:var(--head);font-weight:800;font-size:.9rem;color:var(--green);padding-top:.25rem;min-width:1.6rem}
+    .farow-ic{flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:rgba(26,157,110,.12);color:var(--green)}.farow-ic svg{width:24px;height:24px}
+    .farow-tx h3{font-size:1.12rem;margin-bottom:.2rem}.farow-tx p{color:var(--muted);font-size:.92rem}
     .facard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1.7rem;transition:transform .25s var(--e),box-shadow .25s}
     .facard:hover{transform:translateY(-5px);box-shadow:var(--soft)}
     .facard-ic{display:grid;place-items:center;width:52px;height:52px;border-radius:14px;background:var(--green);color:#fff;margin-bottom:1rem}.facard-ic svg{width:28px;height:28px}
@@ -291,6 +297,7 @@ function icon(n) {
       .fanav>.fabtn-solid{padding:.5rem .9rem;font-size:.82rem}
       .fahero{grid-template-columns:1fr;padding-top:6.5rem}.fahero-media{order:-1;aspect-ratio:16/11}
       .faorari-grid{grid-template-columns:1fr}.faorari-media{order:-1;aspect-ratio:16/10}
+      .falist{grid-template-columns:1fr;gap:0}
       .facta-in{grid-template-columns:1fr}
       .fastats-in{grid-template-columns:1fr 1fr;gap:1.4rem 1rem}.fastats-in>div:nth-child(3){border-left:none}
     }

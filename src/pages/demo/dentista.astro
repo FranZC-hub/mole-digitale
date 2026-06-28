@@ -101,14 +101,25 @@ function icon(n) {
       <h2 class="r">Tutto per il tuo <span class="demark">sorriso</span></h2>
       <p class="delead r">Dalla prevenzione all’estetica, con tecnologie moderne e un team che ti mette a tuo agio.</p>
     </div>
-    <div class="degrid">
-      {tratt.map((t) => (
-        <article class="decard r">
-          <span class="decard-ic" set:html={icon(t.ic)} aria-hidden="true"></span>
-          <h3>{t.t}</h3>
-          <p>{t.d}</p>
-        </article>
-      ))}
+    <div class="detabs r">
+      <div class="detabs-list" role="tablist">
+        {tratt.map((t, i) => (
+          <button class={`detab${i === 0 ? ' on' : ''}`} data-i={i} type="button" role="tab" aria-selected={i === 0 ? 'true' : 'false'}>
+            <span class="detab-ic" set:html={icon(t.ic)} aria-hidden="true"></span>
+            <span>{t.t}</span>
+          </button>
+        ))}
+      </div>
+      <div class="detabs-panels">
+        {tratt.map((t, i) => (
+          <div class={`depanel${i === 0 ? ' on' : ''}`} data-i={i} role="tabpanel">
+            <span class="depanel-ic" set:html={icon(t.ic)} aria-hidden="true"></span>
+            <h3>{t.t}</h3>
+            <p>{t.d}</p>
+            <a href="#contatti" class="debtn debtn-ghost depanel-btn">Prenota questo trattamento →</a>
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 
@@ -223,14 +234,16 @@ function icon(n) {
     .debtn-ghost-l{border-color:rgba(255,255,255,.55);color:#fff}.debtn-ghost-l:hover{background:rgba(255,255,255,.14)}
     .debtn-lg{padding:.95rem 1.7rem;font-size:1.02rem}.debtn-block{width:100%}
 
-    .dehero{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(1.6rem,4vw,3.5rem);align-items:center;padding:7.5rem clamp(1.2rem,5vw,3rem) 3.5rem}
+    .dehero{max-width:1080px;margin:0 auto;text-align:center;padding:8rem clamp(1.2rem,5vw,3rem) 3rem}
+    .dehero-text{max-width:760px;margin:0 auto}
+    .dehero-cta,.dehero-trust{justify-content:center}
     .dekick{display:inline-flex;align-items:center;gap:.5rem;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue-d);margin-bottom:1.2rem;font-family:var(--head)}
     .dedot{width:8px;height:8px;border-radius:50%;background:var(--blue)}
     .dehero h1{font-size:clamp(2.6rem,6vw,4.8rem);margin-bottom:1.3rem}
-    .dehero-sub{font-size:1.15rem;color:var(--muted);max-width:46ch;margin-bottom:1.8rem}
+    .dehero-sub{font-size:1.15rem;color:var(--muted);max-width:54ch;margin:0 auto 1.8rem}
     .dehero-cta{display:flex;gap:.8rem;flex-wrap:wrap}
     .dehero-trust{list-style:none;display:flex;gap:1.2rem;flex-wrap:wrap;margin-top:1.8rem;color:var(--blue-d);font-size:.9rem;font-weight:500}
-    .dehero-media{border-radius:24px;overflow:hidden;box-shadow:var(--soft);aspect-ratio:4/5}.dehero-media img{width:100%;height:100%;object-fit:cover}
+    .dehero-media{margin-top:2.6rem;border-radius:24px;overflow:hidden;box-shadow:var(--soft);aspect-ratio:16/6.5}.dehero-media img{width:100%;height:100%;object-fit:cover}
 
     .destats{background:var(--blue)}
     .destats-in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;padding:2.2rem clamp(1.2rem,5vw,3rem);color:#fff}
@@ -244,6 +257,21 @@ function icon(n) {
     .delead{color:var(--muted);font-size:1.1rem;margin-top:.9rem}
 
     .degrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem}.degrid>*{min-width:0}
+    /* trattamenti: tab interattivi */
+    .detabs{display:grid;grid-template-columns:.85fr 1.15fr;gap:1.6rem;align-items:start}
+    .detabs>*{min-width:0}
+    .detabs-list{display:flex;flex-direction:column;gap:.5rem}
+    .detab{display:flex;align-items:center;gap:.8rem;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.9rem 1.1rem;cursor:pointer;font-family:inherit;font-size:1rem;font-weight:600;color:var(--muted);transition:all .2s var(--e)}
+    .detab-ic{flex:none;display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:rgba(20,136,196,.1);color:var(--blue);transition:all .2s}.detab-ic svg{width:22px;height:22px}
+    .detab:hover{border-color:var(--blue)}
+    .detab.on{background:var(--blue);border-color:var(--blue);color:#fff}.detab.on .detab-ic{background:rgba(255,255,255,.22);color:#fff}
+    .detabs-panels{position:relative;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:clamp(1.6rem,3vw,2.6rem);min-height:230px;box-shadow:var(--soft)}
+    .depanel{display:none;animation:defade .35s var(--e)}
+    .depanel.on{display:block}
+    @keyframes defade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+    .depanel-ic{display:grid;place-items:center;width:58px;height:58px;border-radius:16px;background:rgba(20,136,196,.12);color:var(--blue);margin-bottom:1.1rem}.depanel-ic svg{width:30px;height:30px}
+    .depanel h3{font-size:1.5rem;margin-bottom:.5rem}.depanel p{color:var(--muted);font-size:1.02rem;margin-bottom:1.3rem;max-width:48ch}
+    @media (prefers-reduced-motion:reduce){.depanel{animation:none}}
     .decard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1.7rem;transition:transform .25s var(--e),box-shadow .25s}
     .decard:hover{transform:translateY(-5px);box-shadow:var(--soft)}
     .decard-ic{display:grid;place-items:center;width:52px;height:52px;border-radius:14px;background:rgba(20,136,196,.12);color:var(--blue);margin-bottom:1rem}.decard-ic svg{width:28px;height:28px}
@@ -306,7 +334,11 @@ function icon(n) {
       .denav.deopen .delinks{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1.1rem;background:rgba(238,246,251,.98);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:1.2rem clamp(1.2rem,5vw,3rem) 1.5rem}
       .denav-toggle{display:grid}
       .denav>.debtn-solid{padding:.5rem .85rem;font-size:.78rem}
-      .dehero{grid-template-columns:1fr;padding-top:6.5rem}.dehero-media{order:-1;aspect-ratio:16/11}
+      .dehero{padding-top:6.5rem}.dehero-media{aspect-ratio:16/10}
+      .detabs{grid-template-columns:1fr;gap:1.1rem}
+      .detabs-list{flex-direction:row;overflow-x:auto;padding-bottom:.5rem;scroll-snap-type:x mandatory}
+      .detab{flex:0 0 auto;scroll-snap-align:start}
+      .detabs-panels{min-height:0}
       .desteps{grid-template-columns:1fr 1fr}
       .defeat-grid{grid-template-columns:1fr}.defeat-media{order:-1;aspect-ratio:16/10}
       .decta-in{grid-template-columns:1fr}
@@ -326,6 +358,12 @@ function icon(n) {
     const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12 });
     document.querySelectorAll('.r').forEach((el) => io.observe(el));
     document.querySelectorAll('.deq').forEach((d) => d.addEventListener('toggle', () => { if (d.open) document.querySelectorAll('.deq').forEach((o) => { if (o !== d) o.open = false; }); }));
+    const deTabs = document.querySelectorAll('.detab'), dePanels = document.querySelectorAll('.depanel');
+    deTabs.forEach((tab) => tab.addEventListener('click', () => {
+      const i = tab.dataset.i;
+      deTabs.forEach((t) => { const on = t === tab; t.classList.toggle('on', on); t.setAttribute('aria-selected', String(on)); });
+      dePanels.forEach((p) => p.classList.toggle('on', p.dataset.i === i));
+    }));
   </script>
 </body>
 </html>

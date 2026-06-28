@@ -113,15 +113,14 @@ function icon(n) {
   <!-- PERCORSO -->
   <section class="ossection osperc-sec" id="percorso">
     <div class="oshead"><span class="oskick2 r">Il percorso</span><h2 class="r">Come <span class="osmark">lavoriamo</span></h2><p class="oslead r">Un metodo chiaro, in tre passi, per risultati che durano.</p></div>
-    <div class="osperc">
+    <ol class="ostl">
       {steps.map((s) => (
-        <article class="osstep r">
-          <span class="osstep-n">{s.n}</span>
-          <h3>{s.t}</h3>
-          <p>{s.d}</p>
-        </article>
+        <li class="ostl-step r">
+          <span class="ostl-node">{s.n}</span>
+          <div class="ostl-body"><h3>{s.t}</h3><p>{s.d}</p></div>
+        </li>
       ))}
-    </div>
+    </ol>
   </section>
 
   <!-- PERCHE / FEATURE -->
@@ -256,11 +255,13 @@ function icon(n) {
     .oscard h3{font-size:1.25rem;margin-bottom:.35rem}.oscard p{color:var(--muted);font-size:.95rem}
 
     .osperc-sec{background:var(--bg2)}
-    .osperc{max-width:1180px;display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem}
-    .osperc>*{min-width:0}
-    .osstep{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.9rem 1.7rem;position:relative}
-    .osstep-n{display:inline-block;font-size:2.2rem;font-weight:800;color:var(--sand);letter-spacing:-.03em;margin-bottom:.6rem}
-    .osstep h3{font-size:1.3rem;margin-bottom:.45rem}.osstep p{color:var(--muted);font-size:.96rem}
+    /* percorso: timeline orizzontale connessa */
+    .ostl{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;position:relative;max-width:1000px;margin:0 auto}
+    .ostl>*{min-width:0}
+    .ostl::before{content:'';position:absolute;top:28px;left:16%;right:16%;height:2px;background:repeating-linear-gradient(90deg,var(--slate) 0 7px,transparent 7px 15px);z-index:0}
+    .ostl-step{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center}
+    .ostl-node{display:grid;place-items:center;width:56px;height:56px;border-radius:50%;background:var(--slate);color:#fff;font-weight:800;font-size:1.15rem;margin-bottom:1.1rem;box-shadow:0 0 0 7px var(--bg2)}
+    .ostl-body h3{font-size:1.25rem;margin-bottom:.4rem}.ostl-body p{color:var(--muted);font-size:.96rem;max-width:34ch}
 
     .osfeat-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:clamp(1.6rem,4vw,3.5rem);align-items:center}
     .osfeat-grid>*{min-width:0}
@@ -315,7 +316,7 @@ function icon(n) {
       .osnav-toggle{display:grid}
       .osnav>.osbtn-solid{padding:.5rem .9rem;font-size:.82rem}
       .oshero{grid-template-columns:1fr;padding-top:6.5rem}.oshero-media{order:-1;aspect-ratio:16/11}
-      .osperc{grid-template-columns:1fr}
+      .ostl{grid-template-columns:1fr;gap:1.8rem;max-width:420px}.ostl::before{display:none}
       .osfeat-grid{grid-template-columns:1fr}.osfeat-media{order:-1;aspect-ratio:16/10}
       .oscta-in{grid-template-columns:1fr}
       .osstats-in{grid-template-columns:1fr 1fr;gap:1.4rem 1rem}.osstats-in>div:nth-child(3){border-left:none}
