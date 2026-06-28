@@ -1,0 +1,334 @@
+---
+// DEMO standalone — "Sàva", centro massaggi & benessere a Torino. Tema CHIARO zen (terra + salvia).
+// Responsive solo flusso (flex/grid/clamp), niente badge absolute. Sito a sé.
+import '@fontsource-variable/inter';
+import '@fontsource-variable/fraunces';
+
+const mass = [
+  { ic: 'lotus',  t: 'Rilassante',       d: 'Pressioni lente e avvolgenti per sciogliere lo stress accumulato.', dur: '50 min', p: '55€' },
+  { ic: 'back',   t: 'Decontratturante', d: 'Lavoro mirato su collo, spalle e schiena dove la tensione si annida.', dur: '50 min', p: '60€' },
+  { ic: 'muscle', t: 'Sportivo',         d: 'Recupero muscolare e preparazione, prima e dopo l’attività.',         dur: '50 min', p: '65€' },
+  { ic: 'drop',   t: 'Linfodrenante',    d: 'Manualità leggera che riattiva la circolazione e dà leggerezza.',     dur: '60 min', p: '65€' },
+  { ic: 'stone',  t: 'Hot stone',        d: 'Pietre laviche calde per un calore che arriva in profondità.',        dur: '70 min', p: '75€' },
+  { ic: 'leaf',   t: 'Aromaterapico',    d: 'Oli essenziali scelti sul tuo umore del giorno.',                     dur: '60 min', p: '70€' },
+];
+const reviews = [
+  { n: 'Elena B.', av: 'E', txt: 'Un’ora di pace assoluta. Esco che cammino sulle nuvole, la cervicale è solo un ricordo.' },
+  { n: 'Davide R.', av: 'D', txt: 'Massaggio sportivo davvero professionale: mi ha rimesso in sesto dopo la maratona.' },
+  { n: 'Marta C.', av: 'M', txt: 'Ambiente caldo, profumato, silenzioso. Mani esperte e ascolto vero. Ci torno ogni mese.' },
+];
+const faq = [
+  { q: 'Devo prenotare in anticipo?', a: 'Sì, lavoriamo solo su appuntamento per garantirti calma e riservatezza. Puoi prenotare online o su WhatsApp.' },
+  { q: 'Come scelgo il massaggio giusto?', a: 'Non devi: prima della seduta parliamo insieme di come ti senti e scegliamo la manualità più adatta a te oggi.' },
+  { q: 'Che oli utilizzate?', a: 'Solo oli naturali e ipoallergenici. Per l’aromaterapia selezioniamo l’essenza in base al tuo stato d’animo.' },
+  { q: 'Avete pacchetti o carnet?', a: 'Sì: carnet da 5 e 10 sedute a prezzo agevolato e gift card, un’idea regalo sempre gradita.' },
+];
+function icon(n) {
+  const w = (p) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+  const m = {
+    lotus: '<path d="M12 20c-4 0-7-2.5-7-5 1.8-.4 3.4 0 4.7.9C9 13 10.2 11 12 9.5c1.8 1.5 3 3.5 2.3 6.4 1.3-.9 2.9-1.3 4.7-.9 0 2.5-3 5-7 5z"/><path d="M12 20c-2-2-3-4-3-6.5 0-2 1.2-4 3-5.5 1.8 1.5 3 3.5 3 5.5C15 16 14 18 12 20z"/>',
+    back: '<circle cx="12" cy="5" r="2.2"/><path d="M8 11c0-1.5 1.8-2.5 4-2.5s4 1 4 2.5c0 2-1.5 3-1.5 5L15 21M9 11c0 2 1.5 3 1.5 5L9.5 21"/>',
+    muscle: '<path d="M5 14c0-3 2-5 5-5h3a4 4 0 0 1 4 4v1a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3z"/><path d="M9 9V6a2 2 0 0 1 4 0M8.5 14h3"/>',
+    drop: '<path d="M12 3c3 4 6 7 6 10a6 6 0 0 1-12 0c0-3 3-6 6-10z"/>',
+    stone: '<ellipse cx="12" cy="17" rx="8" ry="3"/><ellipse cx="12" cy="12.5" rx="6" ry="2.3"/><ellipse cx="12" cy="8.5" rx="4" ry="1.7"/>',
+    leaf: '<path d="M12 21c5-2 8-6 8-12 0-1.5-.2-3-.6-4-3 .5-6 1.8-8 4s-3 5-3 8c1.5 0 3-.2 4-.6"/><path d="M5 21c1-4 3.5-7 7-9"/>',
+  };
+  return w(m[n] || m.lotus);
+}
+---
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Sàva — Centro massaggi & benessere a Torino</title>
+  <meta name="description" content="Sàva, centro massaggi e benessere a Torino: rilassante, decontratturante, sportivo, hot stone e aromaterapia. Mani esperte, oli naturali, solo su appuntamento." />
+  <meta name="theme-color" content="#f6f0e8" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 20c-2-2-3-4-3-6.5 0-2 1.2-4 3-5.5 1.8 1.5 3 3.5 3 5.5C15 16 14 18 12 20z' fill='%23b07d56'/></svg>" />
+</head>
+<body>
+  <a class="demo-flag" href="/">★ Demo realizzata da <b>Mole Digitale</b> · torna al sito ↩</a>
+
+  <header class="msnav" id="msnav">
+    <a href="#top" class="msbrand"><span class="msbrand-ic" aria-hidden="true">❀</span>Sàva</a>
+    <nav class="mslinks" id="mslinks">
+      <a href="#massaggi">Massaggi</a>
+      <a href="#perche">Perché noi</a>
+      <a href="#recensioni">Recensioni</a>
+      <a href="#contatti">Contatti</a>
+    </nav>
+    <button class="msnav-toggle" id="msToggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="mslinks"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <a href="#contatti" class="msbtn msbtn-solid">Prenota</a>
+  </header>
+
+  <main id="main">
+  <!-- HERO -->
+  <section class="mshero" id="top">
+    <div class="mshero-text">
+      <span class="mskick r"><span class="msdot"></span>Centro massaggi · Torino</span>
+      <h1 class="r">Lascia andare.<br/>Il corpo sa <span class="msmark">come stare bene</span>.</h1>
+      <p class="mshero-sub r">Mani esperte, ambiente caldo e silenzioso, oli naturali. Niente fretta: solo il tempo di respirare e ritrovarti.</p>
+      <div class="mshero-cta r">
+        <a href="#contatti" class="msbtn msbtn-solid msbtn-lg">Prenota un massaggio</a>
+        <a href="#massaggi" class="msbtn msbtn-ghost msbtn-lg">I trattamenti</a>
+      </div>
+      <ul class="mshero-trust r"><li>✦ Massaggiatori certificati</li><li>✦ Oli 100% naturali</li><li>★ 4,9 su Google</li></ul>
+    </div>
+    <div class="mshero-media r"><img src="/img/demo-massaggi/hero.webp" alt="Massaggio rilassante al centro benessere Sàva" /></div>
+  </section>
+
+  <!-- STAT STRIP -->
+  <section class="msstats">
+    <div class="msstats-in">
+      <div class="r"><b>15+</b><span>anni di esperienza</span></div>
+      <div class="r"><b>8.000+</b><span>massaggi fatti</span></div>
+      <div class="r"><b>12</b><span>tecniche diverse</span></div>
+      <div class="r"><b>4,9★</b><span>su Google</span></div>
+    </div>
+  </section>
+
+  <!-- MASSAGGI -->
+  <section class="mssection" id="massaggi">
+    <div class="mshead">
+      <span class="mskick2 r">I massaggi</span>
+      <h2 class="r">Trova il tuo <span class="msmark">benessere</span></h2>
+      <p class="mslead r">Ogni corpo racconta qualcosa di diverso. Scegliamo insieme la manualità giusta per te, oggi.</p>
+    </div>
+    <div class="msgrid">
+      {mass.map((t) => (
+        <article class="mscard r">
+          <span class="mscard-ic" set:html={icon(t.ic)} aria-hidden="true"></span>
+          <h3>{t.t}</h3>
+          <p>{t.d}</p>
+          <div class="mscard-foot"><span class="mscard-dur">{t.dur}</span><b class="mscard-p">{t.p}</b></div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- PERCHE / FEATURE -->
+  <section class="mssection msfeat" id="perche">
+    <div class="msfeat-grid">
+      <div class="msfeat-media r"><img src="/img/demo-massaggi/m1.webp" alt="Pietre calde e oli naturali per il massaggio" /></div>
+      <div class="msfeat-text">
+        <span class="mskick2 r">Perché Sàva</span>
+        <h2 class="r">Un rito, <span class="msmark">non una fretta</span></h2>
+        <p class="r">Da noi il tempo rallenta. Luce calda, profumi naturali, silenzio. Ti ascoltiamo prima di toccarti, perché ogni seduta parta da come stai davvero.</p>
+        <ul class="msbullets r">
+          <li><b>Ascolto iniziale</b> per scegliere la manualità giusta</li>
+          <li><b>Oli naturali</b> e lettini riscaldati per il massimo comfort</li>
+          <li><b>Ambiente riservato</b>, lontano dal rumore della città</li>
+        </ul>
+        <a href="#contatti" class="msbtn msbtn-solid r">Prenota la tua seduta</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERIA -->
+  <section class="mssection msgal-sec">
+    <div class="mshead"><span class="mskick2 r">L’atmosfera</span><h2 class="r">Un’oasi <span class="msmark">in città</span></h2></div>
+    <div class="msgal">
+      <img class="r" src="/img/demo-massaggi/hero.webp" alt="Lettino da massaggio nella sala benessere" loading="lazy" />
+      <img class="r" src="/img/demo-massaggi/m2.webp" alt="Dettaglio di oli e candele" loading="lazy" />
+      <img class="r" src="/img/demo-massaggi/m3.webp" alt="Momento di relax al centro Sàva" loading="lazy" />
+    </div>
+  </section>
+
+  <!-- RECENSIONI -->
+  <section class="mssection" id="recensioni">
+    <div class="mshead"><span class="mskick2 r">Dicono di noi</span><h2 class="r">Corpo leggero, <span class="msmark">mente serena</span></h2></div>
+    <div class="msgrid msgrid-3">
+      {reviews.map((r) => (
+        <blockquote class="msrev r"><div class="msstars">★★★★★</div><p>«{r.txt}»</p><footer><span class="msav">{r.av}</span><b>{r.n}</b></footer></blockquote>
+      ))}
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="mssection msfaq-sec">
+    <div class="mshead"><span class="mskick2 r">Domande frequenti</span><h2 class="r">Le risposte, <span class="msmark">con calma</span></h2></div>
+    <div class="msfaq r">
+      {faq.map((f, i) => (
+        <details class="msq" open={i === 0}><summary>{f.q}<span class="msq-ic" aria-hidden="true"></span></summary><div class="msq-a"><p>{f.a}</p></div></details>
+      ))}
+    </div>
+  </section>
+
+  <!-- CONTATTI -->
+  <section class="mscta" id="contatti">
+    <div class="mscta-in r">
+      <div class="mscta-text">
+        <span class="mskick2">Prenota ora</span>
+        <h2>Concediti un’ora <span class="msmark2">solo per te</span></h2>
+        <p>Scrivici per fissare la tua seduta: ti rispondiamo entro poche ore e scegliamo insieme il massaggio più adatto.</p>
+        <div class="mscta-side">
+          <a href="tel:+390110000000" class="msbtn msbtn-solid msbtn-lg">📞 011 000 0000</a>
+          <a href="#contatti" class="msbtn msbtn-ghost-l msbtn-lg">WhatsApp</a>
+        </div>
+        <p class="mscta-note">📍 Via Po 24, Torino · Lun–Sab 9:00–20:00</p>
+      </div>
+      <form class="msform" onsubmit="return false">
+        <label>Il tuo nome<input type="text" placeholder="Mario Rossi" autocomplete="name" /></label>
+        <label>Telefono<input type="tel" placeholder="333 000 0000" autocomplete="tel" /></label>
+        <label>Massaggio d’interesse
+          <select><option>Rilassante</option><option>Decontratturante</option><option>Sportivo</option><option>Linfodrenante</option><option>Hot stone</option><option>Aromaterapico</option><option>Consigliatemi voi</option></select>
+        </label>
+        <button class="msbtn msbtn-solid msbtn-lg msbtn-block" type="submit">Richiedi appuntamento →</button>
+        <p class="msform-note">🔒 È una demo: nessun dato viene inviato.</p>
+      </form>
+    </div>
+  </section>
+  </main>
+
+  <footer class="msfoot"><div><b>Sàva</b> · Centro massaggi & benessere a Torino</div><div>Demo · <a href="/">Mole Digitale</a></div></footer>
+
+  <a class="wa-fab" href="https://wa.me/390110000000" target="_blank" rel="noopener" aria-label="Scrivici su WhatsApp"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.5-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c2.3 1 2.3.7 2.7.6a2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1z"/></svg></a>
+
+  <style is:global>
+    :root{
+      --bg:#f6f0e8;--bg2:#efe5d8;--card:#fffdf9;--ink:#3b322a;--muted:#8a7d6e;
+      --clay:#b07d56;--clay-d:#8f5f3c;--sage:#7d8c6a;--line:rgba(59,50,42,.13);--soft:0 22px 48px -26px rgba(90,60,40,.5);
+      --serif:'Fraunces Variable',Georgia,serif;--sans:'Inter Variable',system-ui,sans-serif;--e:cubic-bezier(.2,.7,.2,1);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:84px;overflow-x:clip}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    img{display:block;max-width:100%}a{color:inherit;text-decoration:none}
+    h1,h2,h3{font-family:var(--serif);font-weight:500;line-height:1.08;letter-spacing:-.005em}
+    .msmark{font-style:italic;color:var(--clay)}.msmark2{font-style:italic;color:#fff}
+
+    .demo-flag{position:fixed;top:0;left:0;right:0;z-index:300;text-align:center;font-size:.8rem;padding:.4rem;background:rgba(246,240,232,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);color:var(--muted)}
+    .demo-flag b{color:var(--clay-d)}
+
+    .msnav{position:fixed;top:27px;left:0;right:0;z-index:200;display:flex;align-items:center;gap:1.2rem;padding:.85rem clamp(1rem,4vw,2.6rem);transition:background .35s var(--e),box-shadow .35s}
+    .msnav.solid{background:rgba(246,240,232,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+    .msbrand{font-family:var(--serif);font-size:1.55rem;font-weight:600;display:inline-flex;align-items:center;gap:.45rem}
+    .msbrand-ic{color:var(--sage);font-size:1.1rem}
+    .mslinks{display:flex;gap:1.6rem;margin-left:auto}
+    .mslinks a{font-size:.95rem;color:var(--ink);position:relative;transition:color .2s}
+    .mslinks a::after{content:'';position:absolute;left:0;bottom:-5px;height:1px;width:0;background:var(--clay);transition:width .3s var(--e)}
+    .mslinks a:hover{color:var(--clay-d)}.mslinks a:hover::after{width:100%}
+    .msnav-toggle{display:none;background:none;border:0;color:var(--ink);cursor:pointer;width:44px;height:44px;border-radius:12px;place-items:center;margin-left:auto}
+
+    .msbtn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;font-weight:600;font-size:.95rem;padding:.7rem 1.3rem;border-radius:999px;cursor:pointer;border:1px solid transparent;transition:transform .2s var(--e),background .2s;white-space:nowrap}
+    .msbtn-solid{background:var(--clay);color:#fff;box-shadow:0 12px 26px -12px var(--clay)}.msbtn-solid:hover{background:var(--clay-d);transform:translateY(-3px)}
+    .msbtn-ghost{border-color:var(--line);color:var(--ink)}.msbtn-ghost:hover{border-color:var(--clay);color:var(--clay-d);transform:translateY(-3px)}
+    .msbtn-ghost-l{border-color:rgba(255,255,255,.55);color:#fff}.msbtn-ghost-l:hover{background:rgba(255,255,255,.14)}
+    .msbtn-lg{padding:.95rem 1.7rem;font-size:1.02rem}.msbtn-block{width:100%}
+
+    .mshero{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(1.6rem,4vw,3.5rem);align-items:center;padding:7.5rem clamp(1.2rem,5vw,3rem) 3.5rem}
+    .mskick{display:inline-flex;align-items:center;gap:.5rem;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sage);margin-bottom:1.2rem;font-weight:600}
+    .msdot{width:8px;height:8px;border-radius:50%;background:var(--clay)}
+    .mshero h1{font-size:clamp(2.5rem,5.8vw,4.4rem);margin-bottom:1.3rem}
+    .mshero-sub{font-size:1.15rem;color:var(--muted);max-width:46ch;margin-bottom:1.8rem}
+    .mshero-cta{display:flex;gap:.8rem;flex-wrap:wrap}
+    .mshero-trust{list-style:none;display:flex;gap:1.2rem;flex-wrap:wrap;margin-top:1.8rem;color:var(--sage);font-size:.9rem;font-weight:600}
+    .mshero-media{border-radius:24px 24px 120px 24px;overflow:hidden;box-shadow:var(--soft);aspect-ratio:4/5}
+    .mshero-media img{width:100%;height:100%;object-fit:cover}
+
+    .msstats{background:var(--clay)}
+    .msstats-in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;padding:2.2rem clamp(1.2rem,5vw,3rem);color:#fff}
+    .msstats-in>div{text-align:center;border-left:1px solid rgba(255,255,255,.24)}.msstats-in>div:first-child{border-left:none}
+    .msstats b{font-family:var(--serif);font-size:clamp(1.7rem,3.4vw,2.5rem);display:block}
+    .msstats span{font-size:.84rem;opacity:.9}
+
+    .mssection{max-width:1180px;margin:0 auto;padding:clamp(3.5rem,8vw,6.5rem) clamp(1.2rem,5vw,3rem)}
+    .mshead{max-width:680px;margin:0 auto clamp(2.2rem,4vw,3.4rem);text-align:center}
+    .mskick2{display:inline-block;font-size:.78rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--sage);background:rgba(125,140,106,.14);padding:.35rem .8rem;border-radius:999px;margin-bottom:1rem}
+    .mshead h2,.msfeat h2,.mscta h2{font-size:clamp(1.9rem,4.4vw,3rem)}
+    .mslead{color:var(--muted);font-size:1.1rem;margin-top:.9rem}
+
+    .msgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem}
+    .msgrid>*{min-width:0}
+    .mscard{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:1.7rem;display:flex;flex-direction:column;transition:transform .25s var(--e),box-shadow .25s}
+    .mscard:hover{transform:translateY(-5px);box-shadow:var(--soft)}
+    .mscard-ic{display:grid;place-items:center;width:52px;height:52px;border-radius:16px;background:rgba(176,125,86,.13);color:var(--clay-d);margin-bottom:1rem}
+    .mscard-ic svg{width:27px;height:27px}
+    .mscard h3{font-size:1.35rem;margin-bottom:.35rem}.mscard p{color:var(--muted);font-size:.95rem;flex:1}
+    .mscard-foot{display:flex;align-items:baseline;justify-content:space-between;gap:.6rem;margin-top:1.1rem;padding-top:.9rem;border-top:1px solid var(--line)}
+    .mscard-dur{font-size:.82rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+    .mscard-p{font-family:var(--serif);font-size:1.4rem;color:var(--clay-d)}
+
+    .msfeat-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:clamp(1.6rem,4vw,3.5rem);align-items:center}
+    .msfeat-grid>*{min-width:0}
+    .msfeat-media{border-radius:24px;overflow:hidden;box-shadow:var(--soft);aspect-ratio:4/3}
+    .msfeat-media img{width:100%;height:100%;object-fit:cover}
+    .msfeat-text p{color:var(--muted);margin:1rem 0}
+    .msbullets{list-style:none;display:grid;gap:.7rem;margin-bottom:1.5rem}
+    .msbullets li{position:relative;padding-left:1.7rem;color:var(--muted)}
+    .msbullets li::before{content:'✦';position:absolute;left:0;color:var(--clay)}.msbullets b{color:var(--ink)}
+
+    .msgal{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+    .msgal img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:20px;transition:transform .5s var(--e)}
+    .msgal img:hover{transform:scale(1.04)}
+
+    .msgrid-3{grid-template-columns:repeat(3,1fr)}
+    .msrev{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:1.6rem;display:flex;flex-direction:column;gap:.8rem}
+    .msstars{color:var(--clay);letter-spacing:2px}.msrev p{flex:1;font-family:var(--serif);font-style:italic;font-size:1.12rem;line-height:1.5}
+    .msrev footer{display:flex;align-items:center;gap:.6rem}
+    .msav{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--sage);color:#fff;font-family:var(--serif);font-weight:700;flex:none}
+
+    .msfaq{max-width:780px;margin:0 auto;display:grid;gap:.8rem}
+    .msq{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+    .msq summary{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.1rem 1.3rem;cursor:pointer;font-family:var(--serif);font-size:1.15rem;list-style:none}
+    .msq summary::-webkit-details-marker{display:none}
+    .msq-ic{position:relative;width:16px;height:16px;flex:none}
+    .msq-ic::before,.msq-ic::after{content:'';position:absolute;background:var(--clay-d);border-radius:2px;transition:transform .3s var(--e)}
+    .msq-ic::before{top:7px;left:0;width:16px;height:2px}.msq-ic::after{left:7px;top:0;width:2px;height:16px}
+    .msq[open] .msq-ic::after{transform:scaleY(0)}
+    .msq-a{padding:0 1.3rem 1.2rem;color:var(--muted)}
+
+    .mscta{background:linear-gradient(150deg,var(--clay),var(--clay-d))}
+    .mscta-in{max-width:1100px;margin:0 auto;padding:clamp(3rem,7vw,5.5rem) clamp(1.2rem,5vw,3rem);display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4rem);align-items:center;color:#fff}
+    .mscta-in>*{min-width:0}
+    .mscta .mskick2{background:rgba(255,255,255,.18);color:#fff}
+    .mscta-text>p{color:rgba(255,255,255,.9);margin:.8rem 0 1.6rem;max-width:42ch}
+    .mscta-side{display:flex;gap:.8rem;flex-wrap:wrap}.mscta-note{margin-top:1.4rem;font-size:.9rem;color:rgba(255,255,255,.85)}
+    .msform{background:#fff;border-radius:24px;padding:clamp(1.4rem,3vw,2rem);box-shadow:0 40px 80px -40px rgba(0,0,0,.5);display:flex;flex-direction:column;gap:.9rem;color:var(--ink)}
+    .msform label{display:flex;flex-direction:column;gap:.35rem;font-size:.85rem;font-weight:600}
+    .msform input,.msform select{min-width:0;width:100%;padding:.8rem .9rem;border:1px solid var(--line);border-radius:12px;font-family:var(--sans);font-size:1rem;background:var(--bg);color:var(--ink)}
+    .msform input:focus,.msform select:focus{outline:2px solid var(--clay);border-color:transparent}
+    .msform-note{font-size:.78rem;color:var(--muted);text-align:center;font-weight:400}
+
+    .msfoot{max-width:1180px;margin:0 auto;padding:2rem clamp(1.2rem,5vw,3rem);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.88rem;border-top:1px solid var(--line)}
+    .msfoot b{color:var(--ink);font-family:var(--serif)}.msfoot a{color:var(--clay-d)}
+
+    .wa-fab{position:fixed;right:18px;bottom:18px;z-index:160;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 30px -10px rgba(37,211,102,.7);transition:transform .2s var(--e)}
+    .wa-fab:hover{transform:scale(1.08)}
+
+    .r{opacity:0;transform:translateY(22px);transition:opacity .7s var(--e),transform .7s var(--e)}
+    .r.in{opacity:1;transform:none}
+    @media (prefers-reduced-motion:reduce){.r{opacity:1;transform:none;transition:none}}
+
+    @media (max-width:900px){
+      .mslinks{display:none}
+      .msnav.msopen .mslinks{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1.1rem;background:rgba(246,240,232,.98);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:1.2rem clamp(1.2rem,5vw,3rem) 1.5rem}
+      .msnav-toggle{display:grid}
+      .msnav>.msbtn-solid{padding:.5rem .9rem;font-size:.82rem}
+      .mshero{grid-template-columns:1fr;padding-top:6.5rem}.mshero-media{order:-1;aspect-ratio:16/11;border-radius:24px}
+      .msfeat-grid{grid-template-columns:1fr}.msfeat-media{order:-1;aspect-ratio:16/10}
+      .mscta-in{grid-template-columns:1fr}
+      .msstats-in{grid-template-columns:1fr 1fr;gap:1.4rem 1rem}.msstats-in>div:nth-child(3){border-left:none}
+    }
+    @media (max-width:560px){
+      .msgrid,.msgrid-3{grid-template-columns:1fr}.msgal{grid-template-columns:1fr 1fr}
+      .mshero-trust{gap:.4rem 1.1rem}
+    }
+  </style>
+
+  <script>
+    const msnav = document.getElementById('msnav');
+    addEventListener('scroll', () => msnav.classList.toggle('solid', scrollY > 30), { passive: true });
+    const mt = document.getElementById('msToggle');
+    mt.addEventListener('click', () => { const o = msnav.classList.toggle('msopen'); mt.setAttribute('aria-expanded', String(o)); });
+    document.querySelectorAll('.mslinks a').forEach((a) => a.addEventListener('click', () => msnav.classList.remove('msopen')));
+    document.addEventListener('click', (e) => { if (msnav.classList.contains('msopen') && !msnav.contains(e.target)) { msnav.classList.remove('msopen'); mt.setAttribute('aria-expanded', 'false'); } });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { msnav.classList.remove('msopen'); mt.setAttribute('aria-expanded', 'false'); } });
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12 });
+    document.querySelectorAll('.r').forEach((el) => io.observe(el));
+    document.querySelectorAll('.msq').forEach((d) => d.addEventListener('toggle', () => { if (d.open) document.querySelectorAll('.msq').forEach((o) => { if (o !== d) o.open = false; }); }));
+  </script>
+</body>
+</html>
