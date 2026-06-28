@@ -18,6 +18,10 @@ leads.csv
 # deploy FTP (file di stato creato sul server dall'action)
 .ftp-deploy-sync-state.json
 
+# tool dev locali / token Openverse — NON committare
+tools/_ov_token.txt
+tools/_m-*.json
+
 # sistema
 .DS_Store
 Thumbs.db

@@ -1,0 +1,331 @@
+---
+// DEMO standalone — "Studio Sorriso", studio dentistico a Torino. Tema CHIARO clinico (azzurro).
+// Responsive solo flusso (flex/grid/clamp), niente badge absolute. Sito a sé.
+import '@fontsource-variable/inter';
+import '@fontsource-variable/space-grotesk';
+
+const tratt = [
+  { ic: 'shield', t: 'Igiene e prevenzione', d: 'Pulizia professionale e controlli regolari per fermare i problemi prima che inizino.' },
+  { ic: 'implant', t: 'Implantologia',        d: 'Denti fissi e naturali anche in un solo giorno, con tecniche mini-invasive.' },
+  { ic: 'align',  t: 'Ortodonzia invisibile', d: 'Allineatori trasparenti per raddrizzare i denti senza che si notino.' },
+  { ic: 'spark',  t: 'Sbiancamento',          d: 'Un sorriso più luminoso in una seduta, sicuro e senza sensibilità.' },
+  { ic: 'tooth',  t: 'Estetica dentale',      d: 'Faccette e otturazioni estetiche per un sorriso armonioso e naturale.' },
+  { ic: 'child',  t: 'Odontoiatria infantile', d: 'Le prime visite dei bambini, in un ambiente sereno e senza paura.' },
+];
+const steps = [
+  { t: 'Prima visita gratuita', d: 'Ti conosciamo, controlliamo la bocca e ti spieghiamo tutto con chiarezza.' },
+  { t: 'Piano e preventivo chiari', d: 'Tempi e costi nero su bianco, con possibilità di pagamento a rate.' },
+  { t: 'Le cure, senza stress', d: 'Tecnologie moderne e un team gentile: meno dolore, meno tempo in poltrona.' },
+  { t: 'Sorriso e richiami', d: 'Ti accompagniamo nel tempo con controlli e igiene per mantenere i risultati.' },
+];
+const reviews = [
+  { n: 'Elena G.', av: 'E', txt: 'Avevo il terrore del dentista. Qui mi hanno messo a mio agio dal primo minuto. Lavoro impeccabile e indolore.' },
+  { n: 'Roberto V.', av: 'R', txt: 'Preventivo chiaro, niente sorprese e pagamento a rate. Implant fatto in giornata, oggi mastico come prima.' },
+  { n: 'Sara D.', av: 'S', txt: 'Ho fatto gli allineatori invisibili: nessuno se n’è accorto e in pochi mesi denti perfetti. Consigliatissimo.' },
+];
+const faq = [
+  { q: 'La prima visita è davvero gratuita?', a: 'Sì: la prima visita con controllo e preventivo è gratuita e senza impegno. Vogliamo che tu decida con tutte le informazioni.' },
+  { q: 'Ho paura del dentista, come fate?', a: 'Lavoriamo proprio su questo: spieghiamo ogni passaggio, andiamo coi tuoi tempi e usiamo tecniche poco invasive. Tantissimi nostri pazienti partivano dalla paura.' },
+  { q: 'Si può pagare a rate?', a: 'Sì, offriamo piani di pagamento personalizzati e finanziamenti a tasso agevolato, anche a interessi zero su alcuni trattamenti.' },
+  { q: 'Gestite le urgenze?', a: 'Sì. In caso di dolore o emergenza chiamaci: cerchiamo sempre di darti un posto in giornata.' },
+];
+function icon(n) {
+  const w = (p) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+  const m = {
+    shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
+    implant: '<path d="M8 4c-2 0-3 1.5-3 4 0 3 1 4 1.5 6S7 18 8 18s1-1 1.5-2 1-2 2.5-2 2 1 2.5 2 .5 2 1.5 2 1.5-2 1.5-4 1.5-3 1.5-6c0-2.5-1-4-3-4-1.5 0-2.5 1-4 1s-2.5-1-4-1z"/><path d="M12 18v3"/>',
+    align: '<rect x="4" y="9" width="3.5" height="6" rx="1"/><rect x="10.2" y="9" width="3.5" height="6" rx="1"/><rect x="16.5" y="9" width="3.5" height="6" rx="1"/>',
+    spark: '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/>',
+    tooth: '<path d="M8 4c-2 0-3 1.5-3 4 0 3 1 4 1.5 6S7 18 8 18s1-1 1.5-2 1-2 2.5-2 2 1 2.5 2 .5 2 1.5 2 1.5-2 1.5-4 1.5-3 1.5-6c0-2.5-1-4-3-4-1.5 0-2.5 1-4 1s-2.5-1-4-1z"/>',
+    child: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/>',
+  };
+  return w(m[n] || m.tooth);
+}
+---
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Studio Sorriso — Dentista a Torino</title>
+  <meta name="description" content="Studio Sorriso, studio dentistico a Torino: igiene, implantologia, ortodonzia invisibile e sbiancamento. Prima visita gratuita e pagamenti a rate." />
+  <meta name="theme-color" content="#1488c4" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M8 4c-2 0-3 1.5-3 4 0 3 1 4 1.5 6S7 18 8 18s1-1 1.5-2 1-2 2.5-2 2 1 2.5 2 .5 2 1.5 2 1.5-2 1.5-4 1.5-3 1.5-6c0-2.5-1-4-3-4-1.5 0-2.5 1-4 1s-2.5-1-4-1z' fill='%231488c4'/></svg>" />
+</head>
+<body>
+  <a class="demo-flag" href="/">★ Demo realizzata da <b>Mole Digitale</b> · torna al sito ↩</a>
+
+  <header class="denav" id="denav">
+    <a href="#top" class="debrand"><span class="detooth" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M8 4c-2 0-3 1.5-3 4 0 3 1 4 1.5 6S7 18 8 18s1-1 1.5-2 1-2 2.5-2 2 1 2.5 2 .5 2 1.5 2 1.5-2 1.5-4 1.5-3 1.5-6c0-2.5-1-4-3-4-1.5 0-2.5 1-4 1s-2.5-1-4-1z"/></svg></span>Studio <em>Sorriso</em></a>
+    <nav class="delinks" id="delinks">
+      <a href="#trattamenti">Trattamenti</a>
+      <a href="#come">Come funziona</a>
+      <a href="#recensioni">Recensioni</a>
+      <a href="#contatti">Contatti</a>
+    </nav>
+    <button class="denav-toggle" id="deToggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="delinks"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <a href="#contatti" class="debtn debtn-solid">Prima visita gratis</a>
+  </header>
+
+  <main id="main">
+  <!-- HERO -->
+  <section class="dehero" id="top">
+    <div class="dehero-text">
+      <span class="dekick r"><span class="dedot"></span>Studio dentistico · Torino</span>
+      <h1 class="r">Il sorriso<br/>che <span class="demark">meriti</span>.</h1>
+      <p class="dehero-sub r">Cure moderne, indolori e spiegate con chiarezza, in uno studio dove la paura del dentista è solo un ricordo. Preventivi onesti e pagamenti a rate.</p>
+      <div class="dehero-cta r">
+        <a href="#contatti" class="debtn debtn-solid debtn-lg">Prenota la prima visita gratuita</a>
+        <a href="#come" class="debtn debtn-ghost debtn-lg">Come funziona →</a>
+      </div>
+      <ul class="dehero-trust r"><li>✓ Prima visita gratuita</li><li>✓ Pagamenti a rate</li><li>★ 4,9 su Google</li></ul>
+    </div>
+    <div class="dehero-media r"><img src="/img/demo-dentista/hero.webp" alt="Trattamento dal dentista allo Studio Sorriso" /></div>
+  </section>
+
+  <!-- STAT STRIP -->
+  <section class="destats">
+    <div class="destats-in">
+      <div class="r"><b>20+</b><span>anni di esperienza</span></div>
+      <div class="r"><b>9.000+</b><span>sorrisi curati</span></div>
+      <div class="r"><b>0€</b><span>la prima visita</span></div>
+      <div class="r"><b>4,9★</b><span>su Google</span></div>
+    </div>
+  </section>
+
+  <!-- TRATTAMENTI -->
+  <section class="desection" id="trattamenti">
+    <div class="dehead">
+      <span class="dekick2 r">I trattamenti</span>
+      <h2 class="r">Tutto per il tuo <span class="demark">sorriso</span></h2>
+      <p class="delead r">Dalla prevenzione all’estetica, con tecnologie moderne e un team che ti mette a tuo agio.</p>
+    </div>
+    <div class="degrid">
+      {tratt.map((t) => (
+        <article class="decard r">
+          <span class="decard-ic" set:html={icon(t.ic)} aria-hidden="true"></span>
+          <h3>{t.t}</h3>
+          <p>{t.d}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- COME FUNZIONA -->
+  <section class="desection decome" id="come">
+    <div class="dehead"><span class="dekick2 r">Come funziona</span><h2 class="r">Sereno, dal <span class="demark">primo appuntamento</span></h2></div>
+    <ol class="desteps">
+      {steps.map((s, i) => (
+        <li class="destep r"><span class="destep-n">{i + 1}</span><h3>{s.t}</h3><p>{s.d}</p></li>
+      ))}
+    </ol>
+  </section>
+
+  <!-- FEATURE -->
+  <section class="desection defeat">
+    <div class="defeat-grid">
+      <div class="defeat-media r"><img src="/img/demo-dentista/d1.webp" alt="Dentista al lavoro con strumenti moderni" loading="lazy" /></div>
+      <div class="defeat-text">
+        <span class="dekick2 r">Perché Studio Sorriso</span>
+        <h2 class="r">Niente paura, <span class="demark">solo cura</span></h2>
+        <p class="r">Crediamo che andare dal dentista debba essere semplice e senza ansia. Per questo spieghiamo tutto, rispettiamo i tuoi tempi e usiamo tecniche poco invasive.</p>
+        <ul class="debullets r">
+          <li><b>Preventivi chiari</b>, senza costi nascosti</li>
+          <li><b>Pagamenti a rate</b> e finanziamenti a interessi zero</li>
+          <li><b>Urgenze gestite</b> in giornata</li>
+        </ul>
+        <a href="#contatti" class="debtn debtn-solid r">Prenota la prima visita</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECENSIONI -->
+  <section class="desection" id="recensioni">
+    <div class="dehead"><span class="dekick2 r">Dicono di noi</span><h2 class="r">Pazienti che <span class="demark">sorridono</span></h2></div>
+    <div class="degrid degrid-3">
+      {reviews.map((r) => (
+        <blockquote class="derev r"><div class="destars">★★★★★</div><p>«{r.txt}»</p><footer><span class="deav">{r.av}</span><b>{r.n}</b></footer></blockquote>
+      ))}
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="desection defaq-sec">
+    <div class="dehead"><span class="dekick2 r">Domande frequenti</span><h2 class="r">Le risposte, <span class="demark">subito</span></h2></div>
+    <div class="defaq r">
+      {faq.map((f, i) => (
+        <details class="deq" open={i === 0}><summary>{f.q}<span class="deq-ic" aria-hidden="true"></span></summary><div class="deq-a"><p>{f.a}</p></div></details>
+      ))}
+    </div>
+  </section>
+
+  <!-- CONTATTI -->
+  <section class="decta" id="contatti">
+    <div class="decta-in r">
+      <div class="decta-text">
+        <span class="dekick2">Prima visita gratuita</span>
+        <h2>Prenota la tua <span class="demark2">prima visita</span></h2>
+        <p>Raccontaci di cosa hai bisogno: ti ricontattiamo per fissare la visita gratuita, senza impegno.</p>
+        <div class="decta-side">
+          <a href="tel:+390110000000" class="debtn debtn-solid debtn-lg">📞 011 000 0000</a>
+          <a href="#contatti" class="debtn debtn-ghost-l debtn-lg">WhatsApp</a>
+        </div>
+        <p class="decta-note">📍 Via Po 20, Torino · Lun–Ven 9:00–19:00</p>
+      </div>
+      <form class="deform" onsubmit="return false">
+        <label>Il tuo nome<input type="text" placeholder="Mario Rossi" autocomplete="name" /></label>
+        <label>Telefono<input type="tel" placeholder="333 000 0000" autocomplete="tel" /></label>
+        <label>Di cosa hai bisogno?
+          <select><option>Prima visita / controllo</option><option>Igiene e pulizia</option><option>Implantologia</option><option>Ortodonzia invisibile</option><option>Sbiancamento</option><option>Urgenza / dolore</option></select>
+        </label>
+        <button class="debtn debtn-solid debtn-lg debtn-block" type="submit">Prenota la visita gratuita →</button>
+        <p class="deform-note">🔒 È una demo: nessun dato viene inviato.</p>
+      </form>
+    </div>
+  </section>
+  </main>
+
+  <footer class="defoot"><div><b>Studio Sorriso</b> · Dentista a Torino</div><div>Demo · <a href="/">Mole Digitale</a></div></footer>
+
+  <a class="wa-fab" href="https://wa.me/390110000000" target="_blank" rel="noopener" aria-label="Scrivici su WhatsApp"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.5-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c2.3 1 2.3.7 2.7.6a2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1z"/></svg></a>
+
+  <style is:global>
+    :root{
+      --bg:#eef6fb;--bg2:#dceefa;--card:#ffffff;--ink:#14303f;--muted:#5c7385;
+      --blue:#1488c4;--blue-d:#0f6fa3;--line:rgba(20,48,63,.12);--soft:0 18px 40px -22px rgba(20,70,100,.4);
+      --head:'Space Grotesk Variable','Space Grotesk',sans-serif;--sans:'Inter Variable',system-ui,sans-serif;--e:cubic-bezier(.2,.7,.2,1);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:84px;overflow-x:clip}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    img{display:block;max-width:100%}a{color:inherit;text-decoration:none}
+    h1,h2,h3,.debrand{font-family:var(--head);font-weight:700;line-height:1.06;letter-spacing:-.02em}
+    .demark{color:var(--blue)}.demark2{color:#bfe6fb}
+
+    .demo-flag{position:fixed;top:0;left:0;right:0;z-index:300;text-align:center;font-size:.8rem;padding:.4rem;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);color:var(--muted)}
+    .demo-flag b{color:var(--blue-d)}
+
+    .denav{position:fixed;top:27px;left:0;right:0;z-index:200;display:flex;align-items:center;gap:1.2rem;padding:.85rem clamp(1rem,4vw,2.6rem);transition:background .35s var(--e),box-shadow .35s}
+    .denav.solid{background:rgba(238,246,251,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+    .debrand{display:inline-flex;align-items:center;gap:.5rem;font-size:1.3rem}.debrand em{font-style:normal;color:var(--blue)}
+    .detooth{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:rgba(20,136,196,.14);color:var(--blue);flex:none}
+    .delinks{display:flex;gap:1.6rem;margin-left:auto}
+    .delinks a{font-size:.95rem;color:var(--ink);font-weight:500;position:relative;transition:color .2s}
+    .delinks a::after{content:'';position:absolute;left:0;bottom:-5px;height:2px;width:0;background:var(--blue);border-radius:2px;transition:width .3s var(--e)}
+    .delinks a:hover{color:var(--blue)}.delinks a:hover::after{width:100%}
+    .denav-toggle{display:none;background:none;border:0;color:var(--ink);cursor:pointer;width:44px;height:44px;border-radius:12px;place-items:center;margin-left:auto}
+
+    .debtn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;font-family:var(--head);font-weight:600;font-size:.95rem;padding:.7rem 1.3rem;border-radius:999px;cursor:pointer;border:2px solid transparent;transition:transform .2s var(--e),background .2s;white-space:nowrap}
+    .debtn-solid{background:var(--blue);color:#fff;box-shadow:0 12px 26px -12px var(--blue)}.debtn-solid:hover{background:var(--blue-d);transform:translateY(-3px)}
+    .debtn-ghost{border-color:var(--line);color:var(--ink)}.debtn-ghost:hover{border-color:var(--blue);color:var(--blue);transform:translateY(-3px)}
+    .debtn-ghost-l{border-color:rgba(255,255,255,.55);color:#fff}.debtn-ghost-l:hover{background:rgba(255,255,255,.14)}
+    .debtn-lg{padding:.95rem 1.7rem;font-size:1.02rem}.debtn-block{width:100%}
+
+    .dehero{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(1.6rem,4vw,3.5rem);align-items:center;padding:7.5rem clamp(1.2rem,5vw,3rem) 3.5rem}
+    .dekick{display:inline-flex;align-items:center;gap:.5rem;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue-d);margin-bottom:1.2rem;font-family:var(--head)}
+    .dedot{width:8px;height:8px;border-radius:50%;background:var(--blue)}
+    .dehero h1{font-size:clamp(2.6rem,6vw,4.8rem);margin-bottom:1.3rem}
+    .dehero-sub{font-size:1.15rem;color:var(--muted);max-width:46ch;margin-bottom:1.8rem}
+    .dehero-cta{display:flex;gap:.8rem;flex-wrap:wrap}
+    .dehero-trust{list-style:none;display:flex;gap:1.2rem;flex-wrap:wrap;margin-top:1.8rem;color:var(--blue-d);font-size:.9rem;font-weight:500}
+    .dehero-media{border-radius:24px;overflow:hidden;box-shadow:var(--soft);aspect-ratio:4/5}.dehero-media img{width:100%;height:100%;object-fit:cover}
+
+    .destats{background:var(--blue)}
+    .destats-in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;padding:2.2rem clamp(1.2rem,5vw,3rem);color:#fff}
+    .destats-in>div{text-align:center;border-left:1px solid rgba(255,255,255,.22)}.destats-in>div:first-child{border-left:none}
+    .destats b{font-family:var(--head);font-size:clamp(1.7rem,3.4vw,2.5rem);display:block}.destats span{font-size:.84rem;opacity:.9}
+
+    .desection{max-width:1180px;margin:0 auto;padding:clamp(3.5rem,8vw,6.5rem) clamp(1.2rem,5vw,3rem)}
+    .dehead{max-width:680px;margin:0 auto clamp(2.2rem,4vw,3.4rem);text-align:center}
+    .dekick2{display:inline-block;font-family:var(--head);font-size:.78rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--blue-d);background:rgba(20,136,196,.12);padding:.35rem .8rem;border-radius:999px;margin-bottom:1rem}
+    .dehead h2,.defeat h2,.decta h2{font-size:clamp(1.9rem,4.4vw,3rem)}
+    .delead{color:var(--muted);font-size:1.1rem;margin-top:.9rem}
+
+    .degrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem}.degrid>*{min-width:0}
+    .decard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1.7rem;transition:transform .25s var(--e),box-shadow .25s}
+    .decard:hover{transform:translateY(-5px);box-shadow:var(--soft)}
+    .decard-ic{display:grid;place-items:center;width:52px;height:52px;border-radius:14px;background:rgba(20,136,196,.12);color:var(--blue);margin-bottom:1rem}.decard-ic svg{width:28px;height:28px}
+    .decard h3{font-size:1.2rem;margin-bottom:.35rem}.decard p{color:var(--muted);font-size:.95rem}
+
+    .decome{background:var(--bg2);max-width:none}
+    .decome>.dehead,.decome>.desteps{max-width:1180px;margin-left:auto;margin-right:auto}
+    .desteps{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;counter-reset:s;padding:0 clamp(1.2rem,5vw,3rem)}
+    .destep{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1.6rem}
+    .destep-n{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--blue);color:#fff;font-family:var(--head);font-weight:700;font-size:1.2rem;margin-bottom:1rem}
+    .destep h3{font-size:1.12rem;margin-bottom:.35rem}.destep p{color:var(--muted);font-size:.94rem}
+
+    .defeat-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:clamp(1.6rem,4vw,3.5rem);align-items:center}.defeat-grid>*{min-width:0}
+    .defeat-media{border-radius:22px;overflow:hidden;box-shadow:var(--soft);aspect-ratio:4/3}.defeat-media img{width:100%;height:100%;object-fit:cover}
+    .defeat-text p{color:var(--muted);margin:1rem 0}
+    .debullets{list-style:none;display:grid;gap:.7rem;margin-bottom:1.5rem}
+    .debullets li{position:relative;padding-left:1.7rem;color:var(--muted)}
+    .debullets li::before{content:'✓';position:absolute;left:0;color:var(--blue);font-weight:700}.debullets b{color:var(--ink)}
+
+    .degrid-3{grid-template-columns:repeat(3,1fr)}
+    .derev{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1.6rem;display:flex;flex-direction:column;gap:.8rem}
+    .destars{color:#f4a72c;letter-spacing:2px}.derev p{flex:1}
+    .derev footer{display:flex;align-items:center;gap:.6rem}
+    .deav{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--blue);color:#fff;font-family:var(--head);font-weight:700;flex:none}
+
+    .defaq{max-width:780px;margin:0 auto;display:grid;gap:.8rem}
+    .deq{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+    .deq summary{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.1rem 1.3rem;cursor:pointer;font-family:var(--head);font-weight:600;font-size:1.05rem;list-style:none}
+    .deq summary::-webkit-details-marker{display:none}
+    .deq-ic{position:relative;width:16px;height:16px;flex:none}
+    .deq-ic::before,.deq-ic::after{content:'';position:absolute;background:var(--blue);border-radius:2px;transition:transform .3s var(--e)}
+    .deq-ic::before{top:7px;left:0;width:16px;height:2px}.deq-ic::after{left:7px;top:0;width:2px;height:16px}
+    .deq[open] .deq-ic::after{transform:scaleY(0)}
+    .deq-a{padding:0 1.3rem 1.2rem;color:var(--muted)}
+
+    .decta{background:linear-gradient(150deg,var(--blue),var(--blue-d))}
+    .decta-in{max-width:1100px;margin:0 auto;padding:clamp(3rem,7vw,5.5rem) clamp(1.2rem,5vw,3rem);display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4rem);align-items:center;color:#fff}
+    .decta-in>*{min-width:0}
+    .decta .dekick2{background:rgba(255,255,255,.18);color:#fff}
+    .decta-text>p{color:rgba(255,255,255,.9);margin:.8rem 0 1.6rem;max-width:42ch}
+    .decta-side{display:flex;gap:.8rem;flex-wrap:wrap}.decta-note{margin-top:1.4rem;font-size:.9rem;color:rgba(255,255,255,.85)}
+    .deform{background:#fff;border-radius:22px;padding:clamp(1.4rem,3vw,2rem);box-shadow:0 40px 80px -40px rgba(0,0,0,.5);display:flex;flex-direction:column;gap:.9rem;color:var(--ink)}
+    .deform label{display:flex;flex-direction:column;gap:.35rem;font-size:.85rem;font-weight:600}
+    .deform input,.deform select{min-width:0;width:100%;padding:.8rem .9rem;border:1px solid var(--line);border-radius:12px;font-family:var(--sans);font-size:1rem;background:var(--bg);color:var(--ink)}
+    .deform input:focus,.deform select:focus{outline:2px solid var(--blue);border-color:transparent}
+    .deform-note{font-size:.78rem;color:var(--muted);text-align:center;font-weight:400}
+
+    .defoot{max-width:1180px;margin:0 auto;padding:2rem clamp(1.2rem,5vw,3rem);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.88rem;border-top:1px solid var(--line)}
+    .defoot b{color:var(--ink);font-family:var(--head)}.defoot a{color:var(--blue-d)}
+
+    .wa-fab{position:fixed;right:18px;bottom:18px;z-index:160;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 30px -10px rgba(37,211,102,.7);transition:transform .2s var(--e)}
+    .wa-fab:hover{transform:scale(1.08)}
+
+    .r{opacity:0;transform:translateY(22px);transition:opacity .7s var(--e),transform .7s var(--e)}
+    .r.in{opacity:1;transform:none}
+    @media (prefers-reduced-motion:reduce){.r{opacity:1;transform:none;transition:none}}
+
+    @media (max-width:900px){
+      .delinks{display:none}
+      .denav.deopen .delinks{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1.1rem;background:rgba(238,246,251,.98);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:1.2rem clamp(1.2rem,5vw,3rem) 1.5rem}
+      .denav-toggle{display:grid}
+      .denav>.debtn-solid{padding:.5rem .85rem;font-size:.78rem}
+      .dehero{grid-template-columns:1fr;padding-top:6.5rem}.dehero-media{order:-1;aspect-ratio:16/11}
+      .desteps{grid-template-columns:1fr 1fr}
+      .defeat-grid{grid-template-columns:1fr}.defeat-media{order:-1;aspect-ratio:16/10}
+      .decta-in{grid-template-columns:1fr}
+      .destats-in{grid-template-columns:1fr 1fr;gap:1.4rem 1rem}.destats-in>div:nth-child(3){border-left:none}
+    }
+    @media (max-width:560px){ .degrid,.degrid-3,.desteps{grid-template-columns:1fr}.dehero-trust{gap:.4rem 1.1rem} }
+  </style>
+
+  <script>
+    const denav = document.getElementById('denav');
+    addEventListener('scroll', () => denav.classList.toggle('solid', scrollY > 30), { passive: true });
+    const dt = document.getElementById('deToggle');
+    dt.addEventListener('click', () => { const o = denav.classList.toggle('deopen'); dt.setAttribute('aria-expanded', String(o)); });
+    document.querySelectorAll('.delinks a').forEach((a) => a.addEventListener('click', () => denav.classList.remove('deopen')));
+    document.addEventListener('click', (e) => { if (denav.classList.contains('deopen') && !denav.contains(e.target)) { denav.classList.remove('deopen'); dt.setAttribute('aria-expanded', 'false'); } });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { denav.classList.remove('deopen'); dt.setAttribute('aria-expanded', 'false'); } });
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12 });
+    document.querySelectorAll('.r').forEach((el) => io.observe(el));
+    document.querySelectorAll('.deq').forEach((d) => d.addEventListener('toggle', () => { if (d.open) document.querySelectorAll('.deq').forEach((o) => { if (o !== d) o.open = false; }); }));
+  </script>
+</body>
+</html>

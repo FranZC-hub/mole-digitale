@@ -7,12 +7,18 @@ import off from '../../assets/img/lavoro-officina.jpg';
 import ecom from '../../assets/img/lavoro-ecommerce.webp';
 import museo from '../../assets/img/lavoro-museo.webp';
 import cani from '../../assets/img/lavoro-cani.jpg';
+import este from '../../assets/img/lavoro-estetica.jpg';
+import farm from '../../assets/img/lavoro-farmacia.jpg';
+import dent from '../../assets/img/lavoro-dentista.jpg';
 
 const demos = [
   { img: pizz, name: 'Trattoria del Sole', cat: 'Ristorante',   url: '/demo/ristorante', desc: 'Menu digitale + prenotazione tavolo' },
   { img: sal,  name: 'Salone Aurora',      cat: 'Parrucchiere', url: '/demo/salone',     desc: 'Prenotazione appuntamenti online' },
   { img: off,  name: 'Garage Rossi',       cat: 'Officina',     url: '/demo/officina',   desc: 'Sito vetrina + scheda Google' },
   { img: cani, name: 'Coda Felice',        cat: 'Addestratore cani', url: '/demo/addestratore', desc: 'Percorsi + configuratore + prova gratuita' },
+  { img: este, name: 'Velvèe',             cat: 'Centro estetico', url: '/demo/estetica',  desc: 'Trattamenti viso & corpo + prenotazione' },
+  { img: farm, name: 'Farmacia Aurora',    cat: 'Farmacia',     url: '/demo/farmacia',   desc: 'Orari live + servizi e prenotazioni' },
+  { img: dent, name: 'Studio Sorriso',     cat: 'Dentista',     url: '/demo/dentista',   desc: 'Prima visita gratuita + percorso di cura' },
   { img: ecom, name: 'Bottega Subalpina',  cat: 'E-commerce',   url: '/demo/ecommerce',  desc: 'Negozio online con carrello' },
   { img: museo, name: 'Museo Egizio',      cat: 'Cultura',      url: '/demo/museo-egizio', desc: 'Sito museale + biglietti online' },
   { cover: '/img/demo-oro/cover.svg',         name: 'Aureo',   cat: 'Compro Oro',  url: '/demo/compro-oro',  desc: 'Calcolo valore oro in tempo reale' },
@@ -20,12 +26,12 @@ const demos = [
   { cover: '/img/demo-orologiaio/cover.svg',  name: 'Cronos',  cat: 'Orologiaio',  url: '/demo/orologiaio',  desc: 'Orologio live + preventivo riparazione' },
 ];
 ---
-<Layout title="Demo — esempi di siti | Mole Digitale" description="Esempi di siti realizzati da Mole Digitale per attività di Torino: ristorante, parrucchiere, officina, addestratore cani, e-commerce, compro oro, gioielleria e orologiaio.">
+<Layout title="Demo — esempi di siti | Mole Digitale" description="Esempi di siti realizzati da Mole Digitale per attività di Torino: ristorante, parrucchiere, officina, addestratore cani, centro estetico, farmacia, dentista, e-commerce, compro oro, gioielleria e orologiaio.">
   <section class="section" style="padding-top:8rem;">
     <div class="section-head" data-reveal>
       <span class="kicker">Demo</span>
       <h1>Esempi di siti che <span class="grad">facciamo</span>.</h1>
-      <p class="section-lead">Otto attività diverse, otto stili diversi — dal ristorante all'orologiaio. Aprili e prova a cliccare: prenotazioni, menu, carrello, calcolatori e preventivi che funzionano davvero.</p>
+      <p class="section-lead">Ogni attività con uno stile diverso — dal ristorante alla farmacia. Aprili e prova a cliccare: prenotazioni, menu, carrello, calcolatori e preventivi che funzionano davvero.</p>
     </div>
     <div class="port-grid">
       {demos.map((dm) => (

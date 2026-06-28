@@ -1,0 +1,326 @@
+---
+// DEMO standalone — "Farmacia Aurora", farmacia a Torino. Tema CHIARO medicale (verde + bianco).
+// Responsive solo flusso (flex/grid/clamp), niente badge absolute. Sito a sé.
+import '@fontsource-variable/inter';
+import '@fontsource-variable/space-grotesk';
+
+const servizi = [
+  { ic: 'pill',  t: 'Farmaci e parafarmaci', d: 'Da banco e con ricetta (anche elettronica). Ti aiutiamo a trovare ciò che serve.' },
+  { ic: 'blood', t: 'Autoanalisi del sangue', d: 'Glicemia, colesterolo, trigliceridi: risultati in pochi minuti, senza appuntamento.' },
+  { ic: 'heart', t: 'Misurazione pressione', d: 'Controllo gratuito della pressione e consigli su misura per tenerla d’occhio.' },
+  { ic: 'truck', t: 'Consegna a domicilio', d: 'Farmaci e prodotti a casa tua in giornata, per chi non può uscire.' },
+  { ic: 'cross', t: 'Noleggio sanitari', d: 'Stampelle, tiralatte, aerosol e bilance: a noleggio quando ti servono.' },
+  { ic: 'leaf',  t: 'Dermocosmesi & consigli', d: 'Pelle, infanzia e benessere: consulenza del farmacista, non solo un prodotto.' },
+];
+const reviews = [
+  { n: 'Marco T.', av: 'M', txt: 'Sempre disponibili e competenti. Mi hanno consegnato i farmaci a casa quando avevo l’influenza. Top.' },
+  { n: 'Luisa B.', av: 'L', txt: 'Autoanalisi veloci e farmacisti che spiegano davvero. Non una semplice farmacia, un punto di riferimento.' },
+  { n: 'Paolo R.', av: 'P', txt: 'Gentilezza e attenzione. Per i miei genitori anziani è la farmacia di fiducia, e si vede il perché.' },
+];
+const faq = [
+  { q: 'Posso prenotare un farmaco?', a: 'Sì: scrivici su WhatsApp o chiamaci, te lo teniamo da parte e se vuoi te lo consegniamo a casa.' },
+  { q: 'Servono appuntamenti per le autoanalisi?', a: 'No, le autoanalisi del sangue si fanno senza appuntamento negli orari di apertura. Bastano pochi minuti.' },
+  { q: 'Fate la consegna a domicilio?', a: 'Sì, in giornata su Torino e prima cintura per ordini ricevuti entro le 16. Gratuita per gli over 70.' },
+  { q: 'Accettate la ricetta elettronica?', a: 'Certo: basta il numero NRE e il codice fiscale, oppure la tessera sanitaria. Nessuna stampa necessaria.' },
+];
+function icon(n) {
+  const w = (p) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+  const m = {
+    pill: '<rect x="3" y="9" width="18" height="6" rx="3" transform="rotate(-45 12 12)"/><path d="M8.5 8.5l7 7"/>',
+    blood: '<path d="M12 3c3 4 6 7 6 10a6 6 0 0 1-12 0c0-3 3-6 6-10z"/>',
+    heart: '<path d="M12 20s-7-4.6-9.3-9C1.2 8 2.6 5 5.6 5 7.6 5 9 6.3 12 9c3-2.7 4.4-4 6.4-4 3 0 4.4 3 2.9 6-2.3 4.4-9.3 9-9.3 9z"/><path d="M3.5 12h4l1.5-3 2 5 1.5-2h7" stroke-width="1.4"/>',
+    truck: '<path d="M3 6h11v9H3zM14 9h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/>',
+    cross: '<path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/>',
+    leaf: '<path d="M12 21c5-2 8-6 8-12 0-1.5-.2-3-.6-4-3 .5-6 1.8-8 4s-3 5-3 8c1.5 0 3-.2 4-.6"/><path d="M5 21c1-4 3.5-7 7-9"/>',
+  };
+  return w(m[n] || m.cross);
+}
+---
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Farmacia Aurora — Farmacia di fiducia a Torino</title>
+  <meta name="description" content="Farmacia Aurora a Torino: farmaci, autoanalisi del sangue, misurazione pressione, consegna a domicilio e consigli del farmacista. La tua salute, vicino casa." />
+  <meta name="theme-color" content="#1a9d6e" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M9 3h6v6h6v6h-6v6H9v-6H3V9h6z' fill='%231a9d6e'/></svg>" />
+</head>
+<body>
+  <a class="demo-flag" href="/">★ Demo realizzata da <b>Mole Digitale</b> · torna al sito ↩</a>
+
+  <header class="fanav" id="fanav">
+    <a href="#top" class="fabrand"><span class="facross" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/></svg></span>Farmacia <em>Aurora</em></a>
+    <nav class="falinks" id="falinks">
+      <a href="#servizi">Servizi</a>
+      <a href="#orari">Orari</a>
+      <a href="#recensioni">Recensioni</a>
+      <a href="#contatti">Contatti</a>
+    </nav>
+    <button class="fanav-toggle" id="faToggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="falinks"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <a href="#contatti" class="fabtn fabtn-solid">Contattaci</a>
+  </header>
+
+  <main id="main">
+  <!-- HERO -->
+  <section class="fahero" id="top">
+    <div class="fahero-text">
+      <span class="fastatus r" id="openNow"><span class="fadot"></span>Aperta ora</span>
+      <h1 class="r">La tua salute,<br/><span class="famark">vicino casa</span>.</h1>
+      <p class="fahero-sub r">Farmaci, autoanalisi e consigli veri del farmacista. Con la consegna a domicilio, ci pensiamo noi — anche quando non puoi uscire.</p>
+      <div class="fahero-cta r">
+        <a href="#contatti" class="fabtn fabtn-solid fabtn-lg">Prenota un farmaco</a>
+        <a href="#servizi" class="fabtn fabtn-ghost fabtn-lg">I servizi</a>
+      </div>
+      <ul class="fahero-trust r"><li>✓ Consegna a domicilio in giornata</li><li>✓ Autoanalisi senza appuntamento</li><li>★ 4,9 su Google</li></ul>
+    </div>
+    <div class="fahero-media r"><img src="/img/demo-farmacia/hero.webp" alt="Interno accogliente della Farmacia Aurora" /></div>
+  </section>
+
+  <!-- STAT STRIP -->
+  <section class="fastats">
+    <div class="fastats-in">
+      <div class="r"><b>40+</b><span>anni nel quartiere</span></div>
+      <div class="r"><b>10.000+</b><span>clienti seguiti</span></div>
+      <div class="r"><b>7/7</b><span>consegne a domicilio</span></div>
+      <div class="r"><b>4,9★</b><span>su Google</span></div>
+    </div>
+  </section>
+
+  <!-- SERVIZI -->
+  <section class="fasection" id="servizi">
+    <div class="fahead">
+      <span class="fakick r">I servizi</span>
+      <h2 class="r">Molto più di <span class="famark">una farmacia</span></h2>
+      <p class="falead r">Dai farmaci alle autoanalisi, fino al consiglio giusto al momento giusto.</p>
+    </div>
+    <div class="fagrid">
+      {servizi.map((s) => (
+        <article class="facard r">
+          <span class="facard-ic" set:html={icon(s.ic)} aria-hidden="true"></span>
+          <h3>{s.t}</h3>
+          <p>{s.d}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- ORARI / FEATURE -->
+  <section class="fasection faorari" id="orari">
+    <div class="faorari-grid">
+      <div class="faorari-card r">
+        <span class="fakick">Quando siamo aperti</span>
+        <h2>Orari di <span class="famark">apertura</span></h2>
+        <div class="fastatus fastatus-lg" id="openNow2"><span class="fadot"></span>Aperta ora</div>
+        <ul class="fahours" id="hours"></ul>
+        <p class="fanote">Servizio di guardia notturna a turno: chiamaci per sapere la farmacia di turno più vicina.</p>
+      </div>
+      <div class="faorari-media r"><img src="/img/demo-farmacia/f3.webp" alt="Misurazione della pressione in farmacia" /></div>
+    </div>
+  </section>
+
+  <!-- RECENSIONI -->
+  <section class="fasection" id="recensioni">
+    <div class="fahead"><span class="fakick r">Dicono di noi</span><h2 class="r">Un quartiere che <span class="famark">si fida</span></h2></div>
+    <div class="fagrid fagrid-3">
+      {reviews.map((r) => (
+        <blockquote class="farev r"><div class="fastars">★★★★★</div><p>«{r.txt}»</p><footer><span class="faav">{r.av}</span><b>{r.n}</b></footer></blockquote>
+      ))}
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="fasection fafaq-sec">
+    <div class="fahead"><span class="fakick r">Domande frequenti</span><h2 class="r">Le risposte, <span class="famark">subito</span></h2></div>
+    <div class="fafaq r">
+      {faq.map((f, i) => (
+        <details class="faq" open={i === 0}><summary>{f.q}<span class="faq-ic" aria-hidden="true"></span></summary><div class="faq-a"><p>{f.a}</p></div></details>
+      ))}
+    </div>
+  </section>
+
+  <!-- CONTATTI -->
+  <section class="facta" id="contatti">
+    <div class="facta-in r">
+      <div class="facta-text">
+        <span class="fakick">Scrivici</span>
+        <h2>Hai bisogno? <span class="famark2">Ci siamo</span></h2>
+        <p>Prenota un farmaco, chiedi un consiglio o organizza una consegna a domicilio. Ti rispondiamo subito.</p>
+        <div class="facta-side">
+          <a href="tel:+390110000000" class="fabtn fabtn-solid fabtn-lg">📞 011 000 0000</a>
+          <a href="#contatti" class="fabtn fabtn-ghost-l fabtn-lg">WhatsApp</a>
+        </div>
+        <p class="facta-note">📍 Corso Francia 50, Torino</p>
+      </div>
+      <form class="faform" onsubmit="return false">
+        <label>Il tuo nome<input type="text" placeholder="Mario Rossi" autocomplete="name" /></label>
+        <label>Telefono<input type="tel" placeholder="333 000 0000" autocomplete="tel" /></label>
+        <label>Di cosa hai bisogno?
+          <select><option>Prenotare un farmaco</option><option>Consegna a domicilio</option><option>Autoanalisi / pressione</option><option>Un consiglio</option><option>Altro</option></select>
+        </label>
+        <button class="fabtn fabtn-solid fabtn-lg fabtn-block" type="submit">Invia la richiesta →</button>
+        <p class="faform-note">🔒 È una demo: nessun dato viene inviato.</p>
+      </form>
+    </div>
+  </section>
+  </main>
+
+  <footer class="fafoot"><div><b>Farmacia Aurora</b> · Corso Francia 50, Torino</div><div>Demo · <a href="/">Mole Digitale</a></div></footer>
+
+  <a class="wa-fab" href="https://wa.me/390110000000" target="_blank" rel="noopener" aria-label="Scrivici su WhatsApp"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.5-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c2.3 1 2.3.7 2.7.6a2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1z"/></svg></a>
+
+  <style is:global>
+    :root{
+      --bg:#f3faf6;--bg2:#e6f4ec;--card:#ffffff;--ink:#163029;--muted:#5f7268;
+      --green:#1a9d6e;--green-d:#137a55;--line:rgba(22,48,41,.12);--soft:0 18px 40px -22px rgba(20,80,55,.4);
+      --head:'Space Grotesk Variable','Space Grotesk',sans-serif;--sans:'Inter Variable',system-ui,sans-serif;--e:cubic-bezier(.2,.7,.2,1);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:84px;overflow-x:clip}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    img{display:block;max-width:100%}a{color:inherit;text-decoration:none}
+    h1,h2,h3,.fabrand{font-family:var(--head);font-weight:700;line-height:1.06;letter-spacing:-.02em}
+    .famark{color:var(--green)}.famark2{color:#bdf0d8}
+
+    .demo-flag{position:fixed;top:0;left:0;right:0;z-index:300;text-align:center;font-size:.8rem;padding:.4rem;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);color:var(--muted)}
+    .demo-flag b{color:var(--green-d)}
+
+    .fanav{position:fixed;top:27px;left:0;right:0;z-index:200;display:flex;align-items:center;gap:1.2rem;padding:.85rem clamp(1rem,4vw,2.6rem);transition:background .35s var(--e),box-shadow .35s}
+    .fanav.solid{background:rgba(243,250,246,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+    .fabrand{display:inline-flex;align-items:center;gap:.5rem;font-size:1.3rem}.fabrand em{font-style:normal;color:var(--green)}
+    .facross{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:rgba(26,157,110,.14);color:var(--green);flex:none}
+    .falinks{display:flex;gap:1.6rem;margin-left:auto}
+    .falinks a{font-size:.95rem;color:var(--ink);font-weight:500;position:relative;transition:color .2s}
+    .falinks a::after{content:'';position:absolute;left:0;bottom:-5px;height:2px;width:0;background:var(--green);border-radius:2px;transition:width .3s var(--e)}
+    .falinks a:hover{color:var(--green)}.falinks a:hover::after{width:100%}
+    .fanav-toggle{display:none;background:none;border:0;color:var(--ink);cursor:pointer;width:44px;height:44px;border-radius:12px;place-items:center;margin-left:auto}
+
+    .fabtn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;font-family:var(--head);font-weight:600;font-size:.95rem;padding:.7rem 1.3rem;border-radius:12px;cursor:pointer;border:2px solid transparent;transition:transform .2s var(--e),background .2s;white-space:nowrap}
+    .fabtn-solid{background:var(--green);color:#fff;box-shadow:0 12px 26px -12px var(--green)}.fabtn-solid:hover{background:var(--green-d);transform:translateY(-3px)}
+    .fabtn-ghost{border-color:var(--line);color:var(--ink)}.fabtn-ghost:hover{border-color:var(--green);color:var(--green);transform:translateY(-3px)}
+    .fabtn-ghost-l{border-color:rgba(255,255,255,.55);color:#fff}.fabtn-ghost-l:hover{background:rgba(255,255,255,.14)}
+    .fabtn-lg{padding:.95rem 1.7rem;font-size:1.02rem}.fabtn-block{width:100%}
+
+    .fastatus{display:inline-flex;align-items:center;gap:.5rem;background:#fff;border:1px solid var(--line);border-radius:999px;padding:.45rem .9rem;font-size:.85rem;font-weight:600;color:var(--green-d);box-shadow:var(--soft)}
+    .fadot{width:9px;height:9px;border-radius:50%;background:#2bd187;box-shadow:0 0 0 0 rgba(43,209,135,.6);animation:fapulse 2.2s infinite}
+    .fastatus.closed{color:#b04a3a}.fastatus.closed .fadot{background:#e0664f;animation:none}
+    @keyframes fapulse{0%{box-shadow:0 0 0 0 rgba(43,209,135,.5)}70%{box-shadow:0 0 0 8px rgba(43,209,135,0)}100%{box-shadow:0 0 0 0 rgba(43,209,135,0)}}
+    @media (prefers-reduced-motion:reduce){.fadot{animation:none}}
+
+    .fahero{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(1.6rem,4vw,3.5rem);align-items:center;padding:7.5rem clamp(1.2rem,5vw,3rem) 3.5rem}
+    .fahero h1{font-size:clamp(2.6rem,6vw,4.6rem);margin:1.2rem 0 1.3rem}
+    .fahero-sub{font-size:1.15rem;color:var(--muted);max-width:46ch;margin-bottom:1.8rem}
+    .fahero-cta{display:flex;gap:.8rem;flex-wrap:wrap}
+    .fahero-trust{list-style:none;display:flex;gap:1.2rem;flex-wrap:wrap;margin-top:1.8rem;color:var(--green-d);font-size:.9rem;font-weight:500}
+    .fahero-media{border-radius:24px;overflow:hidden;box-shadow:var(--soft);aspect-ratio:4/5}
+    .fahero-media img{width:100%;height:100%;object-fit:cover}
+
+    .fastats{background:var(--green)}
+    .fastats-in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;padding:2.2rem clamp(1.2rem,5vw,3rem);color:#fff}
+    .fastats-in>div{text-align:center;border-left:1px solid rgba(255,255,255,.22)}.fastats-in>div:first-child{border-left:none}
+    .fastats b{font-family:var(--head);font-size:clamp(1.7rem,3.4vw,2.5rem);display:block}.fastats span{font-size:.84rem;opacity:.9}
+
+    .fasection{max-width:1180px;margin:0 auto;padding:clamp(3.5rem,8vw,6.5rem) clamp(1.2rem,5vw,3rem)}
+    .fahead{max-width:680px;margin:0 auto clamp(2.2rem,4vw,3.4rem);text-align:center}
+    .fakick{display:inline-block;font-family:var(--head);font-size:.78rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--green-d);background:rgba(26,157,110,.12);padding:.35rem .8rem;border-radius:999px;margin-bottom:1rem}
+    .fahead h2,.faorari h2,.facta h2{font-size:clamp(1.9rem,4.4vw,3rem)}
+    .falead{color:var(--muted);font-size:1.1rem;margin-top:.9rem}
+
+    .fagrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem}.fagrid>*{min-width:0}
+    .facard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1.7rem;transition:transform .25s var(--e),box-shadow .25s}
+    .facard:hover{transform:translateY(-5px);box-shadow:var(--soft)}
+    .facard-ic{display:grid;place-items:center;width:52px;height:52px;border-radius:14px;background:var(--green);color:#fff;margin-bottom:1rem}.facard-ic svg{width:28px;height:28px}
+    .facard h3{font-size:1.2rem;margin-bottom:.35rem}.facard p{color:var(--muted);font-size:.95rem}
+
+    .faorari{background:var(--bg2);max-width:none}
+    .faorari-grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.6rem,4vw,3.5rem);align-items:center}
+    .faorari-grid>*{min-width:0}
+    .faorari-card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:clamp(1.6rem,3vw,2.4rem);box-shadow:var(--soft)}
+    .faorari-card h2{margin:.5rem 0 1.1rem}
+    .fastatus-lg{font-size:.95rem;padding:.55rem 1.1rem;margin-bottom:1.2rem}
+    .fahours{list-style:none;display:grid;gap:.55rem}
+    .fahours li{display:flex;justify-content:space-between;gap:1rem;padding:.5rem 0;border-bottom:1px solid var(--line);font-size:.96rem}
+    .fahours li b{font-weight:600}.fahours li.today{color:var(--green-d)}
+    .fanote{color:var(--muted);font-size:.9rem;margin-top:1.2rem}
+    .faorari-media{border-radius:22px;overflow:hidden;box-shadow:var(--soft);aspect-ratio:4/3}.faorari-media img{width:100%;height:100%;object-fit:cover}
+
+    .fagrid-3{grid-template-columns:repeat(3,1fr)}
+    .farev{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1.6rem;display:flex;flex-direction:column;gap:.8rem}
+    .fastars{color:#f4a72c;letter-spacing:2px}.farev p{flex:1}
+    .farev footer{display:flex;align-items:center;gap:.6rem}
+    .faav{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--green);color:#fff;font-family:var(--head);font-weight:700;flex:none}
+
+    .fafaq{max-width:780px;margin:0 auto;display:grid;gap:.8rem}
+    .faq{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+    .faq summary{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.1rem 1.3rem;cursor:pointer;font-family:var(--head);font-weight:600;font-size:1.05rem;list-style:none}
+    .faq summary::-webkit-details-marker{display:none}
+    .faq-ic{position:relative;width:16px;height:16px;flex:none}
+    .faq-ic::before,.faq-ic::after{content:'';position:absolute;background:var(--green);border-radius:2px;transition:transform .3s var(--e)}
+    .faq-ic::before{top:7px;left:0;width:16px;height:2px}.faq-ic::after{left:7px;top:0;width:2px;height:16px}
+    .faq[open] .faq-ic::after{transform:scaleY(0)}
+    .faq-a{padding:0 1.3rem 1.2rem;color:var(--muted)}
+
+    .facta{background:linear-gradient(150deg,var(--green),var(--green-d))}
+    .facta-in{max-width:1100px;margin:0 auto;padding:clamp(3rem,7vw,5.5rem) clamp(1.2rem,5vw,3rem);display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4rem);align-items:center;color:#fff}
+    .facta-in>*{min-width:0}
+    .facta .fakick{background:rgba(255,255,255,.18);color:#fff}
+    .facta-text>p{color:rgba(255,255,255,.9);margin:.8rem 0 1.6rem;max-width:42ch}
+    .facta-side{display:flex;gap:.8rem;flex-wrap:wrap}.facta-note{margin-top:1.4rem;font-size:.9rem;color:rgba(255,255,255,.85)}
+    .faform{background:#fff;border-radius:22px;padding:clamp(1.4rem,3vw,2rem);box-shadow:0 40px 80px -40px rgba(0,0,0,.5);display:flex;flex-direction:column;gap:.9rem;color:var(--ink)}
+    .faform label{display:flex;flex-direction:column;gap:.35rem;font-size:.85rem;font-weight:600}
+    .faform input,.faform select{min-width:0;width:100%;padding:.8rem .9rem;border:1px solid var(--line);border-radius:12px;font-family:var(--sans);font-size:1rem;background:var(--bg);color:var(--ink)}
+    .faform input:focus,.faform select:focus{outline:2px solid var(--green);border-color:transparent}
+    .faform-note{font-size:.78rem;color:var(--muted);text-align:center;font-weight:400}
+
+    .fafoot{max-width:1180px;margin:0 auto;padding:2rem clamp(1.2rem,5vw,3rem);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.88rem;border-top:1px solid var(--line)}
+    .fafoot b{color:var(--ink);font-family:var(--head)}.fafoot a{color:var(--green-d)}
+
+    .wa-fab{position:fixed;right:18px;bottom:18px;z-index:160;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 30px -10px rgba(37,211,102,.7);transition:transform .2s var(--e)}
+    .wa-fab:hover{transform:scale(1.08)}
+
+    .r{opacity:0;transform:translateY(22px);transition:opacity .7s var(--e),transform .7s var(--e)}
+    .r.in{opacity:1;transform:none}
+    @media (prefers-reduced-motion:reduce){.r{opacity:1;transform:none;transition:none}}
+
+    @media (max-width:900px){
+      .falinks{display:none}
+      .fanav.faopen .falinks{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1.1rem;background:rgba(243,250,246,.98);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:1.2rem clamp(1.2rem,5vw,3rem) 1.5rem}
+      .fanav-toggle{display:grid}
+      .fanav>.fabtn-solid{padding:.5rem .9rem;font-size:.82rem}
+      .fahero{grid-template-columns:1fr;padding-top:6.5rem}.fahero-media{order:-1;aspect-ratio:16/11}
+      .faorari-grid{grid-template-columns:1fr}.faorari-media{order:-1;aspect-ratio:16/10}
+      .facta-in{grid-template-columns:1fr}
+      .fastats-in{grid-template-columns:1fr 1fr;gap:1.4rem 1rem}.fastats-in>div:nth-child(3){border-left:none}
+    }
+    @media (max-width:560px){ .fagrid,.fagrid-3{grid-template-columns:1fr}.fahero-trust{gap:.4rem 1.1rem} }
+  </style>
+
+  <script>
+    const fanav = document.getElementById('fanav');
+    addEventListener('scroll', () => fanav.classList.toggle('solid', scrollY > 30), { passive: true });
+    const ft = document.getElementById('faToggle');
+    ft.addEventListener('click', () => { const o = fanav.classList.toggle('faopen'); ft.setAttribute('aria-expanded', String(o)); });
+    document.querySelectorAll('.falinks a').forEach((a) => a.addEventListener('click', () => fanav.classList.remove('faopen')));
+    document.addEventListener('click', (e) => { if (fanav.classList.contains('faopen') && !fanav.contains(e.target)) { fanav.classList.remove('faopen'); ft.setAttribute('aria-expanded', 'false'); } });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { fanav.classList.remove('faopen'); ft.setAttribute('aria-expanded', 'false'); } });
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12 });
+    document.querySelectorAll('.r').forEach((el) => io.observe(el));
+    document.querySelectorAll('.faq').forEach((d) => d.addEventListener('toggle', () => { if (d.open) document.querySelectorAll('.faq').forEach((o) => { if (o !== d) o.open = false; }); }));
+
+    // Orari + "aperta ora" (Lun-Ven 8:30-19:30, Sab 9-13, Dom chiuso)
+    const HRS = { 1:[8.5,19.5], 2:[8.5,19.5], 3:[8.5,19.5], 4:[8.5,19.5], 5:[8.5,19.5], 6:[9,13], 0:null };
+    const NAMES = ['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+    const fmt = (x) => { const h = Math.floor(x), m = Math.round((x - h) * 60); return h + ':' + String(m).padStart(2, '0'); };
+    const now = new Date(), d = now.getDay(), t = now.getHours() + now.getMinutes() / 60;
+    const open = HRS[d] && t >= HRS[d][0] && t < HRS[d][1];
+    document.querySelectorAll('#openNow,#openNow2').forEach((el) => {
+      if (open) { el.lastChild.textContent = 'Aperta ora · chiude alle ' + fmt(HRS[d][1]); }
+      else { el.classList.add('closed'); el.lastChild.textContent = 'Chiusa ora'; }
+    });
+    const hoursEl = document.getElementById('hours');
+    if (hoursEl) { [1,2,3,4,5,6,0].forEach((i) => { const li = document.createElement('li'); if (i === d) li.className = 'today'; const h = HRS[i] ? fmt(HRS[i][0]) + '–' + fmt(HRS[i][1]) : 'Chiuso'; li.innerHTML = '<span>' + NAMES[i] + '</span><b>' + h + '</b>'; hoursEl.appendChild(li); }); }
+  </script>
+</body>
+</html>

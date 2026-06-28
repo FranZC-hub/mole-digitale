@@ -1,1 +1,2 @@
-img/demo-cani/trainer.webp: "Working Dogs" — by 2.0 via flickr (Openverse) — https://live.staticflickr.com/5128/5356266448_aa4c3c6a00_b.jpg
+img/demo-dentista/hero.webp: "Poise" — by 2.0 via flickr (Openverse) — https://live.staticflickr.com/2343/1572251373_f9df68a4bb_b.jpg
+img/demo-dentista/d2.webp: "DSC04282" — by 2.0 via flickr (Openverse) — https://live.staticflickr.com/4212/35653077752_da919d3e81_b.jpg
