@@ -1,0 +1,332 @@
+---
+// DEMO standalone — "Bollé", lavanderia & lavasecco a Torino. Tema fresh blu/menta.
+// STRUTTURA distinta: come-funziona a step, TABELLA prezzi listino capi, banner ritiro&consegna.
+// Responsive solo flusso (grid/flex/clamp + tabella in contenitore scrollabile). Sito a sé.
+import '@fontsource-variable/plus-jakarta-sans';
+
+const steps = [
+  { ic: 'bag',     t: 'Porti o prenoti', d: 'Vieni in negozio o prenota il ritiro gratuito a domicilio in pochi tap.' },
+  { ic: 'machine', t: 'Trattiamo ogni capo', d: 'Lavaggio professionale, smacchiatura e stiro a regola d’arte, capo per capo.' },
+  { ic: 'check',   t: 'Pronto in 48h', d: 'Te lo riconsegniamo pulito, profumato e impeccabile. Anche a casa tua.' },
+];
+const prezzi = [
+  ['Camicia', '3,00€', '4,50€'],
+  ['Pantaloni', '4,00€', '6,00€'],
+  ['Abito / completo', '9,00€', '12,00€'],
+  ['Giacca', '6,00€', '8,00€'],
+  ['Cappotto', '12,00€', '15,00€'],
+  ['Piumone matrimoniale', '18,00€', '—'],
+  ['Tende (al kg)', '8,00€', '—'],
+  ['Abito da sposa', 'da 40€', '—'],
+];
+const servizi = [
+  { ic: 'shirt',  t: 'Lavasecco' },
+  { ic: 'iron',   t: 'Stireria' },
+  { ic: 'duvet',  t: 'Piumoni & grandi' },
+  { ic: 'silk',   t: 'Capi delicati' },
+  { ic: 'rug',    t: 'Tappeti' },
+  { ic: 'needle', t: 'Sartoria express' },
+];
+const reviews = [
+  { n: 'Roberto M.', av: 'R', txt: 'Ritiro a domicilio comodissimo e capi perfetti. Mi hanno salvato un abito che davo per perso.' },
+  { n: 'Elena T.', av: 'E', txt: 'Piumoni come nuovi e profumatissimi. Personale gentile e prezzi onesti: che altro chiedere?' },
+  { n: 'Giovanni P.', av: 'G', txt: 'Camicie stirate da manuale, pronte in 48 ore. Ormai è il mio punto di riferimento in zona.' },
+];
+function icon(n) {
+  const w = (p) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+  const m = {
+    bag: '<path d="M6 8h12l-1 12H7z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
+    machine: '<rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="13" r="4.5"/><path d="M7 6h0M10 6h0"/>',
+    check: '<circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 5-5.5"/>',
+    shirt: '<path d="M7 4l5 3 5-3 3 4-3 2v9H7v-9L4 8z"/>',
+    iron: '<path d="M3 16h13a4 4 0 0 0 4-4V9H8c-2.8 0-5 2.2-5 5z"/><path d="M3 20h12"/>',
+    duvet: '<rect x="4" y="6" width="16" height="13" rx="2"/><path d="M4 10h16M9 6v4M14 6v4"/>',
+    silk: '<path d="M5 4c3 2 3 5 0 7s-3 5 0 7M12 4c3 2 3 5 0 7s-3 5 0 7M19 4c3 2 3 5 0 7s-3 5 0 7"/>',
+    rug: '<rect x="4" y="6" width="16" height="12" rx="1"/><path d="M4 9h16M4 15h16M7 6v12M17 6v12"/>',
+    needle: '<path d="M4 20l8-8M14 10l6-6M14 4l6 6"/><circle cx="13" cy="11" r="1"/>',
+  };
+  return w(m[n] || m.shirt);
+}
+---
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Bollé — Lavanderia & lavasecco a Torino</title>
+  <meta name="description" content="Bollé, lavanderia e lavasecco a Torino: lavaggio, stireria, piumoni, capi delicati e tappeti. Ritiro e consegna gratuiti a domicilio, capi pronti in 48 ore." />
+  <meta name="theme-color" content="#1f8fe0" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='4' y='3' width='16' height='18' rx='2' fill='none' stroke='%231f8fe0' stroke-width='1.7'/><circle cx='12' cy='13' r='4.5' fill='none' stroke='%231f8fe0' stroke-width='1.7'/></svg>" />
+</head>
+<body>
+  <a class="demo-flag" href="/">★ Demo realizzata da <b>Mole Digitale</b> · torna al sito ↩</a>
+
+  <header class="lvnav" id="lvnav">
+    <a href="#top" class="lvbrand"><span class="lvbrand-ic" aria-hidden="true">●</span>Bollé</a>
+    <nav class="lvlinks" id="lvlinks">
+      <a href="#come">Come funziona</a>
+      <a href="#prezzi">Prezzi</a>
+      <a href="#servizi">Servizi</a>
+      <a href="#contatti">Contatti</a>
+    </nav>
+    <button class="lvnav-toggle" id="lvToggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="lvlinks"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <a href="#contatti" class="lvbtn lvbtn-solid">Prenota ritiro</a>
+  </header>
+
+  <main id="main">
+  <!-- HERO -->
+  <section class="lvhero" id="top">
+    <div class="lvhero-text">
+      <span class="lvkick r"><span class="lvdot"></span>Lavanderia & lavasecco · Torino</span>
+      <h1 class="r">Capi puliti,<br/><span class="lvmark">zero pensieri</span>.</h1>
+      <p class="lvhero-sub r">Lavaggio e stiro professionali con <b>ritiro e consegna gratuiti a domicilio</b>. Tu vivi la tua giornata, al bucato pensiamo noi.</p>
+      <div class="lvhero-cta r">
+        <a href="#contatti" class="lvbtn lvbtn-solid lvbtn-lg">Prenota il ritiro gratuito</a>
+        <a href="#prezzi" class="lvbtn lvbtn-ghost lvbtn-lg">Vedi i prezzi</a>
+      </div>
+      <ul class="lvhero-trust r"><li>🚲 Ritiro e consegna gratis</li><li>⏱ Pronto in 48h</li><li>★ 4,9 su Google</li></ul>
+    </div>
+    <div class="lvhero-media r"><img src="/img/demo-lavanderia/hero.webp" alt="Capi puliti e stirati alla lavanderia Bollé" /></div>
+  </section>
+
+  <!-- COME FUNZIONA -->
+  <section class="lvsection lvcome-sec" id="come">
+    <div class="lvhead lvhead-c r"><span class="lvkick2">Come funziona</span><h2>Semplice come <span class="lvmark">deve essere</span></h2></div>
+    <div class="lvsteps">
+      {steps.map((s, i) => (
+        <article class="lvstep r">
+          <span class="lvstep-ic" set:html={icon(s.ic)} aria-hidden="true"></span>
+          <span class="lvstep-n">Step {i + 1}</span>
+          <h3>{s.t}</h3>
+          <p>{s.d}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- PREZZI tabella -->
+  <section class="lvsection" id="prezzi">
+    <div class="lvhead r"><span class="lvkick2">Listino prezzi</span><h2>Prezzi chiari, <span class="lvmark">nessuna sorpresa</span></h2><p>I capi più richiesti. Per articoli particolari ti facciamo un preventivo al volo, sempre gratuito.</p></div>
+    <div class="lvtable-wrap r">
+      <table class="lvtable">
+        <thead><tr><th>Capo</th><th>Lavaggio</th><th>Lavaggio + stiro</th></tr></thead>
+        <tbody>
+          {prezzi.map((row) => (
+            <tr><td data-l="Capo">{row[0]}</td><td data-l="Lavaggio">{row[1]}</td><td data-l="Lavaggio + stiro">{row[2]}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="lvtable-note r">* Prezzi indicativi IVA inclusa. Sconti su carnet e per quantità.</p>
+  </section>
+
+  <!-- SERVIZI -->
+  <section class="lvsection lvserv-sec" id="servizi">
+    <div class="lvhead lvhead-c r"><span class="lvkick2">I servizi</span><h2>Ci occupiamo <span class="lvmark">di tutto</span></h2></div>
+    <div class="lvserv">
+      {servizi.map((s) => (
+        <article class="lvserv-card r"><span class="lvserv-ic" set:html={icon(s.ic)} aria-hidden="true"></span><h3>{s.t}</h3></article>
+      ))}
+    </div>
+  </section>
+
+  <!-- BANNER RITIRO -->
+  <section class="lvbanner">
+    <div class="lvbanner-in r">
+      <div>
+        <span class="lvbanner-tag">Ritiro & consegna</span>
+        <h2>Non esci di casa: <span class="lvmark2">veniamo noi</span></h2>
+        <p>Ordina online o su WhatsApp: passiamo a ritirare i tuoi capi e te li riportiamo puliti. Gratis, in tutta Torino.</p>
+      </div>
+      <a href="#contatti" class="lvbtn lvbtn-light lvbtn-lg">Prenota il ritiro →</a>
+    </div>
+  </section>
+
+  <!-- RECENSIONI -->
+  <section class="lvsection">
+    <div class="lvhead lvhead-c r"><span class="lvkick2">Dicono di noi</span><h2>Clienti <span class="lvmark">soddisfatti</span></h2></div>
+    <div class="lvrevs">
+      {reviews.map((r) => (
+        <blockquote class="lvrev r"><div class="lvstars">★★★★★</div><p>«{r.txt}»</p><footer><span class="lvav">{r.av}</span><b>{r.n}</b></footer></blockquote>
+      ))}
+    </div>
+  </section>
+
+  <!-- CTA / CONTATTI -->
+  <section class="lvcta" id="contatti">
+    <div class="lvcta-in r">
+      <div class="lvcta-text">
+        <span class="lvkick2 light">Prenota ora</span>
+        <h2>Prenota il tuo <span class="lvmark2">ritiro gratuito</span></h2>
+        <p>Compila e ti contattiamo per concordare giorno e ora del ritiro a domicilio. Veloce e senza impegno.</p>
+        <p class="lvcta-note">📍 Via Cernaia 22, Torino · Lun–Sab 8:00–19:30</p>
+      </div>
+      <form class="lvform" onsubmit="return false">
+        <label>Il tuo nome<input type="text" placeholder="Mario Rossi" autocomplete="name" /></label>
+        <label>Indirizzo di ritiro<input type="text" placeholder="Via, numero, Torino" /></label>
+        <div class="lvform-row">
+          <label>Telefono<input type="tel" placeholder="333 000 0000" autocomplete="tel" /></label>
+          <label>Tipo di servizio
+            <select><option>Lavaggio + stiro</option><option>Solo lavaggio</option><option>Piumoni / grandi</option><option>Capi delicati</option><option>Sartoria</option></select>
+          </label>
+        </div>
+        <button class="lvbtn lvbtn-solid lvbtn-lg lvbtn-block" type="submit">Prenota il ritiro →</button>
+        <p class="lvform-note">🔒 È una demo: nessun dato viene inviato.</p>
+      </form>
+    </div>
+  </section>
+  </main>
+
+  <footer class="lvfoot"><div><b>Bollé</b> · Lavanderia & lavasecco a Torino</div><div>Demo · <a href="/">Mole Digitale</a></div></footer>
+
+  <a class="wa-fab" href="https://wa.me/390110000000" target="_blank" rel="noopener" aria-label="Scrivici su WhatsApp"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.5-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c2.3 1 2.3.7 2.7.6a2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1z"/></svg></a>
+
+  <style is:global>
+    :root{
+      --bg:#f1f8fd;--bg2:#e2f0fa;--card:#ffffff;--ink:#13303f;--muted:#5a727f;
+      --blue:#1f8fe0;--blue-d:#1670b4;--mint:#2bc4b0;--mint-d:#1ea493;
+      --line:rgba(19,48,63,.12);--soft:0 20px 46px -24px rgba(20,90,140,.4);
+      --sans:'Plus Jakarta Sans Variable',system-ui,sans-serif;--e:cubic-bezier(.2,.7,.2,1);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:84px;overflow-x:clip}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    img{display:block;max-width:100%}a{color:inherit;text-decoration:none}
+    h1,h2,h3{font-family:var(--sans);font-weight:800;line-height:1.08;letter-spacing:-.02em}
+    .lvmark{color:var(--blue)}.lvmark2{color:#fff}
+
+    .demo-flag{position:fixed;top:0;left:0;right:0;z-index:300;text-align:center;font-size:.8rem;padding:.4rem;background:rgba(241,248,253,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);color:var(--muted)}
+    .demo-flag b{color:var(--blue-d)}
+
+    .lvnav{position:fixed;top:27px;left:0;right:0;z-index:200;display:flex;align-items:center;gap:1.2rem;padding:.85rem clamp(1rem,4vw,2.6rem);transition:background .35s var(--e),box-shadow .35s}
+    .lvnav.solid{background:rgba(241,248,253,.94);backdrop-filter:blur(14px);box-shadow:0 6px 24px -16px rgba(20,90,140,.5)}
+    .lvbrand{font-size:1.45rem;font-weight:800;display:inline-flex;align-items:center;gap:.45rem}.lvbrand-ic{color:var(--mint);font-size:1rem}
+    .lvlinks{display:flex;gap:1.6rem;margin-left:auto}
+    .lvlinks a{font-size:.95rem;font-weight:600;color:var(--ink);position:relative;transition:color .2s}
+    .lvlinks a::after{content:'';position:absolute;left:0;bottom:-5px;height:2px;width:0;background:var(--blue);transition:width .3s var(--e)}
+    .lvlinks a:hover{color:var(--blue-d)}.lvlinks a:hover::after{width:100%}
+    .lvnav-toggle{display:none;background:none;border:0;color:var(--ink);cursor:pointer;width:44px;height:44px;border-radius:12px;place-items:center;margin-left:auto}
+
+    .lvbtn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;font-weight:700;font-size:.92rem;padding:.7rem 1.3rem;border-radius:12px;cursor:pointer;border:1px solid transparent;transition:transform .2s var(--e),background .2s;white-space:nowrap;font-family:var(--sans)}
+    .lvbtn-solid{background:var(--blue);color:#fff;box-shadow:0 12px 26px -12px var(--blue)}.lvbtn-solid:hover{background:var(--blue-d);transform:translateY(-3px)}
+    .lvbtn-ghost{border-color:var(--line);color:var(--ink);background:#fff}.lvbtn-ghost:hover{border-color:var(--blue);color:var(--blue-d);transform:translateY(-3px)}
+    .lvbtn-light{background:#fff;color:var(--blue-d)}.lvbtn-light:hover{transform:translateY(-3px)}
+    .lvbtn-lg{padding:.95rem 1.7rem;font-size:1rem}.lvbtn-block{width:100%}
+
+    .lvhero{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(1.6rem,4vw,3.5rem);align-items:center;padding:7.5rem clamp(1.2rem,5vw,3rem) 3.5rem}
+    .lvkick{display:inline-flex;align-items:center;gap:.5rem;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-d);margin-bottom:1.2rem;font-weight:700}
+    .lvdot{width:8px;height:8px;border-radius:50%;background:var(--mint)}
+    .lvhero h1{font-size:clamp(2.5rem,6vw,4.5rem);margin-bottom:1.2rem}
+    .lvhero-sub{font-size:1.15rem;color:var(--muted);max-width:48ch;margin-bottom:1.7rem}.lvhero-sub b{color:var(--ink)}
+    .lvhero-cta{display:flex;gap:.8rem;flex-wrap:wrap}
+    .lvhero-trust{list-style:none;display:flex;gap:1.2rem;flex-wrap:wrap;margin-top:1.7rem;color:var(--blue-d);font-size:.9rem;font-weight:600}
+    .lvhero-media{border-radius:24px;overflow:hidden;box-shadow:var(--soft);aspect-ratio:4/3.4;background:var(--bg2)}
+    .lvhero-media img{width:100%;height:100%;object-fit:cover}
+
+    .lvsection{max-width:1180px;margin:0 auto;padding:clamp(3.5rem,8vw,6rem) clamp(1.2rem,5vw,3rem)}
+    .lvhead{max-width:660px;margin-bottom:clamp(2rem,4vw,3rem)}
+    .lvhead-c{margin-left:auto;margin-right:auto;text-align:center}
+    .lvkick2{display:inline-block;font-weight:700;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mint-d);background:rgba(43,196,176,.14);padding:.35rem .8rem;border-radius:999px;margin-bottom:.9rem}
+    .lvkick2.light{background:rgba(255,255,255,.2);color:#fff}
+    .lvhead h2,.lvbanner h2,.lvcta h2{font-size:clamp(1.9rem,4.6vw,3.1rem)}.lvhead p{color:var(--muted);margin-top:.8rem;font-size:1.05rem}
+
+    /* COME FUNZIONA */
+    .lvcome-sec{background:var(--bg2)}
+    .lvsteps{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem;counter-reset:s}
+    .lvsteps>*{min-width:0}
+    .lvstep{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:2rem 1.7rem;position:relative}
+    .lvstep-ic{display:grid;place-items:center;width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,var(--blue),var(--mint));color:#fff;margin-bottom:1rem}.lvstep-ic svg{width:28px;height:28px}
+    .lvstep-n{font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--mint-d)}
+    .lvstep h3{font-size:1.3rem;margin:.3rem 0 .4rem}.lvstep p{color:var(--muted);font-size:.96rem}
+
+    /* TABELLA PREZZI */
+    .lvtable-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:18px;background:var(--card);box-shadow:var(--soft)}
+    .lvtable{width:100%;border-collapse:collapse;min-width:460px}
+    .lvtable th,.lvtable td{padding:1rem 1.3rem;text-align:left}
+    .lvtable thead th{background:var(--ink);color:#fff;font-size:.82rem;text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+    .lvtable thead th:not(:first-child),.lvtable td:not(:first-child){text-align:right}
+    .lvtable tbody tr{border-top:1px solid var(--line)}
+    .lvtable tbody tr:nth-child(even){background:var(--bg)}
+    .lvtable td:first-child{font-weight:700}
+    .lvtable td:not(:first-child){font-variant-numeric:tabular-nums;color:var(--blue-d);font-weight:700}
+    .lvtable-note{margin-top:.9rem;font-size:.84rem;color:var(--muted)}
+
+    /* SERVIZI */
+    .lvserv-sec{background:var(--bg2)}
+    .lvserv{display:grid;grid-template-columns:repeat(6,1fr);gap:1rem}
+    .lvserv>*{min-width:0}
+    .lvserv-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.4rem .8rem;text-align:center;transition:transform .25s var(--e),box-shadow .25s}
+    .lvserv-card:hover{transform:translateY(-4px);box-shadow:var(--soft)}
+    .lvserv-ic{display:inline-grid;place-items:center;width:46px;height:46px;border-radius:12px;background:rgba(31,143,224,.1);color:var(--blue);margin-bottom:.6rem}.lvserv-ic svg{width:24px;height:24px}
+    .lvserv-card h3{font-size:.96rem}
+
+    /* BANNER */
+    .lvbanner{background:linear-gradient(120deg,var(--blue),var(--mint-d))}
+    .lvbanner-in{max-width:1180px;margin:0 auto;padding:clamp(2.4rem,5vw,3.4rem) clamp(1.2rem,5vw,3rem);display:flex;align-items:center;justify-content:space-between;gap:1.6rem;flex-wrap:wrap;color:#fff}
+    .lvbanner-tag{display:inline-block;font-weight:700;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;background:rgba(255,255,255,.2);padding:.3rem .7rem;border-radius:999px;margin-bottom:.5rem}
+    .lvbanner-in p{color:rgba(255,255,255,.92);margin-top:.4rem;max-width:48ch}
+
+    /* RECENSIONI */
+    .lvrevs{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem}
+    .lvrevs>*{min-width:0}
+    .lvrev{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.6rem;display:flex;flex-direction:column;gap:.8rem}
+    .lvstars{color:var(--mint);letter-spacing:2px}.lvrev p{flex:1}
+    .lvrev footer{display:flex;align-items:center;gap:.6rem}
+    .lvav{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--blue);color:#fff;font-weight:800;flex:none}
+
+    /* CTA */
+    .lvcta{background:linear-gradient(140deg,var(--blue),var(--blue-d));padding:clamp(3rem,7vw,5rem) clamp(1.2rem,5vw,3rem)}
+    .lvcta-in{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4rem);align-items:center;color:#fff}
+    .lvcta-in>*{min-width:0}
+    .lvcta-text>p{color:rgba(255,255,255,.92);margin:.8rem 0 1.2rem;max-width:42ch}
+    .lvcta-note{font-size:.9rem;color:rgba(255,255,255,.85)}
+    .lvform{background:#fff;border-radius:22px;padding:clamp(1.4rem,3vw,2rem);box-shadow:0 40px 80px -40px rgba(0,0,0,.4);display:flex;flex-direction:column;gap:.9rem;color:var(--ink)}
+    .lvform-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}.lvform-row>*{min-width:0}
+    .lvform label{display:flex;flex-direction:column;gap:.35rem;font-size:.85rem;font-weight:700}
+    .lvform input,.lvform select{min-width:0;width:100%;padding:.8rem .9rem;border:1px solid var(--line);border-radius:12px;font-family:var(--sans);font-size:1rem;background:var(--bg);color:var(--ink)}
+    .lvform input:focus,.lvform select:focus{outline:2px solid var(--blue);border-color:transparent}
+    .lvform-note{font-size:.78rem;color:var(--muted);text-align:center;font-weight:500}
+
+    .lvfoot{max-width:1180px;margin:0 auto;padding:2rem clamp(1.2rem,5vw,3rem);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.88rem;border-top:1px solid var(--line)}
+    .lvfoot b{color:var(--ink)}.lvfoot a{color:var(--blue-d)}
+
+    .wa-fab{position:fixed;right:18px;bottom:18px;z-index:160;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 30px -10px rgba(37,211,102,.7);transition:transform .2s var(--e)}
+    .wa-fab:hover{transform:scale(1.08)}
+
+    .r{opacity:0;transform:translateY(22px);transition:opacity .7s var(--e),transform .7s var(--e)}
+    .r.in{opacity:1;transform:none}
+    @media (prefers-reduced-motion:reduce){.r{opacity:1;transform:none;transition:none}}
+
+    @media (max-width:900px){
+      .lvlinks{display:none}
+      .lvnav.lvopen .lvlinks{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1.1rem;background:rgba(241,248,253,.98);backdrop-filter:blur(14px);box-shadow:var(--soft);padding:1.2rem clamp(1.2rem,5vw,3rem) 1.5rem}
+      .lvnav-toggle{display:grid}
+      .lvnav>.lvbtn-solid{padding:.5rem .9rem;font-size:.8rem}
+      .lvhero{grid-template-columns:1fr;padding-top:6.5rem}.lvhero-media{order:-1;aspect-ratio:16/10}
+      .lvsteps{grid-template-columns:1fr}
+      .lvserv{grid-template-columns:repeat(3,1fr)}
+      .lvbanner-in{flex-direction:column;text-align:center}
+      .lvrevs{grid-template-columns:1fr}
+      .lvcta-in{grid-template-columns:1fr}
+    }
+    @media (max-width:560px){
+      .lvserv{grid-template-columns:1fr 1fr}
+      .lvform-row{grid-template-columns:1fr}
+    }
+  </style>
+
+  <script>
+    const lvnav = document.getElementById('lvnav');
+    addEventListener('scroll', () => lvnav.classList.toggle('solid', scrollY > 30), { passive: true });
+    const lt = document.getElementById('lvToggle');
+    lt.addEventListener('click', () => { const o = lvnav.classList.toggle('lvopen'); lt.setAttribute('aria-expanded', String(o)); });
+    document.querySelectorAll('.lvlinks a').forEach((a) => a.addEventListener('click', () => lvnav.classList.remove('lvopen')));
+    document.addEventListener('click', (e) => { if (lvnav.classList.contains('lvopen') && !lvnav.contains(e.target)) { lvnav.classList.remove('lvopen'); lt.setAttribute('aria-expanded', 'false'); } });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { lvnav.classList.remove('lvopen'); lt.setAttribute('aria-expanded', 'false'); } });
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.1 });
+    document.querySelectorAll('.r').forEach((el) => io.observe(el));
+  </script>
+</body>
+</html>
