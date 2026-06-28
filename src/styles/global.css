@@ -367,7 +367,7 @@ main:focus { outline: none; }
 .port-card { display:block; padding:1rem; transition:transform .35s var(--ease), box-shadow .35s; transform-style:preserve-3d; cursor:pointer; }
 .port-card:hover { transform:translateY(-8px); box-shadow:0 30px 60px -30px rgba(124,92,255,.5); }
 .port-thumb { position:relative; overflow:hidden; border-radius:12px; }
-.port-img { width:100%; height:auto; aspect-ratio:1/1; object-fit:cover; display:block; transition:transform .5s var(--ease); }
+.port-img { width:100%; height:auto; aspect-ratio:16/10; object-fit:cover; object-position:top center; display:block; transition:transform .5s var(--ease); }
 .port-card:hover .port-img { transform:scale(1.05); }
 .port-go { position:absolute; left:50%; bottom:14px; transform:translateX(-50%) translateY(10px); opacity:0;
   background:var(--grad); color:#fff; font-family:'Space Grotesk Variable','Space Grotesk'; font-weight:600; font-size:.85rem;
