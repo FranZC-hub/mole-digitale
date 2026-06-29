@@ -1,0 +1,63 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Le demo (/demo/*) sono mockup illustrativi, marcati noindex. Le immagini provengono da Openverse,
+// aggregatore di contenuti con licenze libere (CC0, Pubblico Dominio, CC BY, CC BY-SA).
+const fonti = [
+  { d: 'Velvèe — centro estetico', t: 'Ambiente spa, trattamenti viso e corpo' },
+  { d: 'Farmacia Aurora', t: 'Interno di farmacia, medicinali' },
+  { d: 'Studio Sorriso — dentista', t: 'Trattamenti odontoiatrici' },
+  { d: 'Essènza — profumeria', t: 'Flaconi e fragranze' },
+  { d: 'Sàva — centro massaggi', t: 'Massaggi e atmosfera benessere' },
+  { d: 'Àsse — osteopatia', t: 'Terapia manuale' },
+  { d: 'Vàgo — agenzia viaggi', t: 'Destinazioni e paesaggi (Maldive, Giappone, Islanda, New York, Marocco)' },
+  { d: 'Lúnula — nail studio', t: 'Manicure e nail art' },
+  { d: 'Zampe Amiche — veterinario', t: 'Animali domestici' },
+  { d: 'Bollé — lavanderia', t: 'Interno lavanderia' },
+  { d: 'Hashi — sushi', t: 'Piatti giapponesi e cucina' },
+];
+---
+<Layout
+  title="Crediti immagini — Mole Digitale"
+  description="Crediti e licenze delle immagini usate nelle demo dimostrative di Mole Digitale."
+  noindex={true}
+>
+  <section class="section" style="padding-top:8rem;">
+    <div class="section-head" data-reveal>
+      <span class="kicker">Crediti</span>
+      <h1>Crediti <span class="grad">immagini</span>.</h1>
+      <p class="section-lead">Le pagine <a href="/demo">demo</a> sono mockup dimostrativi (non indicizzati). Le immagini usate al loro interno provengono da <a href="https://openverse.org" target="_blank" rel="noopener noreferrer">Openverse</a>, l'archivio di contenuti con licenze libere — Creative Commons (CC0, CC BY, CC BY-SA) e Pubblico Dominio.</p>
+    </div>
+
+    <div class="cred-wrap" data-reveal>
+      <h2>Immagini per demo</h2>
+      <ul class="cred-list">
+        {fonti.map((f) => (
+          <li><b>{f.d}</b><span>{f.t}</span></li>
+        ))}
+      </ul>
+
+      <h2>Licenze e attribuzione</h2>
+      <p>Le opere sono utilizzate nel rispetto delle rispettive licenze libere. Dove la licenza lo richiede (CC BY / CC BY-SA), l'attribuzione completa di autore e fonte è disponibile su richiesta scrivendo a <a href="mailto:info@moledigitale.it">info@moledigitale.it</a>: forniamo i riferimenti puntuali o rimuoviamo l'immagine.</p>
+      <p>Nei <b>siti reali</b> realizzati per i clienti utilizziamo esclusivamente <b>fotografie di proprietà del cliente</b>, scatti realizzati da noi o immagini regolarmente licenziate. Le immagini delle demo hanno scopo puramente illustrativo.</p>
+
+      <h2>Font</h2>
+      <p>Caratteri tipografici da <a href="https://fontsource.org" target="_blank" rel="noopener noreferrer">Fontsource</a> (Inter, Space Grotesk, Cormorant, Fraunces, Manrope, Outfit, Sora, Jost, Plus Jakarta Sans), self-hosted e distribuiti con licenza SIL Open Font License.</p>
+    </div>
+
+    <div style="text-align:center; margin-top:2.5rem;" data-reveal>
+      <a href="/demo" class="btn btn-ghost">← Torna alle demo</a>
+    </div>
+  </section>
+
+  <style>
+    .cred-wrap { max-width:760px; margin:1.5rem auto 0; }
+    .cred-wrap h2 { font-size:clamp(1.3rem,3vw,1.8rem); margin:2rem 0 .9rem; }
+    .cred-wrap p { color:var(--muted); margin-bottom:1rem; }
+    .cred-wrap a { color:var(--c1); }
+    .cred-list { list-style:none; padding:0; margin:0; display:grid; gap:.2rem; }
+    .cred-list li { display:flex; justify-content:space-between; gap:1.5rem; flex-wrap:wrap; padding:.7rem 0; border-bottom:1px solid var(--border); }
+    .cred-list b { font-family:'Space Grotesk Variable','Space Grotesk'; }
+    .cred-list span { color:var(--muted); text-align:right; }
+  </style>
+</Layout>
