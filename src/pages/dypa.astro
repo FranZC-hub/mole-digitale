@@ -8,6 +8,28 @@ const benefits = [
   { t: 'Primo su Google a Torino', d: 'SEO locale e scheda Google incluse: compari quando cercano cosa offri.' },
   { t: 'Prenotazioni e WhatsApp', d: 'Richieste, appuntamenti e contatti diretti, gestiti dal sito senza pensieri.' },
 ];
+const stats = [
+  { n: '~7 giorni', l: 'alla consegna' },
+  { n: '★ 4,9', l: 'su Google' },
+  { n: 'da €390', l: 'una tantum' },
+  { n: '€29/mese', l: 'hosting & assistenza' },
+];
+const demos = [
+  { k: 'estetica', cat: 'Centro estetico', url: '/demo/estetica' },
+  { k: 'dentista', cat: 'Studio dentistico', url: '/demo/dentista' },
+  { k: 'sushi', cat: 'Ristorante', url: '/demo/sushi' },
+];
+const steps = [
+  { n: '1', t: 'Ci racconti l’attività', d: 'Una chiacchierata, anche su WhatsApp: chi sei, cosa offri, quali clienti vuoi.' },
+  { n: '2', t: 'Ti facciamo la bozza, gratis', d: 'Prepariamo una prima versione su misura. Decidi solo se ti piace.' },
+  { n: '3', t: 'Online in ~7 giorni', d: 'Pubblichiamo, configuriamo Google e ti spieghiamo tutto. Al resto pensiamo noi.' },
+];
+const faq = [
+  { q: 'Quanto costa?', a: 'Si parte da €390 una tantum, più €29/mese per hosting, dominio, SSL e assistenza. La prima bozza è gratis e ti diciamo tutto prima: nessuna sorpresa. (Prezzi IVA esclusa.)' },
+  { q: 'In quanto tempo è pronto?', a: 'In media circa 7 giorni lavorativi da quando abbiamo foto e testi — e con quelli ti diamo una mano noi.' },
+  { q: 'Devo avere già foto e testi?', a: 'No. Se non li hai, scriviamo noi i testi e possiamo organizzare le foto. Si parte anche solo da una chiacchierata.' },
+  { q: 'Cosa è incluso?', a: 'Sito veloce e mobile, scheda Google e SEO locale, contatto WhatsApp, HTTPS e backup. Per i clienti DYPA, scheda Google Business + SEO locale sono incluse (valore €210).' },
+];
 ---
 <Layout
   title="Clienti DYPA — il tuo sito professionale | Mole Digitale"
@@ -19,7 +41,7 @@ const benefits = [
     <!-- Barra co-branding -->
     <div class="dy-cobrand" data-reveal>
       <div class="dy-logo dy-logo-dypa">
-        <img src="/img/partner/dypa-logo.svg" alt="DYPA Professional"
+        <img src="/img/partner/dypa-logo-rettangolo.jpeg" alt="DYPA Professional"
              onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
         <span class="dy-logo-ph">DYPA</span>
       </div>
@@ -37,11 +59,19 @@ const benefits = [
         <b>Mole Digitale</b>
       </div>
     </div>
+    <p class="dy-cobrand-note" data-reveal>Una convenzione dedicata ai clienti DYPA</p>
 
     <div class="section-head" data-reveal>
       <span class="kicker">Riservato ai clienti DYPA</span>
       <h1>La tua attività online. <span class="grad">Finalmente come si deve.</span></h1>
       <p class="section-lead">DYPA e Mole Digitale insieme: un sito web professionale per la tua attività, a <b>condizioni riservate ai clienti DYPA</b>. Veloce, bello e fatto con cura — qui a Torino.</p>
+    </div>
+
+    <!-- Numeri / fiducia -->
+    <div class="dy-stats" data-reveal>
+      {stats.map((s) => (
+        <div class="dy-stat"><b>{s.n}</b><span>{s.l}</span></div>
+      ))}
     </div>
 
     <div class="land-points">
@@ -53,13 +83,42 @@ const benefits = [
       ))}
     </div>
 
+    <!-- Esempi reali -->
+    <div class="dy-demos-head" data-reveal>
+      <h2>Ecco alcuni siti che <span class="grad">facciamo</span>.</h2>
+      <a href="/demo" class="dy-demos-all">Vedi tutti gli esempi →</a>
+    </div>
+    <div class="dy-demos" data-reveal>
+      {demos.map((d) => (
+        <a class="dy-demo" href={d.url}>
+          <img src={`/img/thumbs/${d.k}.webp`} alt={`Esempio sito ${d.cat}`} loading="lazy" width="760" height="475" />
+          <span>{d.cat} <i>· apri →</i></span>
+        </a>
+      ))}
+    </div>
+
+    <!-- Come funziona -->
+    <div class="dy-steps-head" data-reveal><span class="kicker">Come funziona</span><h2>Dalla chiacchierata <span class="grad">al sito online</span>.</h2></div>
+    <div class="dy-steps" data-reveal>
+      {steps.map((s) => (
+        <article class="dy-step"><span class="dy-step-n">{s.n}</span><h3>{s.t}</h3><p>{s.d}</p></article>
+      ))}
+    </div>
+
     <!-- RIQUADRO OFFERTA -->
     <div class="dy-offer" data-reveal>
       <span class="dy-offer-tag">🎁 Riservato ai clienti DYPA</span>
       <h2>Prima bozza <span class="grad">gratis</span>. Nessun anticipo.</h2>
       <p>Sito pronto in circa 7 giorni lavorativi. Ti mostriamo prima una bozza su misura per la tua attività: decidi solo se ti piace.</p>
-      {/* ▼▼ Incentivo dedicato. Per cambiarlo edita questa riga (es. "–15% sulla creazione"). ▼▼ */}
       <p class="dy-offer-extra"><b>Vantaggio DYPA:</b> scheda Google Business e SEO locale <b>incluse</b> <i>(valore €210)</i>.</p>
+    </div>
+
+    <!-- FAQ -->
+    <div class="dy-faq-head" data-reveal><span class="kicker">Domande frequenti</span><h2>Le risposte, <span class="grad">subito</span>.</h2></div>
+    <div class="dy-faq" data-reveal>
+      {faq.map((f) => (
+        <details class="dy-q"><summary>{f.q}</summary><p>{f.a}</p></details>
+      ))}
     </div>
 
     <div class="cta-card glass" data-reveal style="margin-top:2.5rem; text-align:center; display:block;">
@@ -81,26 +140,68 @@ const benefits = [
   </section>
 
   <style>
-    .dy-cobrand { display:flex; align-items:center; justify-content:center; gap:1.4rem; flex-wrap:wrap; margin:0 auto 2.5rem; padding:1rem 1.4rem; max-width:620px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); }
+    .dy-cobrand { display:flex; align-items:center; justify-content:center; gap:1.4rem; flex-wrap:wrap; margin:0 auto .8rem; padding:1rem 1.4rem; max-width:620px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); }
     .dy-cobrand-x { color:var(--muted); font-size:.85rem; white-space:nowrap; }
+    .dy-cobrand-note { text-align:center; color:var(--muted); font-size:.9rem; margin:0 0 .5rem; }
     .dy-logo { display:flex; align-items:center; gap:.6rem; }
     .dy-logo-mole b { font-family:'Space Grotesk Variable','Space Grotesk'; font-size:1.15rem; }
     .dy-logo-dypa { background:#fff; border-radius:10px; padding:7px 14px; }
     .dy-logo-dypa img { height:42px; width:auto; display:block; }
     .dy-logo-ph { display:none; align-items:center; justify-content:center; min-width:90px; height:48px; padding:0 1rem; border:2px solid var(--c1); border-radius:8px; font-family:'Space Grotesk Variable','Space Grotesk'; font-weight:700; font-size:1.4rem; letter-spacing:.04em; color:var(--c1); }
 
-    .land-points { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
+    /* numeri */
+    .dy-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; max-width:760px; margin:2rem auto 0; }
+    .dy-stat { text-align:center; padding:1rem .6rem; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); }
+    .dy-stat b { display:block; font-family:'Space Grotesk Variable','Space Grotesk'; font-size:clamp(1.15rem,2.6vw,1.6rem); background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .dy-stat span { color:var(--muted); font-size:.82rem; }
 
-    .dy-offer { max-width:760px; margin:3rem auto 0; text-align:center; padding:clamp(1.6rem,4vw,2.6rem); border-radius:var(--radius); background:linear-gradient(150deg, color-mix(in srgb, var(--c1) 16%, transparent), color-mix(in srgb, var(--c2) 10%, transparent)); border:1px solid color-mix(in srgb, var(--c1) 35%, var(--border)); }
+    .land-points { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; margin-top:2.5rem; }
+
+    /* esempi */
+    .dy-demos-head { display:flex; align-items:baseline; justify-content:space-between; gap:1rem; flex-wrap:wrap; max-width:1080px; margin:3.5rem auto 1.2rem; }
+    .dy-demos-head h2 { font-size:clamp(1.5rem,3.5vw,2.2rem); }
+    .dy-demos-all { color:var(--c1); font-weight:600; white-space:nowrap; }
+    .dy-demos { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; max-width:1080px; margin:0 auto; }
+    .dy-demo { display:block; border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; background:var(--surface); transition:transform .3s, box-shadow .3s; }
+    .dy-demo:hover { transform:translateY(-5px); box-shadow:0 24px 48px -28px rgba(124,92,255,.55); }
+    .dy-demo img { width:100%; aspect-ratio:16/10; object-fit:cover; object-position:top; display:block; }
+    .dy-demo span { display:block; padding:.7rem .9rem; font-weight:600; font-size:.9rem; }
+    .dy-demo i { color:var(--muted); font-style:normal; font-weight:400; }
+
+    /* come funziona */
+    .dy-steps-head { text-align:center; max-width:680px; margin:3.5rem auto 1.4rem; }
+    .dy-steps-head h2 { font-size:clamp(1.5rem,3.5vw,2.2rem); margin-top:.4rem; }
+    .dy-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; max-width:1000px; margin:0 auto; }
+    .dy-step { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:1.6rem 1.4rem; }
+    .dy-step-n { display:inline-grid; place-items:center; width:38px; height:38px; border-radius:50%; background:var(--grad); color:#fff; font-family:'Space Grotesk Variable','Space Grotesk'; font-weight:700; margin-bottom:.7rem; }
+    .dy-step h3 { font-size:1.15rem; margin-bottom:.35rem; }
+    .dy-step p { color:var(--muted); font-size:.95rem; }
+
+    .dy-offer { max-width:760px; margin:3.5rem auto 0; text-align:center; padding:clamp(1.6rem,4vw,2.6rem); border-radius:var(--radius); background:linear-gradient(150deg, color-mix(in srgb, var(--c1) 16%, transparent), color-mix(in srgb, var(--c2) 10%, transparent)); border:1px solid color-mix(in srgb, var(--c1) 35%, var(--border)); }
     .dy-offer-tag { display:inline-block; font-family:'Space Grotesk Variable','Space Grotesk'; font-weight:600; font-size:.82rem; letter-spacing:.04em; background:var(--surface); border:1px solid var(--border); padding:.35rem .9rem; border-radius:999px; margin-bottom:1rem; }
     .dy-offer h2 { font-size:clamp(1.6rem,4vw,2.4rem); margin-bottom:.7rem; }
     .dy-offer p { color:var(--muted); }
     .dy-offer-extra { margin-top:1rem; color:var(--text,#f3f3f7) !important; font-size:1.05rem; }
     .dy-offer-extra b { color:var(--c1); }
 
+    /* faq */
+    .dy-faq-head { text-align:center; max-width:680px; margin:3.5rem auto 1.4rem; }
+    .dy-faq-head h2 { font-size:clamp(1.5rem,3.5vw,2.2rem); margin-top:.4rem; }
+    .dy-faq { max-width:760px; margin:0 auto; display:grid; gap:.7rem; }
+    .dy-q { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:.4rem .2rem; }
+    .dy-q summary { cursor:pointer; padding:.8rem 1.1rem; font-weight:600; font-family:'Space Grotesk Variable','Space Grotesk'; list-style:none; }
+    .dy-q summary::-webkit-details-marker { display:none; }
+    .dy-q summary::after { content:'+'; float:right; color:var(--c1); font-weight:700; }
+    .dy-q[open] summary::after { content:'–'; }
+    .dy-q p { color:var(--muted); padding:0 1.1rem 1rem; margin:0; }
+
     .dy-dl { text-align:center; margin-top:1.6rem; font-size:.92rem; color:var(--muted); }
     .dy-dl a { color:var(--c1); font-weight:600; }
     .dy-dl span { margin:0 .5rem; opacity:.5; }
-    @media (max-width:780px){ .land-points { grid-template-columns:1fr; } }
+
+    @media (max-width:780px){
+      .dy-stats { grid-template-columns:1fr 1fr; }
+      .land-points, .dy-demos, .dy-steps { grid-template-columns:1fr; }
+    }
   </style>
 </Layout>
