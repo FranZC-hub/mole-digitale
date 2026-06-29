@@ -6,13 +6,12 @@
 <meta name="robots" content="noindex" />
 <title>Volantino — DYPA × Mole Digitale</title>
 <style>
-  /* ====== Volantino A5 verticale, pronto per stampa / PDF ======
-     Stampa: apri nel browser → Ctrl/Cmd + P → "Salva come PDF" → formato A5.
-     Logo DYPA: /img/partner/dypa-logo.svg (ricreato vettoriale). Per usare l'ufficiale,
-     sostituisci quel file mantenendo lo stesso nome. */
+  /* ====== Volantino A5 verticale (148×210mm), UNA pagina, pronto per stampa / PDF ======
+     Stampa: apri nel browser → Ctrl/Cmd + P → "Salva come PDF" → formato A5, margini Nessuno.
+     Logo DYPA: /img/partner/dypa-logo.svg (ricreato vettoriale: per l'ufficiale, sostituisci quel file). */
   :root{
     --dypa:#2b4a9a; --dypa-d:#1f376f; --dypa-l:#3f63bd;
-    --ink:#1a2230; --muted:#5a6576; --line:#e3e7ef; --bg:#eef1f6; --accent:#1fb0d6;
+    --ink:#1a2230; --muted:#5a6576; --line:#e3e7ef; --accent:#1fb0d6;
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{background:#dfe3ea;font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
@@ -20,66 +19,60 @@
     width:148mm;height:210mm;margin:18px auto;background:#fff;position:relative;overflow:hidden;
     box-shadow:0 24px 60px -22px rgba(20,30,60,.45);display:flex;flex-direction:column;
   }
-  /* watermark D di sfondo */
-  .wm{position:absolute;right:-26mm;bottom:-30mm;width:120mm;height:120mm;opacity:.05;pointer-events:none}
-  .wm rect{fill:var(--dypa)}
-  /* fascia superiore */
-  .topbar{height:7mm;background:linear-gradient(90deg,var(--dypa),var(--accent));flex:none}
-
-  .pad{padding:9mm 11mm}
+  .wm{position:absolute;right:-22mm;bottom:-24mm;width:100mm;height:100mm;opacity:.05;pointer-events:none}
+  .topbar{height:5mm;background:linear-gradient(90deg,var(--dypa),var(--accent));flex:none}
+  .pad{padding:5mm 10mm 5.5mm;display:flex;flex-direction:column;flex:1;position:relative;z-index:1}
 
   /* co-branding */
-  .cobrand{display:flex;align-items:center;gap:5mm;padding-bottom:6mm;border-bottom:1px solid var(--line)}
-  .cobrand img.dypa{height:16mm;width:auto;display:block}
-  .cobrand .x{font-size:9.5px;color:var(--muted);text-align:center;line-height:1.3}
+  .cobrand{display:flex;align-items:center;gap:5mm;padding-bottom:3.8mm;border-bottom:1px solid var(--line)}
+  .cobrand img.dypa{height:11mm;width:auto;display:block}
+  .cobrand .x{font-size:8.5px;color:var(--muted);text-align:center;line-height:1.3}
   .cobrand .mole{display:flex;align-items:center;gap:6px;margin-left:auto}
-  .cobrand .mole b{font-size:14px;font-weight:700;color:var(--dypa);white-space:nowrap}
+  .cobrand .mole b{font-size:13px;font-weight:700;color:var(--dypa);white-space:nowrap}
 
   /* hero */
-  .hero{padding-top:6mm}
-  .eyebrow{display:inline-block;background:var(--dypa);color:#fff;font-weight:700;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border-radius:999px}
-  h1{font-size:31px;line-height:1.06;color:var(--dypa);font-weight:800;letter-spacing:-.01em;margin:4mm 0 3mm}
+  .hero{padding-top:3.5mm}
+  .eyebrow{display:inline-block;background:var(--dypa);color:#fff;font-weight:700;font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:999px}
+  h1{font-size:24px;line-height:1.04;color:var(--dypa);font-weight:800;letter-spacing:-.01em;margin:2.6mm 0 2mm}
   h1 .hi{color:var(--ink)}
-  .sub{font-size:13px;line-height:1.5;color:var(--muted);max-width:108mm}
+  .sub{font-size:11.5px;line-height:1.42;color:var(--muted);max-width:112mm}
   .sub b{color:var(--ink)}
 
-  /* riga vantaggi + mockup */
-  .mid{display:flex;gap:6mm;align-items:center;margin-top:6mm}
-  .benes{list-style:none;display:grid;gap:3.2mm;flex:1}
-  .benes li{display:flex;gap:8px;align-items:flex-start;font-size:12px;line-height:1.3}
-  .benes .ck{flex:none;width:19px;height:19px;border-radius:50%;background:var(--dypa);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;margin-top:1px}
-  .benes b{color:var(--ink)}.benes span{color:var(--muted)}
-  /* mockup sito */
-  .mock{flex:none;width:42mm}
-  .mock .win{border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:0 10px 22px -12px rgba(20,30,60,.45)}
-  .mock .bar{height:7mm;background:#f3f5f9;display:flex;align-items:center;gap:3px;padding:0 6px;border-bottom:1px solid var(--line)}
-  .mock .bar i{width:6px;height:6px;border-radius:50%;background:#cdd4e0;display:block}
+  /* vantaggi + mockup */
+  .mid{display:flex;gap:5mm;align-items:center;margin-top:3.6mm}
+  .benes{list-style:none;display:grid;gap:2.2mm;flex:1}
+  .benes li{display:flex;gap:7px;align-items:flex-start;font-size:11px;line-height:1.25}
+  .benes .ck{flex:none;width:17px;height:17px;border-radius:50%;background:var(--dypa);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;margin-top:1px}
+  .benes b{color:var(--ink)}.benes em{font-style:normal;color:var(--muted)}
+  .mock{flex:none;width:36mm}
+  .mock .win{border:1px solid var(--line);border-radius:7px;overflow:hidden;box-shadow:0 8px 18px -10px rgba(20,30,60,.45)}
+  .mock .bar{height:5.5mm;background:#f3f5f9;display:flex;align-items:center;gap:3px;padding:0 6px;border-bottom:1px solid var(--line)}
+  .mock .bar i{width:5px;height:5px;border-radius:50%;background:#cdd4e0;display:block}
   .mock .scr{background:#fff;padding:5px}
-  .mock .h{height:12mm;border-radius:5px;background:linear-gradient(120deg,var(--dypa),var(--dypa-l))}
-  .mock .l{height:3px;border-radius:3px;background:#e1e6ef;margin-top:5px}
+  .mock .h{height:10mm;border-radius:4px;background:linear-gradient(120deg,var(--dypa),var(--dypa-l))}
+  .mock .l{height:3px;border-radius:3px;background:#e1e6ef;margin-top:4px}
   .mock .l.s{width:60%}
-  .mock .btn{height:6mm;width:55%;border-radius:5px;background:var(--accent);margin-top:6px}
+  .mock .btn{height:4.5mm;width:55%;border-radius:4px;background:var(--accent);margin-top:5px}
 
-  /* ribbon offerta */
-  .offer{position:relative;margin:6mm 0 0;background:linear-gradient(135deg,var(--dypa),var(--dypa-d));color:#fff;border-radius:11px;padding:5mm 6mm;overflow:hidden}
-  .offer::after{content:'%';position:absolute;right:-4mm;top:-8mm;font-size:54mm;font-weight:800;opacity:.07;line-height:1}
-  .offer .tag{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;opacity:.92}
-  .offer .h{font-size:18px;font-weight:800;margin:2mm 0 1.5mm}
-  .offer .p{font-size:11px;line-height:1.45;opacity:.92}
-  .offer .perk{display:inline-block;margin-top:3mm;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:2.5mm 3.5mm;font-size:12px}
+  /* offerta */
+  .offer{position:relative;margin-top:3.6mm;background:linear-gradient(135deg,var(--dypa),var(--dypa-d));color:#fff;border-radius:10px;padding:3.4mm 5mm;overflow:hidden}
+  .offer::after{content:'%';position:absolute;right:-3mm;top:-9mm;font-size:42mm;font-weight:800;opacity:.08;line-height:1}
+  .offer .tag{font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;opacity:.92}
+  .offer .h{font-size:15px;font-weight:800;margin:1.2mm 0 1mm}
+  .offer .p{font-size:10px;line-height:1.38;opacity:.92;max-width:106mm}
+  .offer .perk{display:inline-block;margin-top:2mm;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:7px;padding:1.8mm 3mm;font-size:11px}
   .offer .perk b{color:#bfe9f6}
 
   /* footer */
   .foot{margin-top:auto}
-  .foot-in{display:flex;align-items:center;gap:6mm;border-top:1px solid var(--line);padding-top:5mm}
-  .qr{flex:none;width:28mm;height:28mm;border:1px solid var(--line);border-radius:8px;padding:2mm;background:#fff}
+  .foot-in{display:flex;align-items:center;gap:5mm;border-top:1px solid var(--line);padding-top:3.6mm}
+  .qr{flex:none;width:24mm;height:24mm;border:1px solid var(--line);border-radius:7px;padding:1.6mm;background:#fff}
   .qr img{width:100%;height:100%;display:block}
-  .foot-tx{font-size:12px;line-height:1.55}
-  .foot-tx .big{font-size:14.5px;font-weight:800;color:var(--dypa);display:block;margin-bottom:1.5mm}
+  .foot-tx{font-size:11px;line-height:1.45}
+  .foot-tx .big{font-size:13.5px;font-weight:800;color:var(--dypa);display:block;margin-bottom:1mm}
   .foot-tx .row{display:block;color:var(--ink)}
   .foot-tx .row b{color:var(--dypa)}
-  .stars{color:#f4b400;letter-spacing:1px;font-size:11px}
-  .stars i{font-style:normal;color:var(--muted)}
+  .foot-tx .star{color:#f4b400;letter-spacing:1px}
 
   .print-btn{position:fixed;top:14px;right:14px;background:var(--dypa);color:#fff;border:0;border-radius:8px;padding:10px 16px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 8px 20px -8px rgba(0,0,0,.5);z-index:10}
 
@@ -91,17 +84,17 @@
   <button class="print-btn" onclick="window.print()">🖨️ Stampa / Salva PDF</button>
 
   <div class="sheet">
-    <svg class="wm" viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88"/><path d="M22 22 H56 A28 28 0 0 1 56 78 H22 Z" fill="#fff"/></svg>
+    <svg class="wm" viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" fill="#2b4a9a"/><path d="M22 22 H56 A28 28 0 0 1 56 78 H22 Z" fill="#fff"/></svg>
 
     <div class="topbar"></div>
-    <div class="pad" style="display:flex;flex-direction:column;flex:1;position:relative;z-index:1">
+    <div class="pad">
 
       <!-- CO-BRANDING -->
       <div class="cobrand">
         <img class="dypa" src="img/partner/dypa-logo.svg" alt="DYPA Professional" />
         <div class="x">in<br/>collaborazione<br/>con</div>
         <div class="mole">
-          <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true">
             <defs><linearGradient id="mg" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0" stop-color="#2b4a9a"/><stop offset=".6" stop-color="#1fb0d6"/><stop offset="1" stop-color="#2b4a9a"/>
             </linearGradient></defs>
@@ -116,15 +109,15 @@
       <div class="hero">
         <span class="eyebrow">Riservato ai clienti DYPA</span>
         <h1>La tua attività online.<br/><span class="hi">Finalmente come si deve.</span></h1>
-        <p class="sub">Un sito web <b>professionale</b> per la tua attività, realizzato a Torino. Veloce, curato e fatto per portarti clienti — a <b>condizioni riservate ai clienti DYPA</b>.</p>
+        <p class="sub">Un sito web <b>professionale</b> per la tua attività, a <b>condizioni riservate ai clienti DYPA</b>. Veloce, curato e fatto per portarti clienti — qui a Torino.</p>
       </div>
 
       <!-- VANTAGGI + MOCKUP -->
       <div class="mid">
         <ul class="benes">
-          <li><span class="ck">✓</span><span><b>Veloce e perfetto da telefono</b><br/><span>ti trovano e ti scrivono in un tocco</span></span></li>
-          <li><span class="ck">✓</span><span><b>Primo su Google a Torino</b><br/><span>SEO locale e scheda Google incluse</span></span></li>
-          <li><span class="ck">✓</span><span><b>Prenotazioni e WhatsApp</b><br/><span>richieste e contatti diretti dal sito</span></span></li>
+          <li><span class="ck">✓</span><span><b>Veloce e perfetto da telefono</b><br/><em>ti trovano e ti scrivono in un tocco</em></span></li>
+          <li><span class="ck">✓</span><span><b>Primo su Google a Torino</b><br/><em>SEO locale e scheda Google incluse</em></span></li>
+          <li><span class="ck">✓</span><span><b>Prenotazioni e WhatsApp</b><br/><em>richieste e contatti diretti dal sito</em></span></li>
         </ul>
         <div class="mock" aria-hidden="true">
           <div class="win">
@@ -149,9 +142,8 @@
           <div class="foot-tx">
             <span class="big">Inquadra il QR e scrivici 👆</span>
             <span class="row">📱 WhatsApp <b>366 210 2203</b></span>
-            <span class="row">🌐 <b>moledigitale.it/dypa</b></span>
-            <span class="row">✉️ info@moledigitale.it</span>
-            <span class="row stars">★★★★★ <i>· siti web a Torino</i></span>
+            <span class="row">🌐 <b>moledigitale.it/dypa</b> · ✉️ info@moledigitale.it</span>
+            <span class="row"><span class="star">★★★★★</span> siti web a Torino</span>
           </div>
         </div>
       </div>
