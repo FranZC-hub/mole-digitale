@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex" />
+<title>Volantino — DYPA × Mole Digitale</title>
+<style>
+  /* ===== Volantino A5 verticale, pronto per stampa / PDF =====
+     Per stampare: apri questo file nel browser → Ctrl/Cmd + P → "Salva come PDF" (formato A5).
+     Il logo DYPA viene caricato da /img/partner/dypa-logo.png: caricalo lì e apparirà al posto del segnaposto. */
+  :root{
+    --dypa:#2c4a9a; --dypa-d:#22326f; --ink:#1b2330; --muted:#5a6573;
+    --line:#dfe3ea; --bg:#f4f6fa; --accent:#22d3ee;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:#e7e9ee;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--ink)}
+  .sheet{
+    width:148mm;height:210mm;margin:18px auto;background:#fff;position:relative;overflow:hidden;
+    box-shadow:0 20px 50px -20px rgba(0,0,0,.4);display:flex;flex-direction:column;
+    padding:12mm 11mm;
+  }
+  /* fascia decorativa */
+  .sheet::before{content:'';position:absolute;top:0;left:0;right:0;height:6mm;background:linear-gradient(90deg,var(--dypa),var(--accent))}
+
+  /* co-branding */
+  .cobrand{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-bottom:7mm;border-bottom:1px solid var(--line)}
+  .logo{display:flex;align-items:center;gap:7px}
+  .logo-dypa img{max-height:18mm;width:auto;display:block}
+  .logo-ph{display:none;align-items:center;justify-content:center;height:15mm;padding:0 6mm;border:2.5px solid var(--dypa);border-radius:6px;color:var(--dypa);font-weight:800;font-size:28px;letter-spacing:.5px}
+  .cobrand-x{font-size:10px;color:var(--muted);text-align:center;flex:1}
+  .logo-mole b{font-size:15px;font-weight:700;color:var(--dypa)}
+
+  /* corpo */
+  .body{flex:1;display:flex;flex-direction:column;padding-top:7mm}
+  .eyebrow{display:inline-block;align-self:flex-start;background:var(--bg);color:var(--dypa);font-weight:700;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:5px 11px;border-radius:999px;margin-bottom:5mm}
+  h1{font-size:30px;line-height:1.08;color:var(--dypa);font-weight:800;margin-bottom:4mm}
+  h1 .hi{color:var(--ink)}
+  .sub{font-size:13.5px;line-height:1.5;color:var(--muted);margin-bottom:6mm}
+  .sub b{color:var(--ink)}
+
+  .benes{list-style:none;display:grid;gap:3.4mm;margin-bottom:6mm}
+  .benes li{display:flex;gap:9px;align-items:flex-start;font-size:13px;line-height:1.35}
+  .benes .ck{flex:none;width:20px;height:20px;border-radius:50%;background:var(--dypa);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:1px}
+  .benes b{color:var(--ink)}.benes span{color:var(--muted)}
+
+  /* offerta */
+  .offer{background:linear-gradient(150deg,var(--dypa),var(--dypa-d));color:#fff;border-radius:10px;padding:5mm 6mm;margin-bottom:6mm}
+  .offer-tag{font-size:11px;font-weight:700;letter-spacing:.04em;opacity:.9;text-transform:uppercase}
+  .offer-h{font-size:17px;font-weight:800;margin:2mm 0 1.5mm}
+  .offer-p{font-size:11.5px;line-height:1.45;opacity:.95}
+  .offer-extra{margin-top:2.5mm;padding-top:2.5mm;border-top:1px solid rgba(255,255,255,.25);font-size:12px}
+  .offer-extra b{color:var(--accent)}
+
+  /* cta + qr */
+  .cta{margin-top:auto;display:flex;align-items:center;gap:6mm;border-top:1px solid var(--line);padding-top:6mm}
+  .qr{flex:none;width:30mm;height:30mm;border:1px solid var(--line);border-radius:8px;padding:2mm;background:#fff}
+  .qr img{width:100%;height:100%;display:block}
+  .cta-tx{font-size:12.5px;line-height:1.5}
+  .cta-tx .big{font-size:15px;font-weight:800;color:var(--dypa);display:block;margin-bottom:1.5mm}
+  .cta-tx .row{color:var(--ink);display:block}
+  .cta-tx .row b{color:var(--dypa)}
+
+  /* pulsante stampa (solo a schermo) */
+  .print-btn{position:fixed;top:14px;right:14px;background:var(--dypa);color:#fff;border:0;border-radius:8px;padding:10px 16px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 8px 20px -8px rgba(0,0,0,.5);z-index:10}
+
+  @page{size:A5;margin:0}
+  @media print{
+    html,body{background:#fff}
+    .sheet{margin:0;box-shadow:none;width:148mm;height:210mm}
+    .print-btn{display:none}
+  }
+</style>
+</head>
+<body>
+  <button class="print-btn" onclick="window.print()">🖨️ Stampa / Salva PDF</button>
+
+  <div class="sheet">
+    <!-- CO-BRANDING -->
+    <div class="cobrand">
+      <div class="logo logo-dypa">
+        <img src="/img/partner/dypa-logo.png" alt="DYPA"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+        <span class="logo-ph">DYPA</span>
+      </div>
+      <span class="cobrand-x">in collaborazione con</span>
+      <div class="logo logo-mole">
+        <svg viewBox="0 0 24 24" width="42" height="42" aria-hidden="true">
+          <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#2c4a9a"/><stop offset=".6" stop-color="#22d3ee"/><stop offset="1" stop-color="#2c4a9a"/>
+          </linearGradient></defs>
+          <rect width="24" height="24" rx="7" fill="url(#g)"/>
+          <g fill="#fff">
+            <path d="M12 3.2l.55 5.6h-1.1z"/>
+            <path d="M11.6 8.8C9.8 9.9 9.3 11.6 10.2 12.9h3.6c.9-1.3.4-3-1.4-4.1z"/>
+            <rect x="10.2" y="12.6" width="3.6" height="4.9"/>
+            <path d="M8 17.3h8l.45 2.3H7.55z"/>
+          </g>
+        </svg>
+        <b>Mole Digitale</b>
+      </div>
+    </div>
+
+    <!-- CORPO -->
+    <div class="body">
+      <span class="eyebrow">Riservato ai clienti DYPA</span>
+      <h1>La tua attività online.<br/><span class="hi">Finalmente come si deve.</span></h1>
+      <p class="sub">DYPA e <b>Mole Digitale</b> insieme: un sito web professionale per la tua attività, a <b>condizioni riservate ai clienti DYPA</b>. Veloce, bello e fatto con cura — qui a Torino.</p>
+
+      <ul class="benes">
+        <li><span class="ck">✓</span><span><b>Veloce e perfetto da telefono</b> — i tuoi clienti ti trovano in un tocco</span></li>
+        <li><span class="ck">✓</span><span><b>Primo su Google a Torino</b> — SEO locale e scheda Google incluse</span></li>
+        <li><span class="ck">✓</span><span><b>Prenotazioni e WhatsApp</b> — contatti e richieste direttamente dal sito</span></li>
+      </ul>
+
+      <!-- OFFERTA -->
+      <div class="offer">
+        <div class="offer-tag">🎁 Riservato ai clienti DYPA</div>
+        <div class="offer-h">Prima bozza gratis. Nessun anticipo.</div>
+        <div class="offer-p">Sito pronto in circa 7 giorni. Ti mostriamo prima una bozza su misura: decidi solo se ti piace.</div>
+        <!-- ▼ MODIFICA QUI l'incentivo dedicato (sconto, setup gratuito, 1 mese hosting…). Rimuovi la riga se non serve. ▼ -->
+        <div class="offer-extra"><b>Vantaggio DYPA:</b> [inserisci qui l'offerta dedicata]</div>
+      </div>
+
+      <!-- CTA + QR -->
+      <div class="cta">
+        <div class="qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&qzone=1&data=https%3A%2F%2Fmoledigitale.it%2Fdypa" alt="QR code: moledigitale.it/dypa" />
+        </div>
+        <div class="cta-tx">
+          <span class="big">Inquadra il QR e scrivici 👆</span>
+          <span class="row">📱 WhatsApp <b>366 210 2203</b></span>
+          <span class="row">🌐 <b>moledigitale.it/dypa</b></span>
+          <span class="row">✉️ info@moledigitale.it</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
