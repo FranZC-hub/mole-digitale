@@ -189,6 +189,17 @@ const settori = {
     ],
     demoUrl: '/demo/sushi', demoName: 'Hashi',
   },
+  'siti-web-addestratori-cani-torino': {
+    kicker: 'Per addestratori ed educatori cinofili',
+    h1a: 'Siti web per', h1b: 'addestratori cani a Torino',
+    intro: "Un sito che trasmette fiducia ai proprietari: percorsi chiari, metodo gentile e lezione di prova in evidenza. Chi cerca un educatore per il proprio cane trova te.",
+    points: [
+      { h: 'Percorsi chiari', p: 'Cuccioli, educazione di base, problemi di comportamento: ognuno trova il suo.' },
+      { h: 'Lezione di prova', p: 'La prima lezione di prova in evidenza: il modo più facile per iniziare.' },
+      { h: 'Metodo e fiducia', p: 'Racconti il tuo approccio gentile: i proprietari scelgono di pancia.' },
+    ],
+    demoUrl: '/demo/addestratore', demoName: 'Coda Felice',
+  },
 };
 
 export function getStaticPaths() {
@@ -210,6 +221,7 @@ export function getStaticPaths() {
     'siti-web-veterinari-torino',
     'siti-web-lavanderie-torino',
     'siti-web-ristoranti-giapponesi-torino',
+    'siti-web-addestratori-cani-torino',
   ].map((settore) => ({ params: { settore } }));
 }
 
