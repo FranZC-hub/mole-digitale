@@ -291,7 +291,7 @@ if (form) {
     // Invio reale all'endpoint PHP /contact.php (PHPMailer + SMTP Aruba)
     const btn = form.querySelector('button[type="submit"]');
     const btnLabel = btn ? btn.innerHTML : '';
-    feedback.style.color = '#22d3ee';
+    feedback.classList.remove('ok', 'ko');
     feedback.textContent = 'Invio in corso…';
     if (btn) { btn.disabled = true; btn.setAttribute('aria-busy', 'true'); btn.innerHTML = '<span class="btn-spin" aria-hidden="true"></span> Invio…'; }
     try {
@@ -308,7 +308,7 @@ if (form) {
       });
       const out = await res.json().catch(() => ({}));
       if (res.ok && out.ok) {
-        feedback.style.color = '#22d3ee';
+        feedback.classList.add('ok');
         feedback.textContent = '✅ Grazie! Abbiamo ricevuto la tua richiesta: ti rispondiamo entro 24 ore.';
         try { if (window.clarity) window.clarity('event', 'form_inviato'); } catch (_) {}
         form.reset();
@@ -316,7 +316,7 @@ if (form) {
         throw new Error(out.error || 'Errore');
       }
     } catch (err) {
-      feedback.style.color = '#ff6b88';
+      feedback.classList.add('ko');
       feedback.textContent = '⚠️ Invio non riuscito. Riprova, oppure scrivici su WhatsApp qui sopra.';
     } finally {
       if (btn) { btn.disabled = false; btn.removeAttribute('aria-busy'); btn.innerHTML = btnLabel; }

@@ -315,8 +315,11 @@ function icon(n) {
     .wa-fab{position:fixed;right:18px;bottom:18px;z-index:160;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 30px -10px rgba(37,211,102,.7);transition:transform .2s var(--e)}
     .wa-fab:hover{transform:scale(1.08)}
 
-    .r{opacity:0;transform:translateY(22px);transition:opacity .7s var(--e),transform .7s var(--e)}
+    /* reveal "zen": espansione dolce come un respiro */
+    .r{opacity:0;transform:scale(.94);transition:opacity 1.05s ease,transform 1.05s cubic-bezier(.22,.61,.36,1)}
     .r.in{opacity:1;transform:none}
+    .msacc .r:nth-child(2){transition-delay:.09s}.msacc .r:nth-child(3){transition-delay:.18s}
+    .msacc .r:nth-child(4){transition-delay:.27s}.msacc .r:nth-child(5){transition-delay:.36s}.msacc .r:nth-child(6){transition-delay:.45s}
     @media (prefers-reduced-motion:reduce){.r{opacity:1;transform:none;transition:none}}
 
     @media (max-width:900px){

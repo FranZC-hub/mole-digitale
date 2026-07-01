@@ -300,7 +300,8 @@ const prodotti = [
     .wa-fab:hover{transform:scale(1.08)}
 
     /* reveal */
-    .r{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+    /* reveal "vetrina": comparsa a scala come un prodotto sullo scaffale */
+    .r{opacity:0;transform:scale(.92);transition:opacity .5s ease,transform .55s cubic-bezier(.3,1.35,.6,1)}
     .r.in{opacity:1;transform:none}
     @media (prefers-reduced-motion:reduce){.r{opacity:1;transform:none;transition:none}}
 

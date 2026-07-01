@@ -481,7 +481,8 @@ function icon(name) {
     .kwa:hover{transform:scale(1.08)}
 
     /* reveal */
-    .r{opacity:0;transform:translateY(24px);transition:opacity .7s var(--e),transform .7s var(--e)}
+    /* reveal "giocoso": saltello con molla (energia da cucciolo) */
+    .r{opacity:0;transform:translateY(26px) rotate(1.2deg);transition:opacity .5s ease,transform .62s cubic-bezier(.34,1.5,.64,1)}
     .r.in{opacity:1;transform:none}
     @media (prefers-reduced-motion:reduce){.r{opacity:1;transform:none;transition:none}.kdot{animation:none}}
 
