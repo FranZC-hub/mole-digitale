@@ -94,7 +94,7 @@ import Layout from '../layouts/Layout.astro';
         <ul class="prev-breakdown" id="prevBreak"></ul>
         <p class="prev-canone-line" id="prevCanone">+ <b>€29/mese + IVA</b> · hosting, dominio, SSL e assistenza</p>
         <p class="prev-note">Stima indicativa: la cifra definitiva te la confermiamo dopo una chiacchierata. Prima bozza gratis, nessun anticipo. Tutti i prezzi sono IVA esclusa.</p>
-        <a href="/#contatti" class="btn btn-primary btn-block btn-lg btn-magnetic">Richiedi questo preventivo →</a>
+        <a href="/#contatti" id="prevReq" class="btn btn-primary btn-block btn-lg btn-magnetic">Richiedi questo preventivo →</a>
         <a id="prevWa" href="https://wa.me/393662102203" target="_blank" rel="noopener" class="btn btn-ghost btn-block">Chiedi su WhatsApp</a>
       </aside>
     </div>
@@ -272,6 +272,15 @@ import Layout from '../layouts/Layout.astro';
         `• Extra: ${extras}\n` +
         `Possiamo sentirci?`;
       waEl.href = 'https://wa.me/393662102203?text=' + encodeURIComponent(msg);
+
+      // Il CTA "Richiedi questo preventivo" porta la configurazione nel form dei contatti
+      const reqEl = document.getElementById('prevReq');
+      if (reqEl) {
+        const summary =
+          `${meta.label} (~€${total}${isFrom ? ' da definire' : ''} + IVA) · ` +
+          `canone €${canone}/mese · extra: ${extras}`;
+        reqEl.href = '/?prev=' + encodeURIComponent(summary) + '#contatti';
+      }
     }
 
     // stepper pagine

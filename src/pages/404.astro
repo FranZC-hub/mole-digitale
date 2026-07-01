@@ -11,7 +11,14 @@ import Layout from '../layouts/Layout.astro';
       <p class="section-lead" style="max-width:480px; margin:0 auto 2rem;">
         Forse il link è vecchio o c'è un errore di battitura. Torniamo sulla strada giusta.
       </p>
-      <a href="/" class="btn btn-primary btn-magnetic btn-lg">← Torna alla home</a>
+      <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; margin-bottom:2rem;">
+        <a href="/" class="btn btn-primary btn-magnetic btn-lg">← Torna alla home</a>
+        <a href="/demo" class="btn btn-ghost btn-lg">Guarda gli esempi</a>
+        <a href="/preventivo" class="btn btn-ghost btn-lg">Calcola il preventivo</a>
+      </div>
+      <p style="color:var(--muted); font-size:.95rem;">
+        Cercavi qualcosa di preciso? <a href="https://wa.me/393662102203?text=Ciao!%20Cercavo%20una%20pagina%20sul%20sito%20ma%20non%20la%20trovo" target="_blank" rel="noopener" style="color:var(--c2); text-decoration:underline;">Scrivici su WhatsApp</a> e ti aiutiamo al volo.
+      </p>
     </div>
   </section>
 </Layout>

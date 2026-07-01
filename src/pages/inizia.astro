@@ -1,0 +1,108 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Brief guidato per i nuovi clienti: raccoglie le info che servono per partire
+// e le invia allo stesso endpoint del form contatti (/contact.php), impacchettate nel messaggio.
+---
+<Layout
+  title="Inizia da qui — raccontaci la tua attività | Mole Digitale"
+  description="Compila il brief in 2 minuti: chi sei, cosa fai e cosa ti serve. Con queste informazioni prepariamo la tua prima bozza gratuita in pochi giorni."
+>
+  <section class="section" style="padding-top:8rem;">
+    <div class="section-head" data-reveal>
+      <span class="kicker">Si parte</span>
+      <h1>Raccontaci la tua <span class="grad">attività</span>.</h1>
+      <p class="section-lead">2 minuti, niente di tecnico: con queste risposte prepariamo la tua <b>prima bozza gratuita</b>. Se una domanda non fa per te, saltala.</p>
+    </div>
+
+    <form class="brief glass" id="briefForm" data-reveal>
+      <fieldset>
+        <legend>1 · Chi sei</legend>
+        <div class="field"><input type="text" id="b-nome" name="nome" required placeholder=" " autocomplete="name" /><label for="b-nome">Il tuo nome *</label></div>
+        <div class="field"><input type="text" id="b-attivita" name="attivita" required placeholder=" " autocomplete="organization" /><label for="b-attivita">Nome dell’attività *</label></div>
+        <div class="field"><input type="text" id="b-telefono" name="telefono" required placeholder=" " autocomplete="tel" /><label for="b-telefono">Telefono o email *</label></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>2 · La tua attività</legend>
+        <div class="field"><input type="text" id="b-settore" placeholder=" " /><label for="b-settore">Che cosa fai? (es. ristorante, estetista…)</label></div>
+        <div class="field"><input type="text" id="b-zona" placeholder=" " /><label for="b-zona">Dove sei? (quartiere / città)</label></div>
+        <div class="field"><textarea id="b-punti" rows="2" placeholder=" "></textarea><label for="b-punti">Cosa ti rende diverso dai concorrenti?</label></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>3 · Il sito che vorresti</legend>
+        <p class="brief-sub">Cosa deve fare il sito? (scegli pure più di una)</p>
+        <div class="brief-checks">
+          <label><input type="checkbox" value="farmi trovare su Google" /> Farmi trovare su Google</label>
+          <label><input type="checkbox" value="ricevere prenotazioni" /> Ricevere prenotazioni</label>
+          <label><input type="checkbox" value="mostrare i miei lavori/prodotti" /> Mostrare lavori/prodotti</label>
+          <label><input type="checkbox" value="vendere online" /> Vendere online</label>
+          <label><input type="checkbox" value="ricevere richieste su WhatsApp" /> Richieste su WhatsApp</label>
+        </div>
+        <div class="field"><input type="text" id="b-esempi" placeholder=" " /><label for="b-esempi">Siti che ti piacciono? (anche dei concorrenti)</label></div>
+        <div class="field"><input type="text" id="b-materiale" placeholder=" " /><label for="b-materiale">Hai già logo / foto / testi? (sì, no, in parte)</label></div>
+      </fieldset>
+
+      <div class="hp" aria-hidden="true"><label>Non compilare<input type="text" name="website" tabindex="-1" autocomplete="off" /></label></div>
+
+      <label class="consent">
+        <input type="checkbox" id="b-privacy" required />
+        <span>Ho letto l'<a href="/privacy" target="_blank" rel="noopener">informativa privacy</a> e acconsento al trattamento dei miei dati per essere ricontattato.</span>
+      </label>
+
+      <button type="submit" class="btn btn-primary btn-lg btn-block btn-magnetic">Invia il brief — bozza gratis →</button>
+      <p class="form-feedback" id="briefFeedback" aria-live="polite"></p>
+      <p class="brief-note">Preferisci parlare? <a href="https://wa.me/393662102203?text=Ciao!%20Vorrei%20raccontarvi%20la%20mia%20attivit%C3%A0" target="_blank" rel="noopener">Scrivici su WhatsApp</a> e facciamo tutto a voce.</p>
+    </form>
+  </section>
+
+  <style>
+    .brief { max-width:680px; margin:0 auto; padding:clamp(1.6rem,4vw,2.5rem); display:flex; flex-direction:column; gap:1.5rem; }
+    .brief fieldset { border:1px solid var(--border); border-radius:var(--radius-sm); padding:1.2rem 1.3rem 1.4rem; display:flex; flex-direction:column; gap:1rem; min-inline-size:0; }
+    .brief legend { font-family:'Space Grotesk Variable','Space Grotesk'; font-weight:600; padding:0 .5rem; color:var(--c2); font-size:.95rem; }
+    .brief-sub { color:var(--muted); font-size:.92rem; }
+    .brief-checks { display:grid; grid-template-columns:1fr 1fr; gap:.6rem; }
+    .brief-checks label { display:flex; align-items:center; gap:.55rem; font-size:.95rem; color:var(--muted); cursor:pointer; }
+    .brief-checks input { width:18px; height:18px; accent-color:var(--c1); flex:none; cursor:pointer; }
+    .brief-note { text-align:center; color:var(--muted-2); font-size:.9rem; }
+    .brief-note a { color:var(--c2); text-decoration:underline; }
+    @media (max-width:560px) { .brief-checks { grid-template-columns:1fr; } }
+  </style>
+
+  <script>
+    const bf = document.getElementById('briefForm');
+    const bfb = document.getElementById('briefFeedback');
+    bf.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!document.getElementById('b-privacy').checked) { bfb.classList.add('ko'); bfb.textContent = 'Devi accettare la privacy per inviare.'; return; }
+      const v = (id) => document.getElementById(id).value.trim();
+      const checks = [...bf.querySelectorAll('.brief-checks input:checked')].map((c) => c.value).join(', ');
+      const messaggio =
+        `— BRIEF DAL SITO —\n` +
+        `Settore: ${v('b-settore') || '-'}\nZona: ${v('b-zona') || '-'}\n` +
+        `Punti di forza: ${v('b-punti') || '-'}\n` +
+        `Obiettivi: ${checks || '-'}\n` +
+        `Siti di riferimento: ${v('b-esempi') || '-'}\n` +
+        `Materiale pronto: ${v('b-materiale') || '-'}`;
+      const btn = bf.querySelector('button[type=submit]');
+      const label = btn.innerHTML;
+      btn.disabled = true; btn.setAttribute('aria-busy', 'true'); btn.innerHTML = '<span class="btn-spin" aria-hidden="true"></span> Invio…';
+      bfb.classList.remove('ok', 'ko'); bfb.textContent = 'Invio in corso…';
+      try {
+        const res = await fetch('/contact.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nome: v('b-nome'), attivita: v('b-attivita'), telefono: v('b-telefono'), messaggio, website: bf.website.value }),
+        });
+        const out = await res.json().catch(() => ({}));
+        if (res.ok && out.ok) { bfb.classList.add('ok'); bfb.textContent = '✅ Brief ricevuto! Ti ricontattiamo entro 24 ore con la prima proposta.'; bf.reset(); }
+        else throw new Error();
+      } catch {
+        bfb.classList.add('ko'); bfb.textContent = '⚠️ Invio non riuscito. Riprova, oppure scrivici su WhatsApp qui sotto.';
+      } finally {
+        btn.disabled = false; btn.removeAttribute('aria-busy'); btn.innerHTML = label;
+      }
+    });
+  </script>
+</Layout>

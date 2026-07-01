@@ -260,6 +260,11 @@ if (compare && after && handle) {
 const form = document.getElementById('contactForm');
 const feedback = document.getElementById('formFeedback');
 if (form) {
+  // Se si arriva dal preventivo (/?prev=...), precompila il messaggio con la configurazione scelta
+  const prevCfg = new URLSearchParams(location.search).get('prev');
+  if (prevCfg && form.messaggio && !form.messaggio.value) {
+    form.messaggio.value = 'Dal preventivo online: ' + prevCfg;
+  }
   const setError = (name, msg) => {
     const field = form[name];
     const errEl = document.getElementById('err-' + name);
