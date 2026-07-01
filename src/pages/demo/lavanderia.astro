@@ -119,6 +119,19 @@ function icon(n) {
       </table>
     </div>
     <p class="lvtable-note r">* Prezzi indicativi IVA inclusa. Sconti su carnet e per quantità.</p>
+
+    <!-- CALCOLATORE BUCATO (widget firma) -->
+    <div class="lvcalc r" id="lvCalc">
+      <div class="lvcalc-head"><h3>🧺 Prova il conto del tuo bucato</h3><p>Aggiungi i capi: il totale si aggiorna da solo.</p></div>
+      <div class="lvcalc-rows">
+        <div class="lvcalc-row" data-price="4.5"><span>Camicia <small>(lavaggio + stiro)</small></span><div class="lvstep"><button type="button" data-d="-1" aria-label="Togli">−</button><b>0</b><button type="button" data-d="1" aria-label="Aggiungi">+</button></div></div>
+        <div class="lvcalc-row" data-price="6"><span>Pantaloni</span><div class="lvstep"><button type="button" data-d="-1" aria-label="Togli">−</button><b>0</b><button type="button" data-d="1" aria-label="Aggiungi">+</button></div></div>
+        <div class="lvcalc-row" data-price="12"><span>Abito / completo</span><div class="lvstep"><button type="button" data-d="-1" aria-label="Togli">−</button><b>0</b><button type="button" data-d="1" aria-label="Aggiungi">+</button></div></div>
+        <div class="lvcalc-row" data-price="15"><span>Cappotto</span><div class="lvstep"><button type="button" data-d="-1" aria-label="Togli">−</button><b>0</b><button type="button" data-d="1" aria-label="Aggiungi">+</button></div></div>
+        <div class="lvcalc-row" data-price="18"><span>Piumone matrimoniale</span><div class="lvstep"><button type="button" data-d="-1" aria-label="Togli">−</button><b>0</b><button type="button" data-d="1" aria-label="Aggiungi">+</button></div></div>
+      </div>
+      <div class="lvcalc-tot"><span>Totale indicativo</span><b id="lvTot">0,00€</b><a href="#contatti" class="lvbtn lvbtn-solid">Prenota il ritiro →</a></div>
+    </div>
   </section>
 
   <!-- SERVIZI -->
@@ -292,6 +305,22 @@ function icon(n) {
     .lvfoot{max-width:1180px;margin:0 auto;padding:2rem clamp(1.2rem,5vw,3rem);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.88rem;border-top:1px solid var(--line)}
     .lvfoot b{color:var(--ink)}.lvfoot a{color:var(--blue-d)}
 
+    /* texture bolle di sapone */
+    body{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cg fill='none' stroke='%231f8fe0' stroke-opacity='0.05' stroke-width='1.5'%3E%3Ccircle cx='30' cy='36' r='12'/%3E%3Ccircle cx='104' cy='90' r='18'/%3E%3Ccircle cx='70' cy='120' r='7'/%3E%3Ccircle cx='120' cy='24' r='9'/%3E%3C/g%3E%3C/svg%3E")}
+    /* calcolatore bucato */
+    .lvcalc{max-width:640px;margin:2.5rem auto 0;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:clamp(1.4rem,3vw,2rem);box-shadow:var(--soft)}
+    .lvcalc-head h3{font-size:1.35rem;margin-bottom:.2rem}
+    .lvcalc-head p{color:var(--muted);font-size:.92rem;margin-bottom:1.2rem}
+    .lvcalc-rows{display:grid}
+    .lvcalc-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.75rem 0;border-top:1px solid var(--line)}
+    .lvcalc-row span{font-weight:600}.lvcalc-row small{color:var(--muted);font-weight:400}
+    .lvstep{display:flex;align-items:center;gap:.6rem}
+    .lvstep button{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--bg);font-size:1.2rem;font-weight:700;color:var(--blue-d);cursor:pointer;transition:background .2s,border-color .2s}
+    .lvstep button:hover{border-color:var(--blue);background:#fff}
+    .lvstep b{min-width:1.4rem;text-align:center;font-variant-numeric:tabular-nums}
+    .lvcalc-tot{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;border-top:2px solid var(--ink);margin-top:.4rem;padding-top:1rem}
+    .lvcalc-tot span{font-weight:700}
+    .lvcalc-tot b{font-size:1.7rem;color:var(--blue-d);font-variant-numeric:tabular-nums;margin-right:auto}
     .wa-fab{position:fixed;right:18px;bottom:18px;z-index:160;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 30px -10px rgba(37,211,102,.7);transition:transform .2s var(--e)}
     .wa-fab:hover{transform:scale(1.08)}
 
@@ -331,6 +360,20 @@ function icon(n) {
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { lvnav.classList.remove('lvopen'); lt.setAttribute('aria-expanded', 'false'); } });
     const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.1 });
     document.querySelectorAll('.r').forEach((el) => io.observe(el));
+    // Calcolatore bucato
+    const lvCalc = document.getElementById('lvCalc');
+    if (lvCalc) {
+      const upd = () => {
+        let tot = 0;
+        lvCalc.querySelectorAll('.lvcalc-row').forEach((r) => { tot += +r.dataset.price * +r.querySelector('b').textContent; });
+        document.getElementById('lvTot').textContent = tot.toFixed(2).replace('.', ',') + '€';
+      };
+      lvCalc.querySelectorAll('.lvstep button').forEach((b) => b.addEventListener('click', () => {
+        const n = b.parentElement.querySelector('b');
+        n.textContent = Math.max(0, Math.min(20, +n.textContent + +b.dataset.d));
+        upd();
+      }));
+    }
   </script>
 </body>
 </html>

@@ -109,6 +109,27 @@ function icon(n) {
     </div>
   </section>
 
+  <!-- TRIAGE (widget firma) -->
+  <section class="ansection antriage-sec" id="triage">
+    <div class="anhead anhead-c r"><span class="ankick2">Il tuo amico sta male?</span><h2>Capiamo insieme <span class="anmark">quanto è urgente</span></h2><p>Tocca il sintomo che vedi: ti diciamo subito cosa fare.</p></div>
+    <div class="antriage r" id="anTriage">
+      <div class="antriage-chips">
+        <button type="button" data-s="sangue">🩸 Ferita o sangue</button>
+        <button type="button" data-s="respiro">😮‍💨 Respira male</button>
+        <button type="button" data-s="vomito">🤢 Vomito ripetuto</button>
+        <button type="button" data-s="mangia">🍽 Non mangia da 24h+</button>
+        <button type="button" data-s="zoppica">🦴 Zoppica</button>
+        <button type="button" data-s="strano">🤔 È «strano», apatico</button>
+      </div>
+      <div class="antriage-res" hidden>
+        <div class="antriage-badge" id="anTriBadge"></div>
+        <p id="anTriD"></p>
+        <div class="antriage-cta" id="anTriCta"></div>
+        <p class="antriage-note">⚠️ Questo è solo un orientamento: nel dubbio, chiamaci sempre.</p>
+      </div>
+    </div>
+  </section>
+
   <!-- APPROCCIO -->
   <section class="ansection" id="approccio">
     <div class="anhead anhead-c r"><span class="ankick2">Il nostro approccio</span><h2>Cure da <span class="anmark">professionisti</span>, modi da amici</h2></div>
@@ -259,6 +280,22 @@ function icon(n) {
     .anfoot{max-width:1180px;margin:0 auto;padding:2rem clamp(1.2rem,5vw,3rem);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.88rem;border-top:1px solid var(--line)}
     .anfoot b{color:var(--ink);font-family:var(--disp)}.anfoot a{color:var(--teal-d)}
 
+    /* texture zampette in watermark */
+    body{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='%230e9aa7' fill-opacity='0.035'%3E%3Ccircle cx='24' cy='30' r='4'/%3E%3Ccircle cx='34' cy='22' r='4'/%3E%3Ccircle cx='44' cy='22' r='4'/%3E%3Ccircle cx='54' cy='30' r='4'/%3E%3Cellipse cx='39' cy='42' rx='10' ry='8'/%3E%3Ccircle cx='84' cy='90' r='4'/%3E%3Ccircle cx='94' cy='82' r='4'/%3E%3Ccircle cx='104' cy='82' r='4'/%3E%3Ccircle cx='114' cy='90' r='4'/%3E%3Cellipse cx='99' cy='102' rx='10' ry='8'/%3E%3C/g%3E%3C/svg%3E")}
+    /* triage */
+    .antriage{max-width:720px;margin:0 auto;text-align:center}
+    .antriage-chips{display:flex;gap:.7rem;flex-wrap:wrap;justify-content:center}
+    .antriage-chips button{font-family:var(--sans);font-size:.95rem;font-weight:700;padding:.85rem 1.1rem;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;transition:border-color .2s,transform .2s var(--e)}
+    .antriage-chips button:hover{border-color:var(--coral);transform:translateY(-2px)}
+    .antriage-chips button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+    .antriage-res{margin-top:1.5rem;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.7rem}
+    .antriage-badge{display:inline-block;font-weight:800;font-size:.95rem;padding:.5rem 1.1rem;border-radius:999px;margin-bottom:.8rem}
+    .antriage-badge.rosso{background:rgba(255,107,107,.15);color:var(--coral-d);border:1px solid var(--coral)}
+    .antriage-badge.giallo{background:rgba(232,163,61,.15);color:#a86a12;border:1px solid #e8a33d}
+    .antriage-badge.verde{background:rgba(14,154,167,.12);color:var(--teal-d);border:1px solid var(--teal)}
+    .antriage-res p{color:var(--muted);max-width:52ch;margin:0 auto 1rem}
+    .antriage-cta{display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;margin-bottom:.8rem}
+    .antriage-note{font-size:.8rem !important;color:var(--muted)}
     .wa-fab{position:fixed;right:18px;bottom:18px;z-index:160;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 30px -10px rgba(37,211,102,.7);transition:transform .2s var(--e)}
     .wa-fab:hover{transform:scale(1.08)}
 
@@ -297,6 +334,31 @@ function icon(n) {
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { annav.classList.remove('anopen'); at.setAttribute('aria-expanded', 'false'); } });
     const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.1 });
     document.querySelectorAll('.r').forEach((el) => io.observe(el));
+    // Triage sintomi
+    const ANT = {
+      sangue:  { l: 'rosso', b: '🔴 Urgente — chiamaci ORA', d: 'Ferite e sanguinamenti vanno visti subito: non aspettare e non medicare col fai-da-te.', cta: 'tel' },
+      respiro: { l: 'rosso', b: '🔴 Urgente — chiamaci ORA', d: 'Le difficoltà respiratorie sono sempre un’emergenza. Chiamaci mentre vieni: ci prepariamo.', cta: 'tel' },
+      vomito:  { l: 'giallo', b: '🟡 Da vedere presto', d: 'Vomito ripetuto in poche ore merita una visita in giornata, soprattutto se è abbattuto o non beve.', cta: 'both' },
+      mangia:  { l: 'giallo', b: '🟡 Da vedere presto', d: 'Un digiuno oltre le 24 ore non va ignorato, specie nei gatti. Prenota una visita a breve.', cta: 'both' },
+      zoppica: { l: 'verde', b: '🟢 Prenota con calma', d: 'Se zoppica ma mangia e gioca, di solito non è un’emergenza: fissiamo una visita nei prossimi giorni.', cta: 'book' },
+      strano:  { l: 'verde', b: '🟢 Teniamolo d’occhio', d: 'Apatia lieve può capitare. Se dura più di un giorno o peggiora, meglio una visita: scrivici.', cta: 'book' },
+    };
+    const anT = document.getElementById('anTriage');
+    if (anT) {
+      const res = anT.querySelector('.antriage-res'), badge = document.getElementById('anTriBadge'), cta = document.getElementById('anTriCta');
+      anT.querySelectorAll('.antriage-chips button').forEach((b) => b.addEventListener('click', () => {
+        anT.querySelectorAll('.antriage-chips button').forEach((o) => o.classList.toggle('on', o === b));
+        const r = ANT[b.dataset.s];
+        badge.className = 'antriage-badge ' + r.l; badge.textContent = r.b;
+        document.getElementById('anTriD').textContent = r.d;
+        cta.innerHTML = r.cta === 'tel'
+          ? '<a href="tel:+390110000000" class="anbtn anbtn-solid" style="background:var(--coral)">📞 Chiama subito</a>'
+          : r.cta === 'both'
+            ? '<a href="tel:+390110000000" class="anbtn anbtn-ghost">📞 Chiamaci</a><a href="#contatti" class="anbtn anbtn-solid">Prenota oggi →</a>'
+            : '<a href="#contatti" class="anbtn anbtn-solid">Prenota una visita →</a>';
+        res.hidden = false;
+      }));
+    }
   </script>
 </body>
 </html>

@@ -97,9 +97,14 @@ function icon(n) {
       </div>
       <p class="vghead-p r">Una selezione di mete amate dai nostri viaggiatori. Ognuna, ovviamente, è personalizzabile.</p>
     </div>
+    <div class="vgbudget r" id="vgBudget">
+      <label for="vgSlider">💰 Il tuo budget a persona: <b id="vgBudgetV">2.000€+</b></label>
+      <input type="range" id="vgSlider" min="600" max="2000" step="100" value="2000" />
+      <span class="vgbudget-n" id="vgBudgetN"></span>
+    </div>
     <div class="vgbento">
       {dest.map((d) => (
-        <a class={`vgdest r${d.big ? ' vgdest-big' : ''}`} href="#contatti" style={`background-image:url(${d.img})`}>
+        <a class={`vgdest r${d.big ? ' vgdest-big' : ''}`} href="#contatti" style={`background-image:url(${d.img})`} data-price={d.p.replace(/\D/g, '')}>
           <div class="vgdest-cap">
             <div><b>{d.n}</b><span>{d.s}</span></div>
             <span class="vgdest-p">{d.p}</span>
@@ -244,6 +249,14 @@ function icon(n) {
     .vgkick.light{color:#ffd9c2}
     .vghead h2,.vgtipi-head h2,.vgcta h2{font-size:clamp(1.9rem,4.6vw,3.2rem)}
 
+    /* budget slider */
+    .vgbudget{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;background:var(--bg2);border-radius:14px;padding:.9rem 1.2rem;margin-bottom:1.2rem}
+    .vgbudget label{font-weight:700;font-size:.95rem}
+    .vgbudget label b{color:var(--blue)}
+    .vgbudget input{flex:1;min-width:160px;accent-color:var(--orange);height:30px;cursor:pointer}
+    .vgbudget-n{font-size:.88rem;font-weight:600;color:var(--muted);white-space:nowrap}
+    .vgdest.vgdim{opacity:.28;filter:grayscale(.8);pointer-events:none}
+    .vgdest{transition:transform .3s var(--e),box-shadow .3s,opacity .35s,filter .35s}
     /* BENTO */
     .vgbento{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:clamp(140px,18vw,210px);gap:1rem}
     .vgdest{position:relative;border-radius:20px;overflow:hidden;display:flex;align-items:flex-end;padding:1.2rem;background-size:cover;background-position:center;color:#fff;min-width:0;transition:transform .3s var(--e),box-shadow .3s}
@@ -339,6 +352,19 @@ function icon(n) {
     document.addEventListener('click', (e) => { if (vgnav.classList.contains('vgopen') && !vgnav.contains(e.target)) { vgnav.classList.remove('vgopen'); vt.setAttribute('aria-expanded', 'false'); } });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { vgnav.classList.remove('vgopen'); vt.setAttribute('aria-expanded', 'false'); } });
     document.querySelectorAll('.vgpill').forEach((p) => p.addEventListener('click', () => { document.querySelectorAll('.vgpill').forEach((o) => o.removeAttribute('data-on')); p.setAttribute('data-on', '1'); }));
+    // Filtro budget sulle destinazioni
+    const vgS = document.getElementById('vgSlider');
+    if (vgS) {
+      const dests = [...document.querySelectorAll('.vgdest')];
+      const upd = () => {
+        const v = +vgS.value;
+        document.getElementById('vgBudgetV').textContent = v >= 2000 ? '2.000€+' : v.toLocaleString('it-IT') + '€';
+        let n = 0;
+        dests.forEach((d) => { const okB = v >= 2000 || +d.dataset.price <= v; d.classList.toggle('vgdim', !okB); if (okB) n++; });
+        document.getElementById('vgBudgetN').textContent = n === dests.length ? 'Tutte le mete' : `${n} mete nel tuo budget`;
+      };
+      vgS.addEventListener('input', upd); upd();
+    }
     const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.1 });
     document.querySelectorAll('.r').forEach((el) => io.observe(el));
   </script>

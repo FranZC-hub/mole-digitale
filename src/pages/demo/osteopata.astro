@@ -161,6 +161,36 @@ function icon(n) {
     </div>
   </section>
 
+  <!-- MAPPA DEL CORPO (widget firma) -->
+  <section class="ossection osmap-sec" id="mappa">
+    <div class="oshead oshead-c"><span class="oskick2 r">Dove ti fa male?</span><h2 class="r">Tocca il punto <span class="osmark">che ti preoccupa</span></h2><p class="oslead r">Ti diciamo cosa può essere e come lo trattiamo.</p></div>
+    <div class="osmap r" id="osMap">
+      <svg viewBox="0 0 120 260" class="osmap-body" aria-hidden="true">
+        <g fill="#cfdde6" stroke="#9db4c2" stroke-width="1.5">
+          <circle cx="60" cy="26" r="16"/>
+          <path d="M45 46 h30 l6 34 -6 60 4 70 h-14 l-4 -62 h-2 l-4 62 h-14 l4 -70 -6 -60 z"/>
+          <path d="M45 50 l-16 40 8 26 8 -22 M75 50 l16 40 -8 26 -8 -22"/>
+        </g>
+        <g class="osmap-spots">
+          <circle cx="60" cy="24" r="9" data-z="testa" tabindex="0" role="button" aria-label="Testa"/>
+          <circle cx="60" cy="54" r="9" data-z="collo" tabindex="0" role="button" aria-label="Collo e spalle"/>
+          <circle cx="60" cy="102" r="9" data-z="schiena" tabindex="0" role="button" aria-label="Schiena lombare"/>
+          <circle cx="60" cy="142" r="9" data-z="anca" tabindex="0" role="button" aria-label="Anca e bacino"/>
+          <circle cx="52" cy="196" r="9" data-z="ginocchio" tabindex="0" role="button" aria-label="Ginocchio"/>
+        </g>
+      </svg>
+      <div class="osmap-panel">
+        <div class="osmap-hint" id="osMapHint">👆 Tocca un punto sul corpo</div>
+        <div class="osmap-info" hidden>
+          <h3 id="osMapT"></h3>
+          <p id="osMapD"></p>
+          <p class="osmap-how"><b>Come lo trattiamo:</b> <span id="osMapH"></span></p>
+          <a href="#contatti" class="osbtn osbtn-solid">Prenota la valutazione →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- CONTATTI -->
   <section class="oscta" id="contatti">
     <div class="oscta-in r">
@@ -303,6 +333,21 @@ function icon(n) {
     .osfoot{max-width:1180px;margin:0 auto;padding:2rem clamp(1.2rem,5vw,3rem);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.88rem;border-top:1px solid var(--line)}
     .osfoot b{color:var(--ink)}.osfoot a{color:var(--slate)}
 
+    /* mappa del corpo */
+    .osmap-sec{background:var(--bg2);background-image:linear-gradient(rgba(52,96,122,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(52,96,122,.05) 1px,transparent 1px);background-size:28px 28px}
+    .osmap{max-width:760px;margin:0 auto;display:grid;grid-template-columns:200px 1fr;gap:clamp(1.4rem,4vw,2.5rem);align-items:center}
+    .osmap>*{min-width:0}
+    .osmap-body{width:100%;max-width:200px;margin:0 auto;display:block}
+    .osmap-spots circle{fill:rgba(207,155,92,.35);stroke:var(--sand-d);stroke-width:2;cursor:pointer;transition:fill .2s,r .2s}
+    .osmap-spots circle:hover,.osmap-spots circle:focus-visible{fill:var(--sand)}
+    .osmap-spots circle.on{fill:var(--slate);stroke:var(--slate-d)}
+    .osmap-panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.6rem;min-height:180px;display:grid;align-content:center}
+    .osmap-hint{color:var(--muted);text-align:center;font-weight:600}
+    .osmap-info h3{font-size:1.35rem;margin-bottom:.4rem}
+    .osmap-info p{color:var(--muted);font-size:.96rem;margin-bottom:.7rem}
+    .osmap-how b{color:var(--ink)}
+    .osmap-info .osbtn{margin-top:.4rem}
+    @media (max-width:640px){.osmap{grid-template-columns:1fr}.osmap-body{max-width:150px}}
     .wa-fab{position:fixed;right:18px;bottom:18px;z-index:160;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 30px -10px rgba(37,211,102,.7);transition:transform .2s var(--e)}
     .wa-fab:hover{transform:scale(1.08)}
 
@@ -342,6 +387,30 @@ function icon(n) {
     const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12 });
     document.querySelectorAll('.r').forEach((el) => io.observe(el));
     document.querySelectorAll('.osq').forEach((d) => d.addEventListener('toggle', () => { if (d.open) document.querySelectorAll('.osq').forEach((o) => { if (o !== d) o.open = false; }); }));
+    // Mappa del corpo interattiva
+    const OSZ = {
+      testa: { t: 'Mal di testa e cefalee', d: 'Spesso nascono da tensioni cervicali o della mandibola, non dalla testa stessa.', h: 'tecniche craniali dolci e lavoro sul tratto cervicale.' },
+      collo: { t: 'Collo e spalle', d: 'La zona dove postura, stress e ore al computer si fanno sentire per primi.', h: 'mobilizzazioni dolci e riequilibrio della muscolatura profonda.' },
+      schiena: { t: 'Schiena lombare', d: 'Lombalgia e sciatalgia: il motivo più frequente per cui si arriva da noi.', h: 'valutazione globale di bacino e appoggio, poi trattamento manuale mirato.' },
+      anca: { t: 'Anca e bacino', d: 'Un bacino non allineato può causare dolori anche lontano: schiena, ginocchio, piede.', h: 'riequilibrio del bacino e lavoro sulla catena muscolare posteriore.' },
+      ginocchio: { t: 'Ginocchio', d: 'Spesso il ginocchio «paga» per problemi di anca o appoggio del piede.', h: 'analisi dell’appoggio e trattamento dell’intera catena, non solo del punto dolente.' },
+    };
+    const osMap = document.getElementById('osMap');
+    if (osMap) {
+      const info = osMap.querySelector('.osmap-info'), hint = document.getElementById('osMapHint');
+      const pick = (c) => {
+        osMap.querySelectorAll('.osmap-spots circle').forEach((o) => o.classList.toggle('on', o === c));
+        const z = OSZ[c.dataset.z];
+        document.getElementById('osMapT').textContent = z.t;
+        document.getElementById('osMapD').textContent = z.d;
+        document.getElementById('osMapH').textContent = z.h;
+        hint.hidden = true; info.hidden = false;
+      };
+      osMap.querySelectorAll('.osmap-spots circle').forEach((c) => {
+        c.addEventListener('click', () => pick(c));
+        c.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(c); } });
+      });
+    }
   </script>
 </body>
 </html>

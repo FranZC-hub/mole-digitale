@@ -159,6 +159,27 @@ function icon(n) {
     </div>
   </section>
 
+  <!-- COME TI SENTI OGGI (widget firma) -->
+  <section class="mssection msmood-sec" id="mood">
+    <div class="mshead"><span class="mskick2 r">Il consiglio giusto</span><h2 class="r">Come ti senti <span class="msmark">oggi?</span></h2><p class="mslead r">Scegli come stai: ti suggeriamo il massaggio più adatto, adesso.</p></div>
+    <div class="msmood r" id="msMood">
+      <div class="msmood-chips">
+        <button type="button" data-m="stress">😮‍💨 Stressato</button>
+        <button type="button" data-m="collo">🪨 Collo e spalle di pietra</button>
+        <button type="button" data-m="sport">🏃 Dopo lo sport</button>
+        <button type="button" data-m="gambe">🦵 Gambe pesanti</button>
+        <button type="button" data-m="freddo">🥶 Infreddolito</button>
+        <button type="button" data-m="umore">🌧 Giù di corda</button>
+      </div>
+      <div class="msmood-res" hidden>
+        <span class="msmood-k">Per come ti senti, oggi ti serve</span>
+        <h3 id="msMoodT"></h3>
+        <p id="msMoodD"></p>
+        <div class="msmood-cta"><span id="msMoodM"></span><a href="#contatti" class="msbtn msbtn-solid">Prenotalo →</a></div>
+      </div>
+    </div>
+  </section>
+
   <!-- CONTATTI -->
   <section class="mscta" id="contatti">
     <div class="mscta-in r">
@@ -312,6 +333,18 @@ function icon(n) {
     .msfoot{max-width:1180px;margin:0 auto;padding:2rem clamp(1.2rem,5vw,3rem);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.88rem;border-top:1px solid var(--line)}
     .msfoot b{color:var(--ink);font-family:var(--serif)}.msfoot a{color:var(--clay-d)}
 
+    /* widget umore */
+    .msmood{max-width:720px;margin:0 auto;text-align:center}
+    .msmood-chips{display:flex;gap:.7rem;flex-wrap:wrap;justify-content:center}
+    .msmood-chips button{font-family:var(--sans);font-size:.98rem;font-weight:600;padding:.85rem 1.2rem;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;transition:border-color .2s,background .2s,transform .2s var(--e)}
+    .msmood-chips button:hover{border-color:var(--clay);transform:translateY(-2px)}
+    .msmood-chips button.on{background:var(--clay);border-color:var(--clay);color:#fff}
+    .msmood-res{margin-top:1.6rem;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:1.8rem;box-shadow:var(--soft)}
+    .msmood-k{display:inline-block;font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--sage);margin-bottom:.5rem}
+    .msmood-res h3{font-family:var(--serif);font-size:1.7rem;margin-bottom:.35rem}
+    .msmood-res p{color:var(--muted);max-width:48ch;margin:0 auto 1.1rem}
+    .msmood-cta{display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap}
+    .msmood-cta span{font-family:var(--serif);font-size:1.25rem;color:var(--clay-d)}
     .wa-fab{position:fixed;right:18px;bottom:18px;z-index:160;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 30px -10px rgba(37,211,102,.7);transition:transform .2s var(--e)}
     .wa-fab:hover{transform:scale(1.08)}
 
@@ -351,6 +384,32 @@ function icon(n) {
     document.querySelectorAll('.r').forEach((el) => io.observe(el));
     document.querySelectorAll('.msq').forEach((d) => d.addEventListener('toggle', () => { if (d.open) document.querySelectorAll('.msq').forEach((o) => { if (o !== d) o.open = false; }); }));
     document.querySelectorAll('.msitem').forEach((d) => d.addEventListener('toggle', () => { if (d.open) document.querySelectorAll('.msitem').forEach((o) => { if (o !== d) o.open = false; }); }));
+    // Widget "come ti senti oggi"
+    const MSM = {
+      stress: { t: 'Massaggio rilassante', d: 'Pressioni lente e avvolgenti che abbassano il volume dei pensieri. Respira: al resto pensiamo noi.', m: '50 min · 55€' },
+      collo:  { t: 'Decontratturante', d: 'Lavoro mirato su collo, spalle e schiena, dove lo stress si accumula. Uscirai più leggero di come sei entrato.', m: '50 min · 60€' },
+      sport:  { t: 'Massaggio sportivo', d: 'Scioglie i muscoli affaticati e accelera il recupero. Perfetto dopo corsa, palestra o partita.', m: '50 min · 65€' },
+      gambe:  { t: 'Linfodrenante', d: 'Manualità leggera che riattiva la circolazione: gambe subito più leggere e sgonfie.', m: '60 min · 65€' },
+      freddo: { t: 'Hot stone', d: 'Pietre laviche calde che sciolgono le tensioni in profondità. Il tepore che ti serve oggi.', m: '70 min · 75€' },
+      umore:  { t: 'Aromaterapico', d: 'Oli essenziali scelti sul tuo stato d’animo: il profumo giusto cambia la giornata.', m: '60 min · 70€' },
+    };
+    const msMood = document.getElementById('msMood');
+    if (msMood) {
+      const res = msMood.querySelector('.msmood-res');
+      msMood.querySelectorAll('.msmood-chips button').forEach((b) => b.addEventListener('click', () => {
+        msMood.querySelectorAll('.msmood-chips button').forEach((o) => o.classList.toggle('on', o === b));
+        const r = MSM[b.dataset.m];
+        document.getElementById('msMoodT').textContent = r.t;
+        document.getElementById('msMoodD').textContent = r.d;
+        document.getElementById('msMoodM').textContent = r.m;
+        res.hidden = false;
+      }));
+    }
+    // Parallax dolce sull'immagine hero (scroll experience zen)
+    if (matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+      const hImg = document.querySelector('.mshero-media img');
+      if (hImg) { hImg.style.willChange = 'transform'; addEventListener('scroll', () => { const y = scrollY; if (y < 900) hImg.style.transform = `translateY(${y * .12}px) scale(1.06)`; }, { passive: true }); }
+    }
   </script>
 </body>
 </html>

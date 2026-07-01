@@ -158,6 +158,44 @@ function icon(n) {
     </div>
   </section>
 
+  <!-- QUIZ PELLE (widget firma) -->
+  <section class="essection esquiz-sec" id="quiz">
+    <div class="eshead"><span class="eskick2 r">Il consiglio su misura</span><h2 class="r">Che pelle <span class="esmark">hai?</span></h2><p class="eslead r">Tre domande e ti diciamo il trattamento giusto per te.</p></div>
+    <div class="esquiz r" id="esQuiz">
+      <div class="esquiz-step" data-q="0">
+        <p class="esquiz-q">1 · Come senti la tua pelle di solito?</p>
+        <div class="esquiz-opts">
+          <button type="button" data-v="a">Secca, a volte «tira»</button>
+          <button type="button" data-v="b">Lucida sulla zona T</button>
+          <button type="button" data-v="c">Normale ma spenta</button>
+        </div>
+      </div>
+      <div class="esquiz-step" data-q="1" hidden>
+        <p class="esquiz-q">2 · Cosa ti dà più pensiero?</p>
+        <div class="esquiz-opts">
+          <button type="button" data-v="a">Prime rughe e tono</button>
+          <button type="button" data-v="b">Impurità e pori</button>
+          <button type="button" data-v="c">Stanchezza e colorito</button>
+        </div>
+      </div>
+      <div class="esquiz-step" data-q="2" hidden>
+        <p class="esquiz-q">3 · Quanto tempo vuoi dedicarti?</p>
+        <div class="esquiz-opts">
+          <button type="button" data-v="a">Circa mezz’ora</button>
+          <button type="button" data-v="b">Un’ora piena</button>
+          <button type="button" data-v="c">Un momento tutto per me</button>
+        </div>
+      </div>
+      <div class="esquiz-res" hidden>
+        <span class="esquiz-res-k">Il trattamento per te</span>
+        <h3 id="esQuizT"></h3>
+        <p id="esQuizD"></p>
+        <div class="esquiz-res-cta"><b id="esQuizP"></b><a href="#contatti" class="esbtn esbtn-solid">Prenotalo →</a><button type="button" class="esquiz-redo" id="esQuizRedo">Rifai il test</button></div>
+      </div>
+      <div class="esquiz-dots" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+    </div>
+  </section>
+
   <!-- CONTATTI -->
   <section class="escta" id="contatti">
     <div class="escta-in r">
@@ -197,7 +235,7 @@ function icon(n) {
     *{margin:0;padding:0;box-sizing:border-box}
     html{scroll-behavior:smooth;scroll-padding-top:84px;overflow-x:clip}
     @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-    body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.025'/%3E%3C/svg%3E")}
     img{display:block;max-width:100%}a{color:inherit;text-decoration:none}
     h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.08;letter-spacing:-.01em}
     .esmark{font-style:italic;color:var(--rose)}.esmark2{font-style:italic;color:#fff}
@@ -301,6 +339,21 @@ function icon(n) {
     .esfoot{max-width:1180px;margin:0 auto;padding:2rem clamp(1.2rem,5vw,3rem);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.88rem;border-top:1px solid var(--line)}
     .esfoot b{color:var(--ink);font-family:var(--serif)}.esfoot a{color:var(--rose-d)}
 
+    /* quiz pelle */
+    .esquiz{max-width:640px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:clamp(1.5rem,4vw,2.4rem);box-shadow:var(--soft);text-align:center}
+    .esquiz-q{font-family:var(--serif);font-size:1.35rem;margin-bottom:1.2rem}
+    .esquiz-opts{display:grid;gap:.7rem}
+    .esquiz-opts button{font-family:var(--sans);font-size:1rem;padding:.95rem 1.2rem;border-radius:14px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;transition:border-color .2s,background .2s,transform .2s var(--e)}
+    .esquiz-opts button:hover{border-color:var(--rose);background:rgba(201,138,125,.08);transform:translateY(-2px)}
+    .esquiz-res-k{display:inline-block;font-size:.78rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--bronze);margin-bottom:.6rem}
+    .esquiz-res h3{font-size:1.6rem;margin-bottom:.4rem}
+    .esquiz-res p{color:var(--muted);max-width:44ch;margin:0 auto 1.2rem}
+    .esquiz-res-cta{display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap}
+    .esquiz-res-cta b{font-family:var(--serif);font-size:1.4rem;color:var(--bronze)}
+    .esquiz-redo{background:none;border:0;color:var(--muted);font-size:.85rem;cursor:pointer;text-decoration:underline;padding:.5rem}
+    .esquiz-dots{display:flex;gap:.45rem;justify-content:center;margin-top:1.4rem}
+    .esquiz-dots i{width:8px;height:8px;border-radius:50%;background:var(--line);transition:background .3s}
+    .esquiz-dots i.on{background:var(--rose)}
     .wa-fab{position:fixed;right:18px;bottom:18px;z-index:160;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 30px -10px rgba(37,211,102,.7);transition:transform .2s var(--e)}
     .wa-fab:hover{transform:scale(1.08)}
 
@@ -338,6 +391,30 @@ function icon(n) {
     const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12 });
     document.querySelectorAll('.r').forEach((el) => io.observe(el));
     document.querySelectorAll('.esq').forEach((d) => d.addEventListener('toggle', () => { if (d.open) document.querySelectorAll('.esq').forEach((o) => { if (o !== d) o.open = false; }); }));
+    // Quiz pelle: la risposta più frequente decide il trattamento
+    const ESQ_RES = {
+      a: { t: 'Trattamento anti-età rigenerante', d: 'Idratazione profonda, radiofrequenza e massaggio lifting per tono e luminosità.', p: 'da 60€' },
+      b: { t: 'Pulizia viso professionale', d: 'Detersione profonda, vapore ed estrazione delicata: pelle pulita e pori affinati.', p: 'da 45€' },
+      c: { t: 'Ritual glow illuminante', d: 'Peeling dolce, maschera alla vitamina C e massaggio drenante per un colorito vivo.', p: 'da 55€' },
+    };
+    const esQuiz = document.getElementById('esQuiz');
+    if (esQuiz) {
+      const steps = [...esQuiz.querySelectorAll('.esquiz-step')], res = esQuiz.querySelector('.esquiz-res'), dots = [...esQuiz.querySelectorAll('.esquiz-dots i')];
+      let answers = [];
+      const show = (i) => { steps.forEach((s, j) => s.hidden = j !== i); res.hidden = i < 3; dots.forEach((d, j) => d.classList.toggle('on', j <= Math.min(i, 2))); };
+      esQuiz.querySelectorAll('.esquiz-opts button').forEach((b) => b.addEventListener('click', () => {
+        answers.push(b.dataset.v);
+        if (answers.length < 3) { show(answers.length); return; }
+        const count = { a: 0, b: 0, c: 0 }; answers.forEach((v) => count[v]++);
+        const top = Object.keys(count).sort((x, y) => count[y] - count[x])[0];
+        const r = ESQ_RES[top];
+        document.getElementById('esQuizT').textContent = r.t;
+        document.getElementById('esQuizD').textContent = r.d;
+        document.getElementById('esQuizP').textContent = r.p;
+        show(3);
+      }));
+      document.getElementById('esQuizRedo').addEventListener('click', () => { answers = []; show(0); });
+    }
   </script>
 </body>
 </html>

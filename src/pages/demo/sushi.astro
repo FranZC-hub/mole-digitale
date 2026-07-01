@@ -81,6 +81,12 @@ const reviews = [
   <!-- MENU -->
   <section class="susection" id="menu">
     <div class="suhead r"><span class="sukick2">Il menu</span><h2>Una carta che <span class="sumark">cambia col mare</span></h2><p>Una selezione dei nostri piatti. La disponibilità varia in base al pescato del giorno.</p></div>
+    <div class="sufilter r" id="suFilter" role="group" aria-label="Filtra il menu">
+      <button type="button" data-f="all" class="on">Tutto</button>
+      <button type="button" data-f="crudo">🐟 Crudo</button>
+      <button type="button" data-f="cotto">🔥 Cotto</button>
+      <button type="button" data-f="veggie">🥑 Veggie</button>
+    </div>
     <div class="sumenu">
       {menu.map((cat) => (
         <div class="sucat r">
@@ -99,6 +105,14 @@ const reviews = [
     </div>
     <p class="sumenu-note r">+ Antipasti, zuppe, tempura e dolci giapponesi nel menu completo in sala.</p>
   </section>
+
+  <!-- MARQUEE piatti -->
+  <div class="sumarq" aria-hidden="true">
+    <div class="sumarq-track">
+      <span>鮨 Nigiri ・ Uramaki ・ Sashimi ・ Omakase ・ Dragon roll ・ Tempura ・ 鮨 Nigiri ・ Uramaki ・ Sashimi ・ Omakase ・ Dragon roll ・ Tempura ・&nbsp;</span>
+      <span>鮨 Nigiri ・ Uramaki ・ Sashimi ・ Omakase ・ Dragon roll ・ Tempura ・ 鮨 Nigiri ・ Uramaki ・ Sashimi ・ Omakase ・ Dragon roll ・ Tempura ・&nbsp;</span>
+    </div>
+  </div>
 
   <!-- OMAKASE / FILOSOFIA -->
   <section class="suomakase" id="omakase">
@@ -182,7 +196,10 @@ const reviews = [
     .demo-flag{position:fixed;top:0;left:0;right:0;z-index:300;text-align:center;font-size:.8rem;padding:.4rem;background:rgba(20,17,16,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);color:var(--muted)}
     .demo-flag b{color:var(--red-l)}
 
-    .sunav{position:fixed;top:27px;left:0;right:0;z-index:200;display:flex;align-items:center;gap:1.2rem;padding:.85rem clamp(1rem,4vw,2.6rem);transition:background .35s var(--e),box-shadow .35s}
+    /* nav immersiva: nascosta sull'hero, scende dopo (esperienza teatrale) */
+    .sunav{position:fixed;top:27px;left:0;right:0;z-index:200;display:flex;align-items:center;gap:1.2rem;padding:.85rem clamp(1rem,4vw,2.6rem);transition:background .35s var(--e),box-shadow .35s,transform .45s var(--e),opacity .35s;transform:translateY(-130%);opacity:0}
+    .sunav.vis{transform:none;opacity:1}
+    @media (prefers-reduced-motion:reduce){.sunav{transform:none;opacity:1}}
     .sunav.solid{background:rgba(20,17,16,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
     .subrand{font-family:var(--disp);font-size:1.5rem;font-weight:600;display:inline-flex;align-items:center;gap:.5rem;letter-spacing:.06em}
     .subrand-dot{width:10px;height:10px;border-radius:50%;background:var(--red)}
@@ -210,6 +227,21 @@ const reviews = [
     .suhero-media{border-radius:4px;overflow:hidden;box-shadow:var(--soft);aspect-ratio:1;border:1px solid var(--line)}
     .suhero-media img{width:100%;height:100%;object-fit:cover}
 
+    /* texture washi */
+    body{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)' opacity='0.035'/%3E%3C/svg%3E")}
+    /* filtro menu */
+    .sufilter{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;margin:-1rem 0 2rem}
+    .sufilter button{font-family:var(--disp);font-size:.9rem;letter-spacing:.05em;padding:.6rem 1.3rem;border-radius:2px;border:1px solid var(--line);background:none;color:var(--muted);cursor:pointer;transition:all .2s}
+    .sufilter button:hover{border-color:var(--red);color:var(--ink)}
+    .sufilter button.on{background:var(--red);border-color:var(--red);color:#fff}
+    .suitem.suhide{display:none}
+    .sucat.suhide{display:none}
+    /* marquee piatti */
+    .sumarq{overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:1rem 0;background:var(--bg2)}
+    .sumarq-track{display:flex;width:max-content;animation:sumarq 40s linear infinite}
+    .sumarq-track span{font-family:var(--disp);font-size:1.2rem;letter-spacing:.12em;color:var(--muted);white-space:nowrap}
+    @keyframes sumarq{to{transform:translateX(-50%)}}
+    @media (prefers-reduced-motion:reduce){.sumarq-track{animation:none}}
     .susection{max-width:1180px;margin:0 auto;padding:clamp(3.5rem,8vw,6rem) clamp(1.2rem,5vw,3rem)}
     .suhead{max-width:660px;margin-bottom:clamp(2rem,4vw,3rem)}
     .suhead-c{margin-left:auto;margin-right:auto;text-align:center}
@@ -299,7 +331,26 @@ const reviews = [
 
   <script>
     const sunav = document.getElementById('sunav');
-    addEventListener('scroll', () => sunav.classList.toggle('solid', scrollY > 30), { passive: true });
+    const suNavUpd = () => {
+      sunav.classList.toggle('solid', scrollY > 30);
+      sunav.classList.toggle('vis', scrollY > innerHeight * 0.45);
+    };
+    addEventListener('scroll', suNavUpd, { passive: true }); suNavUpd();
+    // Filtro menu (crudo/cotto/veggie)
+    const SUTAG = { 'Salmone': 'crudo', 'Tonno': 'crudo', 'Branzino': 'crudo', 'Anguilla': 'cotto', 'California': 'cotto', 'Spicy salmon': 'crudo', 'Ebi tempura': 'cotto', 'Veggie': 'veggie', 'Misto': 'crudo', 'Dragon roll': 'cotto', 'Rainbow roll': 'crudo', 'Black roll': 'crudo' };
+    document.querySelectorAll('#suFilter button').forEach((b) => b.addEventListener('click', () => {
+      document.querySelectorAll('#suFilter button').forEach((o) => o.classList.toggle('on', o === b));
+      const f = b.dataset.f;
+      document.querySelectorAll('.sucat').forEach((cat) => {
+        let vis = 0;
+        cat.querySelectorAll('.suitem').forEach((it) => {
+          const tag = SUTAG[it.querySelector('b').textContent.trim()] || 'crudo';
+          const show = f === 'all' || tag === f;
+          it.classList.toggle('suhide', !show); if (show) vis++;
+        });
+        cat.classList.toggle('suhide', vis === 0);
+      });
+    }));
     const st = document.getElementById('suToggle');
     st.addEventListener('click', () => { const o = sunav.classList.toggle('suopen'); st.setAttribute('aria-expanded', String(o)); });
     document.querySelectorAll('.sulinks a').forEach((a) => a.addEventListener('click', () => sunav.classList.remove('suopen')));

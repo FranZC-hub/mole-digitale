@@ -53,10 +53,10 @@ function icon(n) {
   <header class="pfnav" id="pfnav">
     <a href="#top" class="pfbrand">Essènza<span aria-hidden="true">.</span></a>
     <nav class="pflinks" id="pflinks">
-      <a href="#famiglie">Fragranze</a>
-      <a href="#perche">Consulenza</a>
-      <a href="#recensioni">Recensioni</a>
-      <a href="#contatti">Contatti</a>
+      <a href="#famiglie" data-n="01">Fragranze</a>
+      <a href="#quiz" data-n="02">Il test</a>
+      <a href="#perche" data-n="03">Consulenza</a>
+      <a href="#contatti" data-n="04">Contatti</a>
     </nav>
     <button class="pfnav-toggle" id="pfToggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="pflinks"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     <a href="#contatti" class="pfbtn pfbtn-solid">Prenota</a>
@@ -154,6 +154,43 @@ function icon(n) {
       {faq.map((f, i) => (
         <details class="pfq" open={i === 0}><summary>{f.q}<span class="pfq-ic" aria-hidden="true"></span></summary><div class="pfq-a"><p>{f.a}</p></div></details>
       ))}
+    </div>
+  </section>
+
+  <!-- QUIZ OLFATTIVO (widget firma) -->
+  <section class="pfsection pfquiz-sec" id="quiz">
+    <div class="pfhead"><span class="pfkick2 r">Il test olfattivo</span><h2 class="r">Qual è la <span class="pfmark">tua famiglia</span>?</h2><p class="pflead r">Tre domande per scoprire da dove iniziare il viaggio.</p></div>
+    <div class="pfquiz r" id="pfQuiz">
+      <div class="pfquiz-step" data-q="0">
+        <p class="pfquiz-q">1 · Il tuo momento preferito?</p>
+        <div class="pfquiz-opts">
+          <button type="button" data-v="a">Mattina di sole</button>
+          <button type="button" data-v="b">Passeggiata nel bosco</button>
+          <button type="button" data-v="c">Sera d’inverno</button>
+        </div>
+      </div>
+      <div class="pfquiz-step" data-q="1" hidden>
+        <p class="pfquiz-q">2 · Un ricordo che ti fa bene?</p>
+        <div class="pfquiz-opts">
+          <button type="button" data-v="a">Il mare, gli agrumi</button>
+          <button type="button" data-v="b">Un giardino in fiore</button>
+          <button type="button" data-v="c">Una spezia in cucina</button>
+        </div>
+      </div>
+      <div class="pfquiz-step" data-q="2" hidden>
+        <p class="pfquiz-q">3 · Come vuoi essere ricordato?</p>
+        <div class="pfquiz-opts">
+          <button type="button" data-v="a">Fresco, vitale</button>
+          <button type="button" data-v="b">Elegante, gentile</button>
+          <button type="button" data-v="c">Magnetico, avvolgente</button>
+        </div>
+      </div>
+      <div class="pfquiz-res" hidden>
+        <span class="pfquiz-res-k">La tua famiglia olfattiva</span>
+        <h3 id="pfQuizT"></h3>
+        <p id="pfQuizD"></p>
+        <div class="pfquiz-res-cta"><a href="#contatti" class="pfbtn pfbtn-solid">Prenota la consulenza →</a><button type="button" class="pfquiz-redo" id="pfQuizRedo">Rifai il test</button></div>
+      </div>
     </div>
   </section>
 
@@ -304,6 +341,19 @@ function icon(n) {
     .pffoot{max-width:1180px;margin:0 auto;padding:2rem clamp(1.2rem,5vw,3rem);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.86rem;border-top:1px solid var(--line)}
     .pffoot b{color:var(--gold-l);font-family:var(--serif)}.pffoot a{color:var(--gold)}
 
+    /* nav editoriale numerata */
+    .pflinks a::before{content:attr(data-n);font-size:.62rem;color:var(--gold-d);margin-right:.4rem;vertical-align:.2em}
+    /* quiz olfattivo */
+    .pfquiz{max-width:620px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:clamp(1.5rem,4vw,2.4rem);text-align:center}
+    .pfquiz-q{font-family:var(--serif);font-size:1.5rem;margin-bottom:1.2rem}
+    .pfquiz-opts{display:grid;gap:.7rem}
+    .pfquiz-opts button{font-family:var(--sans);font-size:.98rem;padding:.95rem 1.2rem;border-radius:4px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;transition:border-color .2s,color .2s,transform .2s var(--e)}
+    .pfquiz-opts button:hover{border-color:var(--gold);color:var(--gold-l);transform:translateY(-2px)}
+    .pfquiz-res-k{display:inline-block;font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem}
+    .pfquiz-res h3{font-family:var(--serif);font-size:2rem;color:var(--gold-l);margin-bottom:.4rem}
+    .pfquiz-res p{color:var(--muted);max-width:46ch;margin:0 auto 1.3rem}
+    .pfquiz-res-cta{display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap}
+    .pfquiz-redo{background:none;border:0;color:var(--muted);font-size:.85rem;cursor:pointer;text-decoration:underline;padding:.5rem}
     .wa-fab{position:fixed;right:18px;bottom:18px;z-index:160;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 30px -10px rgba(37,211,102,.7);transition:transform .2s var(--e)}
     .wa-fab:hover{transform:scale(1.08)}
 
@@ -342,6 +392,35 @@ function icon(n) {
     const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12 });
     document.querySelectorAll('.r').forEach((el) => io.observe(el));
     document.querySelectorAll('.pfq').forEach((d) => d.addEventListener('toggle', () => { if (d.open) document.querySelectorAll('.pfq').forEach((o) => { if (o !== d) o.open = false; }); }));
+    // Quiz olfattivo
+    const PFQ_RES = {
+      a: { t: 'Agrumati', d: 'Bergamotto, neroli e pompelmo: energia pulita, pelle baciata dal sole. Da qui partiremo per la tua consulenza.' },
+      b: { t: 'Floreali', d: 'Rosa, gelsomino e fiori bianchi: eleganza discreta che accompagna senza mai gridare.' },
+      c: { t: 'Orientali', d: 'Ambra, vaniglia e spezie: una scia calda e magnetica, per chi vuole lasciare il segno.' },
+    };
+    const pfQuiz = document.getElementById('pfQuiz');
+    if (pfQuiz) {
+      const steps = [...pfQuiz.querySelectorAll('.pfquiz-step')], res = pfQuiz.querySelector('.pfquiz-res');
+      let ans = [];
+      const show = (i) => { steps.forEach((s, j) => s.hidden = j !== i); res.hidden = i < 3; };
+      pfQuiz.querySelectorAll('.pfquiz-opts button').forEach((b) => b.addEventListener('click', () => {
+        ans.push(b.dataset.v);
+        if (ans.length < 3) { show(ans.length); return; }
+        const c = { a: 0, b: 0, c: 0 }; ans.forEach((v) => c[v]++);
+        const top = Object.keys(c).sort((x, y) => c[y] - c[x])[0];
+        document.getElementById('pfQuizT').textContent = PFQ_RES[top].t;
+        document.getElementById('pfQuizD').textContent = PFQ_RES[top].d;
+        show(3);
+      }));
+      document.getElementById('pfQuizRedo').addEventListener('click', () => { ans = []; show(0); });
+    }
+    // Micro-interazione: bottone magnetico sui CTA principali
+    if (matchMedia('(hover:hover) and (prefers-reduced-motion: no-preference)').matches) {
+      document.querySelectorAll('.pfbtn-solid').forEach((b) => {
+        b.addEventListener('mousemove', (e) => { const r = b.getBoundingClientRect(); b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .18}px,${(e.clientY - r.top - r.height / 2) * .3}px)`; });
+        b.addEventListener('mouseleave', () => { b.style.transform = ''; });
+      });
+    }
   </script>
 </body>
 </html>

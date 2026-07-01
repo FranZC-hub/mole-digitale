@@ -95,6 +95,14 @@ function icon(n) {
   <!-- GALLERY masonry -->
   <section class="nlgal-sec" id="gallery">
     <div class="nlhead nlhead-c r"><span class="nlkick">La gallery</span><h2>Le nostre <span class="nlmark">creazioni</span></h2><p>Una piccola parte di ciò che amiamo fare. La prossima potrebbe essere la tua.</p></div>
+    <div class="nlswatch r" id="nlSwatch" role="group" aria-label="Scegli il colore del sito">
+      <span class="nlswatch-l">✨ Scegli il tuo smalto — il sito si tinge:</span>
+      <button type="button" data-c1="#e0559b" data-c2="#7c4dff" class="on" style="background:linear-gradient(135deg,#e0559b,#7c4dff)" aria-label="Rosa e viola"></button>
+      <button type="button" data-c1="#e34d4d" data-c2="#b3266a" style="background:linear-gradient(135deg,#e34d4d,#b3266a)" aria-label="Rosso"></button>
+      <button type="button" data-c1="#2eb8a6" data-c2="#1479c9" style="background:linear-gradient(135deg,#2eb8a6,#1479c9)" aria-label="Tiffany"></button>
+      <button type="button" data-c1="#e8a33d" data-c2="#d96536" style="background:linear-gradient(135deg,#e8a33d,#d96536)" aria-label="Sunset"></button>
+      <button type="button" data-c1="#8b5cf6" data-c2="#4438ca" style="background:linear-gradient(135deg,#8b5cf6,#4438ca)" aria-label="Viola profondo"></button>
+    </div>
     <div class="nlmasonry r">
       {gallery.map((g, i) => (
         <img src={`/img/demo-nails/${g}.webp`} alt={`Nail art Lúnula ${i + 1}`} loading="lazy" />
@@ -251,6 +259,15 @@ function icon(n) {
     .nlfoot{max-width:1180px;margin:0 auto;padding:2rem clamp(1.2rem,5vw,3rem);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.88rem;border-top:1px solid var(--line)}
     .nlfoot b{color:var(--ink);font-family:var(--disp)}.nlfoot a{color:var(--pink-d)}
 
+    /* swatch smalto (tinge gli accenti della pagina) */
+    .nlswatch{display:flex;align-items:center;justify-content:center;gap:.7rem;flex-wrap:wrap;margin:-1rem auto 2rem;max-width:1180px}
+    .nlswatch-l{font-weight:700;font-size:.92rem;color:var(--muted)}
+    .nlswatch button{width:44px;height:44px;border-radius:50%;border:3px solid #fff;box-shadow:0 4px 14px -4px rgba(120,40,100,.5);cursor:pointer;transition:transform .2s var(--e)}
+    .nlswatch button:hover{transform:scale(1.12)}
+    .nlswatch button.on{outline:3px solid var(--pink);outline-offset:2px}
+    /* cursore pallino smalto (solo desktop) */
+    .nlcursor{position:fixed;top:0;left:0;width:14px;height:14px;border-radius:50%;background:var(--pink);pointer-events:none;z-index:999;transform:translate(-50%,-50%);opacity:0;transition:opacity .3s,background .3s;mix-blend-mode:multiply}
+    @media (hover:hover) and (pointer:fine){.nlcursor{opacity:.75}}
     .wa-fab{position:fixed;right:18px;bottom:18px;z-index:160;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 30px -10px rgba(37,211,102,.7);transition:transform .2s var(--e)}
     .wa-fab:hover{transform:scale(1.08)}
 
@@ -288,6 +305,18 @@ function icon(n) {
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { nlnav.classList.remove('nlopen'); nt.setAttribute('aria-expanded', 'false'); } });
     const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.1 });
     document.querySelectorAll('.r').forEach((el) => io.observe(el));
+    // Swatch smalto: cambia gli accenti di tutta la pagina
+    document.querySelectorAll('#nlSwatch button').forEach((b) => b.addEventListener('click', () => {
+      document.querySelectorAll('#nlSwatch button').forEach((o) => o.classList.toggle('on', o === b));
+      const rs = document.documentElement.style;
+      rs.setProperty('--pink', b.dataset.c1); rs.setProperty('--purple', b.dataset.c2);
+      rs.setProperty('--pink-d', b.dataset.c1); rs.setProperty('--purple-d', b.dataset.c2);
+    }));
+    // Cursore pallino smalto (desktop)
+    if (matchMedia('(hover:hover) and (pointer:fine)').matches) {
+      const dot = document.createElement('div'); dot.className = 'nlcursor'; document.body.appendChild(dot);
+      addEventListener('pointermove', (e) => { dot.style.left = e.clientX + 'px'; dot.style.top = e.clientY + 'px'; }, { passive: true });
+    }
   </script>
 </body>
 </html>
