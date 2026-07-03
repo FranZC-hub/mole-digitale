@@ -510,6 +510,19 @@ main:focus { outline: none; }
 .addon-feats li { font-size:.92rem; color:var(--muted); padding-left:1.5rem; position:relative; }
 .addon-feats li::before { content:'✓'; position:absolute; left:0; color:var(--c2); font-weight:700; }
 
+/* ---------- ROI: quanto costa NON avere un sito ---------- */
+.roi-box { display:grid; grid-template-columns:1.2fr 1fr; gap:2rem; max-width:860px; margin:0 auto; padding:clamp(1.6rem,4vw,2.4rem); align-items:center; }
+.roi-box > * { min-width:0; }
+.roi-in { display:grid; gap:1.4rem; }
+.roi-in label { display:grid; gap:.5rem; font-weight:600; font-size:.95rem; }
+.roi-in label b { color:var(--c2); font-family:'Space Grotesk Variable','Space Grotesk'; font-size:1.2rem; }
+.roi-in input[type=range] { width:100%; accent-color:var(--c1); height:32px; cursor:pointer; }
+.roi-out { text-align:center; display:grid; gap:.5rem; justify-items:center; }
+.roi-out > span { color:var(--muted); font-size:.9rem; text-transform:uppercase; letter-spacing:.08em; }
+.roi-out b { font-family:'Space Grotesk Variable','Space Grotesk'; font-size:clamp(2.4rem,6vw,3.6rem); font-weight:700; background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; line-height:1; }
+.roi-out small { color:var(--muted-2); font-size:.86rem; max-width:32ch; margin-bottom:.6rem; }
+@media (max-width:780px){ .roi-box { grid-template-columns:1fr; } }
+
 /* ---------- Numeri ---------- */
 .numeri { text-align:center; }
 .numeri-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1.5rem; padding:3rem 2rem;
@@ -571,6 +584,24 @@ main:focus { outline: none; }
 .consent a { color:var(--c2); text-decoration:underline; }
 /* honeypot anti-spam: nascosto agli umani, visibile ai bot */
 .hp { position:absolute !important; left:-9999px !important; width:1px; height:1px; overflow:hidden; }
+
+/* ---------- Banner promo (attivo solo se promoMessage è impostato nel Layout) ---------- */
+.promo-bar { position:fixed; top:0; left:0; right:0; z-index:950; display:flex; align-items:center; justify-content:center; gap:1rem; padding:.55rem 2.6rem .55rem 1rem; background:var(--grad); color:#fff; font-size:.9rem; font-weight:600; text-align:center; }
+.promo-bar a { color:#fff; text-decoration:underline; white-space:nowrap; }
+.promo-bar button { position:absolute; right:.6rem; top:50%; transform:translateY(-50%); background:rgba(0,0,0,.25); border:0; color:#fff; width:28px; height:28px; border-radius:50%; cursor:pointer; }
+.has-promo .nav { top:38px; }
+@media (max-width:560px){ .promo-bar { font-size:.8rem; } .has-promo .nav { top:46px; } }
+
+/* ---------- Cookie banner (attivo solo se clarityId è impostato nel Layout) ---------- */
+.cookie-banner { position:fixed; left:1rem; right:1rem; bottom:1rem; z-index:1050; max-width:520px; margin:0 auto; background:rgba(12,12,22,.97); border:1px solid var(--border); border-radius:var(--radius-sm); padding:1.1rem 1.2rem; box-shadow:var(--shadow); backdrop-filter:blur(10px); }
+.cookie-banner p { color:var(--muted); font-size:.9rem; line-height:1.5; margin-bottom:.9rem; }
+.cookie-banner a { color:var(--c2); text-decoration:underline; }
+.cookie-actions { display:flex; gap:.7rem; justify-content:flex-end; }
+.ck-btn { padding:.6rem 1.2rem; border-radius:999px; font-weight:700; font-size:.9rem; cursor:pointer; border:1px solid var(--border); font-family:'Space Grotesk Variable','Space Grotesk'; }
+.ck-no { background:transparent; color:var(--muted); }
+.ck-no:hover { color:var(--text); border-color:var(--muted); }
+.ck-yes { background:var(--grad); color:#fff; border-color:transparent; }
+@media (max-width:560px){ .cookie-banner { bottom:76px; } } /* sopra la barra CTA mobile */
 
 /* ---------- Footer legal ---------- */
 .footer-legal a { color:var(--muted); transition:color .25s; }

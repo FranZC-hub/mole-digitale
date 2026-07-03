@@ -256,6 +256,15 @@ if (compare && after && handle) {
   }
 }
 
+/* ---------- Statistiche first-party (niente cookie, niente IP: solo pagina+giorno+provenienza) ---------- */
+try {
+  if (!navigator.webdriver && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+    let ref = '';
+    try { const u = new URL(document.referrer); if (u.host !== location.host) ref = u.host; } catch (_) {}
+    fetch('/stats.php?p=' + encodeURIComponent(location.pathname) + '&r=' + encodeURIComponent(ref), { keepalive: true }).catch(() => {});
+  }
+} catch (_) {}
+
 /* ---------- Form contatti (invio email via /contact.php) ---------- */
 const form = document.getElementById('contactForm');
 const feedback = document.getElementById('formFeedback');

@@ -35,7 +35,12 @@ const isActive = (href: string) => {
 // Incolla qui il token dal pannello Cloudflare per attivarlo. Vuoto = disattivato.
 const cfAnalyticsToken = '';
 // Microsoft Clarity (heatmap + registrazioni sessione, gratis). ID progetto vuoto = disattivato.
+// ⚠️ Clarity usa cookie: parte SOLO dopo il consenso (banner automatico quando l'ID è impostato).
 const clarityId = '';
+
+// Banner promo sito-wide: scrivi qui il messaggio per attivarlo (stringa vuota = spento).
+// Es: 'A luglio: logo professionale incluso in ogni sito nuovo 🎁'
+const promoMessage = '';
 
 const businessSchema = {
   '@context': 'https://schema.org',
@@ -164,7 +169,11 @@ const articleSchema = article ? {
     <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={JSON.stringify({ token: cfAnalyticsToken })}></script>
   )}
   {clarityId && (
-    <script is:inline set:html={`(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","${clarityId}");`}></script>
+    <script is:inline set:html={`
+      // Clarity solo dopo consenso (GDPR): il banner è in fondo alla pagina.
+      window.mdLoadClarity = function(){(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","${clarityId}");};
+      if (localStorage.getItem('md-consent') === 'yes') window.mdLoadClarity();
+    `}></script>
   )}
 
   <!-- Marca il documento come "JS attivo" prima del paint, per l'hero animato -->
@@ -173,6 +182,20 @@ const articleSchema = article ? {
 <body>
 
   <a class="skip-link" href="#main">Salta al contenuto</a>
+
+  {promoMessage && (
+    <div class="promo-bar" id="promoBar" hidden>
+      <p>{promoMessage} <a href="/#contatti">Approfittane →</a></p>
+      <button type="button" id="promoClose" aria-label="Chiudi l'annuncio">✕</button>
+    </div>
+  )}
+  {promoMessage && (
+    <script is:inline set:html={`
+      (function(){var b=document.getElementById('promoBar');
+      if(localStorage.getItem('md-promo-hide')!=='${promoMessage.length}'){b.hidden=false;document.documentElement.classList.add('has-promo');}
+      document.getElementById('promoClose').addEventListener('click',function(){b.hidden=true;document.documentElement.classList.remove('has-promo');localStorage.setItem('md-promo-hide','${promoMessage.length}');});})();
+    `}></script>
+  )}
 
   <!-- Sprite SVG: gradiente logo + icone riusabili -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -311,6 +334,24 @@ const articleSchema = article ? {
     <a class="mc-prev" href="/preventivo">Preventivo gratis</a>
     <!-- nota: testo accorciato via CSS su schermi molto stretti -->
   </nav>
+
+  {clarityId && (
+    <div class="cookie-banner" id="ckBanner" hidden role="dialog" aria-label="Preferenze cookie" aria-live="polite">
+      <p>Usiamo un cookie di statistica (Microsoft Clarity) per capire come migliorare il sito. Niente pubblicità, niente profilazione. <a href="/privacy#cookie">Dettagli</a></p>
+      <div class="cookie-actions">
+        <button type="button" id="ckNo" class="ck-btn ck-no">Rifiuta</button>
+        <button type="button" id="ckYes" class="ck-btn ck-yes">Accetta</button>
+      </div>
+    </div>
+  )}
+  {clarityId && (
+    <script is:inline set:html={`
+      (function(){var b=document.getElementById('ckBanner');
+      if(!localStorage.getItem('md-consent')) b.hidden=false;
+      document.getElementById('ckYes').addEventListener('click',function(){localStorage.setItem('md-consent','yes');b.hidden=true;window.mdLoadClarity();});
+      document.getElementById('ckNo').addEventListener('click',function(){localStorage.setItem('md-consent','no');b.hidden=true;});})();
+    `}></script>
+  )}
 
   <script>import '../scripts/main.js';</script>
 </body>

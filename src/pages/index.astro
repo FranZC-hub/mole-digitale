@@ -277,6 +277,42 @@ import dopoImg from '../assets/img/dopo.jpg';
     </ol>
   </section>
 
+  <!-- ===================== ROI: quanto costa NON avere un sito ===================== -->
+  <section class="section roi band" id="roi">
+    <div class="section-head" data-reveal>
+      <span class="kicker">Facciamo due conti</span>
+      <h2>Quanto ti costa <span class="grad">non avere un sito?</span></h2>
+      <p class="section-lead">Muovi i cursori: il conto lo fa da solo.</p>
+    </div>
+    <div class="roi-box glass" data-reveal>
+      <div class="roi-in">
+        <label>Clienti nuovi che ti servirebbero al mese <b id="roiCliV">5</b>
+          <input type="range" id="roiCli" min="1" max="30" value="5" />
+        </label>
+        <label>Quanto vale in media un cliente (€) <b id="roiValV">40€</b>
+          <input type="range" id="roiVal" min="10" max="300" step="5" value="40" />
+        </label>
+      </div>
+      <div class="roi-out">
+        <span>Ogni anno lasci sul tavolo circa</span>
+        <b id="roiTot">2.400€</b>
+        <small>Un sito che porta anche solo una parte di quei clienti si ripaga in poche settimane.</small>
+        <a href="#contatti" class="btn btn-primary btn-magnetic">Recuperiamoli →</a>
+      </div>
+    </div>
+  </section>
+  <script>
+    const rc = document.getElementById('roiCli'), rv = document.getElementById('roiVal');
+    if (rc && rv) {
+      const upd = () => {
+        document.getElementById('roiCliV').textContent = rc.value;
+        document.getElementById('roiValV').textContent = rv.value + '€';
+        document.getElementById('roiTot').textContent = (+rc.value * +rv.value * 12).toLocaleString('it-IT') + '€';
+      };
+      rc.addEventListener('input', upd); rv.addEventListener('input', upd); upd();
+    }
+  </script>
+
   <!-- ===================== PREZZI ===================== -->
   <section class="section prezzi" id="prezzi">
     <div class="section-head" data-reveal>

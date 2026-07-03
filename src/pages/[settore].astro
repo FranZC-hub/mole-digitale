@@ -276,6 +276,12 @@ const faqSchemaSettore = {
       <p>All'hosting, al dominio e all'assistenza pensiamo noi a canone fisso: tu pensi all'attività, al lato tecnico pensiamo noi.</p>
     </div>
 
+    <!-- Anteprima della demo (screenshot reale) -->
+    <a class="land-shot glass" href={d.demoUrl} data-reveal>
+      <img src={`/img/thumbs/${d.demoUrl.split('/').pop()}.webp`} alt={`Anteprima del sito demo ${d.demoName}`} loading="lazy" width="760" height="475" />
+      <span class="land-shot-cap"><b>{d.demoName}</b> — un esempio reale di come può essere il tuo sito · <i>apri la demo →</i></span>
+    </a>
+
     <!-- Prezzi chiari -->
     <div class="land-price" data-reveal>
       <h2>Quanto costa, <span class="grad">senza sorprese</span>.</h2>
@@ -317,6 +323,12 @@ const faqSchemaSettore = {
 
   <style>
     .land-points { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
+    .land-shot { display:block; max-width:680px; margin:3rem auto 0; padding:.8rem; text-decoration:none; transition:transform .3s var(--ease), box-shadow .3s; }
+    .land-shot:hover { transform:translateY(-6px); box-shadow:0 30px 60px -30px rgba(124,92,255,.5); }
+    .land-shot img { width:100%; height:auto; border-radius:12px; display:block; }
+    .land-shot-cap { display:block; padding:.9rem .4rem .2rem; color:var(--muted); font-size:.92rem; text-align:center; }
+    .land-shot-cap b { color:var(--text,#f3f3fb); font-family:'Space Grotesk Variable','Space Grotesk'; }
+    .land-shot-cap i { color:var(--c2); font-style:normal; font-weight:600; }
     .land-price { max-width:860px; margin:3.5rem auto 0; text-align:center; }
     .land-price h2, .land-faq h2 { font-size:clamp(1.5rem,3.5vw,2.2rem); margin-bottom:1.4rem; }
     .land-price-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }

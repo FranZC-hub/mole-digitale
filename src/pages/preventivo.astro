@@ -96,6 +96,8 @@ import Layout from '../layouts/Layout.astro';
         <p class="prev-note">Stima indicativa: la cifra definitiva te la confermiamo dopo una chiacchierata. Prima bozza gratis, nessun anticipo. Tutti i prezzi sono IVA esclusa.</p>
         <a href="/#contatti" id="prevReq" class="btn btn-primary btn-block btn-lg btn-magnetic">Richiedi questo preventivo →</a>
         <a id="prevWa" href="https://wa.me/393662102203" target="_blank" rel="noopener" class="btn btn-ghost btn-block">Chiedi su WhatsApp</a>
+        <button type="button" id="prevPrint" class="btn btn-ghost btn-block">🖨️ Stampa / salva PDF</button>
+        <p class="prev-share">🔗 La configurazione si salva nel link: copia l'indirizzo per condividerla o ritrovarla.</p>
 
         <!-- Oppure: ti richiamiamo noi (invia la configurazione senza cambiare pagina) -->
         <form class="prev-callback" id="prevCb">
@@ -159,6 +161,20 @@ import Layout from '../layouts/Layout.astro';
     .prev-canone-line b { color:var(--c2); }
     .prev-note { color:var(--muted-2); font-size:.84rem; margin:0 0 1.4rem; }
     .prev-out .btn { margin-bottom:.7rem; }
+    .prev-share { color:var(--muted-2); font-size:.78rem; margin-top:-.2rem; }
+    /* Stampa: solo il riepilogo, su fondo bianco leggibile */
+    @media print {
+      body { background:#fff !important; color:#111; padding-bottom:0 !important; }
+      .nav, .footer, .wa-fab, .mobile-cta, .prev-form, .prev-callback, #prevPrint, .prev-share,
+      .bg-mesh, .grain, .cursor-glow, .scroll-progress, .prev-out .btn, .section-head { display:none !important; }
+      .prev-wrap { grid-template-columns:1fr; }
+      .prev-out { position:static; background:#fff; border:1px solid #999; color:#111; }
+      .prev-out .kicker { color:#555; border-color:#ccc; background:none; }
+      .prev-total, .lp-p { background:none !important; -webkit-text-fill-color:#111 !important; color:#111 !important; }
+      .prev-once, .prev-breakdown li, .prev-canone-line, .prev-note { color:#333 !important; }
+      .prev-delivery { color:#111; border-color:#999; background:none; }
+      .prev-breakdown li b, .prev-canone-line b { color:#111 !important; }
+    }
     .prev-callback { margin-top:1.2rem; padding-top:1.2rem; border-top:1px dashed var(--border); display:flex; flex-direction:column; gap:.8rem; text-align:left; }
     .prev-cb-t { font-size:.88rem; color:var(--muted); text-align:center; }
     .prev-cb-t b { color:var(--text,#f3f3f7); }
@@ -302,10 +318,40 @@ import Layout from '../layouts/Layout.astro';
       const n = Math.max(0, Math.min(12, (Number(pagineN.value) || 0) + Number(b.dataset.step)));
       pagineN.value = n;
       calc();
+      if (typeof saveCfg === 'function') saveCfg();
     }));
 
-    form.addEventListener('change', calc);
+    // Configurazione persistente nell'URL (?c=…): condivisibile e ritrovabile
+    function saveCfg() {
+      try {
+        const cfg = {
+          t: form.querySelector('input[name="tipo"]:checked').value,
+          p: pagineN.value,
+          f: [...form.querySelectorAll('label[data-feat] input:checked:not(:disabled)')].map((c) => c.closest('label').dataset.feat),
+          pr: (form.querySelector('input[name="prodotti"]:checked') || {}).value || '0',
+          ca: form.querySelector('input[name="canone"]:checked').value,
+        };
+        history.replaceState(null, '', '?c=' + btoa(JSON.stringify(cfg)));
+      } catch (e) { /* niente di grave: l'URL resta com'è */ }
+    }
+    function loadCfg() {
+      try {
+        const raw = new URLSearchParams(location.search).get('c');
+        if (!raw) return;
+        const cfg = JSON.parse(atob(raw));
+        const tipo = form.querySelector(`input[name="tipo"][value="${cfg.t}"]`); if (tipo) tipo.checked = true;
+        pagineN.value = Math.max(0, Math.min(12, +cfg.p || 0));
+        (cfg.f || []).forEach((f) => { const lab = form.querySelector(`label[data-feat="${f}"] input`); if (lab) lab.checked = true; });
+        const pr = form.querySelector(`input[name="prodotti"][value="${cfg.pr}"]`); if (pr) pr.checked = true;
+        const ca = form.querySelector(`input[name="canone"][value="${cfg.ca}"]`); if (ca) ca.checked = true;
+      } catch (e) { /* URL malformato: si parte dai default */ }
+    }
+
+    form.addEventListener('change', () => { calc(); saveCfg(); });
+    loadCfg();
     calc();
+
+    document.getElementById('prevPrint').addEventListener('click', () => window.print());
 
     // Mini-form "ti richiamiamo noi": invia contatto + configurazione a contact.php
     const cb = document.getElementById('prevCb');

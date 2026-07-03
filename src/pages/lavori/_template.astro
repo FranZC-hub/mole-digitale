@@ -1,0 +1,73 @@
+---
+// ══════════════════════════════════════════════════════════════════
+// TEMPLATE CASO STUDIO — pronto per il primo cliente vero.
+// Come si usa (2 minuti):
+//   1. Copia questo file:  lavori/_template.astro  →  lavori/nome-cliente.astro
+//      (i file che iniziano con "_" NON diventano pagine: questo template resta invisibile)
+//   2. Compila i campi qui sotto e metti 2-3 foto in /public/img/lavori/nome-cliente/
+//   3. Linka la pagina dalla home (sezione portfolio) e dalla landing di settore.
+// ══════════════════════════════════════════════════════════════════
+import Layout from '../../layouts/Layout.astro';
+
+const c = {
+  nome: 'Nome Attività',                     // es. 'Trattoria Da Mario'
+  settore: 'Ristorante',                     // es. 'Ristorante', 'Parrucchiere'…
+  zona: 'Torino — San Salvario',
+  url: 'https://www.sito-del-cliente.it',    // sito live (o '' se non pubblicabile)
+  copertina: '/img/lavori/nome-cliente/copertina.webp', // screenshot del sito (usa tools/_shot.mjs)
+  problema: 'Racconta da dove si partiva: niente sito / sito vecchio / non si trovava su Google…',
+  soluzione: 'Cosa abbiamo fatto: sito nuovo con menu digitale, prenotazioni, SEO locale, scheda Google…',
+  risultati: [                               // 2-4 numeri VERI, con il periodo
+    { n: '+X', l: 'richieste al mese dal sito' },
+    { n: 'X°', l: 'su Google per «…» a Torino' },
+    { n: 'X gg', l: 'dalla firma alla messa online' },
+  ],
+  quote: 'Una frase vera del cliente, con il suo permesso.',
+  quoteFirma: 'Nome, titolare',
+};
+---
+<Layout
+  title={`${c.nome} — caso studio | Mole Digitale`}
+  description={`Come abbiamo aiutato ${c.nome} (${c.settore}, ${c.zona}): il problema, la soluzione e i risultati misurati.`}
+>
+  <section class="section" style="padding-top:8rem;">
+    <div class="section-head" data-reveal>
+      <span class="kicker">{c.settore} · {c.zona}</span>
+      <h1>{c.nome}: <span class="grad">la storia</span>.</h1>
+    </div>
+
+    <a class="cs-cover glass" href={c.url || '#'} target={c.url ? '_blank' : undefined} rel="noopener" data-reveal>
+      <img src={c.copertina} alt={`Il sito di ${c.nome}`} loading="lazy" width="900" height="560" />
+    </a>
+
+    <div class="cs-grid" data-reveal>
+      <article class="prob-card"><h3>Il problema</h3><p>{c.problema}</p></article>
+      <article class="prob-card"><h3>La soluzione</h3><p>{c.soluzione}</p></article>
+    </div>
+
+    <div class="numeri-grid" data-reveal style="margin-top:2rem;">
+      {c.risultati.map((r) => (
+        <div class="num-item"><b>{r.n}</b><span>{r.l}</span></div>
+      ))}
+    </div>
+
+    <blockquote class="cs-quote glass" data-reveal>
+      <p>«{c.quote}»</p>
+      <footer>— {c.quoteFirma}</footer>
+    </blockquote>
+
+    <div style="text-align:center; margin-top:3rem;" data-reveal>
+      <a href="/#contatti" class="btn btn-primary btn-magnetic btn-lg">Voglio un risultato così →</a>
+    </div>
+  </section>
+
+  <style>
+    .cs-cover { display:block; max-width:860px; margin:0 auto 2rem; padding:.8rem; }
+    .cs-cover img { width:100%; height:auto; border-radius:12px; display:block; }
+    .cs-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; max-width:860px; margin:0 auto; }
+    .cs-quote { max-width:680px; margin:2.5rem auto 0; padding:1.8rem 2rem; text-align:center; }
+    .cs-quote p { font-size:1.15rem; font-style:italic; margin-bottom:.8rem; }
+    .cs-quote footer { color:var(--muted); font-size:.92rem; }
+    @media (max-width:700px){ .cs-grid { grid-template-columns:1fr; } }
+  </style>
+</Layout>
