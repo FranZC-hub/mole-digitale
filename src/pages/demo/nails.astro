@@ -296,15 +296,9 @@ function icon(n) {
   </style>
 
   <script>
-    const nlnav = document.getElementById('nlnav');
-    addEventListener('scroll', () => nlnav.classList.toggle('solid', scrollY > 30), { passive: true });
-    const nt = document.getElementById('nlToggle');
-    nt.addEventListener('click', () => { const o = nlnav.classList.toggle('nlopen'); nt.setAttribute('aria-expanded', String(o)); });
-    document.querySelectorAll('.nllinks a').forEach((a) => a.addEventListener('click', () => nlnav.classList.remove('nlopen')));
-    document.addEventListener('click', (e) => { if (nlnav.classList.contains('nlopen') && !nlnav.contains(e.target)) { nlnav.classList.remove('nlopen'); nt.setAttribute('aria-expanded', 'false'); } });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { nlnav.classList.remove('nlopen'); nt.setAttribute('aria-expanded', 'false'); } });
-    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.1 });
-    document.querySelectorAll('.r').forEach((el) => io.observe(el));
+    import { demoNav, demoReveal, demoAccordion } from '../../scripts/demo-common.js';
+    demoNav('nl');
+    demoReveal(0.1);
     // Swatch smalto: cambia gli accenti di tutta la pagina
     document.querySelectorAll('#nlSwatch button').forEach((b) => b.addEventListener('click', () => {
       document.querySelectorAll('#nlSwatch button').forEach((o) => o.classList.toggle('on', o === b));

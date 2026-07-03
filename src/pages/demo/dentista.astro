@@ -391,15 +391,9 @@ function icon(n) {
   </style>
 
   <script>
-    const denav = document.getElementById('denav');
-    addEventListener('scroll', () => denav.classList.toggle('solid', scrollY > 30), { passive: true });
-    const dt = document.getElementById('deToggle');
-    dt.addEventListener('click', () => { const o = denav.classList.toggle('deopen'); dt.setAttribute('aria-expanded', String(o)); });
-    document.querySelectorAll('.delinks a').forEach((a) => a.addEventListener('click', () => denav.classList.remove('deopen')));
-    document.addEventListener('click', (e) => { if (denav.classList.contains('deopen') && !denav.contains(e.target)) { denav.classList.remove('deopen'); dt.setAttribute('aria-expanded', 'false'); } });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { denav.classList.remove('deopen'); dt.setAttribute('aria-expanded', 'false'); } });
-    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12 });
-    document.querySelectorAll('.r').forEach((el) => io.observe(el));
+    import { demoNav, demoReveal, demoAccordion } from '../../scripts/demo-common.js';
+    demoNav('de');
+    demoReveal(0.12);
     document.querySelectorAll('.deq').forEach((d) => d.addEventListener('toggle', () => { if (d.open) document.querySelectorAll('.deq').forEach((o) => { if (o !== d) o.open = false; }); }));
     // Simulatore rate
     const deAmt = document.getElementById('deAmt');

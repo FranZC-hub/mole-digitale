@@ -351,15 +351,9 @@ function icon(n) {
   </style>
 
   <script>
-    const lvnav = document.getElementById('lvnav');
-    addEventListener('scroll', () => lvnav.classList.toggle('solid', scrollY > 30), { passive: true });
-    const lt = document.getElementById('lvToggle');
-    lt.addEventListener('click', () => { const o = lvnav.classList.toggle('lvopen'); lt.setAttribute('aria-expanded', String(o)); });
-    document.querySelectorAll('.lvlinks a').forEach((a) => a.addEventListener('click', () => lvnav.classList.remove('lvopen')));
-    document.addEventListener('click', (e) => { if (lvnav.classList.contains('lvopen') && !lvnav.contains(e.target)) { lvnav.classList.remove('lvopen'); lt.setAttribute('aria-expanded', 'false'); } });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { lvnav.classList.remove('lvopen'); lt.setAttribute('aria-expanded', 'false'); } });
-    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.1 });
-    document.querySelectorAll('.r').forEach((el) => io.observe(el));
+    import { demoNav, demoReveal, demoAccordion } from '../../scripts/demo-common.js';
+    demoNav('lv');
+    demoReveal(0.1);
     // Calcolatore bucato
     const lvCalc = document.getElementById('lvCalc');
     if (lvCalc) {

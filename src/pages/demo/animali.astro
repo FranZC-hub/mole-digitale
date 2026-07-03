@@ -325,15 +325,9 @@ function icon(n) {
   </style>
 
   <script>
-    const annav = document.getElementById('annav');
-    addEventListener('scroll', () => annav.classList.toggle('solid', scrollY > 30), { passive: true });
-    const at = document.getElementById('anToggle');
-    at.addEventListener('click', () => { const o = annav.classList.toggle('anopen'); at.setAttribute('aria-expanded', String(o)); });
-    document.querySelectorAll('.anlinks a').forEach((a) => a.addEventListener('click', () => annav.classList.remove('anopen')));
-    document.addEventListener('click', (e) => { if (annav.classList.contains('anopen') && !annav.contains(e.target)) { annav.classList.remove('anopen'); at.setAttribute('aria-expanded', 'false'); } });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { annav.classList.remove('anopen'); at.setAttribute('aria-expanded', 'false'); } });
-    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.1 });
-    document.querySelectorAll('.r').forEach((el) => io.observe(el));
+    import { demoNav, demoReveal, demoAccordion } from '../../scripts/demo-common.js';
+    demoNav('an');
+    demoReveal(0.1);
     // Triage sintomi
     const ANT = {
       sangue:  { l: 'rosso', b: '🔴 Urgente — chiamaci ORA', d: 'Ferite e sanguinamenti vanno visti subito: non aspettare e non medicare col fai-da-te.', cta: 'tel' },

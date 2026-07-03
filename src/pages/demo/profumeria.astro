@@ -382,15 +382,9 @@ function icon(n) {
   </style>
 
   <script>
-    const pfnav = document.getElementById('pfnav');
-    addEventListener('scroll', () => pfnav.classList.toggle('solid', scrollY > 30), { passive: true });
-    const pt = document.getElementById('pfToggle');
-    pt.addEventListener('click', () => { const o = pfnav.classList.toggle('pfopen'); pt.setAttribute('aria-expanded', String(o)); });
-    document.querySelectorAll('.pflinks a').forEach((a) => a.addEventListener('click', () => pfnav.classList.remove('pfopen')));
-    document.addEventListener('click', (e) => { if (pfnav.classList.contains('pfopen') && !pfnav.contains(e.target)) { pfnav.classList.remove('pfopen'); pt.setAttribute('aria-expanded', 'false'); } });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { pfnav.classList.remove('pfopen'); pt.setAttribute('aria-expanded', 'false'); } });
-    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12 });
-    document.querySelectorAll('.r').forEach((el) => io.observe(el));
+    import { demoNav, demoReveal, demoAccordion } from '../../scripts/demo-common.js';
+    demoNav('pf');
+    demoReveal(0.12);
     document.querySelectorAll('.pfq').forEach((d) => d.addEventListener('toggle', () => { if (d.open) document.querySelectorAll('.pfq').forEach((o) => { if (o !== d) o.open = false; }); }));
     // Quiz olfattivo
     const PFQ_RES = {

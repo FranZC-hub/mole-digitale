@@ -96,6 +96,17 @@ import Layout from '../layouts/Layout.astro';
         <p class="prev-note">Stima indicativa: la cifra definitiva te la confermiamo dopo una chiacchierata. Prima bozza gratis, nessun anticipo. Tutti i prezzi sono IVA esclusa.</p>
         <a href="/#contatti" id="prevReq" class="btn btn-primary btn-block btn-lg btn-magnetic">Richiedi questo preventivo →</a>
         <a id="prevWa" href="https://wa.me/393662102203" target="_blank" rel="noopener" class="btn btn-ghost btn-block">Chiedi su WhatsApp</a>
+
+        <!-- Oppure: ti richiamiamo noi (invia la configurazione senza cambiare pagina) -->
+        <form class="prev-callback" id="prevCb">
+          <p class="prev-cb-t">…o lascia un recapito e <b>ti richiamiamo noi</b> (la tua configurazione viaggia in allegato):</p>
+          <div class="field"><input type="text" id="cb-nome" required placeholder=" " autocomplete="name" /><label for="cb-nome">Nome</label></div>
+          <div class="field"><input type="text" id="cb-tel" required placeholder=" " autocomplete="tel" /><label for="cb-tel">Telefono o email</label></div>
+          <div class="hp" aria-hidden="true"><label>Non compilare<input type="text" name="website" tabindex="-1" autocomplete="off" /></label></div>
+          <label class="consent"><input type="checkbox" id="cb-privacy" required /><span>Ho letto la <a href="/privacy" target="_blank" rel="noopener">privacy</a> e acconsento a essere ricontattato.</span></label>
+          <button type="submit" class="btn btn-wa btn-block">Richiamatemi voi →</button>
+          <p class="form-feedback" id="cbFeedback" aria-live="polite"></p>
+        </form>
       </aside>
     </div>
   </section>
@@ -148,6 +159,9 @@ import Layout from '../layouts/Layout.astro';
     .prev-canone-line b { color:var(--c2); }
     .prev-note { color:var(--muted-2); font-size:.84rem; margin:0 0 1.4rem; }
     .prev-out .btn { margin-bottom:.7rem; }
+    .prev-callback { margin-top:1.2rem; padding-top:1.2rem; border-top:1px dashed var(--border); display:flex; flex-direction:column; gap:.8rem; text-align:left; }
+    .prev-cb-t { font-size:.88rem; color:var(--muted); text-align:center; }
+    .prev-cb-t b { color:var(--text,#f3f3f7); }
     @media (max-width:820px){ .prev-wrap { grid-template-columns:1fr; } .prev-out { position:static; } }
   </style>
 
@@ -292,5 +306,35 @@ import Layout from '../layouts/Layout.astro';
 
     form.addEventListener('change', calc);
     calc();
+
+    // Mini-form "ti richiamiamo noi": invia contatto + configurazione a contact.php
+    const cb = document.getElementById('prevCb');
+    const cbf = document.getElementById('cbFeedback');
+    cb.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const reqEl = document.getElementById('prevReq');
+      const summary = decodeURIComponent((reqEl.href.split('prev=')[1] || '').split('#')[0]);
+      const btn = cb.querySelector('button');
+      const label = btn.innerHTML;
+      btn.disabled = true; btn.innerHTML = '<span class="btn-spin" aria-hidden="true"></span> Invio…';
+      cbf.classList.remove('ok', 'ko'); cbf.textContent = '';
+      try {
+        const res = await fetch('/contact.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nome: document.getElementById('cb-nome').value.trim(),
+            attivita: 'Richiamata dal preventivo online',
+            telefono: document.getElementById('cb-tel').value.trim(),
+            messaggio: 'Configurazione scelta: ' + summary,
+            website: cb.website.value,
+          }),
+        });
+        const out = await res.json().catch(() => ({}));
+        if (res.ok && out.ok) { cbf.classList.add('ok'); cbf.textContent = '✅ Ricevuto! Ti richiamiamo entro 24 ore.'; cb.reset(); }
+        else throw new Error();
+      } catch { cbf.classList.add('ko'); cbf.textContent = '⚠️ Invio non riuscito: riprova o usa WhatsApp qui sopra.'; }
+      finally { btn.disabled = false; btn.innerHTML = label; }
+    });
   </script>
 </Layout>

@@ -377,15 +377,9 @@ function icon(n) {
   </style>
 
   <script>
-    const osnav = document.getElementById('osnav');
-    addEventListener('scroll', () => osnav.classList.toggle('solid', scrollY > 30), { passive: true });
-    const ot = document.getElementById('osToggle');
-    ot.addEventListener('click', () => { const o = osnav.classList.toggle('osopen'); ot.setAttribute('aria-expanded', String(o)); });
-    document.querySelectorAll('.oslinks a').forEach((a) => a.addEventListener('click', () => osnav.classList.remove('osopen')));
-    document.addEventListener('click', (e) => { if (osnav.classList.contains('osopen') && !osnav.contains(e.target)) { osnav.classList.remove('osopen'); ot.setAttribute('aria-expanded', 'false'); } });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { osnav.classList.remove('osopen'); ot.setAttribute('aria-expanded', 'false'); } });
-    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12 });
-    document.querySelectorAll('.r').forEach((el) => io.observe(el));
+    import { demoNav, demoReveal, demoAccordion } from '../../scripts/demo-common.js';
+    demoNav('os');
+    demoReveal(0.12);
     document.querySelectorAll('.osq').forEach((d) => d.addEventListener('toggle', () => { if (d.open) document.querySelectorAll('.osq').forEach((o) => { if (o !== d) o.open = false; }); }));
     // Mappa del corpo interattiva
     const OSZ = {

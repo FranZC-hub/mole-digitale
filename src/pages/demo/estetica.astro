@@ -381,15 +381,9 @@ function icon(n) {
   </style>
 
   <script>
-    const esnav = document.getElementById('esnav');
-    addEventListener('scroll', () => esnav.classList.toggle('solid', scrollY > 30), { passive: true });
-    const et = document.getElementById('esToggle');
-    et.addEventListener('click', () => { const o = esnav.classList.toggle('esopen'); et.setAttribute('aria-expanded', String(o)); });
-    document.querySelectorAll('.eslinks a').forEach((a) => a.addEventListener('click', () => esnav.classList.remove('esopen')));
-    document.addEventListener('click', (e) => { if (esnav.classList.contains('esopen') && !esnav.contains(e.target)) { esnav.classList.remove('esopen'); et.setAttribute('aria-expanded', 'false'); } });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { esnav.classList.remove('esopen'); et.setAttribute('aria-expanded', 'false'); } });
-    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12 });
-    document.querySelectorAll('.r').forEach((el) => io.observe(el));
+    import { demoNav, demoReveal, demoAccordion } from '../../scripts/demo-common.js';
+    demoNav('es');
+    demoReveal(0.12);
     document.querySelectorAll('.esq').forEach((d) => d.addEventListener('toggle', () => { if (d.open) document.querySelectorAll('.esq').forEach((o) => { if (o !== d) o.open = false; }); }));
     // Quiz pelle: la risposta più frequente decide il trattamento
     const ESQ_RES = {

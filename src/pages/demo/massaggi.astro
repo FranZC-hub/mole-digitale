@@ -373,17 +373,11 @@ function icon(n) {
   </style>
 
   <script>
-    const msnav = document.getElementById('msnav');
-    addEventListener('scroll', () => msnav.classList.toggle('solid', scrollY > 30), { passive: true });
-    const mt = document.getElementById('msToggle');
-    mt.addEventListener('click', () => { const o = msnav.classList.toggle('msopen'); mt.setAttribute('aria-expanded', String(o)); });
-    document.querySelectorAll('.mslinks a').forEach((a) => a.addEventListener('click', () => msnav.classList.remove('msopen')));
-    document.addEventListener('click', (e) => { if (msnav.classList.contains('msopen') && !msnav.contains(e.target)) { msnav.classList.remove('msopen'); mt.setAttribute('aria-expanded', 'false'); } });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { msnav.classList.remove('msopen'); mt.setAttribute('aria-expanded', 'false'); } });
-    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12 });
-    document.querySelectorAll('.r').forEach((el) => io.observe(el));
+    import { demoNav, demoReveal, demoAccordion } from '../../scripts/demo-common.js';
+    demoNav('ms');
+    demoReveal(0.12);
     document.querySelectorAll('.msq').forEach((d) => d.addEventListener('toggle', () => { if (d.open) document.querySelectorAll('.msq').forEach((o) => { if (o !== d) o.open = false; }); }));
-    document.querySelectorAll('.msitem').forEach((d) => d.addEventListener('toggle', () => { if (d.open) document.querySelectorAll('.msitem').forEach((o) => { if (o !== d) o.open = false; }); }));
+    demoAccordion('.msitem');
     // Widget "come ti senti oggi"
     const MSM = {
       stress: { t: 'Massaggio rilassante', d: 'Pressioni lente e avvolgenti che abbassano il volume dei pensieri. Respira: al resto pensiamo noi.', m: '50 min · 55€' },

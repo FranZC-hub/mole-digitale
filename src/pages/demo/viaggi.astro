@@ -344,13 +344,8 @@ function icon(n) {
   </style>
 
   <script>
-    const vgnav = document.getElementById('vgnav');
-    addEventListener('scroll', () => vgnav.classList.toggle('solid', scrollY > 30), { passive: true });
-    const vt = document.getElementById('vgToggle');
-    vt.addEventListener('click', () => { const o = vgnav.classList.toggle('vgopen'); vt.setAttribute('aria-expanded', String(o)); });
-    document.querySelectorAll('.vglinks a').forEach((a) => a.addEventListener('click', () => vgnav.classList.remove('vgopen')));
-    document.addEventListener('click', (e) => { if (vgnav.classList.contains('vgopen') && !vgnav.contains(e.target)) { vgnav.classList.remove('vgopen'); vt.setAttribute('aria-expanded', 'false'); } });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { vgnav.classList.remove('vgopen'); vt.setAttribute('aria-expanded', 'false'); } });
+    import { demoNav, demoReveal, demoAccordion } from '../../scripts/demo-common.js';
+    demoNav('vg');
     document.querySelectorAll('.vgpill').forEach((p) => p.addEventListener('click', () => { document.querySelectorAll('.vgpill').forEach((o) => o.removeAttribute('data-on')); p.setAttribute('data-on', '1'); }));
     // Filtro budget sulle destinazioni
     const vgS = document.getElementById('vgSlider');
@@ -365,8 +360,7 @@ function icon(n) {
       };
       vgS.addEventListener('input', upd); upd();
     }
-    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.1 });
-    document.querySelectorAll('.r').forEach((el) => io.observe(el));
+    demoReveal(0.1);
   </script>
 </body>
 </html>

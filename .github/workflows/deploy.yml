@@ -35,6 +35,9 @@ jobs:
       - name: Build del sito (genera dist/)
         run: npm run build
 
+      - name: Verifica link interni (blocca il deploy se rotti)
+        run: node tools/check-links.mjs
+
       - name: Carica dist/ su Aruba via FTP
         if: env.HAS_FTP == 'true'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5

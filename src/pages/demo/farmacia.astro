@@ -321,15 +321,9 @@ function icon(n) {
   </style>
 
   <script>
-    const fanav = document.getElementById('fanav');
-    addEventListener('scroll', () => fanav.classList.toggle('solid', scrollY > 30), { passive: true });
-    const ft = document.getElementById('faToggle');
-    ft.addEventListener('click', () => { const o = fanav.classList.toggle('faopen'); ft.setAttribute('aria-expanded', String(o)); });
-    document.querySelectorAll('.falinks a').forEach((a) => a.addEventListener('click', () => fanav.classList.remove('faopen')));
-    document.addEventListener('click', (e) => { if (fanav.classList.contains('faopen') && !fanav.contains(e.target)) { fanav.classList.remove('faopen'); ft.setAttribute('aria-expanded', 'false'); } });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { fanav.classList.remove('faopen'); ft.setAttribute('aria-expanded', 'false'); } });
-    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12 });
-    document.querySelectorAll('.r').forEach((el) => io.observe(el));
+    import { demoNav, demoReveal, demoAccordion } from '../../scripts/demo-common.js';
+    demoNav('fa');
+    demoReveal(0.12);
     document.querySelectorAll('.faq').forEach((d) => d.addEventListener('toggle', () => { if (d.open) document.querySelectorAll('.faq').forEach((o) => { if (o !== d) o.open = false; }); }));
 
     // Orari + "aperta ora" (Lun-Ven 8:30-19:30, Sab 9-13, Dom chiuso)
