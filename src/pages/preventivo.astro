@@ -12,6 +12,18 @@ import Layout from '../layouts/Layout.astro';
       <p class="section-lead">Scegli il pacchetto e aggiungi solo ciò che ti serve: la stima e i tempi di consegna si aggiornano in tempo reale. Senza impegno — la cifra definitiva te la confermiamo noi, e la prima bozza è gratis.</p>
     </div>
 
+    <!-- Preset per settore: precompilano la configurazione tipica -->
+    <div class="prev-presets" data-reveal>
+      <span>Parti dalla configurazione tipica del tuo settore:</span>
+      <div class="prev-presets-row" role="group" aria-label="Preset per settore">
+        <button type="button" data-preset="food">🍕 Ristorante / Bar</button>
+        <button type="button" data-preset="beauty">✂️ Parrucchiere / Estetica</button>
+        <button type="button" data-preset="med">🦷 Studio medico</button>
+        <button type="button" data-preset="shop">🛍 Vendo online</button>
+        <button type="button" data-preset="zero">↺ Riparti da zero</button>
+      </div>
+    </div>
+
     <div class="prev-wrap">
       <form class="prev-form" id="prevForm" data-reveal>
         <fieldset>
@@ -86,18 +98,23 @@ import Layout from '../layouts/Layout.astro';
         </fieldset>
       </form>
 
-      <aside class="prev-out" data-reveal>
+      <aside class="prev-out" id="prevOut" data-reveal>
         <span class="kicker">La tua stima</span>
         <div class="prev-total"><span class="from-tag" id="prevFrom" hidden>da&nbsp;</span><span class="cur">€</span><span id="prevAmount">390</span></div>
         <p class="prev-once">una tantum + IVA</p>
         <p class="prev-delivery" id="prevDelivery">⏱️ Pronto in circa 5 giorni lavorativi</p>
         <ul class="prev-breakdown" id="prevBreak"></ul>
         <p class="prev-canone-line" id="prevCanone">+ <b>€29/mese + IVA</b> · hosting, dominio, SSL e assistenza</p>
-        <p class="prev-note">Stima indicativa: la cifra definitiva te la confermiamo dopo una chiacchierata. Prima bozza gratis, nessun anticipo. Tutti i prezzi sono IVA esclusa.</p>
+        <p class="prev-anchor">Per confronto: progetti equivalenti in agenzia tradizionale partono spesso da €2.000.</p>
+        <ul class="prev-sure">
+          <li>✓ Non è vincolante: la cifra definitiva la confermiamo insieme</li>
+          <li>✓ Puoi togliere o aggiungere funzioni anche dopo la bozza</li>
+        </ul>
+        <p class="prev-note">Prima bozza gratis, nessun anticipo. Tutti i prezzi sono IVA esclusa.</p>
         <a href="/#contatti" id="prevReq" class="btn btn-primary btn-block btn-lg btn-magnetic">Richiedi questo preventivo →</a>
         <a id="prevWa" href="https://wa.me/393662102203" target="_blank" rel="noopener" class="btn btn-ghost btn-block">Chiedi su WhatsApp</a>
         <button type="button" id="prevPrint" class="btn btn-ghost btn-block">🖨️ Stampa / salva PDF</button>
-        <p class="prev-share">🔗 La configurazione si salva nel link: copia l'indirizzo per condividerla o ritrovarla.</p>
+        <button type="button" id="prevCopy" class="btn btn-ghost btn-block">📋 Copia il link di questa configurazione</button>
 
         <!-- Oppure: ti richiamiamo noi (invia la configurazione senza cambiare pagina) -->
         <form class="prev-callback" id="prevCb">
@@ -110,6 +127,13 @@ import Layout from '../layouts/Layout.astro';
           <p class="form-feedback" id="cbFeedback" aria-live="polite"></p>
         </form>
       </aside>
+    </div>
+
+    <!-- Totale sticky su mobile: la cifra ti segue mentre configuri -->
+    <div class="prev-sticky" id="prevSticky" aria-hidden="true">
+      <span>La tua stima</span>
+      <b id="prevStickyV">€390</b>
+      <a href="#prevOut">riepilogo ↓</a>
     </div>
   </section>
 
@@ -161,7 +185,27 @@ import Layout from '../layouts/Layout.astro';
     .prev-canone-line b { color:var(--c2); }
     .prev-note { color:var(--muted-2); font-size:.84rem; margin:0 0 1.4rem; }
     .prev-out .btn { margin-bottom:.7rem; }
-    .prev-share { color:var(--muted-2); font-size:.78rem; margin-top:-.2rem; }
+    /* preset settore */
+    .prev-presets { max-width:1000px; margin:0 auto 1.6rem; text-align:center; }
+    .prev-presets > span { display:block; color:var(--muted); font-size:.9rem; margin-bottom:.7rem; }
+    .prev-presets-row { display:flex; gap:.6rem; flex-wrap:wrap; justify-content:center; }
+    .prev-presets-row button { padding:.6rem 1.1rem; border-radius:999px; border:1px solid var(--border); background:var(--surface); color:var(--text,#f3f3f7); font-family:'Space Grotesk Variable','Space Grotesk'; font-weight:600; font-size:.88rem; cursor:pointer; transition:border-color .2s, transform .2s var(--ease); }
+    .prev-presets-row button:hover { border-color:var(--c1); transform:translateY(-2px); }
+    .prev-presets-row button.on { background:var(--grad); border-color:transparent; color:#fff; }
+    /* rassicurazioni + ancoraggio */
+    .prev-anchor { color:var(--muted-2); font-size:.82rem; margin-bottom:.9rem; font-style:italic; }
+    .prev-sure { list-style:none; text-align:left; margin:0 0 1rem; padding:0; display:grid; gap:.35rem; }
+    .prev-sure li { color:var(--muted); font-size:.85rem; }
+    /* barra sticky mobile con il totale live */
+    .prev-sticky { display:none; }
+    @media (max-width:820px) {
+      .prev-sticky { position:fixed; left:0; right:0; bottom:0; z-index:855; display:flex; align-items:center; gap:.9rem; padding:.6rem 1rem calc(.6rem + env(safe-area-inset-bottom,0px)); background:rgba(8,12,22,.95); backdrop-filter:blur(12px); border-top:1px solid var(--border); }
+      .prev-sticky span { color:var(--muted); font-size:.8rem; }
+      .prev-sticky b { font-family:'Space Grotesk Variable','Space Grotesk'; font-size:1.35rem; background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; margin-right:auto; }
+      .prev-sticky a { color:var(--c2); font-size:.85rem; font-weight:600; }
+      .prev-sticky.hide { display:none; }
+    }
+    @media (max-width:760px) { .prev-sticky { bottom:66px; } :global(body) { padding-bottom:126px !important; } }
     /* Stampa: solo il riepilogo, su fondo bianco leggibile */
     @media print {
       body { background:#fff !important; color:#111; padding-bottom:0 !important; }
@@ -311,6 +355,10 @@ import Layout from '../layouts/Layout.astro';
           `canone €${canone}/mese · extra: ${extras}`;
         reqEl.href = '/?prev=' + encodeURIComponent(summary) + '#contatti';
       }
+
+      // totale nella barra sticky mobile
+      const sv = document.getElementById('prevStickyV');
+      if (sv) sv.textContent = (isFrom ? 'da ' : '') + '€' + total;
     }
 
     // stepper pagine
@@ -334,16 +382,19 @@ import Layout from '../layouts/Layout.astro';
         history.replaceState(null, '', '?c=' + btoa(JSON.stringify(cfg)));
       } catch (e) { /* niente di grave: l'URL resta com'è */ }
     }
+    function applyCfg(cfg) {
+      // azzera le funzioni selezionabili, poi applica la configurazione
+      form.querySelectorAll('label[data-feat] input:not(:disabled)').forEach((c) => { c.checked = false; });
+      const tipo = form.querySelector(`input[name="tipo"][value="${cfg.t}"]`); if (tipo) tipo.checked = true;
+      pagineN.value = Math.max(0, Math.min(12, +cfg.p || 0));
+      (cfg.f || []).forEach((f) => { const lab = form.querySelector(`label[data-feat="${f}"] input`); if (lab) lab.checked = true; });
+      const pr = form.querySelector(`input[name="prodotti"][value="${cfg.pr}"]`); if (pr) pr.checked = true;
+      const ca = form.querySelector(`input[name="canone"][value="${cfg.ca}"]`); if (ca) ca.checked = true;
+    }
     function loadCfg() {
       try {
         const raw = new URLSearchParams(location.search).get('c');
-        if (!raw) return;
-        const cfg = JSON.parse(atob(raw));
-        const tipo = form.querySelector(`input[name="tipo"][value="${cfg.t}"]`); if (tipo) tipo.checked = true;
-        pagineN.value = Math.max(0, Math.min(12, +cfg.p || 0));
-        (cfg.f || []).forEach((f) => { const lab = form.querySelector(`label[data-feat="${f}"] input`); if (lab) lab.checked = true; });
-        const pr = form.querySelector(`input[name="prodotti"][value="${cfg.pr}"]`); if (pr) pr.checked = true;
-        const ca = form.querySelector(`input[name="canone"][value="${cfg.ca}"]`); if (ca) ca.checked = true;
+        if (raw) applyCfg(JSON.parse(atob(raw)));
       } catch (e) { /* URL malformato: si parte dai default */ }
     }
 
@@ -352,6 +403,38 @@ import Layout from '../layouts/Layout.astro';
     calc();
 
     document.getElementById('prevPrint').addEventListener('click', () => window.print());
+
+    // Preset per settore: configurazione tipica in un tocco
+    const PRESETS = {
+      food:   { t: '690', p: '0', f: ['recensioni', 'social'], pr: '0', ca: '29' },
+      beauty: { t: '690', p: '0', f: ['foto', 'recensioni'], pr: '0', ca: '29' },
+      med:    { t: '690', p: '0', f: ['form', 'seo'], pr: '0', ca: '29' },
+      shop:   { t: '1200', p: '0', f: ['spedizioni', 'sconti'], pr: '0', ca: '29' },
+      zero:   { t: '390', p: '0', f: [], pr: '0', ca: '29' },
+    };
+    document.querySelectorAll('.prev-presets-row button').forEach((b) => b.addEventListener('click', () => {
+      document.querySelectorAll('.prev-presets-row button').forEach((o) => o.classList.toggle('on', o === b));
+      applyCfg(PRESETS[b.dataset.preset]);
+      calc(); saveCfg();
+    }));
+
+    // Copia link della configurazione
+    const cpBtn = document.getElementById('prevCopy');
+    cpBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(location.href);
+        const old = cpBtn.textContent;
+        cpBtn.textContent = '✅ Link copiato!';
+        setTimeout(() => { cpBtn.textContent = old; }, 2200);
+      } catch (e) { prompt('Copia questo link:', location.href); }
+    });
+
+    // La barra sticky sparisce quando il riepilogo è già visibile
+    const sticky = document.getElementById('prevSticky');
+    const outEl = document.getElementById('prevOut');
+    if (sticky && outEl && 'IntersectionObserver' in window) {
+      new IntersectionObserver((es) => es.forEach((e) => sticky.classList.toggle('hide', e.isIntersecting)), { threshold: 0.15 }).observe(outEl);
+    }
 
     // Mini-form "ti richiamiamo noi": invia contatto + configurazione a contact.php
     const cb = document.getElementById('prevCb');

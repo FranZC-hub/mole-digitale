@@ -237,6 +237,21 @@ const faqs = [
   { q: 'Verrò trovato su Google?', a: `Il sito nasce ottimizzato per le ricerche locali (es. «${d.h1b.replace(' a Torino', '')} vicino a me») e includiamo la scheda Google Business. I risultati SEO crescono nelle settimane: ti diciamo sempre cosa aspettarti, senza promesse magiche.` },
   { q: 'E dopo la consegna?', a: 'Non sparisci in un cassetto: hosting, backup e assistenza sono nel canone. Le modifiche si fanno su richiesta a piccole cifre chiare, dette sempre prima.' },
 ];
+// Link al preventivo GIÀ precompilato con la configurazione tipica del settore
+const presetOf = (slug) => {
+  const food = ['ristoranti', 'bar', 'pasticcerie', 'ristoranti-giapponesi'];
+  const beauty = ['parrucchieri', 'estetiste', 'nail-studio', 'centri-massaggi', 'profumerie'];
+  const med = ['dentisti', 'osteopati', 'veterinari', 'farmacie'];
+  const shop = ['negozi'];
+  const k = slug.replace('siti-web-', '').replace('-torino', '');
+  if (food.includes(k)) return { t: '690', p: '0', f: ['recensioni', 'social'], pr: '0', ca: '29' };
+  if (beauty.includes(k)) return { t: '690', p: '0', f: ['foto', 'recensioni'], pr: '0', ca: '29' };
+  if (med.includes(k)) return { t: '690', p: '0', f: ['form', 'seo'], pr: '0', ca: '29' };
+  if (shop.includes(k)) return { t: '1200', p: '0', f: ['spedizioni', 'sconti'], pr: '0', ca: '29' };
+  return { t: '690', p: '0', f: ['recensioni'], pr: '0', ca: '29' };
+};
+const prevHref = '/preventivo/?c=' + Buffer.from(JSON.stringify(presetOf(settore))).toString('base64');
+
 const faqSchemaSettore = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
@@ -290,7 +305,7 @@ const faqSchemaSettore = {
         <div class="land-price-card glass lp-hot"><b>Attività</b><span class="lp-p">€690</span><span class="lp-d">fino a 6 pagine · prenotazioni, SEO locale, scheda Google</span></div>
         <div class="land-price-card glass"><b>Poi</b><span class="lp-p">€29<i>/mese</i></span><span class="lp-d">hosting, dominio, SSL e assistenza</span></div>
       </div>
-      <p class="lp-note">Prima bozza gratis, nessun anticipo · prezzi IVA esclusa · <a href="/preventivo">calcola il tuo preventivo →</a></p>
+      <p class="lp-note">Prima bozza gratis, nessun anticipo · prezzi IVA esclusa · <a href={prevHref}>calcola il preventivo già impostato per {d.h1b.replace(' a Torino', '')} →</a></p>
     </div>
 
     {d.widget && (
