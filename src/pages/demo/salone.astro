@@ -240,7 +240,8 @@ import '@fontsource-variable/playfair-display';
     .dnav-toggle:hover{background:rgba(43,32,38,.06)}
     @media (max-width:900px){
       .hero{grid-template-columns:1fr;padding-top:7rem}.hero-img{height:56vh;border-radius:140px 140px 16px 16px}
-      .listino-grid{grid-template-columns:1fr}.listino-side img{height:320px}
+      /* su mobile l'immagine-listino sopra il listino vero sembrava un doppione tagliato: via */
+      .listino-grid{grid-template-columns:1fr}.listino-side{display:none}
       .team-grid{grid-template-columns:1fr}.masonry{columns:2}.dlinks{display:none}
       .dnav>.dbtn{display:none}
       .dnav>.nav-cta{font-size:.72rem;letter-spacing:.12em}
