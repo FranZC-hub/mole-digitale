@@ -335,6 +335,12 @@ import '@fontsource-variable/space-grotesk';
       document.querySelectorAll('[data-count]').forEach((el) => { const target = +el.dataset.count, suf = el.dataset.suffix || ''; ScrollTrigger.create({ trigger: el, start: 'top 92%', once: true, onEnter: () => gsap.to({ v: 0 }, { v: target, duration: 1.6, ease: 'power2.out', onUpdate() { el.textContent = Math.round(this.targets()[0].v) + suf; } }) }); });
       if (fine) document.querySelectorAll('.dmag').forEach((b) => { b.addEventListener('mousemove', (e) => { const r = b.getBoundingClientRect(); b.style.transform = `translate(${(e.clientX-r.left-r.width/2)*.3}px,${(e.clientY-r.top-r.height/2)*.4}px)`; }); b.addEventListener('mouseleave', () => { b.style.transform = ''; }); });
     } else { window.addEventListener('scroll', () => onScroll(window.scrollY), { passive: true }); document.querySelectorAll('[data-count]').forEach((el) => el.textContent = el.dataset.count + (el.dataset.suffix || '')); }
+
+    // Statistiche first-party (nessun cookie, niente IP): conta la visita alla demo
+    try { if (!navigator.webdriver && !["localhost","127.0.0.1"].includes(location.hostname)) {
+      let sref = ""; try { const u = new URL(document.referrer); if (u.host !== location.host) sref = u.host; } catch (_) {}
+      fetch("/stats.php?p=" + encodeURIComponent(location.pathname) + "&r=" + encodeURIComponent(sref), { keepalive: true }).catch(() => {});
+    } } catch (_) {}
   </script>
 </body>
 </html>

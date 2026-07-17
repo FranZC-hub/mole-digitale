@@ -229,29 +229,44 @@ const { settore } = Astro.params;
 const d = settori[settore];
 const title = `${d.h1a} ${d.h1b} — Mole Digitale`;
 
+// Gruppo del settore: guida sia il preset del preventivo sia il testo delle FAQ
+const groupOf = (slug) => {
+  const k = slug.replace('siti-web-', '').replace('-torino', '');
+  if (['ristoranti', 'bar', 'pasticcerie', 'ristoranti-giapponesi'].includes(k)) return 'food';
+  if (['parrucchieri', 'estetiste', 'nail-studio', 'centri-massaggi', 'profumerie'].includes(k)) return 'beauty';
+  if (['dentisti', 'osteopati', 'veterinari', 'farmacie'].includes(k)) return 'med';
+  if (['negozi'].includes(k)) return 'shop';
+  return 'base';
+};
+const group = groupOf(settore);
+const presetOf = () => ({
+  food:   { t: '690', p: '0', f: ['recensioni', 'social'], pr: '0', ca: '29' },
+  beauty: { t: '690', p: '0', f: ['foto', 'recensioni'], pr: '0', ca: '29' },
+  med:    { t: '690', p: '0', f: ['form', 'seo'], pr: '0', ca: '29' },
+  shop:   { t: '1200', p: '0', f: ['spedizioni', 'sconti'], pr: '0', ca: '29' },
+  base:   { t: '690', p: '0', f: ['recensioni'], pr: '0', ca: '29' },
+}[group]);
+const prevHref = '/preventivo/?c=' + Buffer.from(JSON.stringify(presetOf())).toString('base64');
+
+// "Cosa include" nella FAQ prezzi, coerente col settore (niente "menu" alle farmacie)
+const inclusoBy = {
+  food:   'menu digitale, prenotazione tavolo, galleria, SEO locale e scheda Google',
+  beauty: 'prenotazione appuntamenti, galleria lavori, SEO locale e scheda Google',
+  med:    'prenotazione visite, moduli di contatto, SEO locale e scheda Google',
+  shop:   'catalogo prodotti, galleria, SEO locale e scheda Google',
+  base:   'prenotazioni, catalogo/listino, SEO locale e scheda Google',
+};
+
 // FAQ per settore (nome interpolato) + dati strutturati FAQPage
 const faqs = [
-  { q: `Quanto costa un sito per ${d.h1b}?`, a: `Si parte da €390 una tantum per il sito Essenziale (onepage); il pacchetto più scelto per ${d.h1b} è il sito Attività a €690, con menu/prenotazioni, SEO locale e scheda Google. Poi un canone di €29/mese per hosting, dominio, SSL e assistenza. Prima bozza gratis, prezzi IVA esclusa.` },
+  { q: `Quanto costa un sito per ${d.h1b}?`, a: group === 'shop'
+      ? `Si parte da €390 una tantum per il sito Essenziale (onepage). Per ${d.h1b} la scelta tipica è il sito Attività a €690 come vetrina con ${inclusoBy.shop} — oppure, se vuoi vendere online, l'e-commerce completo da €1.200 con carrello e pagamenti. Poi un canone di €29/mese per hosting, dominio, SSL e assistenza. Prima bozza gratis, prezzi IVA esclusa.`
+      : `Si parte da €390 una tantum per il sito Essenziale (onepage); il pacchetto più scelto per ${d.h1b} è il sito Attività a €690, con ${inclusoBy[group]}. Poi un canone di €29/mese per hosting, dominio, SSL e assistenza. Prima bozza gratis, prezzi IVA esclusa.` },
   { q: 'In quanto tempo è pronto?', a: 'In media 7 giorni lavorativi da quando abbiamo foto e testi. Con il brief guidato su moledigitale.it/inizia raccogliamo tutto in una volta e partiamo subito.' },
   { q: 'Devo avere già foto e testi?', a: 'No. Se non li hai, i testi li scriviamo noi (pensati per farti scegliere dai clienti) e per le foto possiamo organizzare uno shooting a Torino. Si parte anche da una semplice chiacchierata.' },
   { q: 'Verrò trovato su Google?', a: `Il sito nasce ottimizzato per le ricerche locali (es. «${d.h1b.replace(' a Torino', '')} vicino a me») e includiamo la scheda Google Business. I risultati SEO crescono nelle settimane: ti diciamo sempre cosa aspettarti, senza promesse magiche.` },
   { q: 'E dopo la consegna?', a: 'Non sparisci in un cassetto: hosting, backup e assistenza sono nel canone. Le modifiche si fanno su richiesta a piccole cifre chiare, dette sempre prima.' },
 ];
-// Link al preventivo GIÀ precompilato con la configurazione tipica del settore
-const presetOf = (slug) => {
-  const food = ['ristoranti', 'bar', 'pasticcerie', 'ristoranti-giapponesi'];
-  const beauty = ['parrucchieri', 'estetiste', 'nail-studio', 'centri-massaggi', 'profumerie'];
-  const med = ['dentisti', 'osteopati', 'veterinari', 'farmacie'];
-  const shop = ['negozi'];
-  const k = slug.replace('siti-web-', '').replace('-torino', '');
-  if (food.includes(k)) return { t: '690', p: '0', f: ['recensioni', 'social'], pr: '0', ca: '29' };
-  if (beauty.includes(k)) return { t: '690', p: '0', f: ['foto', 'recensioni'], pr: '0', ca: '29' };
-  if (med.includes(k)) return { t: '690', p: '0', f: ['form', 'seo'], pr: '0', ca: '29' };
-  if (shop.includes(k)) return { t: '1200', p: '0', f: ['spedizioni', 'sconti'], pr: '0', ca: '29' };
-  return { t: '690', p: '0', f: ['recensioni'], pr: '0', ca: '29' };
-};
-const prevHref = '/preventivo/?c=' + Buffer.from(JSON.stringify(presetOf(settore))).toString('base64');
-
 const faqSchemaSettore = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',

@@ -358,6 +358,12 @@ const reviews = [
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { sunav.classList.remove('suopen'); st.setAttribute('aria-expanded', 'false'); } });
     const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.1 });
     document.querySelectorAll('.r').forEach((el) => io.observe(el));
+
+    // Statistiche first-party (nessun cookie, niente IP): conta la visita alla demo
+    try { if (!navigator.webdriver && !["localhost","127.0.0.1"].includes(location.hostname)) {
+      let sref = ""; try { const u = new URL(document.referrer); if (u.host !== location.host) sref = u.host; } catch (_) {}
+      fetch("/stats.php?p=" + encodeURIComponent(location.pathname) + "&r=" + encodeURIComponent(sref), { keepalive: true }).catch(() => {});
+    } } catch (_) {}
   </script>
 </body>
 </html>

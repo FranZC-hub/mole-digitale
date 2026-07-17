@@ -191,9 +191,9 @@ const articleSchema = article ? {
   )}
   {promoMessage && (
     <script is:inline set:html={`
-      (function(){var b=document.getElementById('promoBar');
-      if(localStorage.getItem('md-promo-hide')!=='${promoMessage.length}'){b.hidden=false;document.documentElement.classList.add('has-promo');}
-      document.getElementById('promoClose').addEventListener('click',function(){b.hidden=true;document.documentElement.classList.remove('has-promo');localStorage.setItem('md-promo-hide','${promoMessage.length}');});})();
+      (function(){var b=document.getElementById('promoBar'),k=${JSON.stringify(promoMessage)};
+      if(localStorage.getItem('md-promo-hide')!==k){b.hidden=false;document.documentElement.classList.add('has-promo');}
+      document.getElementById('promoClose').addEventListener('click',function(){b.hidden=true;document.documentElement.classList.remove('has-promo');localStorage.setItem('md-promo-hide',k);});})();
     `}></script>
   )}
 
@@ -299,7 +299,7 @@ const articleSchema = article ? {
         <a href="/siti-web-ristoranti-torino">Siti per ristoranti</a>
         <a href="/siti-web-parrucchieri-torino">Siti per parrucchieri</a>
         <a href="/siti-web-negozi-torino">Siti per negozi</a>
-        <a href="/demo">Tutti i settori →</a>
+        <a href="/demo">Tutti gli esempi →</a>
       </div>
       <div class="footer-col">
         <h3>Contatti</h3>

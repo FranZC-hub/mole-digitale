@@ -419,6 +419,12 @@ function icon(n) {
       deTabs.forEach((t) => { const on = t === tab; t.classList.toggle('on', on); t.setAttribute('aria-selected', String(on)); });
       dePanels.forEach((p) => p.classList.toggle('on', p.dataset.i === i));
     }));
+
+    // Statistiche first-party (nessun cookie, niente IP): conta la visita alla demo
+    try { if (!navigator.webdriver && !["localhost","127.0.0.1"].includes(location.hostname)) {
+      let sref = ""; try { const u = new URL(document.referrer); if (u.host !== location.host) sref = u.host; } catch (_) {}
+      fetch("/stats.php?p=" + encodeURIComponent(location.pathname) + "&r=" + encodeURIComponent(sref), { keepalive: true }).catch(() => {});
+    } } catch (_) {}
   </script>
 </body>
 </html>

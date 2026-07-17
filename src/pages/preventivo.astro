@@ -359,6 +359,10 @@ import Layout from '../layouts/Layout.astro';
       // totale nella barra sticky mobile
       const sv = document.getElementById('prevStickyV');
       if (sv) sv.textContent = (isFrom ? 'da ' : '') + '€' + total;
+
+      // il confronto "in agenzia da €2.000" ha senso solo dal pacchetto Attività in su
+      const anch = document.querySelector('.prev-anchor');
+      if (anch) anch.hidden = tipo < 690;
     }
 
     // stepper pagine

@@ -404,6 +404,12 @@ function icon(n) {
       const hImg = document.querySelector('.mshero-media img');
       if (hImg) { hImg.style.willChange = 'transform'; addEventListener('scroll', () => { const y = scrollY; if (y < 900) hImg.style.transform = `translateY(${y * .12}px) scale(1.06)`; }, { passive: true }); }
     }
+
+    // Statistiche first-party (nessun cookie, niente IP): conta la visita alla demo
+    try { if (!navigator.webdriver && !["localhost","127.0.0.1"].includes(location.hostname)) {
+      let sref = ""; try { const u = new URL(document.referrer); if (u.host !== location.host) sref = u.host; } catch (_) {}
+      fetch("/stats.php?p=" + encodeURIComponent(location.pathname) + "&r=" + encodeURIComponent(sref), { keepalive: true }).catch(() => {});
+    } } catch (_) {}
   </script>
 </body>
 </html>

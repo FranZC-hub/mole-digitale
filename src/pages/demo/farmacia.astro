@@ -338,6 +338,12 @@ function icon(n) {
     });
     const hoursEl = document.getElementById('hours');
     if (hoursEl) { [1,2,3,4,5,6,0].forEach((i) => { const li = document.createElement('li'); if (i === d) li.className = 'today'; const h = HRS[i] ? fmt(HRS[i][0]) + '–' + fmt(HRS[i][1]) : 'Chiuso'; li.innerHTML = '<span>' + NAMES[i] + '</span><b>' + h + '</b>'; hoursEl.appendChild(li); }); }
+
+    // Statistiche first-party (nessun cookie, niente IP): conta la visita alla demo
+    try { if (!navigator.webdriver && !["localhost","127.0.0.1"].includes(location.hostname)) {
+      let sref = ""; try { const u = new URL(document.referrer); if (u.host !== location.host) sref = u.host; } catch (_) {}
+      fetch("/stats.php?p=" + encodeURIComponent(location.pathname) + "&r=" + encodeURIComponent(sref), { keepalive: true }).catch(() => {});
+    } } catch (_) {}
   </script>
 </body>
 </html>
