@@ -533,8 +533,10 @@ import '@fontsource-variable/space-grotesk';
     .ldrawer-foot{padding:1.1rem 1.3rem 1.4rem;border-top:1px solid var(--line)}
     .wish-note{text-align:center;font-size:.78rem;color:var(--muted);margin-top:.7rem}
 
-    .ltoast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,140%);background:var(--ink);color:#fff;padding:.75rem 1.2rem;border-radius:999px;font-size:.9rem;font-weight:600;z-index:500;box-shadow:var(--shadow);transition:transform .35s var(--ease)}
-    .ltoast.on{transform:translate(-50%,0)}
+    /* nascosto per costruzione (opacity+visibility): il solo translate non bastava
+       quando il toast è vuoto/basso e spuntava come pillola nera su mobile */
+    .ltoast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,140%);opacity:0;visibility:hidden;pointer-events:none;background:var(--ink);color:#fff;padding:.75rem 1.2rem;border-radius:999px;font-size:.9rem;font-weight:600;z-index:500;box-shadow:var(--shadow);transition:transform .35s var(--ease),opacity .3s,visibility .3s}
+    .ltoast.on{transform:translate(-50%,0);opacity:1;visibility:visible}
 
     /* LOOKBOOK */
     .lookbook{display:flex;gap:1.4rem;overflow-x:auto;scroll-snap-type:x mandatory;padding:.5rem .2rem 1.3rem;scroll-padding-left:.2rem;scrollbar-width:thin;scrollbar-color:var(--emer) var(--line)}
@@ -618,6 +620,9 @@ import '@fontsource-variable/space-grotesk';
     @media (max-width:960px){
       .lhero{grid-template-columns:1fr;text-align:center}
       .lhero-art{order:-1}.leyebrow,.lhero-cta,.lhero-sign{justify-content:center}.lhero-sub{margin-left:auto;margin-right:auto}
+      /* su telefono i due CTA si impilano a piena larghezza (niente a-capo storto) */
+      .lhero-cta{flex-direction:column;align-items:stretch;max-width:340px;margin-left:auto;margin-right:auto}
+      .lhero-cta .lbtn{width:100%}
       .config{grid-template-columns:1fr}
       .atelier-grid{grid-template-columns:1fr}.atelier-art{order:-1}
       .serv-grid{grid-template-columns:1fr 1fr}
@@ -625,7 +630,9 @@ import '@fontsource-variable/space-grotesk';
       .dove-grid{grid-template-columns:1fr}
     }
     @media (max-width:680px){
-      .llinks{display:none}.lnav-toggle{display:grid;place-items:center}
+      /* .llinks (che spinge il gruppo a destra col suo margin-left:auto) qui sparisce:
+         il margin passa al gruppo destro, così Prenota resta attaccato al bordo */
+      .llinks{display:none}.lnav-side{margin-left:auto}.lnav-toggle{display:grid;place-items:center}
       .lnav-side>.lbtn-solid{padding:.5rem .9rem;font-size:.82rem}
       .lnav.open .llinks{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1.1rem;background:rgba(250,247,242,.98);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:1.2rem clamp(1.2rem,5vw,3rem) 1.5rem;margin:0}
       .serv-grid{grid-template-columns:1fr}.metals{grid-template-columns:1fr}
