@@ -308,7 +308,9 @@ function icon(n) {
     }));
     // Cursore pallino smalto (desktop)
     if (matchMedia('(hover:hover) and (pointer:fine)').matches) {
-      const dot = document.createElement('div'); dot.className = 'nlcursor'; document.body.appendChild(dot);
+      const dot = document.createElement('div'); dot.className = 'nlcursor';
+      dot.style.left = '-40px'; dot.style.top = '-40px'; // fuori schermo finché il mouse non si muove
+      document.body.appendChild(dot);
       addEventListener('pointermove', (e) => { dot.style.left = e.clientX + 'px'; dot.style.top = e.clientY + 'px'; }, { passive: true });
     }
   </script>
