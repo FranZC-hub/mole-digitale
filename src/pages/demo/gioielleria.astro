@@ -609,9 +609,10 @@ import '@fontsource-variable/space-grotesk';
     .resv-sep{color:#cfc8c0;font-size:.85rem;margin:.2rem 0 1.1rem}
 
     /* WhatsApp float */
-    .wa-float{position:fixed;right:18px;bottom:18px;z-index:350;width:56px;height:56px;border-radius:50%;background:#25d366;color:#fff;display:grid;place-items:center;box-shadow:0 12px 30px -8px rgba(37,211,102,.6);transition:transform .25s var(--ease)}
-    .wa-float:hover{transform:scale(1.08) translateY(-2px)}
-    .wa-float::after{content:'';position:absolute;inset:0;border-radius:50%;border:2px solid #25d366;animation:wapulse 2.4s ease-out infinite}
+    /* versione discreta in tinta atelier: smeraldo del brand, niente verde acceso */
+    .wa-float{position:fixed;right:18px;bottom:18px;z-index:350;width:56px;height:56px;border-radius:50%;background:var(--emer);color:#fff;display:grid;place-items:center;box-shadow:0 12px 28px -10px rgba(14,107,87,.55);border:1px solid rgba(255,255,255,.25);transition:transform .25s var(--ease),background .25s}
+    .wa-float:hover{transform:scale(1.08) translateY(-2px);background:var(--emer-d)}
+    .wa-float::after{content:'';position:absolute;inset:0;border-radius:50%;border:1px solid var(--emer);animation:wapulse 3s ease-out infinite}
     @keyframes wapulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.6);opacity:0}}
 
     /* reveal */

@@ -354,7 +354,9 @@ function icon(n) {
     .pfquiz-res p{color:var(--muted);max-width:46ch;margin:0 auto 1.3rem}
     .pfquiz-res-cta{display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap}
     .pfquiz-redo{background:none;border:0;color:var(--muted);font-size:.85rem;cursor:pointer;text-decoration:underline;padding:.5rem}
-    .wa-fab{position:fixed;right:18px;bottom:18px;z-index:160;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 30px -10px rgba(37,211,102,.7);transition:transform .2s var(--e)}
+    /* versione discreta in tinta boutique: carta scura e oro, niente verde acceso */
+    .wa-fab{position:fixed;right:18px;bottom:18px;z-index:160;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--card);color:var(--gold-l);border:1px solid var(--gold-d);box-shadow:0 14px 30px -12px rgba(0,0,0,.8);transition:transform .2s var(--e),color .2s,border-color .2s}
+    .wa-fab:hover{color:var(--ink);border-color:var(--gold)}
     .wa-fab:hover{transform:scale(1.08)}
 
     /* reveal "dark luxe": emersione lenta dal buio, quasi cinematografica */
