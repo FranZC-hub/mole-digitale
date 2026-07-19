@@ -1,0 +1,80 @@
+---
+import Layout from './_Layout.astro';
+---
+<Layout title="La cura della persona" active="Home">
+  <!-- HERO -->
+  <section class="fsection ahero">
+    <div class="ahero-text r">
+      <span class="fkick">Farmacia · Torino, Corso Principe Oddone 28</span>
+      <h1>Il nostro impegno è<br/><span class="fmark">la cura della persona.</span></h1>
+      <p>Farmaci, autoanalisi, telemedicina e consiglio vero: dal 1° giorno al tuo fianco, con la comodità della consegna a domicilio e di WhatsApp.</p>
+      <div class="ahero-cta">
+        <a href="/demoFarmaciaAusiliatrice/prenotazioni/" class="fbtn fbtn-solid fbtn-lg">Prenota un servizio</a>
+        <a href="https://wa.me/393505488606" target="_blank" rel="noopener" class="fbtn fbtn-ghost fbtn-lg">💬 Scrivici su WhatsApp</a>
+      </div>
+      <ul class="ahero-trust"><li>✓ ECG e Holter con telerefertazione</li><li>✓ Consegna a domicilio</li><li>✓ Deblistering personalizzato</li></ul>
+    </div>
+    <div class="ahero-panel r">
+      <div class="ahero-open"><span class="adot"></span><b id="aOpen">Aperta ora</b></div>
+      <ul class="ahero-hours" id="aHours"></ul>
+      <p class="ahero-hnote">⚠ Orari indicativi della bozza — da confermare</p>
+    </div>
+  </section>
+
+  <!-- SERVIZI IN EVIDENZA -->
+  <section class="fsection">
+    <div class="fhead fhead-c r"><span class="fkick">I servizi</span><h2>Molto più che <span class="fmark">farmaci</span></h2></div>
+    <div class="fgrid3">
+      <article class="fcard r"><span class="fic">🫀</span><h3>Holter cardiaco & ECG</h3><p>Elettrocardiogramma con telerefertazione immediata; Holter con referto in 5 giorni, 24 ore in urgenza.</p></article>
+      <article class="fcard r"><span class="fic">💊</span><h3>Deblistering</h3><p>Prepariamo noi le dosi giornaliere personalizzate: la terapia giusta, al momento giusto, senza errori.</p></article>
+      <article class="fcard r"><span class="fic">🏠</span><h3>Consegna a domicilio</h3><p>Non puoi passare? Ti portiamo i farmaci a casa. Ordina per telefono o WhatsApp.</p></article>
+    </div>
+    <p class="acenter r"><a href="/demoFarmaciaAusiliatrice/servizi/" class="fbtn fbtn-ghost">Tutti i servizi →</a></p>
+  </section>
+
+  <!-- BANNER PRENOTAZIONI -->
+  <section class="abanner">
+    <div class="abanner-in r">
+      <div><h2>Salta la fila: <span style="color:#bfe3f8">prenota online</span>.</h2><p>Holter, ECG, tamponi e autoanalisi: scegli giorno e ora, ci pensiamo noi.</p></div>
+      <a href="/demoFarmaciaAusiliatrice/prenotazioni/" class="fbtn fbtn-cel fbtn-lg">Prenota adesso →</a>
+    </div>
+  </section>
+
+  <!-- PRODOTTI IN EVIDENZA -->
+  <section class="fsection">
+    <div class="fhead fhead-c r"><span class="fkick">Dal banco</span><h2>Prodotti <span class="fmark">in evidenza</span></h2><p>Dermocosmesi e integrazione selezionate dai nostri farmacisti.</p></div>
+    <div class="aprods r" id="aProds"></div>
+    <p class="acenter r"><a href="/demoFarmaciaAusiliatrice/prodotti/" class="fbtn fbtn-ghost">Vedi tutti i prodotti →</a></p>
+  </section>
+
+  <style>
+    .ahero{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(1.6rem,4vw,3.5rem);align-items:center;padding-top:8rem}
+    .ahero>*{min-width:0}
+    .ahero h1{font-size:clamp(2.4rem,5.6vw,4rem);margin:.9rem 0 1rem}
+    .ahero-text>p{color:var(--muted);font-size:1.12rem;max-width:50ch;margin-bottom:1.6rem}
+    .ahero-cta{display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:1.5rem}
+    .ahero-trust{list-style:none;display:flex;gap:.5rem 1.3rem;flex-wrap:wrap;color:var(--blu);font-weight:600;font-size:.9rem}
+    .ahero-panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.6rem;box-shadow:var(--soft)}
+    .ahero-open{display:flex;align-items:center;gap:.5rem;font-size:1.05rem;margin-bottom:1rem}
+    .adot{width:10px;height:10px;border-radius:50%;background:#2fbf71;box-shadow:0 0 8px #2fbf71}
+    .ahero-open.closed .adot{background:#e05555;box-shadow:0 0 8px #e05555}
+    .ahero-hours{list-style:none;display:grid;gap:.4rem;font-size:.95rem}
+    .ahero-hours li{display:flex;justify-content:space-between;gap:1rem;border-bottom:1px dashed var(--line);padding-bottom:.35rem}
+    .ahero-hours li.today{font-weight:800;color:var(--blu)}
+    .ahero-hnote{margin-top:.8rem;font-size:.74rem;color:var(--muted)}
+    .acenter{text-align:center;margin-top:1.6rem}
+    .abanner{background:linear-gradient(130deg,var(--blu),var(--blu-d))}
+    .abanner-in{max-width:1150px;margin:0 auto;padding:2.6rem clamp(1.2rem,5vw,3rem);display:flex;align-items:center;justify-content:space-between;gap:1.4rem;flex-wrap:wrap;color:#fff}
+    .abanner-in h2{font-size:clamp(1.5rem,3.6vw,2.2rem)}
+    .abanner-in p{color:#c9dcef;margin-top:.3rem}
+    .aprods{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+    .aprods>*{min-width:0}
+    @media (max-width:920px){.ahero{grid-template-columns:1fr;padding-top:7.5rem}.aprods{grid-template-columns:1fr 1fr}}
+  </style>
+
+  <script>
+    import { AUS_HOURS, renderHours, ausProducts, prodCard } from './_shared.js';
+    renderHours(document.getElementById('aHours'), document.getElementById('aOpen'));
+    document.getElementById('aProds').innerHTML = ausProducts().slice(0, 4).map(prodCard).join('');
+  </script>
+</Layout>

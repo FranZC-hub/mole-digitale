@@ -1,0 +1,48 @@
+---
+import Layout from './_Layout.astro';
+const MAPS = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('Farmacia dell\'Ausiliatrice, Corso Principe Oddone 28, 10152 Torino');
+---
+<Layout title="Dove siamo" active="Dove siamo">
+  <section class="fsection" style="padding-top:8rem;">
+    <div class="fhead fhead-c r"><span class="fkick">Vieni a trovarci</span><h1>Dove <span class="fmark">siamo</span></h1></div>
+
+    <div class="dgrid">
+      <div class="dmap r">
+        <div class="dmap-pin" aria-hidden="true">📍</div>
+        <b>Corso Principe Oddone, 28</b>
+        <span>10152 Torino (TO)</span>
+        <a href={MAPS} target="_blank" rel="noopener" class="fbtn fbtn-cel" style="margin-top:1rem;">Apri in Google Maps →</a>
+      </div>
+      <div class="dinfo">
+        <div class="fcard r"><span class="fic">🕐</span><h3>Orari di apertura</h3>
+          <ul class="dhours" id="dHours"></ul>
+          <p style="font-size:.76rem;margin-top:.6rem;">⚠ Orari indicativi della bozza — da confermare</p>
+        </div>
+        <div class="fcard r"><span class="fic">🚋</span><h3>Come arrivare</h3>
+          <p>Sul controviale di Corso Principe Oddone, a pochi minuti da Porta Susa. Fermate di tram e bus lungo il corso; parcheggio nelle vie laterali.</p>
+        </div>
+        <div class="fcard r"><span class="fic">♿</span><h3>Accessibilità</h3>
+          <p>Ingresso a livello strada, accessibile con passeggini e carrozzine.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <style>
+    .dgrid{display:grid;grid-template-columns:1fr 1.1fr;gap:1.4rem;align-items:start;max-width:1000px;margin:0 auto}
+    .dgrid>*{min-width:0}
+    .dmap{background:linear-gradient(150deg,var(--bg2),#dcebf7);border:1px solid var(--line);border-radius:20px;padding:2.6rem 1.6rem;display:flex;flex-direction:column;align-items:center;text-align:center;box-shadow:var(--soft)}
+    .dmap-pin{font-size:3rem;margin-bottom:.6rem}
+    .dmap b{font-size:1.25rem;font-family:var(--disp)}
+    .dmap span{color:var(--muted)}
+    .dinfo{display:grid;gap:1rem}
+    .dhours{list-style:none;display:grid;gap:.35rem;font-size:.92rem;margin-top:.3rem}
+    .dhours li{display:flex;justify-content:space-between;gap:1rem;border-bottom:1px dashed var(--line);padding-bottom:.3rem;color:var(--muted)}
+    .dhours li b{color:var(--ink)}
+    .dhours li.today{font-weight:800}.dhours li.today span{color:var(--blu)}
+    @media (max-width:760px){.dgrid{grid-template-columns:1fr}}
+  </style>
+  <script>
+    import { renderHours } from './_shared.js';
+    renderHours(document.getElementById('dHours'), null);
+  </script>
+</Layout>

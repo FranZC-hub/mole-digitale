@@ -1,0 +1,40 @@
+---
+import Layout from './_Layout.astro';
+---
+<Layout title="Contatti" active="Contatti">
+  <section class="fsection" style="padding-top:8rem;">
+    <div class="fhead fhead-c r"><span class="fkick">Parliamo</span><h1>Contatta<span class="fmark">ci</span></h1><p>Per ordini, informazioni su un farmaco o qualsiasi necessità: siamo a tua disposizione.</p></div>
+
+    <div class="ctgrid">
+      <div class="ctcards">
+        <a class="fcard ctcard r" href="tel:+390114365466"><span class="fic">📞</span><h3>Telefono</h3><p><b>011 436 5466</b><br/>negli orari di apertura</p></a>
+        <a class="fcard ctcard r" href="https://wa.me/393505488606" target="_blank" rel="noopener"><span class="fic">💬</span><h3>WhatsApp</h3><p><b>350 548 8606</b><br/>ordini e domande, risposta in giornata</p></a>
+        <a class="fcard ctcard r" href="mailto:info@farmaciaausiliatrice.it"><span class="fic">✉️</span><h3>Email</h3><p><b>info@farmaciaausiliatrice.it</b><br/>per richieste non urgenti</p></a>
+      </div>
+
+      <form class="fform r" id="ctForm">
+        <h3 style="font-size:1.1rem;">Scrivici da qui</h3>
+        <label>Il tuo nome<input type="text" required autocomplete="name" /></label>
+        <label>Telefono o email<input type="text" required autocomplete="tel" /></label>
+        <label>Messaggio<textarea rows="4" required placeholder="Es. Vorrei sapere se avete disponibile…"></textarea></label>
+        <button type="submit" class="fbtn fbtn-solid fbtn-block">Invia il messaggio →</button>
+        <p class="fform-ok" id="ctOk">✅ Messaggio inviato! Ti rispondiamo il prima possibile. <i>(demo: nessun dato è stato trasmesso)</i></p>
+        <p class="fform-note">Bozza dimostrativa: l'invio reale sarà attivato nella versione definitiva.</p>
+      </form>
+    </div>
+  </section>
+  <style>
+    .ctgrid{display:grid;grid-template-columns:1fr 1.1fr;gap:1.6rem;align-items:start;max-width:1000px;margin:0 auto}
+    .ctgrid>*{min-width:0}
+    .ctcards{display:grid;gap:1rem}
+    .ctcard p b{color:var(--blu)}
+    @media (max-width:760px){.ctgrid{grid-template-columns:1fr}}
+  </style>
+  <script>
+    document.getElementById('ctForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('ctOk').style.display = 'block';
+      e.target.reset();
+    });
+  </script>
+</Layout>

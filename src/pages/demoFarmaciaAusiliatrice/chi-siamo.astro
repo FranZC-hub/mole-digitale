@@ -1,0 +1,37 @@
+---
+import Layout from './_Layout.astro';
+---
+<Layout title="Chi siamo" active="Chi siamo">
+  <section class="fsection" style="padding-top:8rem;">
+    <div class="fhead fhead-c r"><span class="fkick">La farmacia</span><h1>Il nostro impegno è<br/><span class="fmark">la cura della persona</span></h1></div>
+
+    <div class="cs-cols">
+      <div class="r">
+        <h2 class="cs-h">Un presidio del quartiere</h2>
+        <p>La Farmacia dell'Ausiliatrice è il punto di riferimento per la salute di chi vive e lavora attorno a Corso Principe Oddone. Non solo farmaci: ascolto, consiglio e servizi che una volta richiedevano ambulatori e code.</p>
+        <p style="margin-top:.8rem;">Dalla telemedicina al deblistering, ogni servizio nasce dalla stessa idea: <b>renderti la salute più semplice</b>.</p>
+      </div>
+      <div class="r">
+        <h2 class="cs-h">Come lavoriamo</h2>
+        <p>Prima le persone, poi i prodotti. Il nostro team ti conosce per nome, sa la tua storia e ti segue nel tempo — e quando non puoi venire tu, veniamo noi con la consegna a domicilio.</p>
+        <p style="margin-top:.8rem;">Su WhatsApp rispondiamo in giornata: per ordini, dubbi su un farmaco o anche solo per un consiglio.</p>
+      </div>
+    </div>
+
+    <div class="fgrid3" style="margin-top:2.4rem;">
+      <article class="fcard r"><span class="fic">🤝</span><h3>Ascolto vero</h3><p>Il consiglio del farmacista, senza fretta: sei una persona, non uno scontrino.</p></article>
+      <article class="fcard r"><span class="fic">🔬</span><h3>Servizi moderni</h3><p>ECG, Holter e telerefertazione: la telemedicina a due passi da casa.</p></article>
+      <article class="fcard r"><span class="fic">📍</span><h3>Radicati nel quartiere</h3><p>Su Corso Principe Oddone, per chi c'è nato e per chi ci è appena arrivato.</p></article>
+    </div>
+
+    <p style="text-align:center;margin-top:2.4rem;" class="r"><a href="/demoFarmaciaAusiliatrice/dove-siamo/" class="fbtn fbtn-solid fbtn-lg">Vieni a trovarci →</a></p>
+  </section>
+  <style>
+    .cs-cols{display:grid;grid-template-columns:1fr 1fr;gap:2.2rem;max-width:960px;margin:0 auto}
+    .cs-cols>*{min-width:0}
+    .cs-h{font-size:1.35rem;margin-bottom:.6rem}
+    .cs-cols p{color:var(--muted)}
+    .cs-cols b{color:var(--ink)}
+    @media (max-width:760px){.cs-cols{grid-template-columns:1fr}}
+  </style>
+</Layout>

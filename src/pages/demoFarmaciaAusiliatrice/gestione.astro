@@ -1,0 +1,76 @@
+---
+import Layout from './_Layout.astro';
+---
+<Layout title="Gestione prodotti (demo)" active="">
+  <section class="fsection" style="padding-top:8rem;">
+    <div class="fhead fhead-c r">
+      <span class="fkick">Demo · pannello riservato</span>
+      <h1>Gestisci i prodotti <span class="fmark">in autonomia</span></h1>
+      <p>Questa è la <b>dimostrazione</b> del pannello proposto: aggiungi un prodotto qui sotto e guarda comparire subito sulla pagina <a href="/demoFarmaciaAusiliatrice/prodotti/" style="color:var(--cel-d);text-decoration:underline;">Prodotti</a> del sito. Nella versione reale sarà protetto da password e i dati salvati sul server.</p>
+    </div>
+
+    <div class="ggrid">
+      <form class="fform r" id="gForm">
+        <h3 style="font-size:1.1rem;">➕ Nuovo prodotto</h3>
+        <label>Nome del prodotto<input type="text" id="g-nome" required placeholder="Es. Enterogermina 20 flaconcini" maxlength="60" /></label>
+        <div class="grow">
+          <label>Categoria
+            <select id="g-cat"><option>Dermocosmesi</option><option>Integratori</option><option>Autoanalisi</option></select>
+          </label>
+          <label>Prezzo (€)<input type="text" id="g-prezzo" required inputmode="decimal" placeholder="9,90" maxlength="8" /></label>
+        </div>
+        <label>Icona
+          <select id="g-em"><option>💊</option><option>🧴</option><option>✨</option><option>⚡</option><option>🌡</option><option>💚</option><option>🩺</option><option>🍼</option></select>
+        </label>
+        <button type="submit" class="fbtn fbtn-cel fbtn-block">Pubblica sul sito →</button>
+        <p class="fform-note">Demo: i dati restano solo su questo dispositivo.</p>
+      </form>
+
+      <div class="glist-wrap r">
+        <h3 style="font-size:1.1rem;margin-bottom:.8rem;">I prodotti che hai aggiunto</h3>
+        <div class="glist" id="gList"></div>
+        <a href="/demoFarmaciaAusiliatrice/prodotti/" class="fbtn fbtn-solid" style="margin-top:1rem;">Guarda come appaiono sul sito →</a>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .ggrid{display:grid;grid-template-columns:1fr 1.1fr;gap:1.6rem;align-items:start;max-width:980px;margin:0 auto}
+    .ggrid>*{min-width:0}
+    .grow{display:grid;grid-template-columns:1.3fr 1fr;gap:.8rem}
+    .grow>*{min-width:0}
+    .glist{display:grid;gap:.6rem}
+    .gitem{display:flex;align-items:center;gap:.8rem;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:.8rem 1rem}
+    .gitem .em{font-size:1.5rem}
+    .gitem .tx{flex:1;min-width:0}
+    .gitem b{display:block;font-size:.98rem}
+    .gitem span{font-size:.8rem;color:var(--muted)}
+    .gitem button{background:none;border:1px solid var(--line);border-radius:9px;width:34px;height:34px;cursor:pointer;color:#c04545;font-size:1rem;flex:none}
+    .gitem button:hover{border-color:#c04545}
+    .gempty{color:var(--muted);background:var(--bg2);border:1px dashed var(--line);border-radius:13px;padding:1.2rem;text-align:center;font-size:.94rem}
+    @media (max-width:760px){.ggrid{grid-template-columns:1fr}}
+  </style>
+
+  <script>
+    import { readCustom, writeCustom } from './_shared.js';
+    const list = document.getElementById('gList');
+    const render = () => {
+      const items = readCustom();
+      list.innerHTML = items.length
+        ? items.map((p, i) => `<div class="gitem"><span class="em">${p.em}</span><div class="tx"><b>${p.nome}</b><span>${p.cat} · € ${p.prezzo}</span></div><button type="button" data-i="${i}" aria-label="Elimina ${p.nome}">✕</button></div>`).join('')
+        : '<div class="gempty">Ancora nessun prodotto. Aggiungine uno dal modulo: apparirà qui e sulla pagina Prodotti.</div>';
+      list.querySelectorAll('button[data-i]').forEach((b) => b.addEventListener('click', () => {
+        const arr = readCustom(); arr.splice(+b.dataset.i, 1); writeCustom(arr); render();
+      }));
+    };
+    document.getElementById('gForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nome = document.getElementById('g-nome').value.trim();
+      const prezzo = document.getElementById('g-prezzo').value.trim().replace('.', ',');
+      if (!nome || !prezzo) return;
+      writeCustom([{ id: 'u' + Date.now(), nome, prezzo, cat: document.getElementById('g-cat').value, em: document.getElementById('g-em').value }, ...readCustom()]);
+      e.target.reset(); render();
+    });
+    render();
+  </script>
+</Layout>

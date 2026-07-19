@@ -1,0 +1,59 @@
+---
+import Layout from './_Layout.astro';
+---
+<Layout title="Prenotazioni" active="">
+  <section class="fsection" style="padding-top:8rem;">
+    <div class="fhead fhead-c r"><span class="fkick">Salta la fila</span><h1>Prenota un <span class="fmark">servizio</span></h1><p>Scegli servizio e giorno preferito: ti confermiamo l'appuntamento su WhatsApp o per telefono.</p></div>
+
+    <div class="prgrid">
+      <form class="fform r" id="prForm">
+        <label>Servizio
+          <select id="pr-serv">
+            <option>Holter cardiaco</option>
+            <option>Elettrocardiogramma (ECG)</option>
+            <option>Tampone rapido</option>
+            <option>Glicemia / autoanalisi</option>
+            <option>Consegna a domicilio</option>
+            <option>Deblistering — primo colloquio</option>
+          </select>
+        </label>
+        <div class="prrow">
+          <label>Giorno preferito<input type="date" id="pr-data" required /></label>
+          <label>Fascia oraria
+            <select id="pr-ora"><option>Mattina</option><option>Pomeriggio</option></select>
+          </label>
+        </div>
+        <label>Il tuo nome<input type="text" id="pr-nome" required autocomplete="name" /></label>
+        <label>Telefono<input type="tel" id="pr-tel" required autocomplete="tel" /></label>
+        <button type="submit" class="fbtn fbtn-cel fbtn-lg fbtn-block">Richiedi la prenotazione →</button>
+        <p class="fform-ok" id="prOk"></p>
+        <p class="fform-note">Bozza dimostrativa: nella versione reale la richiesta arriva subito alla farmacia (email + WhatsApp).</p>
+      </form>
+
+      <div class="prside">
+        <div class="fcard r"><span class="fic">⏱</span><h3>Quanto ci vuole?</h3><p>ECG e autoanalisi: pochi minuti, referto immediato. Holter: montaggio in farmacia, referto entro 5 giorni (24h in urgenza).</p></div>
+        <div class="fcard r"><span class="fic">💬</span><h3>Preferisci WhatsApp?</h3><p>Scrivici direttamente: <a href="https://wa.me/393505488606?text=Ciao!%20Vorrei%20prenotare%20un%20servizio" target="_blank" rel="noopener" style="color:var(--cel-d);font-weight:700;">prenota in chat →</a></p></div>
+        <div class="fcard r"><span class="fic">🏠</span><h3>Consegna a domicilio</h3><p>Ordina i tuoi farmaci entro le 12: consegniamo in giornata nel quartiere.</p></div>
+      </div>
+    </div>
+  </section>
+  <style>
+    .prgrid{display:grid;grid-template-columns:1.1fr 1fr;gap:1.6rem;align-items:start;max-width:1000px;margin:0 auto}
+    .prgrid>*{min-width:0}
+    .prrow{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+    .prrow>*{min-width:0}
+    .prside{display:grid;gap:1rem}
+    @media (max-width:760px){.prgrid{grid-template-columns:1fr}.prrow{grid-template-columns:1fr}}
+  </style>
+  <script>
+    document.getElementById('prForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const s = document.getElementById('pr-serv').value;
+      const d = document.getElementById('pr-data').value;
+      const ok = document.getElementById('prOk');
+      ok.innerHTML = `✅ Richiesta registrata: <b>${s}</b> per il <b>${d ? d.split('-').reverse().join('/') : 'giorno scelto'}</b>. Ti confermiamo a breve! <i>(demo: nessun dato inviato)</i>`;
+      ok.style.display = 'block';
+      e.target.reset();
+    });
+  </script>
+</Layout>

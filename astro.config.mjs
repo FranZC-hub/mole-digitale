@@ -11,5 +11,5 @@ export default defineConfig({
   build: { inlineStylesheets: 'auto' },
   // Sitemap: escludo le pagine noindex (singole demo, /dypa, /crediti) e /privacy.
   // La galleria /demo resta indicizzabile.
-  integrations: [sitemap({ filter: (page) => !/\/demo\/.+/.test(page) && !page.includes('/privacy') && !page.includes('/dypa') && !page.includes('/crediti') })],
+  integrations: [sitemap({ filter: (page) => !/\/demo\/.+/.test(page) && !page.includes('/privacy') && !page.includes('/dypa') && !page.includes('/crediti') && !page.includes('/demoFarmacia') })],
 });
