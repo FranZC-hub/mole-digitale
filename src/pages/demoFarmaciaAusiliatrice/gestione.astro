@@ -2,11 +2,27 @@
 import Layout from './_Layout.astro';
 ---
 <Layout title="Gestione prodotti (demo)" active="">
-  <section class="fsection" style="padding-top:8rem;">
+  <!-- SCHERMATA DI ACCESSO (il pannello appare solo dopo il login) -->
+  <section class="fsection" id="gLogin" style="padding-top:8rem;">
+    <div class="glogin r">
+      <span class="fcross glogin-ic" aria-hidden="true">+</span>
+      <h1>Area <span class="fmark">riservata</span></h1>
+      <p class="glogin-sub">Accesso al pannello di gestione della farmacia.</p>
+      <form class="fform glogin-form" id="gLoginForm">
+        <label>Nome utente<input type="text" id="gl-user" autocomplete="username" required /></label>
+        <label>Password<input type="password" id="gl-pass" autocomplete="current-password" required /></label>
+        <p class="glogin-err" id="glErr" hidden>⚠ Credenziali non corrette. Riprova.</p>
+        <button type="submit" class="fbtn fbtn-solid fbtn-block fbtn-lg">Accedi →</button>
+        <p class="fform-note">Demo: nella versione reale l'accesso è protetto sul server, con utenti e permessi.</p>
+      </form>
+    </div>
+  </section>
+
+  <section class="fsection" id="gPanel" hidden style="padding-top:8rem;">
     <div class="fhead fhead-c r">
-      <span class="fkick">Demo · pannello riservato</span>
+      <span class="fkick">Pannello riservato</span>
       <h1>Gestisci i prodotti <span class="fmark">in autonomia</span></h1>
-      <p>Questa è la <b>dimostrazione</b> del pannello proposto: aggiungi un prodotto qui sotto e guarda comparire subito sulla pagina <a href="/demoFarmaciaAusiliatrice/prodotti/" style="color:var(--cel-d);text-decoration:underline;">Prodotti</a> del sito. Nella versione reale sarà protetto da password e i dati salvati sul server.</p>
+      <p>Aggiungi un prodotto qui sotto e guarda comparire subito sulla pagina <a href="/demoFarmaciaAusiliatrice/prodotti/" style="color:var(--cel-d);text-decoration:underline;">Prodotti</a> del sito. <button type="button" id="gLogout" class="glogout">Esci dall'area riservata</button></p>
     </div>
 
     <div class="ggrid">
@@ -35,6 +51,14 @@ import Layout from './_Layout.astro';
   </section>
 
   <style>
+    /* login */
+    .glogin{max-width:420px;margin:2rem auto 0;text-align:center}
+    .glogin-ic{width:56px;height:56px;font-size:2rem;border-radius:16px;margin:0 auto 1rem;display:grid;place-items:center}
+    .glogin h1{font-size:clamp(1.9rem,4.5vw,2.6rem)}
+    .glogin-sub{color:var(--muted);margin:.5rem 0 1.4rem}
+    .glogin-form{text-align:left}
+    .glogin-err{color:#c04545;font-weight:700;font-size:.9rem;text-align:center}
+    .glogout{background:none;border:0;color:var(--cel-d);font-size:.9rem;font-weight:700;text-decoration:underline;cursor:pointer;font-family:inherit}
     .ggrid{display:grid;grid-template-columns:1fr 1.1fr;gap:1.6rem;align-items:start;max-width:980px;margin:0 auto}
     .ggrid>*{min-width:0}
     .grow{display:grid;grid-template-columns:1.3fr 1fr;gap:.8rem}
@@ -53,6 +77,22 @@ import Layout from './_Layout.astro';
 
   <script>
     import { readCustom, writeCustom } from './_shared.js';
+    // ---- Accesso demo (nella versione reale: autenticazione lato server) ----
+    const GL_USER = 'ausiliatrice', GL_PASS = 'farmacia2026';
+    const loginSec = document.getElementById('gLogin'), panelSec = document.getElementById('gPanel');
+    const gate = () => {
+      const ok = sessionStorage.getItem('aus-auth') === 'ok';
+      loginSec.hidden = ok; panelSec.hidden = !ok;
+    };
+    document.getElementById('gLoginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const u = document.getElementById('gl-user').value.trim().toLowerCase();
+      const p = document.getElementById('gl-pass').value;
+      if (u === GL_USER && p === GL_PASS) { sessionStorage.setItem('aus-auth', 'ok'); document.getElementById('glErr').hidden = true; gate(); }
+      else { document.getElementById('glErr').hidden = false; }
+    });
+    document.getElementById('gLogout').addEventListener('click', () => { sessionStorage.removeItem('aus-auth'); gate(); });
+    gate();
     const list = document.getElementById('gList');
     const render = () => {
       const items = readCustom();
