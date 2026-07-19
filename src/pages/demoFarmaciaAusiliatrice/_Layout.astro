@@ -25,9 +25,16 @@ const WA = 'https://wa.me/393505488606';
   <meta name="description" content={desc} />
   <meta name="theme-color" content="#1c3f6e" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%231c3f6e'/><path d='M12 6v12M6 12h12' stroke='%23fff' stroke-width='3.2' stroke-linecap='round'/></svg>" />
+  <!-- Anteprima quando il link viene condiviso (WhatsApp ecc.) -->
+  <meta property="og:title" content={title + " — Farmacia dell'Ausiliatrice · Torino"} />
+  <meta property="og:description" content={desc} />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="it_IT" />
+  <meta property="og:image" content="https://www.moledigitale.it/img/demo-farmacia/hero.webp" />
+  <meta name="twitter:card" content="summary_large_image" />
 </head>
 <body>
-  <a class="demo-flag" href="/dypa">✦ Anteprima non ufficiale realizzata da <b>Mole Digitale</b> — bozza di proposta per Farmacia dell'Ausiliatrice</a>
+  <a class="demo-flag" href="/dypa">✦ Anteprima realizzata da <b>Mole Digitale</b><span class="flag-more"> — bozza di proposta per Farmacia dell'Ausiliatrice</span></a>
 
   <header class="fnav" id="fnav">
     <a href={BASE} class="fbrand"><span class="fcross" aria-hidden="true">+</span><span><b>Farmacia</b> dell'Ausiliatrice</span></a>
@@ -87,8 +94,9 @@ const WA = 'https://wa.me/393505488606';
     h1,h2,h3{font-family:var(--disp);font-weight:800;line-height:1.1;letter-spacing:-.015em}
     .fmark{color:var(--cel)}
 
-    .demo-flag{position:fixed;top:0;left:0;right:0;z-index:300;text-align:center;font-size:.78rem;padding:.4rem .8rem;background:var(--blu-d);color:#cfe1f3}
+    .demo-flag{position:fixed;top:0;left:0;right:0;z-index:300;text-align:center;font-size:.78rem;padding:.4rem .8rem;background:var(--blu-d);color:#cfe1f3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .demo-flag b{color:#fff}
+    @media (max-width:640px){.flag-more{display:none}} /* su mobile resta su UNA riga: niente sovrapposizioni con la nav */
 
     .fnav{position:fixed;top:29px;left:0;right:0;z-index:200;display:flex;align-items:center;gap:1.1rem;padding:.8rem clamp(1rem,4vw,2.6rem);background:rgba(246,249,252,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
     .fbrand{font-family:var(--disp);font-size:1.08rem;display:inline-flex;align-items:center;gap:.55rem;font-weight:600}
