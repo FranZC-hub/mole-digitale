@@ -27,16 +27,7 @@ import Layout from './_Layout.astro';
     .pfilter button.on{background:var(--blu);border-color:var(--blu);color:#fff}
     .pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
     .pgrid>*{min-width:0}
-    :global(.pcard){position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.3rem;display:flex;flex-direction:column;gap:.3rem;transition:transform .25s var(--e),box-shadow .25s}
-    :global(.pcard:hover){transform:translateY(-4px);box-shadow:var(--soft)}
-    :global(.pcard.mine){border-color:var(--cel)}
-    :global(.pmine){align-self:flex-start;font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;background:rgba(47,159,224,.14);color:var(--cel-d);padding:.22rem .55rem;border-radius:999px;margin-bottom:.3rem}
-    :global(.pem){font-size:2rem;line-height:1}
-    :global(.pcat){font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
-    :global(.pcard h3){font-size:1.02rem;font-weight:700;flex:1}
-    :global(.pfoot){display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-top:.5rem}
-    :global(.pfoot b){color:var(--blu);font-size:1.05rem}
-    :global(.pfoot a){font-size:.82rem;font-weight:700;color:var(--cel-d)}
+    /* gli stili .pcard vivono nel layout condiviso (_Layout.astro): servono anche alla home */
     .pgest{margin-top:2.2rem;text-align:center;background:var(--bg2);border:1px dashed var(--cel);border-radius:14px;padding:1rem 1.3rem;color:var(--muted);font-size:.95rem}
     .pgest a{color:var(--cel-d);font-weight:700;text-decoration:underline}
     @media (max-width:920px){.pgrid{grid-template-columns:1fr 1fr}}

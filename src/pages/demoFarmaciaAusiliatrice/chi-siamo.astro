@@ -5,6 +5,8 @@ import Layout from './_Layout.astro';
   <section class="fsection" style="padding-top:8rem;">
     <div class="fhead fhead-c r"><span class="fkick">La farmacia</span><h1>Il nostro impegno è<br/><span class="fmark">la cura della persona</span></h1></div>
 
+    <div class="cs-photo r"><img src="/img/demo-farmacia/f3.webp" alt="Farmaci e prodotti sul banco della farmacia" loading="lazy" /></div>
+
     <div class="cs-cols">
       <div class="r">
         <h2 class="cs-h">Un presidio del quartiere</h2>
@@ -27,6 +29,8 @@ import Layout from './_Layout.astro';
     <p style="text-align:center;margin-top:2.4rem;" class="r"><a href="/demoFarmaciaAusiliatrice/dove-siamo/" class="fbtn fbtn-solid fbtn-lg">Vieni a trovarci →</a></p>
   </section>
   <style>
+    .cs-photo{max-width:960px;margin:0 auto 2.2rem}
+    .cs-photo img{width:100%;aspect-ratio:21/9;object-fit:cover;border-radius:18px;box-shadow:var(--soft)}
     .cs-cols{display:grid;grid-template-columns:1fr 1fr;gap:2.2rem;max-width:960px;margin:0 auto}
     .cs-cols>*{min-width:0}
     .cs-h{font-size:1.35rem;margin-bottom:.6rem}

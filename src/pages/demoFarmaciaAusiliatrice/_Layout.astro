@@ -138,6 +138,18 @@ const WA = 'https://wa.me/393505488606';
     .wa-fab{position:fixed;right:18px;bottom:18px;z-index:160;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 30px -10px rgba(37,211,102,.7);transition:transform .2s var(--e)}
     .wa-fab:hover{transform:scale(1.08)}
 
+    /* card prodotto (usate in home e /prodotti, iniettate via JS -> stili nel layout globale) */
+    .pcard{position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.3rem;display:flex;flex-direction:column;gap:.3rem;transition:transform .25s var(--e),box-shadow .25s}
+    .pcard:hover{transform:translateY(-4px);box-shadow:var(--soft)}
+    .pcard.mine{border-color:var(--cel)}
+    .pmine{align-self:flex-start;font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;background:rgba(47,159,224,.14);color:var(--cel-d);padding:.22rem .55rem;border-radius:999px;margin-bottom:.3rem}
+    .pem{font-size:2rem;line-height:1}
+    .pcat{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+    .pcard h3{font-size:1.02rem;font-weight:700;flex:1}
+    .pfoot{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-top:.5rem}
+    .pfoot b{color:var(--blu);font-size:1.05rem}
+    .pfoot a{font-size:.82rem;font-weight:700;color:var(--cel-d)}
+
     .r{opacity:0;transform:translateY(16px);transition:opacity .6s var(--e),transform .6s var(--e)}
     .r.in{opacity:1;transform:none}
     @media (prefers-reduced-motion:reduce){.r{opacity:1;transform:none;transition:none}}

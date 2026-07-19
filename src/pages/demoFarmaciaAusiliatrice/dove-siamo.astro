@@ -16,6 +16,7 @@ const MAPS = 'https://www.google.com/maps/search/?api=1&query=' + encodeURICompo
       <div class="dinfo">
         <div class="fcard r"><span class="fic">🕐</span><h3>Orari di apertura</h3>
           <ul class="dhours" id="dHours"></ul>
+          <p style="margin-top:.7rem;font-size:.9rem;">Siamo chiusi? <a href="https://www.farmaciediturno.org/" target="_blank" rel="noopener" style="color:var(--cel-d);font-weight:700;text-decoration:underline;">Trova la farmacia di turno →</a></p>
           <p style="font-size:.76rem;margin-top:.6rem;">⚠ Orari indicativi della bozza — da confermare</p>
         </div>
         <div class="fcard r"><span class="fic">🚋</span><h3>Come arrivare</h3>
@@ -36,9 +37,10 @@ const MAPS = 'https://www.google.com/maps/search/?api=1&query=' + encodeURICompo
     .dmap span{color:var(--muted)}
     .dinfo{display:grid;gap:1rem}
     .dhours{list-style:none;display:grid;gap:.35rem;font-size:.92rem;margin-top:.3rem}
-    .dhours li{display:flex;justify-content:space-between;gap:1rem;border-bottom:1px dashed var(--line);padding-bottom:.3rem;color:var(--muted)}
-    .dhours li b{color:var(--ink)}
-    .dhours li.today{font-weight:800}.dhours li.today span{color:var(--blu)}
+    /* :global — righe iniettate via JS, senza scope Astro */
+    .dhours :global(li){display:flex;justify-content:space-between;gap:1rem;border-bottom:1px dashed var(--line);padding-bottom:.3rem;color:var(--muted)}
+    .dhours :global(li b){color:var(--ink)}
+    .dhours :global(li.today){font-weight:800}.dhours :global(li.today span){color:var(--blu)}
     @media (max-width:760px){.dgrid{grid-template-columns:1fr}}
   </style>
   <script>

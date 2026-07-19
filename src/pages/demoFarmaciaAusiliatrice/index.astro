@@ -17,8 +17,15 @@ import Layout from './_Layout.astro';
     <div class="ahero-panel r">
       <div class="ahero-open"><span class="adot"></span><b id="aOpen">Aperta ora</b></div>
       <ul class="ahero-hours" id="aHours"></ul>
+      <p class="ahero-turno">Siamo chiusi? <a href="https://www.farmaciediturno.org/" target="_blank" rel="noopener">Trova la farmacia di turno →</a></p>
       <p class="ahero-hnote">⚠ Orari indicativi della bozza — da confermare</p>
     </div>
+  </section>
+
+  <!-- FOTO FARMACIA -->
+  <section class="aphoto r">
+    <img src="/img/demo-farmacia/hero.webp" alt="L'interno della farmacia, luminoso e fornito" loading="lazy" />
+    <div class="aphoto-cap"><b>Benvenuti in farmacia.</b><span>Scaffali forniti, personale che ti conosce, il consiglio di sempre.</span></div>
   </section>
 
   <!-- SERVIZI IN EVIDENZA -->
@@ -40,11 +47,33 @@ import Layout from './_Layout.astro';
     </div>
   </section>
 
+  <!-- OFFERTE DEL MESE -->
+  <section class="fsection aoff-sec">
+    <div class="fhead fhead-c r"><span class="fkick">Le promozioni</span><h2>Offerte <span class="fmark">del mese</span></h2></div>
+    <div class="aoff r">
+      <article class="aoff-card"><span class="aoff-tag">−25%</span><span class="pem">🧴</span><h3>Avène Solare SPF50+ 50ml</h3><p><s>€ 18,90</s> <b>€ 13,90</b></p></article>
+      <article class="aoff-card"><span class="aoff-tag">−20%</span><span class="pem">💚</span><h3>Fermenti lattici 30 cps</h3><p><s>€ 14,90</s> <b>€ 11,90</b></p></article>
+      <article class="aoff-card"><span class="aoff-tag">2×1</span><span class="pem">🤲</span><h3>Crema mani riparatrice</h3><p>Due confezioni al prezzo di una: <b>€ 7,50</b></p></article>
+    </div>
+    <p class="aoff-note r">💡 <b>Per il titolare:</b> nella versione col gestionale, anche le offerte le aggiorni tu in autonomia.</p>
+  </section>
+
   <!-- PRODOTTI IN EVIDENZA -->
   <section class="fsection">
     <div class="fhead fhead-c r"><span class="fkick">Dal banco</span><h2>Prodotti <span class="fmark">in evidenza</span></h2><p>Dermocosmesi e integrazione selezionate dai nostri farmacisti.</p></div>
     <div class="aprods r" id="aProds"></div>
     <p class="acenter r"><a href="/demoFarmaciaAusiliatrice/prodotti/" class="fbtn fbtn-ghost">Vedi tutti i prodotti →</a></p>
+  </section>
+
+  <!-- RECENSIONI GOOGLE -->
+  <section class="fsection arev-sec">
+    <div class="fhead fhead-c r"><span class="fkick">Dicono di noi</span><h2>Le recensioni <span class="fmark">dei clienti</span></h2></div>
+    <div class="fgrid3">
+      <blockquote class="fcard arev r"><div class="astars">★★★★★</div><p>«Gentilissimi e sempre disponibili. Ho fatto l'ECG in farmacia: referto subito, zero code.»</p><footer><b>Maria C.</b> · recensione Google</footer></blockquote>
+      <blockquote class="fcard arev r"><div class="astars">★★★★★</div><p>«La consegna a domicilio mi ha salvato quando non potevo uscire. Servizio prezioso.»</p><footer><b>Giuseppe T.</b> · recensione Google</footer></blockquote>
+      <blockquote class="fcard arev r"><div class="astars">★★★★★</div><p>«Preparano le dosi giornaliere per mia madre: un pensiero in meno ogni settimana.»</p><footer><b>Lucia R.</b> · recensione Google</footer></blockquote>
+    </div>
+    <p class="arev-note r">Recensioni d'esempio — nella versione definitiva qui compariranno <b>le vere recensioni Google della farmacia</b>, aggiornate in automatico.</p>
   </section>
 
   <style>
@@ -59,10 +88,34 @@ import Layout from './_Layout.astro';
     .adot{width:10px;height:10px;border-radius:50%;background:#2fbf71;box-shadow:0 0 8px #2fbf71}
     .ahero-open.closed .adot{background:#e05555;box-shadow:0 0 8px #e05555}
     .ahero-hours{list-style:none;display:grid;gap:.4rem;font-size:.95rem}
-    .ahero-hours li{display:flex;justify-content:space-between;gap:1rem;border-bottom:1px dashed var(--line);padding-bottom:.35rem}
-    .ahero-hours li.today{font-weight:800;color:var(--blu)}
+    /* :global — le righe orari sono iniettate via JS e non hanno lo scope Astro */
+    .ahero-hours :global(li){display:flex;justify-content:space-between;gap:1rem;border-bottom:1px dashed var(--line);padding-bottom:.35rem}
+    .ahero-hours :global(li.today){font-weight:800;color:var(--blu)}
     .ahero-hnote{margin-top:.8rem;font-size:.74rem;color:var(--muted)}
     .acenter{text-align:center;margin-top:1.6rem}
+    .ahero-turno{margin-top:.8rem;font-size:.85rem;color:var(--muted)}
+    .ahero-turno a{color:var(--cel-d);font-weight:700;text-decoration:underline}
+    .aphoto{max-width:1150px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3rem);position:relative}
+    .aphoto img{width:100%;aspect-ratio:21/8;object-fit:cover;border-radius:20px;box-shadow:var(--soft)}
+    .aphoto-cap{position:static;background:var(--card);border:1px solid var(--line);border-radius:0 0 20px 20px;margin-top:-6px;padding:1rem 1.4rem;display:flex;gap:.6rem;align-items:baseline;flex-wrap:wrap}
+    .aphoto-cap b{font-family:var(--disp)}
+    .aphoto-cap span{color:var(--muted);font-size:.92rem}
+    .aoff-sec{padding-top:2rem}
+    .aoff{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+    .aoff>*{min-width:0}
+    .aoff-card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.4rem;display:flex;flex-direction:column;gap:.3rem}
+    .aoff-tag{align-self:flex-start;background:#e05555;color:#fff;font-weight:800;font-size:.8rem;padding:.25rem .7rem;border-radius:999px}
+    .aoff-card h3{font-size:1.02rem}
+    .aoff-card p{color:var(--muted)}
+    .aoff-card s{opacity:.7}
+    .aoff-card b{color:var(--blu);font-size:1.15rem;margin-left:.3rem}
+    .aoff-note,.arev-note{text-align:center;margin-top:1.4rem;background:var(--bg2);border:1px dashed var(--cel);border-radius:12px;padding:.9rem 1.2rem;color:var(--muted);font-size:.92rem}
+    .arev-sec{padding-top:1rem}
+    .astars{color:#f4b400;letter-spacing:2px;margin-bottom:.5rem}
+    .arev p{font-size:.96rem;flex:1}
+    .arev footer{margin-top:.7rem;font-size:.85rem;color:var(--muted)}
+    .arev footer b{color:var(--ink)}
+    @media (max-width:920px){.aoff{grid-template-columns:1fr}.aphoto img{aspect-ratio:16/9}}
     .abanner{background:linear-gradient(130deg,var(--blu),var(--blu-d))}
     .abanner-in{max-width:1150px;margin:0 auto;padding:2.6rem clamp(1.2rem,5vw,3rem);display:flex;align-items:center;justify-content:space-between;gap:1.4rem;flex-wrap:wrap;color:#fff}
     .abanner-in h2{font-size:clamp(1.5rem,3.6vw,2.2rem)}
