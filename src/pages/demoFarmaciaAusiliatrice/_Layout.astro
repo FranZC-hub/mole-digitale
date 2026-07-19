@@ -37,6 +37,10 @@ const WA = 'https://wa.me/393505488606';
       ))}
     </nav>
     <button class="fnav-toggle" id="fToggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="flinks"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <a href={BASE + 'gestione/'} class="fnav-lock" aria-label="Area riservata — accedi" title="Area riservata">
+      <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.2" r="1.3" fill="currentColor"/></svg>
+      <span>Accedi</span>
+    </a>
     <a href={BASE + 'prenotazioni/'} class="fbtn fbtn-solid fnav-cta">Prenota</a>
   </header>
 
@@ -96,6 +100,8 @@ const WA = 'https://wa.me/393505488606';
     .flinks a:hover{color:var(--ink)}.flinks a:hover::after,.flinks a.on::after{width:100%}
     .flinks a.on{color:var(--ink)}
     .fnav-toggle{display:none;background:none;border:0;color:var(--ink);cursor:pointer;width:44px;height:44px;border-radius:12px;place-items:center;margin-left:auto}
+    .fnav-lock{display:inline-flex;align-items:center;gap:.4rem;font-size:.86rem;font-weight:700;color:var(--muted);border:1px solid var(--line);border-radius:11px;padding:.55rem .85rem;transition:color .2s,border-color .2s}
+    .fnav-lock:hover{color:var(--blu);border-color:var(--blu)}
 
     .fbtn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;font-weight:700;font-size:.92rem;padding:.72rem 1.35rem;border-radius:12px;cursor:pointer;border:1px solid transparent;transition:transform .2s var(--e),background .2s;white-space:nowrap;font-family:var(--sans)}
     .fbtn-solid{background:var(--blu);color:#fff;box-shadow:0 12px 26px -12px var(--blu)}.fbtn-solid:hover{background:var(--blu-d);transform:translateY(-2px)}
@@ -149,6 +155,8 @@ const WA = 'https://wa.me/393505488606';
       .fnav.open .flinks{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1rem;background:rgba(246,249,252,.98);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:1.2rem clamp(1.2rem,5vw,3rem) 1.4rem}
       .fnav-toggle{display:grid}
       .fnav-cta{padding:.5rem .9rem;font-size:.82rem}
+      .fnav-lock{padding:.5rem .6rem}
+      .fnav-lock span{display:none} /* su mobile resta solo il lucchetto */
       .fgrid3{grid-template-columns:1fr}
       .ffoot-in{grid-template-columns:1fr}
     }
