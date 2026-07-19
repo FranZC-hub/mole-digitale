@@ -50,7 +50,7 @@ export function ausProducts() {
 export function prodCard(p) {
   return `<article class="pcard${p.mine ? ' mine' : ''}">
     ${p.mine ? '<span class="pmine">aggiunto da te ✔</span>' : ''}
-    <span class="pem" aria-hidden="true">${p.em || '🧺'}</span>
+    ${p.img ? `<img class="pimg" src="${p.img}" alt="${p.nome}" />` : `<span class="pem" aria-hidden="true">${p.em || '🧺'}</span>`}
     <span class="pcat">${p.cat}</span>
     <h3>${p.nome}</h3>
     <div class="pfoot"><b>€ ${p.prezzo}</b><a href="https://wa.me/393505488606?text=${encodeURIComponent('Ciao! Vorrei informazioni su: ' + p.nome)}" target="_blank" rel="noopener">Chiedi info →</a></div>

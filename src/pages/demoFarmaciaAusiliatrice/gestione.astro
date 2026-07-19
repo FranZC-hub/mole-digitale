@@ -35,7 +35,10 @@ import Layout from './_Layout.astro';
           </label>
           <label>Prezzo (€)<input type="text" id="g-prezzo" required inputmode="decimal" placeholder="9,90" maxlength="8" /></label>
         </div>
-        <label>Icona
+        <label>Foto del prodotto <small style="font-weight:400;color:var(--muted)">(opzionale — scattala anche col telefono)</small>
+          <input type="file" id="g-foto" accept="image/*" />
+        </label>
+        <label>Oppure scegli un'icona
           <select id="g-em"><option>💊</option><option>🧴</option><option>✨</option><option>⚡</option><option>🌡</option><option>💚</option><option>🩺</option><option>🍼</option></select>
         </label>
         <button type="submit" class="fbtn fbtn-cel fbtn-block">Pubblica sul sito →</button>
@@ -64,14 +67,16 @@ import Layout from './_Layout.astro';
     .grow{display:grid;grid-template-columns:1.3fr 1fr;gap:.8rem}
     .grow>*{min-width:0}
     .glist{display:grid;gap:.6rem}
-    .gitem{display:flex;align-items:center;gap:.8rem;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:.8rem 1rem}
-    .gitem .em{font-size:1.5rem}
-    .gitem .tx{flex:1;min-width:0}
-    .gitem b{display:block;font-size:.98rem}
-    .gitem span{font-size:.8rem;color:var(--muted)}
-    .gitem button{background:none;border:1px solid var(--line);border-radius:9px;width:34px;height:34px;cursor:pointer;color:#c04545;font-size:1rem;flex:none}
-    .gitem button:hover{border-color:#c04545}
-    .gempty{color:var(--muted);background:var(--bg2);border:1px dashed var(--line);border-radius:13px;padding:1.2rem;text-align:center;font-size:.94rem}
+    /* :global — la lista è iniettata via JS e non riceve lo scope Astro */
+    :global(.gitem){display:flex;align-items:center;gap:.8rem;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:.8rem 1rem}
+    :global(.gitem .em){font-size:1.5rem}
+    :global(.gthumb){width:46px;height:46px;object-fit:cover;border-radius:9px;flex:none;border:1px solid var(--line)}
+    :global(.gitem .tx){flex:1;min-width:0}
+    :global(.gitem b){display:block;font-size:.98rem}
+    :global(.gitem .tx span){font-size:.8rem;color:var(--muted)}
+    :global(.gitem button){background:none;border:1px solid var(--line);border-radius:9px;width:34px;height:34px;cursor:pointer;color:#c04545;font-size:1rem;flex:none}
+    :global(.gitem button:hover){border-color:#c04545}
+    :global(.gempty){color:var(--muted);background:var(--bg2);border:1px dashed var(--line);border-radius:13px;padding:1.2rem;text-align:center;font-size:.94rem}
     @media (max-width:760px){.ggrid{grid-template-columns:1fr}}
   </style>
 
@@ -97,18 +102,39 @@ import Layout from './_Layout.astro';
     const render = () => {
       const items = readCustom();
       list.innerHTML = items.length
-        ? items.map((p, i) => `<div class="gitem"><span class="em">${p.em}</span><div class="tx"><b>${p.nome}</b><span>${p.cat} · € ${p.prezzo}</span></div><button type="button" data-i="${i}" aria-label="Elimina ${p.nome}">✕</button></div>`).join('')
+        ? items.map((p, i) => `<div class="gitem">${p.img ? `<img class="gthumb" src="${p.img}" alt="" />` : `<span class="em">${p.em}</span>`}<div class="tx"><b>${p.nome}</b><span>${p.cat} · € ${p.prezzo}</span></div><button type="button" data-i="${i}" aria-label="Elimina ${p.nome}">✕</button></div>`).join('')
         : '<div class="gempty">Ancora nessun prodotto. Aggiungine uno dal modulo: apparirà qui e sulla pagina Prodotti.</div>';
       list.querySelectorAll('button[data-i]').forEach((b) => b.addEventListener('click', () => {
         const arr = readCustom(); arr.splice(+b.dataset.i, 1); writeCustom(arr); render();
       }));
     };
-    document.getElementById('gForm').addEventListener('submit', (e) => {
+    // Ridimensiona la foto nel browser (max 480px, JPEG): resta leggera per la memoria locale
+    const fileToThumb = (file) => new Promise((res) => {
+      if (!file) { res(''); return; }
+      const img = new Image();
+      img.onload = () => {
+        const s = Math.min(1, 480 / Math.max(img.width, img.height));
+        const cv = document.createElement('canvas');
+        cv.width = Math.round(img.width * s); cv.height = Math.round(img.height * s);
+        cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+        URL.revokeObjectURL(img.src);
+        res(cv.toDataURL('image/jpeg', 0.78));
+      };
+      img.onerror = () => { URL.revokeObjectURL(img.src); res(''); };
+      img.src = URL.createObjectURL(file);
+    });
+    document.getElementById('gForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const nome = document.getElementById('g-nome').value.trim();
       const prezzo = document.getElementById('g-prezzo').value.trim().replace('.', ',');
       if (!nome || !prezzo) return;
-      writeCustom([{ id: 'u' + Date.now(), nome, prezzo, cat: document.getElementById('g-cat').value, em: document.getElementById('g-em').value }, ...readCustom()]);
+      const foto = await fileToThumb(document.getElementById('g-foto').files[0]);
+      try {
+        writeCustom([{ id: 'u' + Date.now(), nome, prezzo, cat: document.getElementById('g-cat').value, em: document.getElementById('g-em').value, img: foto }, ...readCustom()]);
+      } catch (err) {
+        // memoria del browser piena (demo): salva senza foto
+        writeCustom([{ id: 'u' + Date.now(), nome, prezzo, cat: document.getElementById('g-cat').value, em: document.getElementById('g-em').value }, ...readCustom()]);
+      }
       e.target.reset(); render();
     });
     render();
