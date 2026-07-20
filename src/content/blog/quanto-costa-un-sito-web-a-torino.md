@@ -10,8 +10,8 @@ date: 2026-05-20
 
 Il costo di un sito dipende soprattutto da **quante cose deve fare**:
 
-- **Una pagina (onepage)**: chi sei, cosa offri, dove sei e come contattarti. Perfetto per iniziare. Parte da circa **390 €**.
-- **Sito completo**: più pagine (menu, servizi, galleria, contatti), pensato per essere trovato su Google. Intorno ai **690 €**.
+- **Una pagina (onepage)**: chi sei, cosa offri, dove sei e come contattarti. Perfetto per iniziare. Parte da circa **490 €**.
+- **Sito completo**: più pagine (menu, servizi, galleria, contatti), pensato per essere trovato su Google. Intorno ai **790 €**.
 - **Funzioni extra**: prenotazioni online, catalogo, più lingue. Si aggiungono a parte, ma sempre con cifre chiare prima di iniziare.
 
 ## Cosa NON dovresti pagare
@@ -24,4 +24,4 @@ Oltre alla creazione (una tantum), c'è una spesa ricorrente da mettere in conto
 
 Noi di Mole Digitale lavoriamo a **prezzo chiaro una tantum**: ti diciamo la cifra prima, poi si parte. La prima bozza è gratis e senza impegno, così vedi dove andiamo a parare prima di decidere.
 
-Vuoi una stima sul tuo caso? [Calcola il tuo preventivo](/preventivo) in 30 secondi, oppure [scrivici](/#contatti): ti rispondiamo entro 24 ore.
+Vuoi una stima sul tuo caso? [Scrivici due righe](/#contatti): ti rispondiamo entro 24 ore con un'idea e un prezzo chiaro.

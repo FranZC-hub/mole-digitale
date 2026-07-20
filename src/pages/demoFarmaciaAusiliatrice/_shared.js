@@ -2,13 +2,25 @@
 // I prodotti aggiunti dal gestionale demo (localStorage) si fondono col catalogo base:
 // è la dimostrazione della "gestione autonoma" proposta al cliente.
 
-// ⚠ Orari SEGNAPOSTO da confermare col cliente
+// Orari ufficiali Farmacia dell'Ausiliatrice — Lun–Ven 8.45–12.45 / 15.15–19.15, Sab 8.45–12.45, Dom chiuso.
+// Ore in decimale: .25=15min, .5=30min, .75=45min (es. 8.75 = 8:45).
 export const AUS_HOURS = {
-  1: [[8.5, 19.5]], 2: [[8.5, 19.5]], 3: [[8.5, 19.5]], 4: [[8.5, 19.5]], 5: [[8.5, 19.5]],
-  6: [[9, 13]], 0: null,
+  1: [[8.75, 12.75], [15.25, 19.25]], 2: [[8.75, 12.75], [15.25, 19.25]], 3: [[8.75, 12.75], [15.25, 19.25]],
+  4: [[8.75, 12.75], [15.25, 19.25]], 5: [[8.75, 12.75], [15.25, 19.25]],
+  6: [[8.75, 12.75]], 0: null,
 };
 const DAYS = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
-const fmt = (h) => `${Math.floor(h)}:${h % 1 ? '30' : '00'}`;
+const fmt = (h) => { const hh = Math.floor(h); const mm = Math.round((h - hh) * 60); return `${hh}:${String(mm).padStart(2, '0')}`; };
+
+// Orari settimanali Lun→Dom, in forma pura: usato sia per il render statico (SSR, così
+// gli orari sono visibili anche senza JavaScript) sia per l'aggiornamento client.
+export function weeklyHours() {
+  return [1, 2, 3, 4, 5, 6, 0].map((i) => ({
+    i,
+    day: DAYS[i],
+    label: AUS_HOURS[i] ? AUS_HOURS[i].map(([a, b]) => `${fmt(a)}–${fmt(b)}`).join(' / ') : 'Chiuso',
+  }));
+}
 
 export function renderHours(listEl, openEl) {
   const now = new Date(), d = now.getDay(), t = now.getHours() + now.getMinutes() / 60;
@@ -16,13 +28,12 @@ export function renderHours(listEl, openEl) {
   const open = !!ranges && ranges.some(([a, b]) => t >= a && t < b);
   if (openEl) {
     openEl.textContent = open ? `Aperta ora · chiude alle ${fmt(ranges.find(([a, b]) => t >= a && t < b)[1])}` : 'Chiusa ora';
-    if (!open) openEl.parentElement.classList.add('closed');
+    openEl.parentElement.classList.toggle('closed', !open);
   }
   if (listEl) {
-    listEl.innerHTML = [1, 2, 3, 4, 5, 6, 0].map((i) => {
-      const h = AUS_HOURS[i] ? AUS_HOURS[i].map(([a, b]) => `${fmt(a)}–${fmt(b)}`).join(' / ') : 'Chiuso';
-      return `<li class="${i === d ? 'today' : ''}"><span>${DAYS[i]}</span><b>${h}</b></li>`;
-    }).join('');
+    listEl.innerHTML = weeklyHours()
+      .map(({ i, day, label }) => `<li class="${i === d ? 'today' : ''}"><span>${day}</span><b>${label}</b></li>`)
+      .join('');
   }
 }
 
@@ -53,6 +64,6 @@ export function prodCard(p) {
     ${p.img ? `<img class="pimg" src="${p.img}" alt="${p.nome}" />` : `<span class="pem" aria-hidden="true">${p.em || '🧺'}</span>`}
     <span class="pcat">${p.cat}</span>
     <h3>${p.nome}</h3>
-    <div class="pfoot"><b>€ ${p.prezzo}</b><a href="https://wa.me/393505488606?text=${encodeURIComponent('Ciao! Vorrei informazioni su: ' + p.nome)}" target="_blank" rel="noopener">Chiedi info →</a></div>
+    <div class="pfoot"><b>€ ${p.prezzo}</b><a href="https://wa.me/393388762564?text=${encodeURIComponent('Ciao! Vorrei informazioni su: ' + p.nome)}" target="_blank" rel="noopener">Chiedi info →</a></div>
   </article>`;
 }

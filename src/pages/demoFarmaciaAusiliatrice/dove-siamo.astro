@@ -1,28 +1,34 @@
 ---
 import Layout from './_Layout.astro';
-const MAPS = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('Farmacia dell\'Ausiliatrice, Corso Principe Oddone 28, 10152 Torino');
+import { weeklyHours } from './_shared.js';
+const HOURS = weeklyHours(); // orari statici: visibili anche senza JavaScript
+const Q = 'Farmacia dell\'Ausiliatrice, Corso Principe Oddone 28, 10152 Torino';
+const MAPS = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(Q);
+const MAPS_EMBED = 'https://www.google.com/maps?q=' + encodeURIComponent(Q) + '&output=embed';
 ---
-<Layout title="Dove siamo" active="Dove siamo">
+<Layout title="Dove siamo" active="Dove siamo" desc="Dove siamo: Farmacia dell'Ausiliatrice, Corso Principe Oddone 28, 10152 Torino. Orari di apertura, mappa e come arrivare (a pochi minuti da Porta Susa).">
   <section class="fsection" style="padding-top:8rem;">
     <div class="fhead fhead-c r"><span class="fkick">Vieni a trovarci</span><h1>Dove <span class="fmark">siamo</span></h1></div>
 
     <div class="dgrid">
       <div class="dmap r">
-        <div class="dmap-pin" aria-hidden="true">📍</div>
-        <b>Corso Principe Oddone, 28</b>
-        <span>10152 Torino (TO)</span>
-        <a href={MAPS} target="_blank" rel="noopener" class="fbtn fbtn-cel" style="margin-top:1rem;">Apri in Google Maps →</a>
+        <iframe class="dmap-frame" src={MAPS_EMBED} loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mappa: Farmacia dell'Ausiliatrice, Corso Principe Oddone 28, Torino"></iframe>
+        <div class="dmap-info">
+          <div><b>Corso Principe Oddone, 28</b><span>10152 Torino (TO)</span></div>
+          <a href={MAPS} target="_blank" rel="noopener" class="fbtn fbtn-cel">Apri in Google Maps →</a>
+        </div>
       </div>
       <div class="dinfo">
-        <div class="fcard r"><span class="fic">🕐</span><h3>Orari di apertura</h3>
-          <ul class="dhours" id="dHours"></ul>
+        <div class="fcard r"><span class="fic" aria-hidden="true">🕐</span><h3>Orari di apertura</h3>
+          <ul class="dhours" id="dHours">
+            {HOURS.map((h) => <li><span>{h.day}</span><b>{h.label}</b></li>)}
+          </ul>
           <p style="margin-top:.7rem;font-size:.9rem;">Siamo chiusi? <a href="https://www.farmaciediturno.org/" target="_blank" rel="noopener" style="color:var(--cel-d);font-weight:700;text-decoration:underline;">Trova la farmacia di turno →</a></p>
-          <p style="font-size:.76rem;margin-top:.6rem;">⚠ Orari indicativi della bozza — da confermare</p>
         </div>
-        <div class="fcard r"><span class="fic">🚋</span><h3>Come arrivare</h3>
+        <div class="fcard r"><span class="fic" aria-hidden="true">🚋</span><h3>Come arrivare</h3>
           <p>Sul controviale di Corso Principe Oddone, a pochi minuti da Porta Susa. Fermate di tram e bus lungo il corso; parcheggio nelle vie laterali.</p>
         </div>
-        <div class="fcard r"><span class="fic">♿</span><h3>Accessibilità</h3>
+        <div class="fcard r"><span class="fic" aria-hidden="true">♿</span><h3>Accessibilità</h3>
           <p>Ingresso a livello strada, accessibile con passeggini e carrozzine.</p>
         </div>
       </div>
@@ -31,10 +37,11 @@ const MAPS = 'https://www.google.com/maps/search/?api=1&query=' + encodeURICompo
   <style>
     .dgrid{display:grid;grid-template-columns:1fr 1.1fr;gap:1.4rem;align-items:start;max-width:1000px;margin:0 auto}
     .dgrid>*{min-width:0}
-    .dmap{background:linear-gradient(150deg,var(--bg2),#dcebf7);border:1px solid var(--line);border-radius:20px;padding:2.6rem 1.6rem;display:flex;flex-direction:column;align-items:center;text-align:center;box-shadow:var(--soft)}
-    .dmap-pin{font-size:3rem;margin-bottom:.6rem}
-    .dmap b{font-size:1.25rem;font-family:var(--disp)}
-    .dmap span{color:var(--muted)}
+    .dmap{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--soft)}
+    .dmap-frame{width:100%;height:300px;border:0;display:block;filter:saturate(1.05)}
+    .dmap-info{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:1.1rem 1.3rem}
+    .dmap-info b{font-size:1.15rem;font-family:var(--disp);display:block}
+    .dmap-info span{color:var(--muted)}
     .dinfo{display:grid;gap:1rem}
     .dhours{list-style:none;display:grid;gap:.35rem;font-size:.92rem;margin-top:.3rem}
     /* :global — righe iniettate via JS, senza scope Astro */

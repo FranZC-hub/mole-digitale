@@ -239,14 +239,6 @@ const groupOf = (slug) => {
   return 'base';
 };
 const group = groupOf(settore);
-const presetOf = () => ({
-  food:   { t: '690', p: '0', f: ['recensioni', 'social'], pr: '0', ca: '29' },
-  beauty: { t: '690', p: '0', f: ['foto', 'recensioni'], pr: '0', ca: '29' },
-  med:    { t: '690', p: '0', f: ['form', 'seo'], pr: '0', ca: '29' },
-  shop:   { t: '1200', p: '0', f: ['spedizioni', 'sconti'], pr: '0', ca: '29' },
-  base:   { t: '690', p: '0', f: ['recensioni'], pr: '0', ca: '29' },
-}[group]);
-const prevHref = '/preventivo/?c=' + Buffer.from(JSON.stringify(presetOf())).toString('base64');
 
 // "Cosa include" nella FAQ prezzi, coerente col settore (niente "menu" alle farmacie)
 const inclusoBy = {
@@ -260,8 +252,8 @@ const inclusoBy = {
 // FAQ per settore (nome interpolato) + dati strutturati FAQPage
 const faqs = [
   { q: `Quanto costa un sito per ${d.h1b}?`, a: group === 'shop'
-      ? `Si parte da €390 una tantum per il sito Essenziale (onepage). Per ${d.h1b} la scelta tipica è il sito Attività a €690 come vetrina con ${inclusoBy.shop} — oppure, se vuoi vendere online, l'e-commerce completo da €1.200 con carrello e pagamenti. Poi un canone di €29/mese per hosting, dominio, SSL e assistenza. Prima bozza gratis, prezzi IVA esclusa.`
-      : `Si parte da €390 una tantum per il sito Essenziale (onepage); il pacchetto più scelto per ${d.h1b} è il sito Attività a €690, con ${inclusoBy[group]}. Poi un canone di €29/mese per hosting, dominio, SSL e assistenza. Prima bozza gratis, prezzi IVA esclusa.` },
+      ? `Si parte da €490 una tantum per il sito Essenziale (onepage). Per ${d.h1b} la scelta tipica è il sito Attività a €790 come vetrina con ${inclusoBy.shop} — oppure, se vuoi vendere online, l'e-commerce completo da €1.200 con carrello e pagamenti. Poi un canone di €29/mese per hosting, dominio, SSL e assistenza. Prima bozza gratis, prezzi IVA esclusa.`
+      : `Si parte da €490 una tantum per il sito Essenziale (onepage); il pacchetto più scelto per ${d.h1b} è il sito Attività a €790, con ${inclusoBy[group]}. Poi un canone di €29/mese per hosting, dominio, SSL e assistenza. Prima bozza gratis, prezzi IVA esclusa.` },
   { q: 'In quanto tempo è pronto?', a: 'In media 7 giorni lavorativi da quando abbiamo foto e testi. Con il brief guidato su moledigitale.it/inizia raccogliamo tutto in una volta e partiamo subito.' },
   { q: 'Devo avere già foto e testi?', a: 'No. Se non li hai, i testi li scriviamo noi (pensati per farti scegliere dai clienti) e per le foto possiamo organizzare uno shooting a Torino. Si parte anche da una semplice chiacchierata.' },
   { q: 'Verrò trovato su Google?', a: `Il sito nasce ottimizzato per le ricerche locali (es. «${d.h1b.replace(' a Torino', '')} vicino a me») e includiamo la scheda Google Business. I risultati SEO crescono nelle settimane: ti diciamo sempre cosa aspettarti, senza promesse magiche.` },
@@ -316,11 +308,11 @@ const faqSchemaSettore = {
     <div class="land-price" data-reveal>
       <h2>Quanto costa, <span class="grad">senza sorprese</span>.</h2>
       <div class="land-price-grid">
-        <div class="land-price-card glass"><b>Essenziale</b><span class="lp-p">€390</span><span class="lp-d">onepage · contatti, mappa, WhatsApp</span></div>
-        <div class="land-price-card glass lp-hot"><b>Attività</b><span class="lp-p">€690</span><span class="lp-d">fino a 6 pagine · prenotazioni, SEO locale, scheda Google</span></div>
+        <div class="land-price-card glass"><b>Essenziale</b><span class="lp-p">€490</span><span class="lp-d">onepage · contatti, mappa, WhatsApp</span></div>
+        <div class="land-price-card glass lp-hot"><b>Attività</b><span class="lp-p">€790</span><span class="lp-d">fino a 6 pagine · prenotazioni, SEO locale, scheda Google</span></div>
         <div class="land-price-card glass"><b>Poi</b><span class="lp-p">€29<i>/mese</i></span><span class="lp-d">hosting, dominio, SSL e assistenza</span></div>
       </div>
-      <p class="lp-note">Prima bozza gratis, nessun anticipo · prezzi IVA esclusa · <a href={prevHref}>calcola il preventivo già impostato per {d.h1b.replace(' a Torino', '')} →</a></p>
+      <p class="lp-note">Prima bozza gratis, nessun anticipo · prezzi IVA esclusa.</p>
     </div>
 
     {d.widget && (

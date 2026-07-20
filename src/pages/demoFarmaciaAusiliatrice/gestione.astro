@@ -13,6 +13,12 @@ import Layout from './_Layout.astro';
         <label>Password<input type="password" id="gl-pass" autocomplete="current-password" required /></label>
         <p class="glogin-err" id="glErr" hidden>⚠ Credenziali non corrette. Riprova.</p>
         <button type="submit" class="fbtn fbtn-solid fbtn-block fbtn-lg">Accedi →</button>
+        <!-- ⚠ Solo per la bozza: da RIMUOVERE nella versione definitiva -->
+        <button type="button" class="glogin-demo" id="glDemo">
+          <b>🔑 Credenziali di prova</b>
+          <span>utente: <code>ausiliatrice</code> · password: <code>farmacia2026</code></span>
+          <small>tocca qui per compilare — verranno rimosse nella versione definitiva</small>
+        </button>
         <p class="fform-note">Demo: nella versione reale l'accesso è protetto sul server, con utenti e permessi.</p>
       </form>
     </div>
@@ -61,6 +67,12 @@ import Layout from './_Layout.astro';
     .glogin-sub{color:var(--muted);margin:.5rem 0 1.4rem}
     .glogin-form{text-align:left}
     .glogin-err{color:#c04545;font-weight:700;font-size:.9rem;text-align:center}
+    .glogin-demo{display:grid;gap:.2rem;text-align:center;background:var(--bg2);border:1px dashed var(--cel);border-radius:12px;padding:.9rem 1rem;cursor:pointer;font-family:inherit;transition:border-color .2s,background .2s}
+    .glogin-demo:hover{border-color:var(--blu);background:#ddf3e2}
+    .glogin-demo b{font-size:.9rem}
+    .glogin-demo span{font-size:.92rem;color:var(--ink)}
+    .glogin-demo code{background:#fff;border:1px solid var(--line);border-radius:6px;padding:.1rem .45rem;font-weight:700}
+    .glogin-demo small{color:var(--muted);font-size:.74rem}
     .glogout{background:none;border:0;color:var(--cel-d);font-size:.9rem;font-weight:700;text-decoration:underline;cursor:pointer;font-family:inherit}
     .ggrid{display:grid;grid-template-columns:1fr 1.1fr;gap:1.6rem;align-items:start;max-width:980px;margin:0 auto}
     .ggrid>*{min-width:0}
@@ -97,6 +109,12 @@ import Layout from './_Layout.astro';
       else { document.getElementById('glErr').hidden = false; }
     });
     document.getElementById('gLogout').addEventListener('click', () => { sessionStorage.removeItem('aus-auth'); gate(); });
+    // riquadro credenziali di prova (da rimuovere in produzione): un tocco e compila
+    document.getElementById('glDemo').addEventListener('click', () => {
+      document.getElementById('gl-user').value = GL_USER;
+      document.getElementById('gl-pass').value = GL_PASS;
+      document.getElementById('gl-pass').focus();
+    });
     gate();
     const list = document.getElementById('gList');
     const render = () => {

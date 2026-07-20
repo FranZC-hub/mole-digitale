@@ -1,0 +1,55 @@
+---
+import Layout from './_Layout.astro';
+// ⚠️ BOZZA: testo di base da far verificare a un consulente prima del go-live.
+const aggiornata = '20 luglio 2026';
+---
+<Layout title="Privacy & cookie" active="" desc="Informativa privacy e cookie della Farmacia dell'Ausiliatrice, Corso Principe Oddone 28, Torino.">
+  <section class="fsection priv" style="padding-top:8rem;">
+    <div class="fhead r"><span class="fkick">Informativa</span><h1>Privacy &amp; <span class="fmark">cookie</span></h1><p>Come trattiamo i tuoi dati quando ci scrivi o prenoti un servizio.</p></div>
+
+    <div class="priv-flag r">⚠️ <b>Bozza dimostrativa.</b> Questo testo è un modello di partenza: prima della pubblicazione va verificato e completato con un consulente (dati del titolare, responsabili esterni reali, tempi di conservazione definitivi).</div>
+
+    <div class="priv-body r">
+      <h2>Titolare del trattamento</h2>
+      <p>Farmacia dell'Ausiliatrice s.r.l. — Corso Principe Oddone 28, 10152 Torino (TO) · P.IVA 08379260014. Email: <a href="mailto:info@farmaciaausiliatrice.it">info@farmaciaausiliatrice.it</a> · Tel. <a href="tel:+390114365466">011 436 5466</a>.</p>
+
+      <h2>Quali dati raccogliamo</h2>
+      <p>Trattiamo solo i dati che ci fornisci volontariamente compilando i moduli del sito:</p>
+      <ul>
+        <li><b>Modulo contatti:</b> nome, recapito (telefono o email) e il testo del messaggio.</li>
+        <li><b>Modulo prenotazioni:</b> nome, telefono, servizio richiesto e giorno/fascia oraria preferiti.</li>
+      </ul>
+      <p>Non è richiesto l'inserimento di dati sanitari nei moduli: ti chiediamo di non indicare informazioni sulla salute nei campi liberi. Eventuali dettagli clinici verranno raccolti, se necessario, direttamente in farmacia con le opportune tutele.</p>
+
+      <h2>Perché li trattiamo (finalità e base giuridica)</h2>
+      <ul>
+        <li>Rispondere alle richieste e gestire gli appuntamenti — base giuridica: riscontro alla tua richiesta (art. 6.1.b GDPR).</li>
+        <li>Adempimenti di legge collegati all'attività della farmacia — base giuridica: obbligo legale (art. 6.1.c GDPR).</li>
+      </ul>
+
+      <h2>Per quanto tempo</h2>
+      <p>Conserviamo i dati dei moduli per il tempo necessario a gestire la richiesta e, poi, per il periodo richiesto da eventuali obblighi di legge, dopodiché vengono cancellati.</p>
+
+      <h2>A chi possono essere comunicati</h2>
+      <p>I dati sono trattati dal personale autorizzato della farmacia e possono essere trattati, per nostro conto, da fornitori tecnici (es. hosting e servizio email) nominati responsabili del trattamento. Non vengono diffusi né ceduti per finalità commerciali di terzi.</p>
+
+      <h2>I tuoi diritti</h2>
+      <p>Puoi chiedere in ogni momento accesso, rettifica, cancellazione, limitazione e opposizione al trattamento, oltre alla portabilità dei dati, scrivendo a <a href="mailto:info@farmaciaausiliatrice.it">info@farmaciaausiliatrice.it</a>. Hai inoltre diritto di proporre reclamo al Garante per la protezione dei dati personali.</p>
+
+      <h2 id="cookie">Cookie</h2>
+      <p>Il sito utilizza cookie tecnici necessari al suo funzionamento. La mappa di "Dove siamo" è fornita da Google Maps: aprendo quella pagina il servizio può impostare cookie propri. Non utilizziamo cookie di profilazione pubblicitaria.</p>
+
+      <p class="priv-upd">Ultimo aggiornamento: {aggiornata}.</p>
+    </div>
+  </section>
+  <style>
+    .priv{max-width:820px;margin:0 auto}
+    .priv-flag{background:rgba(211,55,47,.08);border:1px dashed var(--rosso);border-radius:12px;padding:1rem 1.2rem;font-size:.9rem;color:var(--ink);margin-bottom:2rem}
+    .priv-body h2{font-size:1.25rem;margin:1.8rem 0 .5rem}
+    .priv-body p,.priv-body li{color:var(--muted);line-height:1.65}
+    .priv-body ul{margin:.4rem 0 .4rem 1.2rem;display:grid;gap:.35rem}
+    .priv-body a{color:var(--cel-d);font-weight:700;text-decoration:underline}
+    .priv-body b{color:var(--ink)}
+    .priv-upd{margin-top:2rem;font-size:.85rem}
+  </style>
+</Layout>

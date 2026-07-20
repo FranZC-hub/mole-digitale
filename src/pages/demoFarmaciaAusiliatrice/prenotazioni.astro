@@ -1,7 +1,7 @@
 ---
 import Layout from './_Layout.astro';
 ---
-<Layout title="Prenotazioni" active="">
+<Layout title="Prenotazioni" active="" desc="Prenota un servizio alla Farmacia dell'Ausiliatrice a Torino: Holter, ECG, tamponi e autoanalisi. Scegli giorno e fascia oraria, confermiamo su WhatsApp.">
   <section class="fsection" style="padding-top:8rem;">
     <div class="fhead fhead-c r"><span class="fkick">Salta la fila</span><h1>Prenota un <span class="fmark">servizio</span></h1><p>Scegli servizio e giorno preferito: ti confermiamo l'appuntamento su WhatsApp o per telefono.</p></div>
 
@@ -25,15 +25,16 @@ import Layout from './_Layout.astro';
         </div>
         <label>Il tuo nome<input type="text" id="pr-nome" required autocomplete="name" /></label>
         <label>Telefono<input type="tel" id="pr-tel" required autocomplete="tel" /></label>
+        <label class="fconsent"><input type="checkbox" id="pr-privacy" required /><span>Ho letto l'<a href="/demoFarmaciaAusiliatrice/privacy/" target="_blank" rel="noopener">informativa privacy</a> e acconsento al trattamento dei dati per gestire la richiesta.</span></label>
         <button type="submit" class="fbtn fbtn-cel fbtn-lg fbtn-block">Richiedi la prenotazione →</button>
-        <p class="fform-ok" id="prOk"></p>
+        <p class="fform-ok" id="prOk" role="status" aria-live="polite"></p>
         <p class="fform-note">Bozza dimostrativa: nella versione reale la richiesta arriva subito alla farmacia (email + WhatsApp).</p>
       </form>
 
       <div class="prside">
-        <div class="fcard r"><span class="fic">⏱</span><h3>Quanto ci vuole?</h3><p>ECG e autoanalisi: pochi minuti, referto immediato. Holter: montaggio in farmacia, referto entro 5 giorni (24h in urgenza).</p></div>
-        <div class="fcard r"><span class="fic">💬</span><h3>Preferisci WhatsApp?</h3><p>Scrivici direttamente: <a href="https://wa.me/393505488606?text=Ciao!%20Vorrei%20prenotare%20un%20servizio" target="_blank" rel="noopener" style="color:var(--cel-d);font-weight:700;">prenota in chat →</a></p></div>
-        <div class="fcard r"><span class="fic">🏠</span><h3>Consegna a domicilio</h3><p>Ordina i tuoi farmaci entro le 12: consegniamo in giornata nel quartiere.</p></div>
+        <div class="fcard r"><span class="fic" aria-hidden="true">⏱</span><h3>Quanto ci vuole?</h3><p>ECG e autoanalisi: pochi minuti, referto immediato. Holter: montaggio in farmacia, referto entro 5 giorni (24h in urgenza).</p></div>
+        <div class="fcard r"><span class="fic" aria-hidden="true">💬</span><h3>Preferisci WhatsApp?</h3><p>Scrivici direttamente: <a href="https://wa.me/393388762564?text=Ciao!%20Vorrei%20prenotare%20un%20servizio" target="_blank" rel="noopener" style="color:var(--cel-d);font-weight:700;">prenota in chat →</a></p></div>
+        <div class="fcard r"><span class="fic" aria-hidden="true">🏠</span><h3>Consegna a domicilio</h3><p>Ordina i tuoi farmaci entro le 12: consegniamo in giornata nel quartiere.</p></div>
       </div>
     </div>
   </section>
@@ -46,12 +47,30 @@ import Layout from './_Layout.astro';
     @media (max-width:760px){.prgrid{grid-template-columns:1fr}.prrow{grid-template-columns:1fr}}
   </style>
   <script>
+    const dEl = document.getElementById('pr-data');
+    const oraEl = document.getElementById('pr-ora');
+    // Niente giorni passati: minimo = oggi
+    const iso = (dt) => dt.toISOString().split('T')[0];
+    dEl.min = iso(new Date());
+    // La farmacia è chiusa la domenica; il sabato solo mattina → adatto i campi al giorno scelto
+    const syncGiorno = () => {
+      if (!dEl.value) return;
+      const g = new Date(dEl.value + 'T00:00').getDay(); // 0=domenica, 6=sabato
+      if (g === 0) { dEl.setCustomValidity('La farmacia è chiusa la domenica: scegli un altro giorno.'); dEl.reportValidity(); return; }
+      dEl.setCustomValidity('');
+      const pom = oraEl.querySelector('option[value="Pomeriggio"], option:nth-child(2)');
+      if (g === 6) { oraEl.value = 'Mattina'; if (pom) pom.disabled = true; } // sabato: solo mattina
+      else if (pom) pom.disabled = false;
+    };
+    dEl.addEventListener('change', syncGiorno);
+
     document.getElementById('prForm').addEventListener('submit', (e) => {
       e.preventDefault();
       const s = document.getElementById('pr-serv').value;
       const d = document.getElementById('pr-data').value;
+      const ora = oraEl.value;
       const ok = document.getElementById('prOk');
-      ok.innerHTML = `✅ Richiesta registrata: <b>${s}</b> per il <b>${d ? d.split('-').reverse().join('/') : 'giorno scelto'}</b>. Ti confermiamo a breve! <i>(demo: nessun dato inviato)</i>`;
+      ok.innerHTML = `✅ Richiesta registrata: <b>${s}</b> per il <b>${d ? d.split('-').reverse().join('/') : 'giorno scelto'}</b> (${ora}). Ti confermiamo a breve! <i>(demo: nessun dato inviato)</i>`;
       ok.style.display = 'block';
       e.target.reset();
     });

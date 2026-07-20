@@ -1,7 +1,9 @@
 ---
 import Layout from './_Layout.astro';
+import { weeklyHours } from './_shared.js';
+const HOURS = weeklyHours(); // render statico degli orari: visibili anche senza JavaScript
 ---
-<Layout title="La cura della persona" active="Home">
+<Layout title="La cura della persona" active="Home" desc="Farmacia dell'Ausiliatrice a Torino (Corso Principe Oddone 28): ECG e Holter con telerefertazione, riconfezionamento farmaci, consegna a domicilio e consiglio del farmacista.">
   <!-- HERO -->
   <section class="fsection ahero">
     <div class="ahero-text r">
@@ -10,15 +12,16 @@ import Layout from './_Layout.astro';
       <p>Farmaci, autoanalisi, telemedicina e consiglio vero: dal 1° giorno al tuo fianco, con la comodità della consegna a domicilio e di WhatsApp.</p>
       <div class="ahero-cta">
         <a href="/demoFarmaciaAusiliatrice/prenotazioni/" class="fbtn fbtn-solid fbtn-lg">Prenota un servizio</a>
-        <a href="https://wa.me/393505488606" target="_blank" rel="noopener" class="fbtn fbtn-ghost fbtn-lg">💬 Scrivici su WhatsApp</a>
+        <a href="https://wa.me/393388762564" target="_blank" rel="noopener" class="fbtn fbtn-ghost fbtn-lg">💬 Scrivici su WhatsApp</a>
       </div>
-      <ul class="ahero-trust"><li>✓ ECG e Holter con telerefertazione</li><li>✓ Consegna a domicilio</li><li>✓ Deblistering personalizzato</li></ul>
+      <ul class="ahero-trust"><li>✓ ECG e Holter con telerefertazione</li><li>✓ Consegna a domicilio</li><li><span class="anew">Novità</span> Riconfezionamento farmaci</li></ul>
     </div>
     <div class="ahero-panel r">
-      <div class="ahero-open"><span class="adot"></span><b id="aOpen">Aperta ora</b></div>
-      <ul class="ahero-hours" id="aHours"></ul>
+      <div class="ahero-open"><span class="adot"></span><b id="aOpen">Orari di apertura</b></div>
+      <ul class="ahero-hours" id="aHours">
+        {HOURS.map((h) => <li><span>{h.day}</span><b>{h.label}</b></li>)}
+      </ul>
       <p class="ahero-turno">Siamo chiusi? <a href="https://www.farmaciediturno.org/" target="_blank" rel="noopener">Trova la farmacia di turno →</a></p>
-      <p class="ahero-hnote">⚠ Orari indicativi della bozza — da confermare</p>
     </div>
   </section>
 
@@ -32,9 +35,9 @@ import Layout from './_Layout.astro';
   <section class="fsection">
     <div class="fhead fhead-c r"><span class="fkick">I servizi</span><h2>Molto più che <span class="fmark">farmaci</span></h2></div>
     <div class="fgrid3">
-      <article class="fcard r"><span class="fic">🫀</span><h3>Holter cardiaco & ECG</h3><p>Elettrocardiogramma con telerefertazione immediata; Holter con referto in 5 giorni, 24 ore in urgenza.</p></article>
-      <article class="fcard r"><span class="fic">💊</span><h3>Deblistering</h3><p>Prepariamo noi le dosi giornaliere personalizzate: la terapia giusta, al momento giusto, senza errori.</p></article>
-      <article class="fcard r"><span class="fic">🏠</span><h3>Consegna a domicilio</h3><p>Non puoi passare? Ti portiamo i farmaci a casa. Ordina per telefono o WhatsApp.</p></article>
+      <article class="fcard r"><span class="fic" aria-hidden="true">🫀</span><h3>Holter cardiaco & ECG</h3><p>Elettrocardiogramma con telerefertazione immediata; Holter con referto in 5 giorni, 24 ore in urgenza.</p></article>
+      <article class="fcard r fcard-new"><span class="fic" aria-hidden="true">💊</span><h3>Riconfezionamento farmaci <span class="anew">Novità</span></h3><p>Prepariamo noi le dosi giornaliere personalizzate (deblistering): la terapia giusta, al momento giusto, senza errori.</p></article>
+      <article class="fcard r"><span class="fic" aria-hidden="true">🏠</span><h3>Consegna a domicilio</h3><p>Non puoi passare? Ti portiamo i farmaci a casa. Ordina per telefono o WhatsApp.</p></article>
     </div>
     <p class="acenter r"><a href="/demoFarmaciaAusiliatrice/servizi/" class="fbtn fbtn-ghost">Tutti i servizi →</a></p>
   </section>
@@ -42,7 +45,7 @@ import Layout from './_Layout.astro';
   <!-- BANNER PRENOTAZIONI -->
   <section class="abanner">
     <div class="abanner-in r">
-      <div><h2>Salta la fila: <span style="color:#bfe3f8">prenota online</span>.</h2><p>Holter, ECG, tamponi e autoanalisi: scegli giorno e ora, ci pensiamo noi.</p></div>
+      <div><h2>Salta la fila: <span style="color:#bfeccb">prenota online</span>.</h2><p>Holter, ECG, tamponi e autoanalisi: scegli giorno e ora, ci pensiamo noi.</p></div>
       <a href="/demoFarmaciaAusiliatrice/prenotazioni/" class="fbtn fbtn-cel fbtn-lg">Prenota adesso →</a>
     </div>
   </section>
@@ -51,11 +54,11 @@ import Layout from './_Layout.astro';
   <section class="fsection aoff-sec">
     <div class="fhead fhead-c r"><span class="fkick">Le promozioni</span><h2>Offerte <span class="fmark">del mese</span></h2></div>
     <div class="aoff r">
-      <article class="aoff-card"><span class="aoff-tag">−25%</span><span class="pem">🧴</span><h3>Avène Solare SPF50+ 50ml</h3><p><s>€ 18,90</s> <b>€ 13,90</b></p></article>
-      <article class="aoff-card"><span class="aoff-tag">−20%</span><span class="pem">💚</span><h3>Fermenti lattici 30 cps</h3><p><s>€ 14,90</s> <b>€ 11,90</b></p></article>
-      <article class="aoff-card"><span class="aoff-tag">2×1</span><span class="pem">🤲</span><h3>Crema mani riparatrice</h3><p>Due confezioni al prezzo di una: <b>€ 7,50</b></p></article>
+      <article class="aoff-card"><span class="aoff-tag">−25%</span><span class="pem" aria-hidden="true">🧴</span><h3>Avène Solare SPF50+ 50ml</h3><p><s>€ 18,90</s> <b>€ 13,90</b></p></article>
+      <article class="aoff-card"><span class="aoff-tag">−20%</span><span class="pem" aria-hidden="true">💚</span><h3>Fermenti lattici 30 cps</h3><p><s>€ 14,90</s> <b>€ 11,90</b></p></article>
+      <article class="aoff-card"><span class="aoff-tag">2×1</span><span class="pem" aria-hidden="true">🤲</span><h3>Crema mani riparatrice</h3><p>Due confezioni al prezzo di una: <b>€ 7,50</b></p></article>
     </div>
-    <p class="aoff-note r">💡 <b>Per il titolare:</b> nella versione col gestionale, anche le offerte le aggiorni tu in autonomia.</p>
+    <p class="aoff-note r">💡 <b>Per il titolare:</b> nella versione col gestionale le offerte del mese si aggiornano da sole, sincronizzate via API con il tuo gestionale (o il circuito della farmacia): niente da inserire a mano.</p>
   </section>
 
   <!-- PRODOTTI IN EVIDENZA -->
@@ -69,9 +72,9 @@ import Layout from './_Layout.astro';
   <section class="fsection arev-sec">
     <div class="fhead fhead-c r"><span class="fkick">Dicono di noi</span><h2>Le recensioni <span class="fmark">dei clienti</span></h2></div>
     <div class="fgrid3">
-      <blockquote class="fcard arev r"><div class="astars">★★★★★</div><p>«Gentilissimi e sempre disponibili. Ho fatto l'ECG in farmacia: referto subito, zero code.»</p><footer><b>Maria C.</b> · recensione Google</footer></blockquote>
-      <blockquote class="fcard arev r"><div class="astars">★★★★★</div><p>«La consegna a domicilio mi ha salvato quando non potevo uscire. Servizio prezioso.»</p><footer><b>Giuseppe T.</b> · recensione Google</footer></blockquote>
-      <blockquote class="fcard arev r"><div class="astars">★★★★★</div><p>«Preparano le dosi giornaliere per mia madre: un pensiero in meno ogni settimana.»</p><footer><b>Lucia R.</b> · recensione Google</footer></blockquote>
+      <blockquote class="fcard arev r"><div class="astars" role="img" aria-label="Valutazione: 5 stelle su 5">★★★★★</div><p>«Gentilissimi e sempre disponibili. Ho fatto l'ECG in farmacia: referto subito, zero code.»</p><footer><b>Maria C.</b> · recensione Google</footer></blockquote>
+      <blockquote class="fcard arev r"><div class="astars" role="img" aria-label="Valutazione: 5 stelle su 5">★★★★★</div><p>«La consegna a domicilio mi ha salvato quando non potevo uscire. Servizio prezioso.»</p><footer><b>Giuseppe T.</b> · recensione Google</footer></blockquote>
+      <blockquote class="fcard arev r"><div class="astars" role="img" aria-label="Valutazione: 5 stelle su 5">★★★★★</div><p>«Preparano le dosi giornaliere per mia madre: un pensiero in meno ogni settimana.»</p><footer><b>Lucia R.</b> · recensione Google</footer></blockquote>
     </div>
     <p class="arev-note r">Recensioni d'esempio — nella versione definitiva qui compariranno <b>le vere recensioni Google della farmacia</b>, aggiornate in automatico.</p>
   </section>
@@ -91,7 +94,9 @@ import Layout from './_Layout.astro';
     /* :global — le righe orari sono iniettate via JS e non hanno lo scope Astro */
     .ahero-hours :global(li){display:flex;justify-content:space-between;gap:1rem;border-bottom:1px dashed var(--line);padding-bottom:.35rem}
     .ahero-hours :global(li.today){font-weight:800;color:var(--blu)}
-    .ahero-hnote{margin-top:.8rem;font-size:.74rem;color:var(--muted)}
+    .ahero-trust li{display:inline-flex;align-items:center;gap:.35rem}
+    .anew{display:inline-block;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;background:var(--rosso);color:#fff;padding:.15rem .45rem;border-radius:999px;vertical-align:middle}
+    .fcard-new{border-color:rgba(211,55,47,.35)}
     .acenter{text-align:center;margin-top:1.6rem}
     .ahero-turno{margin-top:.8rem;font-size:.85rem;color:var(--muted)}
     .ahero-turno a{color:var(--cel-d);font-weight:700;text-decoration:underline}
@@ -115,14 +120,15 @@ import Layout from './_Layout.astro';
     .arev p{font-size:.96rem;flex:1}
     .arev footer{margin-top:.7rem;font-size:.85rem;color:var(--muted)}
     .arev footer b{color:var(--ink)}
-    @media (max-width:920px){.aoff{grid-template-columns:1fr}.aphoto img{aspect-ratio:16/9}}
+    @media (max-width:920px){.aoff{grid-template-columns:1fr 1fr}.aphoto img{aspect-ratio:16/9}}
     .abanner{background:linear-gradient(130deg,var(--blu),var(--blu-d))}
     .abanner-in{max-width:1150px;margin:0 auto;padding:2.6rem clamp(1.2rem,5vw,3rem);display:flex;align-items:center;justify-content:space-between;gap:1.4rem;flex-wrap:wrap;color:#fff}
     .abanner-in h2{font-size:clamp(1.5rem,3.6vw,2.2rem)}
-    .abanner-in p{color:#c9dcef;margin-top:.3rem}
+    .abanner-in p{color:#cfe7da;margin-top:.3rem}
     .aprods{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
     .aprods>*{min-width:0}
     @media (max-width:920px){.ahero{grid-template-columns:1fr;padding-top:7.5rem}.aprods{grid-template-columns:1fr 1fr}}
+    @media (max-width:560px){.aprods,.aoff{grid-template-columns:1fr}}
   </style>
 
   <script>

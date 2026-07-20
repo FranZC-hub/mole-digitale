@@ -36,4 +36,4 @@ Il sito più bello del mondo non serve se non compare quando cercano "«quello c
 
 ## Da dove iniziare
 
-Se ti sei riconosciuto in almeno 3 di questi punti, il sito ti sta costando clienti. Puoi [calcolare in un minuto quanto costa sistemarlo](/preventivo) oppure [raccontarci la tua attività](/inizia): la prima bozza è gratis, e in una settimana sei online.
+Se ti sei riconosciuto in almeno 3 di questi punti, il sito ti sta costando clienti. Puoi [raccontarci la tua attività](/inizia) oppure [scriverci due righe](/#contatti): la prima bozza è gratis, e in una settimana sei online.

@@ -1,15 +1,15 @@
 ---
 import Layout from './_Layout.astro';
 ---
-<Layout title="Contatti" active="Contatti">
+<Layout title="Contatti" active="Contatti" desc="Contatta la Farmacia dell'Ausiliatrice a Torino: telefono 011 436 5466, WhatsApp 338 876 2564, email. Corso Principe Oddone 28.">
   <section class="fsection" style="padding-top:8rem;">
     <div class="fhead fhead-c r"><span class="fkick">Parliamo</span><h1>Contatta<span class="fmark">ci</span></h1><p>Per ordini, informazioni su un farmaco o qualsiasi necessità: siamo a tua disposizione.</p></div>
 
     <div class="ctgrid">
       <div class="ctcards">
-        <a class="fcard ctcard r" href="tel:+390114365466"><span class="fic">📞</span><h3>Telefono</h3><p><b>011 436 5466</b><br/>negli orari di apertura</p></a>
-        <a class="fcard ctcard r" href="https://wa.me/393505488606" target="_blank" rel="noopener"><span class="fic">💬</span><h3>WhatsApp</h3><p><b>350 548 8606</b><br/>ordini e domande, risposta in giornata</p></a>
-        <a class="fcard ctcard r" href="mailto:info@farmaciaausiliatrice.it"><span class="fic">✉️</span><h3>Email</h3><p><b>info@farmaciaausiliatrice.it</b><br/>per richieste non urgenti</p></a>
+        <a class="fcard ctcard r" href="tel:+390114365466"><span class="fic" aria-hidden="true">📞</span><h3>Telefono</h3><p><b>011 436 5466</b><br/>negli orari di apertura</p></a>
+        <a class="fcard ctcard r" href="https://wa.me/393388762564" target="_blank" rel="noopener"><span class="fic" aria-hidden="true">💬</span><h3>WhatsApp</h3><p><b>338 876 2564</b><br/>ordini e domande, risposta in giornata</p></a>
+        <a class="fcard ctcard r" href="mailto:info@farmaciaausiliatrice.it"><span class="fic" aria-hidden="true">✉️</span><h3>Email</h3><p><b>info@farmaciaausiliatrice.it</b><br/>per richieste non urgenti</p></a>
       </div>
 
       <form class="fform r" id="ctForm">
@@ -17,8 +17,9 @@ import Layout from './_Layout.astro';
         <label>Il tuo nome<input type="text" required autocomplete="name" /></label>
         <label>Telefono o email<input type="text" required autocomplete="tel" /></label>
         <label>Messaggio<textarea rows="4" required placeholder="Es. Vorrei sapere se avete disponibile…"></textarea></label>
+        <label class="fconsent"><input type="checkbox" required /><span>Ho letto l'<a href="/demoFarmaciaAusiliatrice/privacy/" target="_blank" rel="noopener">informativa privacy</a> e acconsento al trattamento dei dati per rispondere alla richiesta.</span></label>
         <button type="submit" class="fbtn fbtn-solid fbtn-block">Invia il messaggio →</button>
-        <p class="fform-ok" id="ctOk">✅ Messaggio inviato! Ti rispondiamo il prima possibile. <i>(demo: nessun dato è stato trasmesso)</i></p>
+        <p class="fform-ok" id="ctOk" role="status" aria-live="polite">✅ Messaggio inviato! Ti rispondiamo il prima possibile. <i>(demo: nessun dato è stato trasmesso)</i></p>
         <p class="fform-note">Bozza dimostrativa: l'invio reale sarà attivato nella versione definitiva.</p>
       </form>
     </div>
