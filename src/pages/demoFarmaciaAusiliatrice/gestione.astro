@@ -33,14 +33,15 @@ import Layout from './_Layout.astro';
 
     <div class="ggrid">
       <form class="fform r" id="gForm">
-        <h3 style="font-size:1.1rem;">➕ Nuovo servizio</h3>
+        <h3 id="gFormTitle" style="font-size:1.1rem;">➕ Nuovo servizio</h3>
         <label>Nome del servizio<input type="text" id="g-nome" required placeholder="Es. Foratura del lobo" maxlength="60" /></label>
         <label>Descrizione breve<textarea id="g-desc" rows="2" placeholder="Es. Foratura sterile con sistema monouso e orecchini anallergici inclusi." maxlength="160"></textarea></label>
         <label>Scegli un'icona
           <select id="g-em"><option>🩺</option><option>💉</option><option>🧪</option><option>🩸</option><option>💊</option><option>🫀</option><option>📈</option><option>🏠</option><option>💬</option><option>🦷</option><option>👂</option><option>👶</option></select>
         </label>
         <label class="fconsent"><input type="checkbox" id="g-prenota" /> <span>Servizio <b>prenotabile</b> (mostra l'etichetta «prenotabile»)</span></label>
-        <button type="submit" class="fbtn fbtn-cel fbtn-block">Pubblica sul sito →</button>
+        <button type="submit" id="gSubmit" class="fbtn fbtn-cel fbtn-block">Pubblica sul sito →</button>
+        <button type="button" id="gCancel" class="gcancel" hidden>Annulla modifica</button>
         <p class="fform-note">Demo: i dati restano solo su questo dispositivo.</p>
       </form>
 
@@ -76,9 +77,15 @@ import Layout from './_Layout.astro';
     :global(.gitem .tx){flex:1;min-width:0}
     :global(.gitem b){display:block;font-size:.98rem}
     :global(.gitem .tx span){font-size:.8rem;color:var(--muted);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    :global(.gitem button){background:none;border:1px solid var(--line);border-radius:9px;width:34px;height:34px;cursor:pointer;color:#c04545;font-size:1rem;flex:none}
-    :global(.gitem button:hover){border-color:#c04545}
+    :global(.gitem button){background:none;border:1px solid var(--line);border-radius:9px;width:34px;height:34px;cursor:pointer;font-size:1rem;flex:none}
+    :global(.gitem .gedit){color:var(--blu)}
+    :global(.gitem .gedit:hover){border-color:var(--cel)}
+    :global(.gitem .gdel){color:#c04545}
+    :global(.gitem .gdel:hover){border-color:#c04545}
+    :global(.gitem.editing){border-color:var(--cel);box-shadow:0 0 0 2px rgba(23,166,63,.2)}
     :global(.gempty){color:var(--muted);background:var(--bg2);border:1px dashed var(--line);border-radius:13px;padding:1.2rem;text-align:center;font-size:.94rem}
+    .gcancel{background:none;border:0;color:var(--muted);font-size:.85rem;font-weight:700;text-decoration:underline;cursor:pointer;font-family:inherit;margin-top:-.3rem}
+    .gcancel:hover{color:#c04545}
     @media (max-width:760px){.ggrid{grid-template-columns:1fr}}
   </style>
 
@@ -106,24 +113,55 @@ import Layout from './_Layout.astro';
       document.getElementById('gl-pass').focus();
     });
     gate();
-    const list = document.getElementById('gList');
+    const $ = (id) => document.getElementById(id);
+    const list = $('gList'), form = $('gForm'), fTitle = $('gFormTitle'), fSubmit = $('gSubmit'), fCancel = $('gCancel');
+    let editId = null; // id del servizio in modifica (null = sto aggiungendone uno nuovo)
+
+    const setMode = (edit) => {
+      fTitle.textContent = edit ? '✏️ Modifica servizio' : '➕ Nuovo servizio';
+      fSubmit.textContent = edit ? 'Salva le modifiche →' : 'Pubblica sul sito →';
+      fCancel.hidden = !edit;
+    };
+    const resetForm = () => { form.reset(); editId = null; setMode(false); };
+
     const render = () => {
       const items = readServices();
       list.innerHTML = items.length
-        ? items.map((s, i) => `<div class="gitem"><span class="em">${esc(s.em)}</span><div class="tx"><b>${esc(s.nome)}</b><span>${esc(s.desc || '')}${s.prenotabile ? ' · prenotabile' : ''}</span></div><button type="button" data-i="${i}" aria-label="Elimina ${esc(s.nome)}">✕</button></div>`).join('')
+        ? items.map((s) => `<div class="gitem${s.id === editId ? ' editing' : ''}"><span class="em">${esc(s.em)}</span><div class="tx"><b>${esc(s.nome)}</b><span>${esc(s.desc || '')}${s.prenotabile ? ' · prenotabile' : ''}</span></div><button type="button" class="gedit" data-edit="${s.id}" aria-label="Modifica ${esc(s.nome)}">✏️</button><button type="button" class="gdel" data-del="${s.id}" aria-label="Elimina ${esc(s.nome)}">✕</button></div>`).join('')
         : '<div class="gempty">Ancora nessun servizio. Aggiungine uno dal modulo: apparirà qui e sulla pagina Servizi.</div>';
-      list.querySelectorAll('button[data-i]').forEach((b) => b.addEventListener('click', () => {
-        const arr = readServices(); arr.splice(+b.dataset.i, 1); writeServices(arr); render();
+      list.querySelectorAll('[data-del]').forEach((b) => b.addEventListener('click', () => {
+        writeServices(readServices().filter((s) => s.id !== b.dataset.del));
+        if (editId === b.dataset.del) resetForm(); // stavo modificando proprio questo
+        render();
+      }));
+      list.querySelectorAll('[data-edit]').forEach((b) => b.addEventListener('click', () => {
+        const s = readServices().find((x) => x.id === b.dataset.edit);
+        if (!s) return;
+        $('g-nome').value = s.nome || '';
+        $('g-desc').value = s.desc || '';
+        $('g-em').value = s.em || '🩺';
+        $('g-prenota').checked = !!s.prenotabile;
+        editId = s.id; setMode(true); render();
+        $('g-nome').focus();
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }));
     };
-    document.getElementById('gForm').addEventListener('submit', (e) => {
+
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const nome = document.getElementById('g-nome').value.trim();
-      const desc = document.getElementById('g-desc').value.trim();
+      const nome = $('g-nome').value.trim();
+      const desc = $('g-desc').value.trim();
       if (!nome) return;
-      writeServices([{ id: 'u' + Date.now(), nome, desc, em: document.getElementById('g-em').value, prenotabile: document.getElementById('g-prenota').checked }, ...readServices()]);
-      e.target.reset(); render();
+      const em = $('g-em').value, prenotabile = $('g-prenota').checked;
+      if (editId) {
+        // aggiorna il servizio esistente (stesso id)
+        writeServices(readServices().map((s) => (s.id === editId ? { ...s, nome, desc, em, prenotabile } : s)));
+      } else {
+        writeServices([{ id: 'u' + Date.now(), nome, desc, em, prenotabile }, ...readServices()]);
+      }
+      resetForm(); render();
     });
+    fCancel.addEventListener('click', () => { resetForm(); render(); });
     render();
   </script>
 </Layout>
