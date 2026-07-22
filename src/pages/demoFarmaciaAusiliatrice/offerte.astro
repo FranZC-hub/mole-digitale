@@ -11,6 +11,20 @@ const offerte = [
   { id: 'o4', tag: '−30%', em: '☀️', nome: 'Vitamina D3 2000 UI', cat: 'Integratori', prezzo: '8,00', prezzoOld: '11,50', desc: 'Vitamina D3 in gocce: sostiene ossa, muscoli e sistema immunitario. Ideale nei mesi con poco sole.' },
   { id: 'o5', tag: '−15%', em: '🌡', nome: 'Termometro digitale', cat: 'Autoanalisi', prezzo: '7,50', prezzoOld: '8,90', desc: 'Misurazione rapida e precisa, display ampio e segnale acustico di fine misura. Punta flessibile.' },
   { id: 'o6', tag: '3×2', em: '⚡', nome: 'Magnesio + Potassio 24 bust.', cat: 'Integratori', prezzo: '19,80', promo: 'Tre confezioni al prezzo di due', desc: 'Reintegra i sali minerali persi con caldo e sudorazione: contro stanchezza, crampi e affaticamento.' },
+  { id: 'o7', tag: '−20%', em: '🦷', nome: 'Dentifricio protezione totale 75ml', cat: 'Igiene orale', prezzo: '3,20', prezzoOld: '3,99', desc: 'Protezione completa contro carie, placca e tartaro. Con fluoro, per l\'uso quotidiano di tutta la famiglia.' },
+  { id: 'o8', tag: '−25%', em: '💊', nome: 'Multivitaminico 30 compresse', cat: 'Integratori', prezzo: '9,70', prezzoOld: '12,90', desc: '11 vitamine e 8 minerali per sostenere energia e difese nei periodi di stanchezza. Una compressa al giorno.' },
+  { id: 'o9', tag: '−15%', em: '🧴', nome: 'Crema viso idratante 50ml', cat: 'Dermocosmesi', prezzo: '16,90', prezzoOld: '19,90', desc: 'Idratazione intensa 24 ore per pelli normali e secche. Texture leggera, assorbimento rapido, senza unto.' },
+  { id: 'o10', tag: '2×1', em: '🧼', nome: 'Detergente intimo delicato 250ml', cat: 'Igiene', prezzo: '5,90', promo: 'Due confezioni al prezzo di una', desc: 'Formula delicata a pH fisiologico, con estratti lenitivi, per l\'igiene quotidiana di tutti i giorni.' },
+  { id: 'o11', tag: '−30%', em: '👶', nome: 'Salviette per neonati 3×72', cat: 'Prima infanzia', prezzo: '6,30', prezzoOld: '8,90', desc: 'Extra delicate, con acqua e camomilla, senza alcol né profumi. Confezione risparmio da tre pacchi.' },
+  { id: 'o12', tag: '−20%', em: '🩹', nome: 'Cerotti assortiti 40 pezzi', cat: 'Medicazione', prezzo: '3,90', prezzoOld: '4,90', desc: 'Misure assortite, traspiranti e resistenti all\'acqua, per le piccole ferite di ogni giorno.' },
+  { id: 'o13', tag: '−10%', em: '🩺', nome: 'Misuratore di pressione da braccio', cat: 'Autoanalisi', prezzo: '44,90', prezzoOld: '49,90', desc: 'Bracciale automatico con rilevazione delle aritmie e memoria per due utenti. Display grande e leggibile.' },
+  { id: 'o14', tag: '−25%', em: '💧', nome: 'Spray nasale acqua di mare 100ml', cat: 'Raffreddore', prezzo: '4,50', prezzoOld: '5,99', desc: 'Acqua di mare isotonica per liberare il naso chiuso di adulti e bambini. Senza conservanti.' },
+  { id: 'o15', tag: '3×2', em: '🍬', nome: 'Caramelle balsamiche gola', cat: 'Raffreddore', prezzo: '5,80', promo: 'Tre confezioni al prezzo di due', desc: 'Con miele ed eucalipto, danno sollievo a gola e vie respiratorie. Senza zucchero.' },
+  { id: 'o16', tag: '−20%', em: '💤', nome: 'Melatonina 1mg 60 compresse', cat: 'Integratori', prezzo: '7,90', prezzoOld: '9,90', desc: 'Favorisce l\'addormentamento naturale. Una compressa mezz\'ora prima di coricarti.' },
+  { id: 'o17', tag: '−15%', em: '🦵', nome: 'Calze a compressione graduata', cat: 'Ortopedia', prezzo: '18,60', prezzoOld: '21,90', desc: 'Compressione graduata per gambe stanche e pesanti: aiutano la circolazione durante la giornata.' },
+  { id: 'o18', tag: '−25%', em: '🧴', nome: 'Shampoo antiforfora 200ml', cat: 'Dermocosmesi', prezzo: '8,20', prezzoOld: '10,90', desc: 'Riduce forfora e prurito fin dalle prime applicazioni, lasciando i capelli leggeri e puliti.' },
+  { id: 'o19', tag: '−30%', em: '🐶', nome: 'Antiparassitario spot-on per cani', cat: 'Veterinaria', prezzo: '13,90', prezzoOld: '19,90', desc: 'Protezione da pulci e zecche fino a 4 settimane. Applicazione spot-on semplice e rapida.' },
+  { id: 'o20', tag: '2×1', em: '👁️', nome: 'Soluzione unica lenti 360ml', cat: 'Ottica', prezzo: '8,90', promo: 'Due flaconi al prezzo di uno', desc: 'Pulizia, risciacquo e conservazione delle lenti morbide in un solo gesto. Comoda anche in viaggio.' },
 ];
 ---
 <Layout title="Offerte" active="Offerte" desc="Le offerte del mese della Farmacia dell'Ausiliatrice a Torino: dermocosmesi, integratori e autoanalisi in promozione. Prenota il ritiro su WhatsApp.">
@@ -242,7 +256,7 @@ const offerte = [
       let visible = 0;
       cards.forEach((c) => {
         const show = c.dataset.nome.toLowerCase().includes(q);
-        c.hidden = !show; if (show) visible++;
+        c.hidden = !show; if (show) { c.classList.add('in'); visible++; } // .in: forza il reveal delle card mostrate
       });
       $('#oNoRes').hidden = visible !== 0;
     });

@@ -44,6 +44,10 @@ import Layout from './_Layout.astro';
     .prrow{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
     .prrow>*{min-width:0}
     .prside{display:grid;gap:1rem}
+    /* evidenziazione breve quando il servizio arriva pre-selezionato da /servizi/ */
+    #pr-serv.pr-flash{animation:prflash 1.5s ease}
+    @keyframes prflash{20%,60%{box-shadow:0 0 0 3px rgba(23,166,63,.4);border-color:var(--cel)}}
+    @media (prefers-reduced-motion:reduce){#pr-serv.pr-flash{animation:none}}
     @media (max-width:760px){.prgrid{grid-template-columns:1fr}.prrow{grid-template-columns:1fr}}
   </style>
   <script>
@@ -74,5 +78,22 @@ import Layout from './_Layout.astro';
       ok.style.display = 'block';
       e.target.reset();
     });
+
+    // Servizio arrivato da /servizi/ (?servizio=Nome): lo preseleziono (aggiungendolo
+    // alla tendina se non c'è) e porto l'attenzione al modulo. Così cliccare "Prenota"
+    // su una card avvia subito la prenotazione di QUEL servizio.
+    const wanted = new URLSearchParams(location.search).get('servizio');
+    if (wanted) {
+      const sel = document.getElementById('pr-serv');
+      const norm = (t) => t.trim().toLowerCase();
+      const opts = [...sel.options];
+      let match = opts.find((o) => norm(o.text) === norm(wanted))
+        || opts.find((o) => norm(o.text).includes(norm(wanted)) || norm(wanted).includes(norm(o.text)));
+      if (!match) { match = new Option(wanted, wanted); sel.add(match, 0); }
+      sel.value = match.value;
+      document.getElementById('prForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      sel.classList.add('pr-flash');
+      setTimeout(() => sel.classList.remove('pr-flash'), 1600);
+    }
   </script>
 </Layout>

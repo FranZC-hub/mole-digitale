@@ -67,11 +67,15 @@ export function serviceCard(s, mine = false) {
   const badges = [
     s.nuovo ? '<span class="sbadge sbadge-new">novità</span>' : '',
     s.prenotabile ? '<span class="sbadge">prenotabile</span>' : '',
-    mine ? '<span class="sbadge sbadge-mine">aggiunto da te ✔</span>' : '',
   ].join('');
-  return `<article class="fcard${mine ? ' fcard-mine' : ''}">
+  // il bottone "Prenota" appare SOLO sui servizi prenotabili; porta alla prenotazione
+  // GIÀ con questo servizio selezionato
+  const pren = '/demoFarmaciaAusiliatrice/prenotazioni/?servizio=' + encodeURIComponent(s.nome || '');
+  const book = s.prenotabile ? `<a class="sbook" href="${pren}">Prenota →</a>` : '';
+  return `<article class="fcard${mine ? ' fcard-mine' : ''}" data-nome="${esc(s.nome)}">
     <span class="fic" aria-hidden="true">${esc(s.em) || '🧩'}</span>
     <h3>${esc(s.nome)} ${badges}</h3>
     ${s.desc ? `<p>${esc(s.desc)}</p>` : ''}
+    ${book}
   </article>`;
 }

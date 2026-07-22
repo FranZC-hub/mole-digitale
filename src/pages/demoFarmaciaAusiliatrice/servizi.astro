@@ -1,6 +1,8 @@
 ---
 import Layout from './_Layout.astro';
 import { BASE_SERVICES } from './_shared.js';
+const PREN = '/demoFarmaciaAusiliatrice/prenotazioni/';
+const bookHref = (nome) => PREN + '?servizio=' + encodeURIComponent(nome);
 // I servizi base sono resi lato server (visibili anche senza JavaScript). Quelli aggiunti
 // dal titolare nel gestionale (localStorage) vengono iniettati in cima via JS.
 ---
@@ -8,18 +10,25 @@ import { BASE_SERVICES } from './_shared.js';
   <section class="fsection" style="padding-top:8rem;">
     <div class="fhead fhead-c r"><span class="fkick">Cosa facciamo</span><h1>I nostri <span class="fmark">servizi</span></h1><p>Telemedicina, autoanalisi e attenzioni quotidiane: la farmacia come presidio di salute del quartiere.</p></div>
 
+    <div class="ssearch r">
+      <span class="ssearch-ic" aria-hidden="true">🔎</span>
+      <input type="search" id="sSearch" placeholder="Cerca un servizio per nome…" aria-label="Cerca un servizio per nome" autocomplete="off" />
+    </div>
+
     <div class="sgrid" id="sGrid">
       {BASE_SERVICES.map((s) => (
-        <article class="fcard r">
+        <article class="fcard r" data-nome={s.nome}>
           <span class="fic" aria-hidden="true">{s.em}</span>
           <h3>{s.nome} {s.nuovo && <span class="sbadge sbadge-new">novità</span>} {s.prenotabile && <span class="sbadge">prenotabile</span>}</h3>
           {s.desc && <p>{s.desc}</p>}
+          {s.prenotabile && <a class="sbook" href={bookHref(s.nome)}>Prenota →</a>}
         </article>
       ))}
     </div>
+    <p class="snores r" id="sNoRes" hidden>Nessun servizio trovato con questo nome. Prova con un'altra parola.</p>
 
     <div class="scta r">
-      <a href="/demoFarmaciaAusiliatrice/prenotazioni/" class="fbtn fbtn-solid fbtn-lg">Prenota un servizio →</a>
+      <a href={PREN} class="fbtn fbtn-solid fbtn-lg">Prenota un servizio →</a>
       <a href="https://wa.me/393388762564" target="_blank" rel="noopener" class="fbtn fbtn-ghost fbtn-lg">Chiedi su WhatsApp</a>
     </div>
 
@@ -29,23 +38,46 @@ import { BASE_SERVICES } from './_shared.js';
     </div>
   </section>
   <style>
+    /* i servizi filtrati dalla ricerca usano [hidden]: qui va reso sempre efficace */
+    .ssearch{max-width:460px;margin:0 auto 1.8rem;position:relative}
+    .ssearch-ic{position:absolute;left:1rem;top:50%;transform:translateY(-50%);opacity:.6;pointer-events:none}
+    .ssearch input{width:100%;padding:.85rem 1rem .85rem 2.6rem;border:1px solid var(--line);border-radius:999px;font-family:var(--sans);font-size:1rem;background:var(--card);color:var(--ink)}
+    .ssearch input:focus{outline:2px solid var(--cel);border-color:transparent}
     .sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
     .sgrid>*{min-width:0}
-    /* :global — le badge servono anche alle card iniettate via JS (che non hanno lo scope Astro) */
+    /* card come colonna così il bottone "Prenota" si allinea in basso (anche sulle card iniettate) */
+    :global(#sGrid .fcard){display:flex;flex-direction:column}
+    :global(#sGrid .fcard[hidden]){display:none}
+    /* :global — badge e bottone servono anche alle card iniettate via JS (senza scope Astro) */
     :global(.sbadge){display:inline-block;font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;background:rgba(23,166,63,.14);color:var(--cel-d);padding:.2rem .5rem;border-radius:999px;vertical-align:middle;margin-left:.3rem}
     :global(.sbadge-new){background:var(--rosso);color:#fff}
-    :global(.sbadge-mine){background:var(--cel);color:#fff}
     :global(.fcard-mine){border-color:var(--cel)}
+    :global(.sbook){align-self:flex-start;margin-top:auto;display:inline-flex;align-items:center;gap:.35rem;font-weight:700;font-size:.9rem;color:var(--cel-d);background:rgba(23,166,63,.1);border:1px solid transparent;border-radius:11px;padding:.55rem 1rem;transition:background .2s,color .2s}
+    :global(#sGrid .fcard p){margin-bottom:1rem} /* gap minimo prima del bottone anche sulla card più alta */
+    :global(.sbook:hover){background:var(--cel);color:#fff}
+    .snores{text-align:center;color:var(--muted);padding:1.5rem}
     .scta{display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;margin-top:2.2rem}
     @media (max-width:920px){.sgrid{grid-template-columns:1fr 1fr}}
     @media (max-width:560px){.sgrid{grid-template-columns:1fr}}
   </style>
   <script>
     import { readServices, serviceCard } from './_shared.js';
-    // i servizi aggiunti dal titolare compaiono per primi, marcati "aggiunto da te"
+    const grid = document.getElementById('sGrid');
+    // i servizi aggiunti dal titolare compaiono per primi
     const custom = readServices();
-    if (custom.length) {
-      document.getElementById('sGrid').insertAdjacentHTML('afterbegin', custom.map((s) => serviceCard(s, true)).join(''));
-    }
+    if (custom.length) grid.insertAdjacentHTML('afterbegin', custom.map((s) => serviceCard(s, true)).join(''));
+
+    // ricerca per nome (copre sia i servizi base SSR sia quelli iniettati)
+    const cards = [...grid.querySelectorAll('.fcard')];
+    const noRes = document.getElementById('sNoRes');
+    document.getElementById('sSearch').addEventListener('input', (e) => {
+      const q = e.target.value.trim().toLowerCase();
+      let visible = 0;
+      cards.forEach((c) => {
+        const show = (c.dataset.nome || '').toLowerCase().includes(q);
+        c.hidden = !show; if (show) { c.classList.add('in'); visible++; } // .in: forza il reveal
+      });
+      noRes.hidden = visible !== 0;
+    });
   </script>
 </Layout>
