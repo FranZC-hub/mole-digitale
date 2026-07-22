@@ -1,6 +1,6 @@
-// Condiviso dalla bozza Farmacia dell'Ausiliatrice: orari live + catalogo prodotti.
-// I prodotti aggiunti dal gestionale demo (localStorage) si fondono col catalogo base:
-// è la dimostrazione della "gestione autonoma" proposta al cliente.
+// Condiviso dalla bozza Farmacia dell'Ausiliatrice: orari live + elenco servizi.
+// I servizi aggiunti dal gestionale demo (localStorage) si affiancano a quelli base
+// sulla pagina Servizi: è la dimostrazione della "gestione autonoma" proposta al cliente.
 
 // Orari ufficiali Farmacia dell'Ausiliatrice — Lun–Ven 8.45–12.45 / 15.15–19.15, Sab 8.45–12.45, Dom chiuso.
 // Ore in decimale: .25=15min, .5=30min, .75=45min (es. 8.75 = 8:45).
@@ -37,33 +37,41 @@ export function renderHours(listEl, openEl) {
   }
 }
 
-// Catalogo base (esempi realistici dal loro assortimento: dermocosmesi + integrazione)
-const BASE_PRODUCTS = [
-  { id: 'b1', nome: 'Avène Cicalfate+ 100ml', cat: 'Dermocosmesi', prezzo: '12,90', em: '🧴' },
-  { id: 'b2', nome: 'Somatoline Snellente 7 notti', cat: 'Dermocosmesi', prezzo: '34,50', em: '✨' },
-  { id: 'b3', nome: 'Magnesio + Potassio 24 bust.', cat: 'Integratori', prezzo: '9,90', em: '⚡' },
-  { id: 'b4', nome: 'Vitamina D3 2000 UI', cat: 'Integratori', prezzo: '11,50', em: '☀️' },
-  { id: 'b5', nome: 'Termometro digitale', cat: 'Autoanalisi', prezzo: '8,90', em: '🌡' },
-  { id: 'b6', nome: 'Crema mani riparatrice', cat: 'Dermocosmesi', prezzo: '7,50', em: '🤲' },
-  { id: 'b7', nome: 'Fermenti lattici 30 cps', cat: 'Integratori', prezzo: '14,90', em: '💚' },
-  { id: 'b8', nome: 'Misuratore di pressione', cat: 'Autoanalisi', prezzo: '49,90', em: '🩺' },
+// Servizi base della farmacia (fonte unica: importati sia dalla pagina Servizi per il
+// render statico SSR, sia dal gestionale come riferimento). Ordine = come appaiono.
+export const BASE_SERVICES = [
+  { em: '🫀', nome: 'Holter cardiaco', desc: 'Monitoraggio cardiaco nelle 24 ore con referto entro 5 giorni lavorativi — o in 24 ore in caso di urgenza.', prenotabile: true },
+  { em: '📈', nome: 'Elettrocardiogramma', desc: 'ECG in farmacia con teleconsulto cardiologico e telerefertazione immediata: esci col referto.', prenotabile: true },
+  { em: '💊', nome: 'Riconfezionamento farmaci', desc: 'Prepariamo le tue dosi unitarie personalizzate (deblistering), giorno per giorno: mai più dubbi sulla terapia.', prenotabile: false, nuovo: true },
+  { em: '🧪', nome: 'Tamponi rapidi', desc: 'Tamponi antigenici con esito in 15–30 minuti, anche senza prenotazione.', prenotabile: true },
+  { em: '🩸', nome: 'Glicemia e autoanalisi', desc: 'Controllo di glicemia e parametri di base, in pochi minuti e senza appuntamento.', prenotabile: false },
+  { em: '🩺', nome: 'Misurazione pressione', desc: 'Controllo della pressione arteriosa con consiglio del farmacista.', prenotabile: false },
+  { em: '🏠', nome: 'Consegna a domicilio', desc: 'Ti portiamo farmaci e prodotti direttamente a casa: ordina per telefono o WhatsApp.', prenotabile: false },
+  { em: '💬', nome: 'Consiglio del farmacista', desc: 'Il servizio più antico e più prezioso: ascolto e consiglio su misura, ogni giorno.', prenotabile: false },
 ];
 
-const LS_KEY = 'aus-prodotti';
-export const readCustom = () => { try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch { return []; } };
-export const writeCustom = (arr) => localStorage.setItem(LS_KEY, JSON.stringify(arr));
+// Escape HTML: i testi inseriti dal titolare (nome/descrizione servizio) vengono
+// iniettati come stringhe, quindi vanno neutralizzati per non rompere il markup
+// (né permettere iniezioni) se contengono < > & " '.
+export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-export function ausProducts() {
-  // i prodotti del gestionale compaiono per primi, marcati "aggiunto da te"
-  return [...readCustom().map((p) => ({ ...p, mine: true })), ...BASE_PRODUCTS];
-}
+// Servizi aggiunti dal titolare nel gestionale demo (solo su questo dispositivo).
+const LS_KEY = 'aus-servizi';
+export const readServices = () => { try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch { return []; } };
+export const writeServices = (arr) => localStorage.setItem(LS_KEY, JSON.stringify(arr));
 
-export function prodCard(p) {
-  return `<article class="pcard${p.mine ? ' mine' : ''}">
-    ${p.mine ? '<span class="pmine">aggiunto da te ✔</span>' : ''}
-    ${p.img ? `<img class="pimg" src="${p.img}" alt="${p.nome}" />` : `<span class="pem" aria-hidden="true">${p.em || '🧺'}</span>`}
-    <span class="pcat">${p.cat}</span>
-    <h3>${p.nome}</h3>
-    <div class="pfoot"><b>€ ${p.prezzo}</b><a href="https://wa.me/393388762564?text=${encodeURIComponent('Ciao! Vorrei informazioni su: ' + p.nome)}" target="_blank" rel="noopener">Chiedi info →</a></div>
+// Card servizio in HTML: markup identico a quello SSR di servizi.astro, così i servizi
+// aggiunti dal gestionale (iniettati via JS) si fondono senza stacchi con quelli base.
+// `mine` = aggiunto dal titolare (bordo evidenziato + etichetta).
+export function serviceCard(s, mine = false) {
+  const badges = [
+    s.nuovo ? '<span class="sbadge sbadge-new">novità</span>' : '',
+    s.prenotabile ? '<span class="sbadge">prenotabile</span>' : '',
+    mine ? '<span class="sbadge sbadge-mine">aggiunto da te ✔</span>' : '',
+  ].join('');
+  return `<article class="fcard${mine ? ' fcard-mine' : ''}">
+    <span class="fic" aria-hidden="true">${esc(s.em) || '🧩'}</span>
+    <h3>${esc(s.nome)} ${badges}</h3>
+    ${s.desc ? `<p>${esc(s.desc)}</p>` : ''}
   </article>`;
 }

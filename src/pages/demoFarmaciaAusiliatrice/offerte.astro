@@ -1,0 +1,347 @@
+---
+import Layout from './_Layout.astro';
+// Offerte = prodotti in promozione. Catalogo interattivo (demo, tutto lato client):
+// ricerca per nome, scheda dettaglio, lista tipo carrello con data di ritiro e invio
+// del riepilogo alla farmacia via WhatsApp. I dati sono statici in bozza; nella versione
+// col gestionale si sincronizzano via API (vedi nota "Per il titolare").
+const offerte = [
+  { id: 'o1', tag: '−25%', em: '🧴', nome: 'Avène Solare SPF50+ 50ml', cat: 'Solari', prezzo: '13,90', prezzoOld: '18,90', desc: 'Protezione molto alta SPF50+ per pelli sensibili e reattive. Resistente all\'acqua, senza profumo, non unge.' },
+  { id: 'o2', tag: '−20%', em: '💚', nome: 'Fermenti lattici 30 cps', cat: 'Integratori', prezzo: '11,90', prezzoOld: '14,90', desc: 'Fermenti lattici vivi per l\'equilibrio della flora intestinale. Una capsula al giorno, anche dopo l\'antibiotico.' },
+  { id: 'o3', tag: '2×1', em: '🤲', nome: 'Crema mani riparatrice', cat: 'Dermocosmesi', prezzo: '7,50', promo: 'Due confezioni al prezzo di una', desc: 'Nutre in profondità e ripara le mani screpolate dal freddo e dai lavaggi frequenti. Assorbimento rapido.' },
+  { id: 'o4', tag: '−30%', em: '☀️', nome: 'Vitamina D3 2000 UI', cat: 'Integratori', prezzo: '8,00', prezzoOld: '11,50', desc: 'Vitamina D3 in gocce: sostiene ossa, muscoli e sistema immunitario. Ideale nei mesi con poco sole.' },
+  { id: 'o5', tag: '−15%', em: '🌡', nome: 'Termometro digitale', cat: 'Autoanalisi', prezzo: '7,50', prezzoOld: '8,90', desc: 'Misurazione rapida e precisa, display ampio e segnale acustico di fine misura. Punta flessibile.' },
+  { id: 'o6', tag: '3×2', em: '⚡', nome: 'Magnesio + Potassio 24 bust.', cat: 'Integratori', prezzo: '19,80', promo: 'Tre confezioni al prezzo di due', desc: 'Reintegra i sali minerali persi con caldo e sudorazione: contro stanchezza, crampi e affaticamento.' },
+];
+---
+<Layout title="Offerte" active="Offerte" desc="Le offerte del mese della Farmacia dell'Ausiliatrice a Torino: dermocosmesi, integratori e autoanalisi in promozione. Prenota il ritiro su WhatsApp.">
+  <section class="fsection" style="padding-top:8rem;">
+    <div class="fhead fhead-c r"><span class="fkick">Le promozioni</span><h1>Offerte <span class="fmark">del mese</span></h1><p>Le promozioni valide questo mese. Tocca un prodotto per i dettagli, aggiungilo alla tua lista e prenota il ritiro: te lo teniamo da parte.</p></div>
+
+    <div class="osearch r">
+      <span class="osearch-ic" aria-hidden="true">🔎</span>
+      <input type="search" id="oSearch" placeholder="Cerca un prodotto per nome…" aria-label="Cerca un prodotto per nome" autocomplete="off" />
+    </div>
+
+    <div class="ogrid" id="oGrid">
+      {offerte.map((o) => (
+        <article class="ocard r"
+          data-id={o.id} data-nome={o.nome} data-cat={o.cat} data-em={o.em} data-tag={o.tag}
+          data-prezzo={o.prezzo} data-prezzoold={o.prezzoOld ?? ''} data-promo={o.promo ?? ''} data-desc={o.desc}>
+          <span class="ocard-tag">{o.tag}</span>
+          <button type="button" class="ocard-add" aria-label={`Aggiungi ${o.nome} alla lista`} title="Aggiungi alla lista">＋</button>
+          <span class="pem" aria-hidden="true">{o.em}</span>
+          <span class="ocard-cat">{o.cat}</span>
+          <h3><button type="button" class="ocard-open" aria-haspopup="dialog">{o.nome}</button></h3>
+          <p class="ocard-price">{o.prezzoOld && <s>€ {o.prezzoOld}</s>} <b>€ {o.prezzo}</b></p>
+          {o.promo && <span class="ocard-promo">{o.promo}</span>}
+        </article>
+      ))}
+    </div>
+    <p class="onores r" id="oNoRes" hidden>Nessuna offerta trovata con questo nome. Prova con un'altra parola.</p>
+
+    <p class="md-hint r">💡 <b>Per il titolare:</b> nella versione col gestionale le offerte del mese si aggiornano da sole, sincronizzate via API col tuo gestionale (o il circuito della farmacia): niente da inserire a mano.</p>
+  </section>
+
+  <!-- FAB LISTA (in basso a sinistra: non copre il FAB WhatsApp a destra) -->
+  <button class="ocart-fab" id="oCartFab" aria-label="Apri la tua lista">🛒<span class="ocart-badge" id="oCount" hidden>0</span></button>
+  <!-- conferma non intrusiva all'aggiunta (annunciata anche agli screen reader) -->
+  <div class="otoast" id="oToast" role="status" aria-live="polite"></div>
+
+  <!-- MODALE DETTAGLIO PRODOTTO -->
+  <div class="omodal" id="oDetail" hidden role="dialog" aria-modal="true" aria-labelledby="dNome">
+    <div class="omodal-back" data-close></div>
+    <div class="omodal-card">
+      <button type="button" class="omodal-x" data-close aria-label="Chiudi">✕</button>
+      <span class="ocard-tag omodal-tag" id="dTag"></span>
+      <span class="pem omodal-em" id="dEm" aria-hidden="true"></span>
+      <span class="ocard-cat" id="dCat"></span>
+      <h2 id="dNome"></h2>
+      <p class="omodal-price" id="dPrice"></p>
+      <p class="omodal-desc" id="dDesc"></p>
+      <button type="button" class="fbtn fbtn-cel fbtn-block fbtn-lg" id="dAdd">Aggiungi alla lista →</button>
+      <p class="fform-note">Prezzi e disponibilità della bozza sono d'esempio.</p>
+    </div>
+  </div>
+
+  <!-- MODALE LISTA / CARRELLO -->
+  <div class="omodal" id="oCart" hidden role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+    <div class="omodal-back" data-close></div>
+    <div class="omodal-card ocart-card">
+      <button type="button" class="omodal-x" data-close aria-label="Chiudi">✕</button>
+      <h2 id="cartTitle">🛒 La tua lista</h2>
+      <div class="ocart-list" id="cartList"></div>
+      <div class="ocart-foot" id="cartFoot" hidden>
+        <p class="ocart-total" id="cartTotal"></p>
+        <label class="ocart-date">📅 Data di ritiro <small>(facoltativa)</small>
+          <input type="date" id="cartDate" />
+        </label>
+        <button type="button" class="fbtn fbtn-solid fbtn-block fbtn-lg" id="cartSend">💬 Invia tutto su WhatsApp</button>
+        <button type="button" class="ocart-clear" id="cartClear">Svuota la lista</button>
+        <p class="fform-note">Demo: la lista resta su questo dispositivo. «Invia» apre WhatsApp con il messaggio già pronto per la farmacia.</p>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* Molti elementi qui hanno un display d'autore (flex/grid) che, avendo la stessa
+       specificità di [hidden], vincerebbe sull'attributo hidden lasciandoli visibili
+       (card filtrate dalla ricerca, badge e piede del carrello a lista vuota).
+       Questa regola fa sì che `hidden` nasconda SEMPRE davvero. */
+    [hidden]{display:none !important}
+    .osearch{max-width:460px;margin:0 auto 1.8rem;position:relative}
+    .osearch-ic{position:absolute;left:1rem;top:50%;transform:translateY(-50%);opacity:.6;pointer-events:none}
+    .osearch input{width:100%;padding:.85rem 1rem .85rem 2.6rem;border:1px solid var(--line);border-radius:999px;font-family:var(--sans);font-size:1rem;background:var(--card);color:var(--ink)}
+    .osearch input:focus{outline:2px solid var(--cel);border-color:transparent}
+
+    .ogrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+    .ogrid>*{min-width:0}
+    .ocard{position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.4rem;display:flex;flex-direction:column;gap:.3rem;cursor:pointer;transition:transform .25s var(--e),box-shadow .25s,border-color .2s}
+    .ocard:hover{transform:translateY(-4px);box-shadow:var(--soft);border-color:var(--cel)}
+    .ocard-tag{align-self:flex-start;background:#e05555;color:#fff;font-weight:800;font-size:.8rem;padding:.25rem .7rem;border-radius:999px}
+    .ocard-add{position:absolute;top:1rem;right:1rem;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--blu);font-size:1.5rem;line-height:1;cursor:pointer;display:grid;place-items:center;transition:background .2s,color .2s,transform .2s}
+    .ocard-add:hover{background:var(--cel);color:#fff;border-color:var(--cel);transform:scale(1.08)}
+    .ocard-add.added{background:var(--blu);color:#fff;border-color:var(--blu)}
+    .ocard-cat{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+    .ocard h3{font-size:1.05rem;font-weight:700;flex:1}
+    /* il nome è un vero <button> (accessibile) ma appare come testo del titolo */
+    .ocard-open{display:block;width:100%;text-align:left;background:none;border:0;padding:0;margin:0;font:inherit;color:inherit;cursor:pointer}
+    .ocard-open:hover{color:var(--blu);text-decoration:underline}
+    .ocard-price s{opacity:.7}
+    .ocard-price b{color:var(--blu);font-size:1.15rem;margin-left:.3rem}
+    .ocard-promo{font-size:.8rem;color:var(--cel-d);font-weight:700}
+    .onores{text-align:center;color:var(--muted);padding:1.5rem}
+
+    /* FAB lista */
+    .ocart-fab{position:fixed;left:18px;bottom:18px;z-index:160;width:56px;height:56px;border-radius:50%;border:0;background:var(--blu);color:#fff;font-size:1.5rem;cursor:pointer;box-shadow:0 14px 30px -10px rgba(14,122,58,.7);display:grid;place-items:center;transition:transform .2s var(--e)}
+    .ocart-fab:hover{transform:scale(1.08)}
+    .ocart-fab.pulse{animation:ocpulse .4s var(--e)}
+    @keyframes ocpulse{40%{transform:scale(1.22)}}
+    .ocart-badge{position:absolute;top:-4px;right:-4px;min-width:22px;height:22px;padding:0 5px;border-radius:999px;background:var(--rosso);color:#fff;font-size:.75rem;font-weight:800;display:grid;place-items:center;border:2px solid var(--bg)}
+
+    /* modali (dettaglio + carrello) */
+    .omodal{position:fixed;inset:0;z-index:320;display:grid;place-items:center;padding:1.2rem}
+    .omodal-back{position:absolute;inset:0;background:rgba(6,30,16,.55);backdrop-filter:blur(3px)}
+    .omodal-card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:clamp(1.5rem,4vw,2.2rem);width:100%;max-width:440px;max-height:88vh;overflow:auto;box-shadow:var(--soft);display:flex;flex-direction:column;gap:.6rem;animation:opop .25s var(--e)}
+    @keyframes opop{from{opacity:0;transform:translateY(14px) scale(.98)}}
+    @media (prefers-reduced-motion:reduce){.omodal-card,.ocart-fab.pulse{animation:none}}
+    .omodal-x{position:absolute;top:.8rem;right:.8rem;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:1rem;cursor:pointer}
+    .omodal-x:hover{border-color:var(--rosso);color:var(--rosso)}
+    .omodal-tag{align-self:flex-start}
+    .omodal-em{font-size:3rem}
+    .omodal-price{margin-top:.2rem}
+    .omodal-price s{opacity:.7}
+    .omodal-price b{color:var(--blu);font-size:1.4rem;margin-left:.3rem}
+    .omodal-desc{color:var(--muted);line-height:1.55}
+    #oDetail h2{font-size:1.4rem}
+    .dsave{display:inline-block;background:rgba(23,166,63,.14);color:var(--cel-d);font-weight:800;font-size:.82rem;padding:.15rem .55rem;border-radius:999px;margin-left:.4rem;vertical-align:middle}
+
+    /* toast conferma */
+    .otoast{position:fixed;left:50%;bottom:84px;transform:translate(-50%,10px);z-index:170;background:var(--ink);color:#fff;padding:.6rem 1.05rem;border-radius:999px;font-size:.9rem;font-weight:600;box-shadow:var(--soft);max-width:90vw;text-align:center;opacity:0;pointer-events:none;transition:opacity .25s var(--e),transform .25s var(--e)}
+    .otoast.show{opacity:1;transform:translate(-50%,0)}
+    @media (prefers-reduced-motion:reduce){.otoast{transition:opacity .2s}}
+
+    /* carrello */
+    .ocart-card{max-width:460px}
+    /* minmax(0,1fr) + min-width:0: senza, su mobile la riga non si restringe e stepper/✕ escono a destra */
+    .ocart-list{display:grid;grid-template-columns:minmax(0,1fr);gap:.55rem;margin:.4rem 0 .2rem}
+    :global(.ocart-item){display:flex;align-items:center;gap:.55rem;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:.6rem .7rem}
+    :global(.ocart-item .em){font-size:1.4rem;flex:none}
+    :global(.ocart-item .tx){flex:1;min-width:0}
+    :global(.ocart-item .tx b){display:block;font-size:.95rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    :global(.ocart-item .tx span){font-size:.82rem;color:var(--blu);font-weight:700}
+    :global(.ocart-qty){display:flex;align-items:center;gap:.15rem;flex:none}
+    :global(.ocart-qty button){background:var(--card);border:1px solid var(--line);border-radius:8px;width:30px;height:30px;flex:none;cursor:pointer;color:var(--blu);font-size:1.05rem;line-height:1;display:grid;place-items:center}
+    :global(.ocart-qty button:hover){border-color:var(--cel);background:var(--bg2)}
+    :global(.ocart-qty b){min-width:1.4rem;text-align:center;font-variant-numeric:tabular-nums}
+    :global(.ocart-rm){background:none;border:1px solid var(--line);border-radius:9px;width:32px;height:32px;flex:none;cursor:pointer;color:#c04545}
+    :global(.ocart-rm:hover){border-color:#c04545}
+    :global(.ocart-empty){text-align:center;color:var(--muted);background:var(--bg2);border:1px dashed var(--line);border-radius:13px;padding:1.6rem 1rem}
+    .ocart-foot{display:flex;flex-direction:column;gap:.7rem;margin-top:.4rem}
+    .ocart-total{font-weight:800;font-size:1.05rem;text-align:right}
+    .ocart-total b{color:var(--blu)}
+    .ocart-date{display:flex;flex-direction:column;gap:.35rem;font-size:.85rem;font-weight:700}
+    .ocart-date small{font-weight:400;color:var(--muted)}
+    .ocart-date input{padding:.7rem .8rem;border:1px solid var(--line);border-radius:11px;font-family:var(--sans);font-size:1rem;background:var(--bg);color:var(--ink)}
+    .ocart-date input:focus{outline:2px solid var(--cel);border-color:transparent}
+    .ocart-clear{background:none;border:0;color:var(--muted);font-size:.85rem;font-weight:700;text-decoration:underline;cursor:pointer;font-family:inherit}
+    .ocart-clear:hover{color:#c04545}
+
+    body.omodal-open{overflow:hidden}
+    @media (max-width:920px){.ogrid{grid-template-columns:1fr 1fr}}
+    @media (max-width:560px){.ogrid{grid-template-columns:1fr}}
+  </style>
+
+  <script>
+    const WA = '393388762564';
+    const LS = 'aus-carrello';
+    const $ = (s, r = document) => r.querySelector(s);
+    const euro = (n) => n.toFixed(2).replace('.', ',');
+    const parse = (s) => parseFloat(String(s).replace(',', '.')) || 0;
+
+    // ---- stato lista (persistente su questo dispositivo) ----
+    const QMAX = 99;
+    const clampQty = (n) => Math.max(1, Math.min(QMAX, parseInt(n, 10) || 1));
+    // normalizzo la quantità in lettura: retrocompatibile con liste salvate senza `qty`
+    const readCart = () => {
+      try {
+        return JSON.parse(localStorage.getItem(LS) || '[]').filter((i) => i && i.id).map((i) => ({ ...i, qty: clampQty(i.qty) }));
+      } catch { return []; }
+    };
+    const writeCart = (a) => localStorage.setItem(LS, JSON.stringify(a));
+    let cart = readCart();
+
+    const grid = $('#oGrid');
+    const cards = [...grid.querySelectorAll('.ocard')];
+    const fab = $('#oCartFab'), count = $('#oCount');
+
+    const units = () => cart.reduce((s, i) => s + i.qty, 0);
+
+    // ---- badge (pezzi totali) + evidenza card già in lista ----
+    const syncUI = () => {
+      const n = units();
+      count.hidden = n === 0;
+      count.textContent = String(n);
+      fab.setAttribute('aria-label', n === 0 ? 'La tua lista è vuota' : `Apri la lista — ${n} ${n === 1 ? 'pezzo' : 'pezzi'}`);
+      const ids = new Set(cart.map((i) => i.id));
+      cards.forEach((c) => c.querySelector('.ocard-add').classList.toggle('added', ids.has(c.dataset.id)));
+    };
+
+    const flash = () => { fab.classList.remove('pulse'); void fab.offsetWidth; fab.classList.add('pulse'); };
+
+    // conferma non intrusiva (si auto-nasconde)
+    const toastEl = $('#oToast');
+    let toastT;
+    const toast = (msg) => {
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      clearTimeout(toastT);
+      toastT = setTimeout(() => toastEl.classList.remove('show'), 1900);
+    };
+
+    // aggiungere lo stesso prodotto più volte ne aumenta la quantità
+    const addToCart = (d) => {
+      const it = cart.find((i) => i.id === d.id);
+      if (it) { it.qty = clampQty(it.qty + 1); }
+      else { cart.push({ id: d.id, nome: d.nome, em: d.em, prezzo: d.prezzo, qty: 1 }); }
+      writeCart(cart); syncUI(); flash();
+      toast(`✓ ${d.nome} aggiunto alla lista`);
+    };
+    // stepper: +1 / −1; a 0 la riga sparisce
+    const setQty = (id, delta) => {
+      const it = cart.find((i) => i.id === id);
+      if (!it) return;
+      const q = (it.qty || 1) + delta;
+      if (q <= 0) cart = cart.filter((i) => i.id !== id); else it.qty = clampQty(q);
+      writeCart(cart); syncUI(); renderCart();
+    };
+    const removeFromCart = (id) => { cart = cart.filter((i) => i.id !== id); writeCart(cart); syncUI(); renderCart(); };
+
+    // ---- ricerca per nome ----
+    $('#oSearch').addEventListener('input', (e) => {
+      const q = e.target.value.trim().toLowerCase();
+      let visible = 0;
+      cards.forEach((c) => {
+        const show = c.dataset.nome.toLowerCase().includes(q);
+        c.hidden = !show; if (show) visible++;
+      });
+      $('#oNoRes').hidden = visible !== 0;
+    });
+
+    // ---- modali: apertura/chiusura con focus ed Escape ----
+    let lastFocus = null;
+    const openModal = (m) => {
+      lastFocus = document.activeElement;
+      m.hidden = false; document.body.classList.add('omodal-open');
+      (m.querySelector('.omodal-x') || m).focus();
+    };
+    const closeModal = (m) => {
+      m.hidden = true;
+      if (!document.querySelector('.omodal:not([hidden])')) document.body.classList.remove('omodal-open');
+      if (lastFocus) lastFocus.focus();
+    };
+    document.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', () => closeModal(el.closest('.omodal'))));
+    // Escape chiude; Tab resta intrappolato dentro la modale aperta (accessibilità)
+    document.addEventListener('keydown', (e) => {
+      const open = document.querySelector('.omodal:not([hidden])');
+      if (!open) return;
+      if (e.key === 'Escape') { closeModal(open); return; }
+      if (e.key === 'Tab') {
+        const f = [...open.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')].filter((el) => !el.disabled && el.offsetParent !== null);
+        if (!f.length) return;
+        const first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    });
+
+    // ---- dettaglio prodotto ----
+    const detail = $('#oDetail');
+    let detailData = null;
+    const openDetail = (d) => {
+      detailData = d;
+      $('#dTag').textContent = d.tag;
+      $('#dEm').textContent = d.em;
+      $('#dCat').textContent = d.cat;
+      $('#dNome').textContent = d.nome;
+      const saving = d.prezzoold ? parse(d.prezzoold) - parse(d.prezzo) : 0;
+      $('#dPrice').innerHTML = (d.prezzoold ? `<s>€ ${d.prezzoold}</s>` : '') + ` <b>€ ${d.prezzo}</b>`
+        + (saving > 0 ? ` <span class="dsave">Risparmi € ${euro(saving)}</span>` : '');
+      $('#dDesc').textContent = d.promo ? `${d.promo}. ${d.desc}` : d.desc;
+      // il pulsante riflette quanti pezzi sono già nella lista
+      const it = cart.find((i) => i.id === d.id);
+      $('#dAdd').textContent = it ? `Aggiungi ancora (ne hai ${it.qty}) →` : 'Aggiungi alla lista →';
+      openModal(detail);
+    };
+    $('#dAdd').addEventListener('click', () => { if (detailData) { addToCart(detailData); closeModal(detail); } });
+
+    cards.forEach((c) => {
+      const d = c.dataset;
+      // click ovunque sulla card (tranne "＋") apre il dettaglio; il nome è un <button> per la tastiera
+      c.addEventListener('click', (e) => { if (!e.target.closest('.ocard-add')) openDetail(d); });
+      c.querySelector('.ocard-add').addEventListener('click', (e) => { e.stopPropagation(); addToCart(d); });
+    });
+
+    // ---- carrello ----
+    const cartModal = $('#oCart'), cartList = $('#cartList'), cartFoot = $('#cartFoot');
+    const renderCart = () => {
+      if (!cart.length) {
+        cartList.innerHTML = '<div class="ocart-empty">La tua lista è vuota.<br/>Aggiungi le offerte che ti interessano e prenota il ritiro.</div>';
+        cartFoot.hidden = true; return;
+      }
+      cartList.innerHTML = cart.map((i) => {
+        const sub = euro(parse(i.prezzo) * i.qty);
+        return `<div class="ocart-item"><span class="em">${i.em}</span>`
+          + `<div class="tx"><b>${i.nome}</b><span>€ ${i.prezzo} × ${i.qty} = € ${sub}</span></div>`
+          + `<div class="ocart-qty"><button type="button" data-dec="${i.id}" aria-label="Una in meno di ${i.nome}">−</button>`
+          + `<b aria-live="polite">${i.qty}</b>`
+          + `<button type="button" data-inc="${i.id}" aria-label="Una in più di ${i.nome}">＋</button></div>`
+          + `<button type="button" class="ocart-rm" data-rm="${i.id}" aria-label="Togli ${i.nome} dalla lista">✕</button></div>`;
+      }).join('');
+      cartList.querySelectorAll('[data-dec]').forEach((b) => b.addEventListener('click', () => setQty(b.dataset.dec, -1)));
+      cartList.querySelectorAll('[data-inc]').forEach((b) => b.addEventListener('click', () => setQty(b.dataset.inc, +1)));
+      cartList.querySelectorAll('[data-rm]').forEach((b) => b.addEventListener('click', () => removeFromCart(b.dataset.rm)));
+      const tot = cart.reduce((s, i) => s + parse(i.prezzo) * i.qty, 0);
+      const n = units();
+      $('#cartTotal').innerHTML = `Totale indicativo (${n} ${n === 1 ? 'pezzo' : 'pezzi'}): <b>€ ${euro(tot)}</b>`;
+      cartFoot.hidden = false;
+    };
+    fab.addEventListener('click', () => { renderCart(); openModal(cartModal); });
+    $('#cartClear').addEventListener('click', () => { cart = []; writeCart(cart); syncUI(); renderCart(); });
+
+    // data minima = oggi
+    const dateInput = $('#cartDate');
+    dateInput.min = new Date().toISOString().slice(0, 10);
+
+    $('#cartSend').addEventListener('click', () => {
+      if (!cart.length) return;
+      const righe = cart.map((i) => `• ${i.qty} × ${i.nome} — € ${euro(parse(i.prezzo) * i.qty)}`).join('\n');
+      const tot = euro(cart.reduce((s, i) => s + parse(i.prezzo) * i.qty, 0));
+      let quando = '';
+      if (dateInput.value) { const [y, m, g] = dateInput.value.split('-'); quando = ` per il ritiro del ${g}/${m}/${y}`; }
+      const msg = `Ciao Farmacia dell'Ausiliatrice! 👋\nVorrei prenotare queste offerte del mese${quando}:\n\n${righe}\n\nTotale indicativo: € ${tot}\nGrazie!`;
+      window.open(`https://wa.me/${WA}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
+    });
+
+    syncUI();
+  </script>
+</Layout>

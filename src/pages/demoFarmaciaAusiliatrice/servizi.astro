@@ -1,40 +1,51 @@
 ---
 import Layout from './_Layout.astro';
-const servizi = [
-  { em: '🫀', t: 'Holter cardiaco', d: 'Monitoraggio cardiaco nelle 24 ore con referto entro 5 giorni lavorativi — o in 24 ore in caso di urgenza.', p: true },
-  { em: '📈', t: 'Elettrocardiogramma', d: 'ECG in farmacia con teleconsulto cardiologico e telerefertazione immediata: esci col referto.', p: true },
-  { em: '💊', t: 'Riconfezionamento farmaci', d: 'Prepariamo le tue dosi unitarie personalizzate (deblistering), giorno per giorno: mai più dubbi sulla terapia.', p: false, nuovo: true },
-  { em: '🧪', t: 'Tamponi rapidi', d: 'Tamponi antigenici con esito in 15–30 minuti, anche senza prenotazione.', p: true },
-  { em: '🩸', t: 'Glicemia e autoanalisi', d: 'Controllo di glicemia e parametri di base, in pochi minuti e senza appuntamento.', p: false },
-  { em: '🩺', t: 'Misurazione pressione', d: 'Controllo della pressione arteriosa con consiglio del farmacista.', p: false },
-  { em: '🏠', t: 'Consegna a domicilio', d: 'Ti portiamo farmaci e prodotti direttamente a casa: ordina per telefono o WhatsApp.', p: false },
-  { em: '💬', t: 'Consiglio del farmacista', d: 'Il servizio più antico e più prezioso: ascolto e consiglio su misura, ogni giorno.', p: false },
-];
+import { BASE_SERVICES } from './_shared.js';
+// I servizi base sono resi lato server (visibili anche senza JavaScript). Quelli aggiunti
+// dal titolare nel gestionale (localStorage) vengono iniettati in cima via JS.
 ---
 <Layout title="Servizi" active="Servizi" desc="I servizi della Farmacia dell'Ausiliatrice a Torino: Holter cardiaco, ECG con telerefertazione, tamponi rapidi, autoanalisi, riconfezionamento farmaci e consegna a domicilio.">
   <section class="fsection" style="padding-top:8rem;">
     <div class="fhead fhead-c r"><span class="fkick">Cosa facciamo</span><h1>I nostri <span class="fmark">servizi</span></h1><p>Telemedicina, autoanalisi e attenzioni quotidiane: la farmacia come presidio di salute del quartiere.</p></div>
-    <div class="sgrid">
-      {servizi.map((s) => (
+
+    <div class="sgrid" id="sGrid">
+      {BASE_SERVICES.map((s) => (
         <article class="fcard r">
           <span class="fic" aria-hidden="true">{s.em}</span>
-          <h3>{s.t} {s.nuovo && <span class="sbadge sbadge-new">novità</span>} {s.p && <span class="sbadge">prenotabile</span>}</h3>
-          <p>{s.d}</p>
+          <h3>{s.nome} {s.nuovo && <span class="sbadge sbadge-new">novità</span>} {s.prenotabile && <span class="sbadge">prenotabile</span>}</h3>
+          {s.desc && <p>{s.desc}</p>}
         </article>
       ))}
     </div>
+
     <div class="scta r">
       <a href="/demoFarmaciaAusiliatrice/prenotazioni/" class="fbtn fbtn-solid fbtn-lg">Prenota un servizio →</a>
       <a href="https://wa.me/393388762564" target="_blank" rel="noopener" class="fbtn fbtn-ghost fbtn-lg">Chiedi su WhatsApp</a>
+    </div>
+
+    <div class="md-hint r">
+      💡 <b>Per il titolare:</b> questa pagina si aggiorna da sola con i servizi che inserisci dal
+      <a href="/demoFarmaciaAusiliatrice/gestione/">pannello di gestione (demo) →</a>
     </div>
   </section>
   <style>
     .sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
     .sgrid>*{min-width:0}
-    .sbadge{display:inline-block;font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;background:rgba(23,166,63,.14);color:var(--cel-d);padding:.2rem .5rem;border-radius:999px;vertical-align:middle;margin-left:.3rem}
-    .sbadge-new{background:var(--rosso);color:#fff}
+    /* :global — le badge servono anche alle card iniettate via JS (che non hanno lo scope Astro) */
+    :global(.sbadge){display:inline-block;font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;background:rgba(23,166,63,.14);color:var(--cel-d);padding:.2rem .5rem;border-radius:999px;vertical-align:middle;margin-left:.3rem}
+    :global(.sbadge-new){background:var(--rosso);color:#fff}
+    :global(.sbadge-mine){background:var(--cel);color:#fff}
+    :global(.fcard-mine){border-color:var(--cel)}
     .scta{display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;margin-top:2.2rem}
     @media (max-width:920px){.sgrid{grid-template-columns:1fr 1fr}}
     @media (max-width:560px){.sgrid{grid-template-columns:1fr}}
   </style>
+  <script>
+    import { readServices, serviceCard } from './_shared.js';
+    // i servizi aggiunti dal titolare compaiono per primi, marcati "aggiunto da te"
+    const custom = readServices();
+    if (custom.length) {
+      document.getElementById('sGrid').insertAdjacentHTML('afterbegin', custom.map((s) => serviceCard(s, true)).join(''));
+    }
+  </script>
 </Layout>

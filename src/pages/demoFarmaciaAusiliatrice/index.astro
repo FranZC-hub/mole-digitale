@@ -58,14 +58,8 @@ const HOURS = weeklyHours(); // render statico degli orari: visibili anche senza
       <article class="aoff-card"><span class="aoff-tag">−20%</span><span class="pem" aria-hidden="true">💚</span><h3>Fermenti lattici 30 cps</h3><p><s>€ 14,90</s> <b>€ 11,90</b></p></article>
       <article class="aoff-card"><span class="aoff-tag">2×1</span><span class="pem" aria-hidden="true">🤲</span><h3>Crema mani riparatrice</h3><p>Due confezioni al prezzo di una: <b>€ 7,50</b></p></article>
     </div>
-    <p class="aoff-note r">💡 <b>Per il titolare:</b> nella versione col gestionale le offerte del mese si aggiornano da sole, sincronizzate via API con il tuo gestionale (o il circuito della farmacia): niente da inserire a mano.</p>
-  </section>
-
-  <!-- PRODOTTI IN EVIDENZA -->
-  <section class="fsection">
-    <div class="fhead fhead-c r"><span class="fkick">Dal banco</span><h2>Prodotti <span class="fmark">in evidenza</span></h2><p>Dermocosmesi e integrazione selezionate dai nostri farmacisti.</p></div>
-    <div class="aprods r" id="aProds"></div>
-    <p class="acenter r"><a href="/demoFarmaciaAusiliatrice/prodotti/" class="fbtn fbtn-ghost">Vedi tutti i prodotti →</a></p>
+    <p class="acenter r"><a href="/demoFarmaciaAusiliatrice/offerte/" class="fbtn fbtn-ghost">Vedi tutte le offerte →</a></p>
+    <p class="md-hint r">💡 <b>Per il titolare:</b> nella versione col gestionale le offerte del mese si aggiornano da sole, sincronizzate via API con il tuo gestionale (o il circuito della farmacia): niente da inserire a mano.</p>
   </section>
 
   <!-- RECENSIONI GOOGLE -->
@@ -76,7 +70,7 @@ const HOURS = weeklyHours(); // render statico degli orari: visibili anche senza
       <blockquote class="fcard arev r"><div class="astars" role="img" aria-label="Valutazione: 5 stelle su 5">★★★★★</div><p>«La consegna a domicilio mi ha salvato quando non potevo uscire. Servizio prezioso.»</p><footer><b>Giuseppe T.</b> · recensione Google</footer></blockquote>
       <blockquote class="fcard arev r"><div class="astars" role="img" aria-label="Valutazione: 5 stelle su 5">★★★★★</div><p>«Preparano le dosi giornaliere per mia madre: un pensiero in meno ogni settimana.»</p><footer><b>Lucia R.</b> · recensione Google</footer></blockquote>
     </div>
-    <p class="arev-note r">Recensioni d'esempio — nella versione definitiva qui compariranno <b>le vere recensioni Google della farmacia</b>, aggiornate in automatico.</p>
+    <p class="md-hint r">Recensioni d'esempio — nella versione definitiva qui compariranno <b>le vere recensioni Google della farmacia</b>, aggiornate in automatico.</p>
   </section>
 
   <style>
@@ -114,7 +108,6 @@ const HOURS = weeklyHours(); // render statico degli orari: visibili anche senza
     .aoff-card p{color:var(--muted)}
     .aoff-card s{opacity:.7}
     .aoff-card b{color:var(--blu);font-size:1.15rem;margin-left:.3rem}
-    .aoff-note,.arev-note{text-align:center;margin-top:1.4rem;background:var(--bg2);border:1px dashed var(--cel);border-radius:12px;padding:.9rem 1.2rem;color:var(--muted);font-size:.92rem}
     .arev-sec{padding-top:1rem}
     .astars{color:#f4b400;letter-spacing:2px;margin-bottom:.5rem}
     .arev p{font-size:.96rem;flex:1}
@@ -125,15 +118,12 @@ const HOURS = weeklyHours(); // render statico degli orari: visibili anche senza
     .abanner-in{max-width:1150px;margin:0 auto;padding:2.6rem clamp(1.2rem,5vw,3rem);display:flex;align-items:center;justify-content:space-between;gap:1.4rem;flex-wrap:wrap;color:#fff}
     .abanner-in h2{font-size:clamp(1.5rem,3.6vw,2.2rem)}
     .abanner-in p{color:#cfe7da;margin-top:.3rem}
-    .aprods{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
-    .aprods>*{min-width:0}
-    @media (max-width:920px){.ahero{grid-template-columns:1fr;padding-top:7.5rem}.aprods{grid-template-columns:1fr 1fr}}
-    @media (max-width:560px){.aprods,.aoff{grid-template-columns:1fr}}
+    @media (max-width:920px){.ahero{grid-template-columns:1fr;padding-top:7.5rem}}
+    @media (max-width:560px){.aoff{grid-template-columns:1fr}}
   </style>
 
   <script>
-    import { AUS_HOURS, renderHours, ausProducts, prodCard } from './_shared.js';
+    import { renderHours } from './_shared.js';
     renderHours(document.getElementById('aHours'), document.getElementById('aOpen'));
-    document.getElementById('aProds').innerHTML = ausProducts().slice(0, 4).map(prodCard).join('');
   </script>
 </Layout>

@@ -1,7 +1,7 @@
 ---
 import Layout from './_Layout.astro';
 ---
-<Layout title="Gestione prodotti (demo)" active="">
+<Layout title="Gestione servizi (demo)" active="">
   <!-- SCHERMATA DI ACCESSO (il pannello appare solo dopo il login) -->
   <section class="fsection" id="gLogin" style="padding-top:8rem;">
     <div class="glogin r">
@@ -27,34 +27,27 @@ import Layout from './_Layout.astro';
   <section class="fsection" id="gPanel" hidden style="padding-top:8rem;">
     <div class="fhead fhead-c r">
       <span class="fkick">Pannello riservato</span>
-      <h1>Gestisci i prodotti <span class="fmark">in autonomia</span></h1>
-      <p>Aggiungi un prodotto qui sotto e guarda comparire subito sulla pagina <a href="/demoFarmaciaAusiliatrice/prodotti/" style="color:var(--cel-d);text-decoration:underline;">Prodotti</a> del sito. <button type="button" id="gLogout" class="glogout">Esci dall'area riservata</button></p>
+      <h1>Gestisci i servizi <span class="fmark">in autonomia</span></h1>
+      <p>Aggiungi un servizio qui sotto e guarda comparire subito sulla pagina <a href="/demoFarmaciaAusiliatrice/servizi/" style="color:var(--cel-d);text-decoration:underline;">Servizi</a> del sito. <button type="button" id="gLogout" class="glogout">Esci dall'area riservata</button></p>
     </div>
 
     <div class="ggrid">
       <form class="fform r" id="gForm">
-        <h3 style="font-size:1.1rem;">➕ Nuovo prodotto</h3>
-        <label>Nome del prodotto<input type="text" id="g-nome" required placeholder="Es. Enterogermina 20 flaconcini" maxlength="60" /></label>
-        <div class="grow">
-          <label>Categoria
-            <select id="g-cat"><option>Dermocosmesi</option><option>Integratori</option><option>Autoanalisi</option></select>
-          </label>
-          <label>Prezzo (€)<input type="text" id="g-prezzo" required inputmode="decimal" placeholder="9,90" maxlength="8" /></label>
-        </div>
-        <label>Foto del prodotto <small style="font-weight:400;color:var(--muted)">(opzionale — scattala anche col telefono)</small>
-          <input type="file" id="g-foto" accept="image/*" />
+        <h3 style="font-size:1.1rem;">➕ Nuovo servizio</h3>
+        <label>Nome del servizio<input type="text" id="g-nome" required placeholder="Es. Foratura del lobo" maxlength="60" /></label>
+        <label>Descrizione breve<textarea id="g-desc" rows="2" placeholder="Es. Foratura sterile con sistema monouso e orecchini anallergici inclusi." maxlength="160"></textarea></label>
+        <label>Scegli un'icona
+          <select id="g-em"><option>🩺</option><option>💉</option><option>🧪</option><option>🩸</option><option>💊</option><option>🫀</option><option>📈</option><option>🏠</option><option>💬</option><option>🦷</option><option>👂</option><option>👶</option></select>
         </label>
-        <label>Oppure scegli un'icona
-          <select id="g-em"><option>💊</option><option>🧴</option><option>✨</option><option>⚡</option><option>🌡</option><option>💚</option><option>🩺</option><option>🍼</option></select>
-        </label>
+        <label class="fconsent"><input type="checkbox" id="g-prenota" /> <span>Servizio <b>prenotabile</b> (mostra l'etichetta «prenotabile»)</span></label>
         <button type="submit" class="fbtn fbtn-cel fbtn-block">Pubblica sul sito →</button>
         <p class="fform-note">Demo: i dati restano solo su questo dispositivo.</p>
       </form>
 
       <div class="glist-wrap r">
-        <h3 style="font-size:1.1rem;margin-bottom:.8rem;">I prodotti che hai aggiunto</h3>
+        <h3 style="font-size:1.1rem;margin-bottom:.8rem;">I servizi che hai aggiunto</h3>
         <div class="glist" id="gList"></div>
-        <a href="/demoFarmaciaAusiliatrice/prodotti/" class="fbtn fbtn-solid" style="margin-top:1rem;">Guarda come appaiono sul sito →</a>
+        <a href="/demoFarmaciaAusiliatrice/servizi/" class="fbtn fbtn-solid" style="margin-top:1rem;">Guarda come appaiono sul sito →</a>
       </div>
     </div>
   </section>
@@ -62,7 +55,7 @@ import Layout from './_Layout.astro';
   <style>
     /* login */
     .glogin{max-width:420px;margin:2rem auto 0;text-align:center}
-    .glogin-ic{width:56px;height:56px;font-size:2rem;border-radius:16px;margin:0 auto 1rem;display:grid;place-items:center}
+    .glogin-ic{width:56px;height:56px;font-size:2rem;border-radius:16px;margin:0 auto 1rem;display:grid;place-items:center;background:rgba(14,122,58,.09);color:var(--blu);font-weight:800}
     .glogin h1{font-size:clamp(1.9rem,4.5vw,2.6rem)}
     .glogin-sub{color:var(--muted);margin:.5rem 0 1.4rem}
     .glogin-form{text-align:left}
@@ -76,16 +69,13 @@ import Layout from './_Layout.astro';
     .glogout{background:none;border:0;color:var(--cel-d);font-size:.9rem;font-weight:700;text-decoration:underline;cursor:pointer;font-family:inherit}
     .ggrid{display:grid;grid-template-columns:1fr 1.1fr;gap:1.6rem;align-items:start;max-width:980px;margin:0 auto}
     .ggrid>*{min-width:0}
-    .grow{display:grid;grid-template-columns:1.3fr 1fr;gap:.8rem}
-    .grow>*{min-width:0}
     .glist{display:grid;gap:.6rem}
     /* :global — la lista è iniettata via JS e non riceve lo scope Astro */
     :global(.gitem){display:flex;align-items:center;gap:.8rem;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:.8rem 1rem}
-    :global(.gitem .em){font-size:1.5rem}
-    :global(.gthumb){width:46px;height:46px;object-fit:cover;border-radius:9px;flex:none;border:1px solid var(--line)}
+    :global(.gitem .em){font-size:1.5rem;flex:none}
     :global(.gitem .tx){flex:1;min-width:0}
     :global(.gitem b){display:block;font-size:.98rem}
-    :global(.gitem .tx span){font-size:.8rem;color:var(--muted)}
+    :global(.gitem .tx span){font-size:.8rem;color:var(--muted);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     :global(.gitem button){background:none;border:1px solid var(--line);border-radius:9px;width:34px;height:34px;cursor:pointer;color:#c04545;font-size:1rem;flex:none}
     :global(.gitem button:hover){border-color:#c04545}
     :global(.gempty){color:var(--muted);background:var(--bg2);border:1px dashed var(--line);border-radius:13px;padding:1.2rem;text-align:center;font-size:.94rem}
@@ -93,7 +83,7 @@ import Layout from './_Layout.astro';
   </style>
 
   <script>
-    import { readCustom, writeCustom } from './_shared.js';
+    import { readServices, writeServices, esc } from './_shared.js';
     // ---- Accesso demo (nella versione reale: autenticazione lato server) ----
     const GL_USER = 'ausiliatrice', GL_PASS = 'farmacia2026';
     const loginSec = document.getElementById('gLogin'), panelSec = document.getElementById('gPanel');
@@ -118,41 +108,20 @@ import Layout from './_Layout.astro';
     gate();
     const list = document.getElementById('gList');
     const render = () => {
-      const items = readCustom();
+      const items = readServices();
       list.innerHTML = items.length
-        ? items.map((p, i) => `<div class="gitem">${p.img ? `<img class="gthumb" src="${p.img}" alt="" />` : `<span class="em">${p.em}</span>`}<div class="tx"><b>${p.nome}</b><span>${p.cat} · € ${p.prezzo}</span></div><button type="button" data-i="${i}" aria-label="Elimina ${p.nome}">✕</button></div>`).join('')
-        : '<div class="gempty">Ancora nessun prodotto. Aggiungine uno dal modulo: apparirà qui e sulla pagina Prodotti.</div>';
+        ? items.map((s, i) => `<div class="gitem"><span class="em">${esc(s.em)}</span><div class="tx"><b>${esc(s.nome)}</b><span>${esc(s.desc || '')}${s.prenotabile ? ' · prenotabile' : ''}</span></div><button type="button" data-i="${i}" aria-label="Elimina ${esc(s.nome)}">✕</button></div>`).join('')
+        : '<div class="gempty">Ancora nessun servizio. Aggiungine uno dal modulo: apparirà qui e sulla pagina Servizi.</div>';
       list.querySelectorAll('button[data-i]').forEach((b) => b.addEventListener('click', () => {
-        const arr = readCustom(); arr.splice(+b.dataset.i, 1); writeCustom(arr); render();
+        const arr = readServices(); arr.splice(+b.dataset.i, 1); writeServices(arr); render();
       }));
     };
-    // Ridimensiona la foto nel browser (max 480px, JPEG): resta leggera per la memoria locale
-    const fileToThumb = (file) => new Promise((res) => {
-      if (!file) { res(''); return; }
-      const img = new Image();
-      img.onload = () => {
-        const s = Math.min(1, 480 / Math.max(img.width, img.height));
-        const cv = document.createElement('canvas');
-        cv.width = Math.round(img.width * s); cv.height = Math.round(img.height * s);
-        cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
-        URL.revokeObjectURL(img.src);
-        res(cv.toDataURL('image/jpeg', 0.78));
-      };
-      img.onerror = () => { URL.revokeObjectURL(img.src); res(''); };
-      img.src = URL.createObjectURL(file);
-    });
-    document.getElementById('gForm').addEventListener('submit', async (e) => {
+    document.getElementById('gForm').addEventListener('submit', (e) => {
       e.preventDefault();
       const nome = document.getElementById('g-nome').value.trim();
-      const prezzo = document.getElementById('g-prezzo').value.trim().replace('.', ',');
-      if (!nome || !prezzo) return;
-      const foto = await fileToThumb(document.getElementById('g-foto').files[0]);
-      try {
-        writeCustom([{ id: 'u' + Date.now(), nome, prezzo, cat: document.getElementById('g-cat').value, em: document.getElementById('g-em').value, img: foto }, ...readCustom()]);
-      } catch (err) {
-        // memoria del browser piena (demo): salva senza foto
-        writeCustom([{ id: 'u' + Date.now(), nome, prezzo, cat: document.getElementById('g-cat').value, em: document.getElementById('g-em').value }, ...readCustom()]);
-      }
+      const desc = document.getElementById('g-desc').value.trim();
+      if (!nome) return;
+      writeServices([{ id: 'u' + Date.now(), nome, desc, em: document.getElementById('g-em').value, prenotabile: document.getElementById('g-prenota').checked }, ...readServices()]);
       e.target.reset(); render();
     });
     render();
