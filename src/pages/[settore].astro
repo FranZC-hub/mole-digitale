@@ -83,6 +83,7 @@ const settori = {
     kicker: 'Per farmacie e parafarmacie',
     h1a: 'Siti web per', h1b: 'farmacie a Torino',
     intro: "Un sito che rassicura e informa: orari sempre giusti (anche i turni), servizi in chiaro e il consiglio del farmacista a portata di tap. Così chi cerca una farmacia aperta trova te.",
+    metaDesc: "Siti web per farmacie a Torino: orari e turni sempre giusti, servizi in chiaro e SEO locale. Chi cerca una farmacia aperta trova te.",
     points: [
       { h: 'Orari e turni sempre giusti', p: 'Widget «aperta ora / chiusa» automatico: niente clienti davanti alla saracinesca.' },
       { h: 'Servizi in evidenza', p: 'Autoanalisi, noleggio, prenotazioni e consegna a domicilio, tutto chiaro.' },
@@ -94,6 +95,7 @@ const settori = {
     kicker: 'Per studi dentistici e odontoiatri',
     h1a: 'Siti web per', h1b: 'dentisti a Torino',
     intro: "Un sito che mette a suo agio e fa prenotare: trattamenti spiegati con chiarezza, prima visita gratuita in evidenza e recensioni che tolgono la paura. La fiducia comincia dal sito.",
+    metaDesc: "Siti web per dentisti a Torino: trattamenti spiegati con chiarezza, prima visita in evidenza e recensioni che tolgono la paura.",
     points: [
       { h: 'Prima visita online', p: 'Il paziente prenota la prima visita da solo, anche la sera dal divano.' },
       { h: 'Trattamenti chiari', p: 'Implantologia, ortodonzia, igiene: spiegati semplici, senza ansia.' },
@@ -116,6 +118,7 @@ const settori = {
     kicker: 'Per centri massaggi e benessere',
     h1a: 'Siti web per', h1b: 'centri massaggi a Torino',
     intro: "Un sito che fa già rilassare: i tuoi massaggi con durate e prezzi chiari, prenotazione online e un'atmosfera che invita a staccare. Si prenota di più quando è tutto semplice.",
+    metaDesc: "Siti web per centri massaggi a Torino: durate e prezzi chiari, prenotazione online e un'atmosfera che invita a staccare.",
     points: [
       { h: 'Listino chiaro', p: 'Ogni massaggio con durata e prezzo: niente domande, solo prenotazioni.' },
       { h: 'Appuntamenti online', p: 'Il cliente sceglie trattamento e orario da solo, a qualsiasi ora.' },
@@ -160,6 +163,7 @@ const settori = {
     kicker: 'Per ambulatori e cliniche veterinarie',
     h1a: 'Siti web per', h1b: 'veterinari a Torino',
     intro: "Un sito che ispira fiducia a chi ama il suo animale: servizi chiari, urgenze 24/7 in evidenza e prenotazione visita semplice. Quando il cane sta male, ti trovano subito.",
+    metaDesc: "Siti web per veterinari a Torino: servizi chiari, urgenze 24/7 in evidenza e prenotazione visita semplice. Ti trovano subito.",
     points: [
       { h: 'Urgenze in evidenza', p: 'Numero per le emergenze sempre visibile: in un attimo ti chiamano.' },
       { h: 'Servizi e prenotazioni', p: 'Visite, vaccinazioni, chirurgia: tutto chiaro, appuntamento in un tap.' },
@@ -265,7 +269,8 @@ const faqSchemaSettore = {
   mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
 };
 ---
-<Layout title={title} description={d.intro} image={`/og/${settore}.png`}>
+<!-- metaDesc: solo per i settori la cui intro supera i ~160 caratteri utili in SERP; altrimenti vale l'intro. -->
+<Layout title={title} description={d.metaDesc ?? d.intro} image={`/og/${settore}.png`}>
   <script type="application/ld+json" set:html={JSON.stringify(faqSchemaSettore)} />
   <section class="section" style="padding-top:8rem;">
     <div class="section-head" data-reveal>
