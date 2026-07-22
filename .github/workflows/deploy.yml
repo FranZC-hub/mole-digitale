@@ -32,7 +32,11 @@ jobs:
           cache: npm
 
       - name: Installa dipendenze
-        run: npm ci
+        # `npm install` e NON `npm ci`: il package-lock.json e' generato su Windows e
+        # non contiene le dipendenze opzionali specifiche di Linux (es. @emnapi/*),
+        # per cui `npm ci` fallirebbe su runner Linux. `npm install` risolve quelle
+        # giuste della piattaforma al volo (il lock resta comunque come riferimento).
+        run: npm install --no-audit --no-fund
 
       - name: Build del sito (genera dist/)
         run: npm run build
