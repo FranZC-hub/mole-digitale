@@ -72,9 +72,10 @@ export function serviceCard(s, mine = false) {
   // GIÀ con questo servizio selezionato
   const pren = '/demoFarmaciaAusiliatrice/prenotazioni/?servizio=' + encodeURIComponent(s.nome || '');
   const book = s.prenotabile ? `<a class="sbook" href="${pren}">Prenota →</a>` : '';
-  return `<article class="fcard${mine ? ' fcard-mine' : ''}" data-nome="${esc(s.nome)}">
+  // data-* servono al modale dettaglio (aperto al click sulla card); il nome è un <button> per la tastiera
+  return `<article class="fcard${mine ? ' fcard-mine' : ''}" data-nome="${esc(s.nome)}" data-em="${esc(s.em)}" data-desc="${esc(s.desc || '')}" data-nuovo="${s.nuovo ? '1' : ''}" data-prenotabile="${s.prenotabile ? '1' : ''}">
     <span class="fic" aria-hidden="true">${esc(s.em) || '🧩'}</span>
-    <h3>${esc(s.nome)} ${badges}</h3>
+    <h3><button type="button" class="sopen">${esc(s.nome)}</button> ${badges}</h3>
     ${s.desc ? `<p>${esc(s.desc)}</p>` : ''}
     ${book}
   </article>`;
