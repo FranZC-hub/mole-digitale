@@ -51,8 +51,20 @@ import Layout from './_Layout.astro';
     @media (max-width:760px){.prgrid{grid-template-columns:1fr}.prrow{grid-template-columns:1fr}}
   </style>
   <script>
+    import { readServices } from './_shared.js';
     const dEl = document.getElementById('pr-data');
     const oraEl = document.getElementById('pr-ora');
+    const selServ = document.getElementById('pr-serv');
+
+    // La tendina include anche i servizi PRENOTABILI aggiunti dal titolare nel gestionale
+    // (senza questo, i servizi in localStorage non comparirebbero nella prenotazione generica).
+    (() => {
+      const esistenti = new Set([...selServ.options].map((o) => o.text.trim().toLowerCase()));
+      readServices()
+        .filter((s) => s && s.prenotabile && s.nome && !esistenti.has(s.nome.trim().toLowerCase()))
+        .forEach((s) => selServ.add(new Option(s.nome, s.nome)));
+    })();
+
     // Niente giorni passati: minimo = oggi
     const iso = (dt) => dt.toISOString().split('T')[0];
     dEl.min = iso(new Date());
