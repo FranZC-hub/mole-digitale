@@ -23,10 +23,12 @@ jobs:
       - name: Scarica il codice
         uses: actions/checkout@v5
 
-      - name: Node 22
+      - name: Node 24
         uses: actions/setup-node@v5
         with:
-          node-version: 22
+          # Node 24 (npm 11): stesso major con cui è generato package-lock.json,
+          # così `npm ci` non fallisce per le dipendenze opzionali (es. @emnapi/*).
+          node-version: 24
           cache: npm
 
       - name: Installa dipendenze
