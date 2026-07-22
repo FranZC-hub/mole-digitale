@@ -23,6 +23,15 @@ stats.csv
 tools/_ov_token.txt
 tools/_m-*.json
 
+# script usa-e-getta di verifica (screenshot, test menu/scroll): solo locali.
+# NB: elenco esplicito perche' altri tools/_*.mjs (_diag, _faces, _montage, _pdf, _shot) sono tracciati.
+tools/_menushot.mjs
+tools/_menutest.mjs
+tools/_revealcheck.mjs
+tools/_scrollshot.mjs
+tools/_thumb.mjs
+tools/_touchtest.mjs
+
 # sistema
 .DS_Store
 Thumbs.db

@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       full_resync:
-        description: "Re-sync COMPLETO: rimuove i file orfani vecchi dal server (mail-config.php e leads.csv restano protetti). Usalo se il sito mostra asset mancanti/rotti dopo un deploy."
+        description: "Re-sync COMPLETO: rimuove i file orfani vecchi dal server (mail-config.php, leads.csv e stats.csv restano protetti). Usalo se il sito mostra asset mancanti/rotti dopo un deploy."
         type: boolean
         default: false
 
@@ -66,6 +66,7 @@ jobs:
             mail-config.php
             mail-config.example.php
             leads.csv
+            stats.csv
 
       - name: Avviso (secret FTP non ancora configurati)
         if: env.HAS_FTP != 'true'

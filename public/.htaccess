@@ -21,8 +21,10 @@
 # --- Pagina di errore 404 brandizzata ---
 ErrorDocument 404 /404.html
 
-# --- Proteggi i file di configurazione e i lead salvati ---
-<FilesMatch "^(mail-config.*\.php|leads\.csv)$">
+# --- Proteggi i file di configurazione, i lead e le statistiche ---
+# Di norma questi file stanno SOPRA la cartella pubblica (contact.php/stats.php scrivono in ../),
+# quindi non sono raggiungibili dal web: questo blocco e' una rete di sicurezza se finissero qui.
+<FilesMatch "^(mail-config.*\.php|leads\.csv|stats\.csv)$">
   Require all denied
 </FilesMatch>
 
