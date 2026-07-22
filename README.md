@@ -58,7 +58,10 @@ aggiungi il sito, copia il **token** e incollalo in `src/layouts/Layout.astro`
 - Recensioni reali al posto degli esempi (sezione testimonianze in `index.astro`)
 
 ## Note di manutenzione
-- `npm audit` segnala vulnerabilità in **vite/esbuild**: sono **solo di sviluppo**
-  (build-time) e **non finiscono nel sito statico** pubblicato. Si risolvono con gli
-  aggiornamenti di Astro; non forzare `audit fix --force` (può rompere la build).
-- Le 3 demo (`/demo/...`) sono `noindex`: non vanno su Google, servono per i clienti.
+- **Astro 7** (aggiornato dalla 6): `npm audit` è pulito, 0 vulnerabilità.
+  Se in futuro l'audit segnala vite/esbuild, ricorda che sono **solo di sviluppo**
+  (build-time) e **non finiscono nel sito statico** pubblicato.
+- Le demo (`/demo/...`, `/demoFarmaciaAusiliatrice/...`) sono `noindex`: non vanno su
+  Google, servono per i clienti.
+- Dopo modifiche grosse, prima di pubblicare: `npm run build` **e** `node tools/check-links.mjs`
+  (quest'ultimo gira anche in CI e blocca il deploy se un link interno è rotto).
