@@ -80,3 +80,35 @@ export function serviceCard(s, mine = false) {
     ${book}
   </article>`;
 }
+
+// Controlli condivisi per un modale `.omodal` (dettaglio offerta/servizio, carrello):
+// apertura/chiusura con blocco scroll, focus iniziale e ripristino, Escape, focus-trap
+// e `inert` sullo sfondo (il resto della pagina non è raggiungibile mentre è aperto).
+export function initModal(modal) {
+  let lastFocus = null;
+  const bg = (on) => document.querySelectorAll('main > *').forEach((el) => { if (el !== modal) el.inert = on; });
+  const open = () => {
+    lastFocus = document.activeElement;
+    modal.hidden = false;
+    document.body.classList.add('omodal-open');
+    bg(true);
+    (modal.querySelector('.omodal-x') || modal).focus();
+  };
+  const close = () => {
+    modal.hidden = true;
+    bg(false);
+    if (!document.querySelector('.omodal:not([hidden])')) document.body.classList.remove('omodal-open');
+    if (lastFocus) { lastFocus.focus(); lastFocus = null; }
+  };
+  modal.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', close));
+  modal.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { close(); return; }
+    if (e.key !== 'Tab') return;
+    const f = [...modal.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')].filter((el) => el.offsetParent !== null && !el.disabled);
+    if (!f.length) return;
+    const a = f[0], b = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === a) { e.preventDefault(); b.focus(); }
+    else if (!e.shiftKey && document.activeElement === b) { e.preventDefault(); a.focus(); }
+  });
+  return { open, close };
+}

@@ -14,6 +14,7 @@ const bookHref = (nome) => PREN + '?servizio=' + encodeURIComponent(nome);
       <span class="ssearch-ic" aria-hidden="true">🔎</span>
       <input type="search" id="sSearch" placeholder="Cerca un servizio per nome…" aria-label="Cerca un servizio per nome" autocomplete="off" />
     </div>
+    <p class="sresults r" id="sResults" hidden aria-live="polite"></p>
 
     <div class="sgrid" id="sGrid">
       {BASE_SERVICES.map((s) => (
@@ -38,7 +39,7 @@ const bookHref = (nome) => PREN + '?servizio=' + encodeURIComponent(nome);
     </div>
   </section>
 
-  <!-- MODALE DETTAGLIO SERVIZIO (aperto al click sulla card, come nelle Offerte) -->
+  <!-- MODALE DETTAGLIO SERVIZIO (guscio .omodal condiviso nel layout) -->
   <div class="omodal" id="sDetail" hidden role="dialog" aria-modal="true" aria-labelledby="sdNome">
     <div class="omodal-back" data-close></div>
     <div class="omodal-card">
@@ -56,6 +57,7 @@ const bookHref = (nome) => PREN + '?servizio=' + encodeURIComponent(nome);
     .ssearch-ic{position:absolute;left:1rem;top:50%;transform:translateY(-50%);opacity:.6;pointer-events:none}
     .ssearch input{width:100%;padding:.85rem 1rem .85rem 2.6rem;border:1px solid var(--line);border-radius:999px;font-family:var(--sans);font-size:1rem;background:var(--card);color:var(--ink)}
     .ssearch input:focus{outline:2px solid var(--cel);border-color:transparent}
+    .sresults{text-align:center;color:var(--muted);font-size:.9rem;margin:-1rem 0 1.4rem}
     .sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
     .sgrid>*{min-width:0}
     /* card come colonna cliccabile; il bottone "Prenota" si allinea in basso (anche sulle card iniettate) */
@@ -73,27 +75,13 @@ const bookHref = (nome) => PREN + '?servizio=' + encodeURIComponent(nome);
     :global(.sbook:hover){background:var(--cel);color:#fff}
     .snores{text-align:center;color:var(--muted);padding:1.5rem}
     .scta{display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;margin-top:2.2rem}
-
-    /* modale dettaglio (stessa veste delle Offerte) */
-    .omodal{position:fixed;inset:0;z-index:320;display:grid;place-items:center;padding:1.2rem}
-    .omodal[hidden]{display:none}
-    .omodal-back{position:absolute;inset:0;background:rgba(6,30,16,.55);backdrop-filter:blur(3px)}
-    .omodal-card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:clamp(1.5rem,4vw,2.2rem);width:100%;max-width:440px;max-height:88vh;overflow:auto;box-shadow:var(--soft);display:flex;flex-direction:column;gap:.6rem;animation:opop .25s var(--e)}
-    @keyframes opop{from{opacity:0;transform:translateY(14px) scale(.98)}}
-    @media (prefers-reduced-motion:reduce){.omodal-card{animation:none}}
-    .omodal-x{position:absolute;top:.8rem;right:.8rem;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:1rem;cursor:pointer}
-    .omodal-x:hover{border-color:var(--rosso);color:var(--rosso)}
-    .omodal-em{font-size:3rem}
+    /* modale: guscio condiviso nel layout; qui solo lo specifico dei servizi */
     #sdBadges:empty{display:none}
-    #sDetail h2{font-size:1.4rem}
-    .omodal-desc{color:var(--muted);line-height:1.55}
-    body.omodal-open{overflow:hidden}
-
     @media (max-width:920px){.sgrid{grid-template-columns:1fr 1fr}}
     @media (max-width:560px){.sgrid{grid-template-columns:1fr}}
   </style>
   <script>
-    import { readServices, serviceCard } from './_shared.js';
+    import { readServices, serviceCard, initModal } from './_shared.js';
     const PREN = '/demoFarmaciaAusiliatrice/prenotazioni/?servizio=';
     const grid = document.getElementById('sGrid');
     // i servizi aggiunti dal titolare compaiono per primi
@@ -102,6 +90,7 @@ const bookHref = (nome) => PREN + '?servizio=' + encodeURIComponent(nome);
 
     const cards = [...grid.querySelectorAll('.fcard')];
     const noRes = document.getElementById('sNoRes');
+    const results = document.getElementById('sResults');
 
     // ---- ricerca per nome (base SSR + iniettati) ----
     document.getElementById('sSearch').addEventListener('input', (e) => {
@@ -112,14 +101,14 @@ const bookHref = (nome) => PREN + '?servizio=' + encodeURIComponent(nome);
         c.hidden = !show; if (show) { c.classList.add('in'); visible++; }
       });
       noRes.hidden = visible !== 0;
+      results.hidden = !q;
+      if (q) results.textContent = `${visible} ${visible === 1 ? 'servizio trovato' : 'servizi trovati'}`;
     });
 
-    // ---- dettaglio servizio in modale (come le Offerte) ----
+    // ---- dettaglio servizio in modale (guscio + logica condivisi) ----
     const modal = document.getElementById('sDetail');
     const sdBook = document.getElementById('sdBook');
-    let lastFocus = null;
-    const open = () => { lastFocus = document.activeElement; modal.hidden = false; document.body.classList.add('omodal-open'); modal.querySelector('.omodal-x').focus(); };
-    const close = () => { modal.hidden = true; document.body.classList.remove('omodal-open'); if (lastFocus) lastFocus.focus(); };
+    const { open } = initModal(modal);
     const openDetail = (d) => {
       document.getElementById('sdEm').textContent = d.em || '🧩';
       document.getElementById('sdNome').textContent = d.nome || '';
@@ -133,18 +122,6 @@ const bookHref = (nome) => PREN + '?servizio=' + encodeURIComponent(nome);
       else { sdBook.style.display = 'none'; }
       open();
     };
-    modal.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', close));
-    document.addEventListener('keydown', (e) => {
-      if (modal.hidden) return;
-      if (e.key === 'Escape') { close(); return; }
-      if (e.key === 'Tab') {
-        const f = [...modal.querySelectorAll('button,[href],[tabindex]:not([tabindex="-1"])')].filter((el) => el.offsetParent !== null);
-        if (!f.length) return;
-        const a = f[0], b = f[f.length - 1];
-        if (e.shiftKey && document.activeElement === a) { e.preventDefault(); b.focus(); }
-        else if (!e.shiftKey && document.activeElement === b) { e.preventDefault(); a.focus(); }
-      }
-    });
     cards.forEach((c) => {
       c.addEventListener('click', (e) => { if (!e.target.closest('.sbook')) openDetail(c.dataset); });
       const book = c.querySelector('.sbook');

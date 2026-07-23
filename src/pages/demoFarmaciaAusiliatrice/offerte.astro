@@ -26,15 +26,23 @@ const offerte = [
   { id: 'o19', tag: '−30%', em: '🐶', nome: 'Antiparassitario spot-on per cani', cat: 'Veterinaria', prezzo: '13,90', prezzoOld: '19,90', desc: 'Protezione da pulci e zecche fino a 4 settimane. Applicazione spot-on semplice e rapida.' },
   { id: 'o20', tag: '2×1', em: '👁️', nome: 'Soluzione unica lenti 360ml', cat: 'Ottica', prezzo: '8,90', promo: 'Due flaconi al prezzo di uno', desc: 'Pulizia, risciacquo e conservazione delle lenti morbide in un solo gesto. Comoda anche in viaggio.' },
 ];
+const cats = [...new Set(offerte.map((o) => o.cat))].sort(); // categorie per il filtro
 ---
 <Layout title="Offerte" active="Offerte" desc="Le offerte del mese della Farmacia dell'Ausiliatrice a Torino: dermocosmesi, integratori e autoanalisi in promozione. Prenota il ritiro su WhatsApp.">
   <section class="fsection" style="padding-top:8rem;">
     <div class="fhead fhead-c r"><span class="fkick">Le promozioni</span><h1>Offerte <span class="fmark">del mese</span></h1><p>Le promozioni valide questo mese. Tocca un prodotto per i dettagli, aggiungilo alla tua lista e prenota il ritiro: te lo teniamo da parte.</p></div>
 
-    <div class="osearch r">
-      <span class="osearch-ic" aria-hidden="true">🔎</span>
-      <input type="search" id="oSearch" placeholder="Cerca un prodotto per nome…" aria-label="Cerca un prodotto per nome" autocomplete="off" />
+    <div class="ofilters r">
+      <div class="osearch">
+        <span class="osearch-ic" aria-hidden="true">🔎</span>
+        <input type="search" id="oSearch" placeholder="Cerca un prodotto per nome…" aria-label="Cerca un prodotto per nome" autocomplete="off" />
+      </div>
+      <select id="oCat" class="ocatsel" aria-label="Filtra per categoria">
+        <option value="all">Tutte le categorie</option>
+        {cats.map((c) => <option value={c}>{c}</option>)}
+      </select>
     </div>
+    <p class="oresults r" id="oResults" hidden aria-live="polite"></p>
 
     <div class="ogrid" id="oGrid">
       {offerte.map((o) => (
@@ -102,10 +110,14 @@ const offerte = [
        (card filtrate dalla ricerca, badge e piede del carrello a lista vuota).
        Questa regola fa sì che `hidden` nasconda SEMPRE davvero. */
     [hidden]{display:none !important}
-    .osearch{max-width:460px;margin:0 auto 1.8rem;position:relative}
+    .ofilters{display:flex;gap:.7rem;max-width:640px;margin:0 auto 1.2rem;flex-wrap:wrap}
+    .osearch{position:relative;flex:1;min-width:220px}
     .osearch-ic{position:absolute;left:1rem;top:50%;transform:translateY(-50%);opacity:.6;pointer-events:none}
     .osearch input{width:100%;padding:.85rem 1rem .85rem 2.6rem;border:1px solid var(--line);border-radius:999px;font-family:var(--sans);font-size:1rem;background:var(--card);color:var(--ink)}
     .osearch input:focus{outline:2px solid var(--cel);border-color:transparent}
+    .ocatsel{flex:none;border:1px solid var(--line);border-radius:999px;padding:.85rem 1rem;font-family:var(--sans);font-size:1rem;background:var(--card);color:var(--ink);cursor:pointer}
+    .ocatsel:focus{outline:2px solid var(--cel);border-color:transparent}
+    .oresults{text-align:center;color:var(--muted);font-size:.9rem;margin:-.4rem 0 1.4rem}
 
     .ogrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
     .ogrid>*{min-width:0}
@@ -132,21 +144,12 @@ const offerte = [
     @keyframes ocpulse{40%{transform:scale(1.22)}}
     .ocart-badge{position:absolute;top:-4px;right:-4px;min-width:22px;height:22px;padding:0 5px;border-radius:999px;background:var(--rosso);color:#fff;font-size:.75rem;font-weight:800;display:grid;place-items:center;border:2px solid var(--bg)}
 
-    /* modali (dettaglio + carrello) */
-    .omodal{position:fixed;inset:0;z-index:320;display:grid;place-items:center;padding:1.2rem}
-    .omodal-back{position:absolute;inset:0;background:rgba(6,30,16,.55);backdrop-filter:blur(3px)}
-    .omodal-card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:clamp(1.5rem,4vw,2.2rem);width:100%;max-width:440px;max-height:88vh;overflow:auto;box-shadow:var(--soft);display:flex;flex-direction:column;gap:.6rem;animation:opop .25s var(--e)}
-    @keyframes opop{from{opacity:0;transform:translateY(14px) scale(.98)}}
-    @media (prefers-reduced-motion:reduce){.omodal-card,.ocart-fab.pulse{animation:none}}
-    .omodal-x{position:absolute;top:.8rem;right:.8rem;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:1rem;cursor:pointer}
-    .omodal-x:hover{border-color:var(--rosso);color:var(--rosso)}
+    /* modale: guscio .omodal condiviso nel layout; qui solo lo specifico delle offerte */
+    @media (prefers-reduced-motion:reduce){.ocart-fab.pulse{animation:none}}
     .omodal-tag{align-self:flex-start}
-    .omodal-em{font-size:3rem}
     .omodal-price{margin-top:.2rem}
     .omodal-price s{opacity:.7}
     .omodal-price b{color:var(--blu);font-size:1.4rem;margin-left:.3rem}
-    .omodal-desc{color:var(--muted);line-height:1.55}
-    #oDetail h2{font-size:1.4rem}
     .dsave{display:inline-block;background:rgba(23,166,63,.14);color:var(--cel-d);font-weight:800;font-size:.82rem;padding:.15rem .55rem;border-radius:999px;margin-left:.4rem;vertical-align:middle}
 
     /* toast conferma */
@@ -180,12 +183,12 @@ const offerte = [
     .ocart-clear{background:none;border:0;color:var(--muted);font-size:.85rem;font-weight:700;text-decoration:underline;cursor:pointer;font-family:inherit}
     .ocart-clear:hover{color:#c04545}
 
-    body.omodal-open{overflow:hidden}
     @media (max-width:920px){.ogrid{grid-template-columns:1fr 1fr}}
     @media (max-width:560px){.ogrid{grid-template-columns:1fr}}
   </style>
 
   <script>
+    import { initModal } from './_shared.js';
     const WA = '393388762564';
     const LS = 'aus-carrello';
     const $ = (s, r = document) => r.querySelector(s);
@@ -250,46 +253,29 @@ const offerte = [
     };
     const removeFromCart = (id) => { cart = cart.filter((i) => i.id !== id); writeCart(cart); syncUI(); renderCart(); };
 
-    // ---- ricerca per nome ----
-    $('#oSearch').addEventListener('input', (e) => {
-      const q = e.target.value.trim().toLowerCase();
+    // ---- filtri: ricerca per nome + categoria ----
+    const searchEl = $('#oSearch'), catEl = $('#oCat'), resultsEl = $('#oResults');
+    const applyFilters = () => {
+      const q = searchEl.value.trim().toLowerCase();
+      const cat = catEl.value;
       let visible = 0;
       cards.forEach((c) => {
-        const show = c.dataset.nome.toLowerCase().includes(q);
+        const show = c.dataset.nome.toLowerCase().includes(q) && (cat === 'all' || c.dataset.cat === cat);
         c.hidden = !show; if (show) { c.classList.add('in'); visible++; } // .in: forza il reveal delle card mostrate
       });
       $('#oNoRes').hidden = visible !== 0;
-    });
+      const filtering = q !== '' || cat !== 'all';
+      resultsEl.hidden = !filtering;
+      if (filtering) resultsEl.textContent = `${visible} ${visible === 1 ? 'offerta trovata' : 'offerte trovate'}`;
+    };
+    searchEl.addEventListener('input', applyFilters);
+    catEl.addEventListener('change', applyFilters);
 
-    // ---- modali: apertura/chiusura con focus ed Escape ----
-    let lastFocus = null;
-    const openModal = (m) => {
-      lastFocus = document.activeElement;
-      m.hidden = false; document.body.classList.add('omodal-open');
-      (m.querySelector('.omodal-x') || m).focus();
-    };
-    const closeModal = (m) => {
-      m.hidden = true;
-      if (!document.querySelector('.omodal:not([hidden])')) document.body.classList.remove('omodal-open');
-      if (lastFocus) lastFocus.focus();
-    };
-    document.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', () => closeModal(el.closest('.omodal'))));
-    // Escape chiude; Tab resta intrappolato dentro la modale aperta (accessibilità)
-    document.addEventListener('keydown', (e) => {
-      const open = document.querySelector('.omodal:not([hidden])');
-      if (!open) return;
-      if (e.key === 'Escape') { closeModal(open); return; }
-      if (e.key === 'Tab') {
-        const f = [...open.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')].filter((el) => !el.disabled && el.offsetParent !== null);
-        if (!f.length) return;
-        const first = f[0], last = f[f.length - 1];
-        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-      }
-    });
+    // ---- modali (guscio + logica condivisi: focus, Escape, focus-trap, inert sfondo) ----
+    const detailM = initModal($('#oDetail'));
+    const cartM = initModal($('#oCart'));
 
     // ---- dettaglio prodotto ----
-    const detail = $('#oDetail');
     let detailData = null;
     const openDetail = (d) => {
       detailData = d;
@@ -304,9 +290,9 @@ const offerte = [
       // il pulsante riflette quanti pezzi sono già nella lista
       const it = cart.find((i) => i.id === d.id);
       $('#dAdd').textContent = it ? `Aggiungi ancora (ne hai ${it.qty}) →` : 'Aggiungi alla lista →';
-      openModal(detail);
+      detailM.open();
     };
-    $('#dAdd').addEventListener('click', () => { if (detailData) { addToCart(detailData); closeModal(detail); } });
+    $('#dAdd').addEventListener('click', () => { if (detailData) { addToCart(detailData); detailM.close(); } });
 
     cards.forEach((c) => {
       const d = c.dataset;
@@ -316,7 +302,7 @@ const offerte = [
     });
 
     // ---- carrello ----
-    const cartModal = $('#oCart'), cartList = $('#cartList'), cartFoot = $('#cartFoot');
+    const cartList = $('#cartList'), cartFoot = $('#cartFoot');
     const renderCart = () => {
       if (!cart.length) {
         cartList.innerHTML = '<div class="ocart-empty">La tua lista è vuota.<br/>Aggiungi le offerte che ti interessano e prenota il ritiro.</div>';
@@ -339,7 +325,7 @@ const offerte = [
       $('#cartTotal').innerHTML = `Totale indicativo (${n} ${n === 1 ? 'pezzo' : 'pezzi'}): <b>€ ${euro(tot)}</b>`;
       cartFoot.hidden = false;
     };
-    fab.addEventListener('click', () => { renderCart(); openModal(cartModal); });
+    fab.addEventListener('click', () => { renderCart(); cartM.open(); });
     $('#cartClear').addEventListener('click', () => { cart = []; writeCart(cart); syncUI(); renderCart(); });
 
     // data minima = oggi
