@@ -1,5 +1,10 @@
 ---
 import Layout from './_Layout.astro';
+import { BASE_SERVICES } from './_shared.js';
+// Fonte unica: i servizi in tendina sono quelli realmente PRENOTABILI (stessi nomi di /servizi/),
+// così cliccare "Prenota" su una card non crea doppioni. I servizi prenotabili aggiunti dal
+// titolare nel gestionale vengono aggiunti via JS.
+const bookable = BASE_SERVICES.filter((s) => s.prenotabile);
 ---
 <Layout title="Prenotazioni" active="" desc="Prenota un servizio alla Farmacia dell'Ausiliatrice a Torino: Holter, ECG, tamponi e autoanalisi. Scegli giorno e fascia oraria, confermiamo su WhatsApp.">
   <section class="fsection" style="padding-top:8rem;">
@@ -9,12 +14,7 @@ import Layout from './_Layout.astro';
       <form class="fform r" id="prForm">
         <label>Servizio
           <select id="pr-serv">
-            <option>Holter cardiaco</option>
-            <option>Elettrocardiogramma (ECG)</option>
-            <option>Tampone rapido</option>
-            <option>Glicemia / autoanalisi</option>
-            <option>Consegna a domicilio</option>
-            <option>Deblistering — primo colloquio</option>
+            {bookable.map((s) => <option>{s.nome}</option>)}
           </select>
         </label>
         <div class="prrow">
