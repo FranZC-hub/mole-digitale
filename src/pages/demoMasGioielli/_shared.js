@@ -102,6 +102,27 @@ export const BRAND_BASE = [
 ];
 export const REPARTI = ['Gioielleria', 'Orologeria', 'Argenteria', 'Pelletteria', 'Altro'];
 
+// Lo storage puo' non essere disponibile (navigazione privata di Safari, browser
+// con i dati bloccati): li' setItem SOLLEVA un'eccezione. Senza protezione il clic
+// sul cuore interrompeva il resto dello script.
+export const salva = (chiave, valore) => {
+  try { localStorage.setItem(chiave, valore); return true; } catch { return false; }
+};
+export const salvaSessione = (chiave, valore) => {
+  try { sessionStorage.setItem(chiave, valore); return true; } catch { return false; }
+};
+
+// Conteggio ANONIMO delle azioni che contano: nessun cookie, nessun dato personale,
+// solo "su questa pagina e' successa questa cosa". Serve al titolare per sapere se
+// il sito lavora davvero, non per profilare chi naviga.
+export function traccia(azione) {
+  try {
+    if (navigator.webdriver) return;
+    if (['localhost', '127.0.0.1'].includes(location.hostname)) return;
+    fetch(`/stats.php?p=${encodeURIComponent(location.pathname)}&e=${encodeURIComponent(azione)}`, { keepalive: true }).catch(() => {});
+  } catch (_) {}
+}
+
 const LS_BRAND = 'mas-marchi';
 // `null` = il titolare non ha ancora toccato nulla: mostro gli esempi.
 export const leggiBrand = () => {
@@ -111,7 +132,7 @@ export const leggiBrand = () => {
     return JSON.parse(raw).filter((b) => b && b.id && b.nome);
   } catch { return null; }
 };
-export const scriviBrand = (a) => localStorage.setItem(LS_BRAND, JSON.stringify(a));
+export const scriviBrand = (a) => salva(LS_BRAND, JSON.stringify(a));
 // quelli effettivamente da mostrare: i suoi se ci sono, altrimenti gli esempi
 export const brandDaMostrare = () => leggiBrand() ?? BRAND_BASE;
 
@@ -128,7 +149,7 @@ export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&a
 // interessano e li manda in negozio su WhatsApp prima di passare.
 const LS = 'mas-desideri';
 export const leggiLista = () => { try { return JSON.parse(localStorage.getItem(LS) || '[]').filter((x) => x && x.id); } catch { return []; } };
-export const scriviLista = (a) => localStorage.setItem(LS, JSON.stringify(a));
+export const scriviLista = (a) => salva(LS, JSON.stringify(a));
 
 // Controlli condivisi per un modale .velo: apertura/chiusura, focus, Escape,
 // focus-trap e sfondo inert (il resto della pagina non è raggiungibile).

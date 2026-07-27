@@ -171,7 +171,7 @@ const lavori = [
   </style>
 
   <script>
-    import { INFO } from './_shared.js';
+    import { INFO, traccia } from './_shared.js';
     const $ = (s) => document.querySelector(s);
     const WA = (t) => `https://wa.me/${INFO.wa}?text=${encodeURIComponent(t)}`;
 
@@ -198,6 +198,9 @@ const lavori = [
       const ogg = selOgg.options[selOgg.selectedIndex].text;
       $('#prevWa').href = WA(`Buongiorno ${INFO.nome}! 👋\nAvrei bisogno di un lavoro in laboratorio:\n\n• Oggetto: ${ogg}\n• Intervento: ${label}\n• Materiale: ${selMat.options[selMat.selectedIndex].text}\n\n(Stima vista sul sito: € ${a}–${b}) Vi mando una foto. Grazie!`);
     };
+    // conteggio anonimo: al titolare interessa sapere quanti chiedono davvero
+    $('#prevWa').addEventListener('click', () => traccia('preventivo-whatsapp'));
+    $('#misuraWa').addEventListener('click', () => traccia('misura-anello'));
     selOgg.addEventListener('change', () => { popola(); calcola(); });
     selInt.addEventListener('change', calcola);
     selMat.addEventListener('change', calcola);

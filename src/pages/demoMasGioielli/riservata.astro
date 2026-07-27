@@ -116,7 +116,7 @@ import { INFO, REPARTI } from './_shared.js';
   </style>
 
   <script>
-    import { BRAND_BASE, leggiBrand, scriviBrand, esc } from './_shared.js';
+    import { BRAND_BASE, leggiBrand, scriviBrand, esc, salvaSessione } from './_shared.js';
     const $ = (s) => document.querySelector(s);
 
     /* ---- accesso (nella versione reale: autenticazione lato server) ---- */
@@ -131,7 +131,7 @@ import { INFO, REPARTI } from './_shared.js';
       e.preventDefault();
       const u = $('#l-user').value.trim().toLowerCase();
       const p = $('#l-pass').value;
-      if (u === USER && p === PASS) { sessionStorage.setItem('mas-auth', 'ok'); $('#lErr').hidden = true; gate(); }
+      if (u === USER && p === PASS) { salvaSessione('mas-auth', 'ok'); $('#lErr').hidden = true; gate(); }
       else $('#lErr').hidden = false;
     });
     $('#lProva').addEventListener('click', () => { $('#l-user').value = USER; $('#l-pass').value = PASS; $('#l-pass').focus(); });

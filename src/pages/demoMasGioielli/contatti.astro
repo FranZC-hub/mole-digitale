@@ -137,11 +137,12 @@ const MAPPA = `https://www.google.com/maps/search/?api=1&query=${encodeURICompon
   </style>
 
   <script>
-    import { renderOrari } from './_shared.js';
+    import { renderOrari, traccia } from './_shared.js';
     renderOrari(document.getElementById('listaOrari'), document.getElementById('statoTxt'));
 
     document.getElementById('contForm').addEventListener('submit', (e) => {
       e.preventDefault();
+      traccia('messaggio-contatti');
       const nome = document.getElementById('c-nome').value.trim();
       const ok = document.getElementById('contOk');
       ok.innerHTML = `Grazie <b>${nome || ''}</b>, messaggio registrato: vi rispondiamo al più presto. <i>(demo: nessun dato è stato inviato)</i>`;

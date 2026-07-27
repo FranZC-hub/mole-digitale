@@ -3,6 +3,7 @@
 // niente cookie, niente IP salvati, niente servizi esterni. Conta solo: giorno, pagina, provenienza.
 //
 // • Beacon (chiamato dal sito):  /stats.php?p=/pagina/&r=google.com   → riga su ../stats.csv
+// • Azione (facoltativa):        /stats.php?p=/pagina/&e=lista-inviata  → conteggiata a parte
 // • Report (solo per te):        /stats.php?key=LA_TUA_CHIAVE
 //   La chiave va aggiunta in mail-config.php:  'STATS_KEY' => 'una-frase-segreta',
 //   (finché non c'è, il report è disattivato; il conteggio funziona comunque)
@@ -16,19 +17,27 @@ if (isset($_GET['key'])) {
   $goodKey = is_array($config) && !empty($config['STATS_KEY']) && hash_equals((string) $config['STATS_KEY'], (string) $_GET['key']);
   if (!$goodKey) { http_response_code(403); exit('Accesso negato.'); }
 
-  $days = []; $pages = []; $refs = []; $tot = 0;
+  $days = []; $pages = []; $refs = []; $azioni = []; $tot = 0;
   if (is_file($FILE)) {
     foreach (file($FILE, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-      $c = str_getcsv($line);
+      // escape esplicito: dalle PHP piu' recenti l'impostazione predefinita e'
+      // deprecata e stamperebbe un avviso dentro il rapporto. Stringa vuota =
+      // nessun escape, che e' esattamente il formato con cui scriviamo.
+      $c = str_getcsv($line, ',', '"', '');
       if (count($c) < 3) { continue; }
       [$d, $p, $r] = $c;
+      $e = $c[3] ?? '';                       // 4a colonna: assente nelle righe vecchie
+      if ($e !== '') {                        // e' un'azione, non una visita
+        $azioni[$e] = ($azioni[$e] ?? 0) + 1;
+        continue;
+      }
       $tot++;
       $days[$d]  = ($days[$d]  ?? 0) + 1;
       $pages[$p] = ($pages[$p] ?? 0) + 1;
       if ($r !== '') { $refs[$r] = ($refs[$r] ?? 0) + 1; }
     }
   }
-  krsort($days); arsort($pages); arsort($refs);
+  krsort($days); arsort($pages); arsort($refs); arsort($azioni);
   $days = array_slice($days, 0, 30, true);
   $pages = array_slice($pages, 0, 20, true);
   $refs = array_slice($refs, 0, 15, true);
@@ -44,6 +53,7 @@ if (isset($_GET['key'])) {
      . '<h2>Visite per giorno (ultimi 30)</h2><table>' . implode('', array_map($row, array_keys($days), $days)) . '</table>'
      . '<h2>Pagine più viste</h2><table>' . implode('', array_map($row, array_keys($pages), $pages)) . '</table>'
      . '<h2>Da dove arrivano</h2><table>' . ($refs ? implode('', array_map($row, array_keys($refs), $refs)) : '<tr><td>Solo visite dirette finora</td></tr>') . '</table>'
+     . '<h2>Azioni dei visitatori</h2><table>' . ($azioni ? implode('', array_map($row, array_keys($azioni), $azioni)) : '<tr><td>Nessuna azione registrata finora</td></tr>') . '</table>'
      . '</body></html>';
   exit;
 }
@@ -57,12 +67,17 @@ if ($ua === '' || preg_match('/bot|crawl|spider|slurp|headless|lighthouse|pingdo
 
 $p = substr((string) ($_GET['p'] ?? ''), 0, 120);
 $r = substr((string) ($_GET['r'] ?? ''), 0, 80);
+// azione facoltativa: "lista-inviata", "preventivo-whatsapp"... Solo lettere,
+// numeri e trattini, cosi' non ci finisce dentro nulla di personale.
+$e = preg_replace('/[^a-z0-9-]/', '', strtolower(substr((string) ($_GET['e'] ?? ''), 0, 40)));
 if ($p === '' || $p[0] !== '/') { exit; }
 
-// Anti-flood: al massimo un conteggio ogni 2 secondi per visitatore (l'IP non viene
-// salvato, serve solo come nome del file temporaneo). Evita che ricariche ripetute
-// o uno script gonfino le statistiche.
-$rl = sys_get_temp_dir() . '/md_st_' . md5(($_SERVER['REMOTE_ADDR'] ?? 'x') . date('Ymd')) . '.txt';
+// Anti-flood: un conteggio ogni 2 secondi per visitatore (l'IP non viene salvato,
+// serve solo come nome del file temporaneo). La finestra e' SEPARATA per le visite e
+// per ogni azione: altrimenti il clic fatto subito dopo l'apertura della pagina
+// verrebbe scartato insieme alla visita.
+$chiave = md5(($_SERVER['REMOTE_ADDR'] ?? 'x') . date('Ymd') . '|' . $e);
+$rl = sys_get_temp_dir() . '/md_st_' . $chiave . '.txt';
 if (@is_file($rl) && (time() - @filemtime($rl)) < 2) { exit; }
 @touch($rl);
 
@@ -75,6 +90,6 @@ if (@is_file($FILE) && @filesize($FILE) > 2 * 1024 * 1024) {
 $clean = fn($s) => str_replace(['"', "\r", "\n"], '', $s);
 @file_put_contents(
   $FILE,
-  '"' . date('Y-m-d') . '","' . $clean($p) . '","' . $clean($r) . "\"\n",
+  '"' . date('Y-m-d') . '","' . $clean($p) . '","' . $clean($r) . '","' . $clean($e) . "\"\n",
   FILE_APPEND | LOCK_EX
 );

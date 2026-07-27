@@ -174,7 +174,7 @@ import { INFO, PEZZI, CATEGORIE, prezzoLabel } from './_shared.js';
   </style>
 
   <script>
-    import { INFO, esc, leggiLista, scriviLista, initModal, prezzoLabel } from './_shared.js';
+    import { INFO, esc, leggiLista, scriviLista, initModal, prezzoLabel, traccia } from './_shared.js';
     const $ = (s) => document.querySelector(s);
     const griglia = $('#galleria');
     const pezzi = [...griglia.querySelectorAll('.pezzo')];
@@ -270,6 +270,7 @@ import { INFO, PEZZI, CATEGORIE, prezzoLabel } from './_shared.js';
       let quando = '';
       if (data.value) { const [y, m, g] = data.value.split('-'); quando = `\nPasserei il ${g}/${m}/${y}.`; }
       const msg = `Buongiorno ${INFO.nome}! 👋\nVorrei vedere questi pezzi in negozio:\n\n${voci}\n${quando}\nGrazie!`;
+      traccia('lista-inviata');
       window.open(`https://wa.me/${INFO.wa}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
     });
 

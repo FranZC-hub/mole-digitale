@@ -67,8 +67,8 @@ const schema = {
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="it_IT" />
   <meta property="og:site_name" content={INFO.nome} />
-  <meta property="og:image" content="https://www.moledigitale.it/img/demo-gioielleria/p-solitario.webp" />
-  <meta property="og:image:alt" content="Anello solitario con diamante ovale" />
+  <meta property="og:image" content="https://www.moledigitale.it/img/demo-gioielleria/hero.webp" />
+  <meta property="og:image:alt" content="Anello con diamante a taglio principessa" />
   <meta name="twitter:card" content="summary_large_image" />
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 </head>
@@ -318,6 +318,27 @@ const schema = {
     .a{opacity:0;transform:translateY(22px);transition:opacity 1s var(--e),transform 1s var(--e)}
     .a.vista{opacity:1;transform:none}
     @media (prefers-reduced-motion:reduce){.a{opacity:1;transform:none;transition:none}}
+
+    /* ---------- stampa ----------
+       Capita davvero: si stampa la misura dell'anello, la lista dei pezzi o gli
+       orari. Senza queste regole uscivano barre, pulsanti e fondi scuri. */
+    @media print{
+      body{background:#fff;color:#000;font-size:11pt}
+      body::before,.demo-flag,.testata,.wa-flt,.mskip,.promemoria,.velo{display:none !important}
+      main{padding-top:0 !important}
+      .banda,.testa-pagina{padding-block:1rem !important}
+      .scuro{background:#fff !important;color:#000 !important;border:1px solid #ccc}
+      .scuro *{color:#000 !important}
+      .a{opacity:1 !important;transform:none !important}
+      .btn,.link-filo{border:1px solid #999 !important;background:#fff !important;color:#000 !important}
+      /* i link utili vanno stampati per esteso, altrimenti sul foglio spariscono */
+      .chiusura a[href^="tel:"]::after,.chiusura a[href^="mailto:"]::after{content:" (" attr(href) ")";font-size:9pt}
+      .chiusura{background:#fff !important;color:#000 !important;border-top:1px solid #999}
+      .chiusura *{color:#000 !important}
+      img{max-height:8cm;object-fit:contain}
+      h1,h2,h3{break-after:avoid}
+      section{break-inside:avoid-page}
+    }
 
     @media (max-width:900px){
       .testata-alto{grid-template-columns:auto 1fr auto;padding-bottom:.9rem}

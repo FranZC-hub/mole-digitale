@@ -177,8 +177,10 @@ const passi = [
   </style>
 
   <script>
+    import { traccia } from './_shared.js';
     document.getElementById('perForm').addEventListener('submit', (e) => {
       e.preventDefault();
+      traccia('richiesta-perizia');
       const v = (id) => document.getElementById(id).value.trim();
       const ok = document.getElementById('perOk');
       ok.innerHTML = `Richiesta registrata, <b>${v('q-nome') || 'grazie'}</b>. Vi richiamiamo allo <b>${v('q-tel')}</b>, di solito in giornata. <i>(demo: nessun dato è stato inviato)</i>`;
