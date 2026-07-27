@@ -89,6 +89,37 @@ export const CATEGORIE = ['Anelli', 'Collane', 'Orecchini', 'Orologi'];
 // Etichetta del prezzo: i pezzi unici o da restaurare non hanno una cifra fissa.
 export const prezzoLabel = (p) => (/^[\d.,]+$/.test(String(p)) ? `€ ${p}` : String(p).charAt(0).toUpperCase() + String(p).slice(1));
 
+// ---------------------------------------------------------------- marchi trattati
+// Nomi DIMOSTRATIVI: non sono marchi reali, servono solo a far vedere come appare
+// la fascia in home. Il titolare li sostituisce coi propri dall'area riservata.
+export const BRAND_BASE = [
+  { id: 'b1', nome: 'Àuria', reparto: 'Gioielleria' },
+  { id: 'b2', nome: 'Vermeil', reparto: 'Gioielleria' },
+  { id: 'b3', nome: 'Orsini 1912', reparto: 'Gioielleria' },
+  { id: 'b4', nome: 'Tempo Reale', reparto: 'Orologeria' },
+  { id: 'b5', nome: 'Cassia', reparto: 'Orologeria' },
+  { id: 'b6', nome: 'Nord Milano', reparto: 'Argenteria' },
+];
+export const REPARTI = ['Gioielleria', 'Orologeria', 'Argenteria', 'Pelletteria', 'Altro'];
+
+const LS_BRAND = 'mas-marchi';
+// `null` = il titolare non ha ancora toccato nulla: mostro gli esempi.
+export const leggiBrand = () => {
+  try {
+    const raw = localStorage.getItem(LS_BRAND);
+    if (raw === null) return null;
+    return JSON.parse(raw).filter((b) => b && b.id && b.nome);
+  } catch { return null; }
+};
+export const scriviBrand = (a) => localStorage.setItem(LS_BRAND, JSON.stringify(a));
+// quelli effettivamente da mostrare: i suoi se ci sono, altrimenti gli esempi
+export const brandDaMostrare = () => leggiBrand() ?? BRAND_BASE;
+
+// Voce della fascia marchi: stesso markup del render statico, cosi' non si notano stacchi.
+export function brandVoce(b) {
+  return `<li class="marca"><span class="marca-nome">${esc(b.nome)}</span><span class="marca-rep">${esc(b.reparto || '')}</span></li>`;
+}
+
 // ---------------------------------------------------------------- utilità
 // I testi che finiscono dentro stringhe HTML vanno neutralizzati.
 export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));

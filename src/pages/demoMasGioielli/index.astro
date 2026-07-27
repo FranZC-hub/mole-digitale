@@ -1,6 +1,6 @@
 ---
 import Layout from './_Layout.astro';
-import { INFO, PEZZI, orariSettimana, prezzoLabel } from './_shared.js';
+import { INFO, PEZZI, orariSettimana, prezzoLabel, BRAND_BASE } from './_shared.js';
 const ORARI = orariSettimana();          // reso lato server: leggibile anche senza JavaScript
 const rail = PEZZI.slice(0, 6);
 const WA = `https://wa.me/${INFO.wa}`;
@@ -90,6 +90,21 @@ const mestieri = [
     </div>
   </section>
 
+  <!-- MARCHI TRATTATI: fascia sobria, alimentata dall'area riservata -->
+  <section class="banda marchi-banda">
+    <div class="misura">
+      <p class="marchi-occ occhiello centro">Le marche che trattiamo</p>
+      <h2 class="sr-only">Marchi trattati</h2>
+      <ul class="marchi" id="marchi">
+        {BRAND_BASE.map((b) => (
+          <li class="marca"><span class="marca-nome">{b.nome}</span><span class="marca-rep">{b.reparto}</span></li>
+        ))}
+      </ul>
+      <p class="marchi-vuoto" id="marchiVuoto" hidden>Trattiamo i migliori marchi di gioielleria e orologeria: chiedeteci in negozio.</p>
+      <p class="promemoria">💡 <b>Per il titolare:</b> questi sono nomi di esempio. Dall’<a href="/demoMasGioielli/riservata/">area riservata</a> caricate i vostri marchi: compaiono qui subito, senza chiamare nessuno.</p>
+    </div>
+  </section>
+
   <!-- ATELIER: banda scura, citazione grande -->
   <section class="scuro atelier">
     <div class="misura atelier-in">
@@ -169,7 +184,10 @@ const mestieri = [
 
     /* ---------- riga di fiducia ---------- */
     .fiducia{border-block:1px solid var(--filo)}
-    .fiducia-in{display:flex;justify-content:space-between;align-items:center;gap:1.5rem;flex-wrap:wrap;padding-block:1.15rem;font-size:.82rem;letter-spacing:.04em;color:var(--grafite)}
+    .fiducia-in{display:flex;justify-content:space-between;align-items:center;gap:.6rem 2rem;flex-wrap:wrap;padding-block:1.15rem;font-size:.82rem;letter-spacing:.04em;color:var(--grafite)}
+    /* separatori a filetto tra le voci: prima erano tre frasi allineate senza gerarchia */
+    .fiducia-in p+p{padding-left:2rem;border-left:1px solid var(--filo)}
+    @media (max-width:820px){.fiducia-in p+p{padding-left:0;border-left:0}}
     .fiducia-in b{color:var(--oro);font-weight:500}
     .fiducia-ora{margin-left:auto}
 
@@ -208,6 +226,18 @@ const mestieri = [
     .collezione{position:relative}
     .collezione::after{content:'';position:absolute;right:0;bottom:0;width:clamp(2rem,6vw,5rem);height:calc(100% - 1px);
       background:linear-gradient(90deg,rgba(247,243,236,0),var(--avorio));pointer-events:none}
+
+    /* ---------- marchi ---------- */
+    .marchi-banda{padding-block:clamp(3rem,6vw,4.5rem);border-top:1px solid var(--filo)}
+    .marchi-occ{display:flex;justify-content:center;margin-bottom:clamp(2rem,4vw,3rem)}
+    /* griglia auto-fit: i nomi si distribuiscono in righe piene qualunque sia il
+       loro numero (con flex l'ultimo restava spesso solo, a capo) */
+    .marchi{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+      column-gap:clamp(1.4rem,3vw,2.6rem);row-gap:clamp(1.8rem,3vw,2.6rem);max-width:1080px;margin-inline:auto}
+    .marca{text-align:center}
+    .marca-nome{display:block;font-family:var(--disp);font-size:clamp(1.5rem,2.8vw,2.1rem);line-height:1.1;letter-spacing:.04em}
+    .marca-rep{display:block;font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;color:var(--oro);margin-top:.35rem}
+    .marchi-vuoto{text-align:center;font-family:var(--disp);font-style:italic;font-size:clamp(1.2rem,2.4vw,1.6rem);color:var(--grafite)}
 
     /* ---------- atelier ---------- */
     .atelier{padding:clamp(4.5rem,10vw,8rem) 0}
@@ -254,7 +284,18 @@ const mestieri = [
   </style>
 
   <script>
-    import { renderOrari } from './_shared.js';
+    import { renderOrari, leggiBrand, brandVoce } from './_shared.js';
     renderOrari(document.getElementById('listaOrari'), document.getElementById('statoTxt'));
+
+    // I marchi caricati dal titolare sostituiscono gli esempi resi lato server.
+    // Se ne ha tolti tutti, al posto della fascia compare una frase generica.
+    const suoi = leggiBrand();
+    if (suoi) {
+      const ul = document.getElementById('marchi');
+      const vuoto = document.getElementById('marchiVuoto');
+      ul.innerHTML = suoi.map(brandVoce).join('');
+      ul.hidden = suoi.length === 0;
+      vuoto.hidden = suoi.length !== 0;
+    }
   </script>
 </Layout>

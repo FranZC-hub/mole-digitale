@@ -1,0 +1,195 @@
+---
+import Layout from './_Layout.astro';
+import { INFO, REPARTI } from './_shared.js';
+// Area riservata al titolare: gestione dei marchi trattati, che compaiono in home.
+// Nella versione reale l'accesso è protetto sul server; qui è una dimostrazione.
+---
+<Layout title="Area riservata" active="" desc="Area riservata al titolare: gestione dei marchi trattati.">
+
+  <!-- ACCESSO -->
+  <section class="testa-pagina" id="accesso">
+    <div class="misura accesso-in">
+      <div class="intro centro a">
+        <span class="occhiello centro">Area riservata</span>
+        <h1>Gestione <span class="it oro">marchi</span></h1>
+        <p>Accesso al pannello del negozio.</p>
+      </div>
+      <form class="modulo accesso-form a" id="loginForm">
+        <label>Nome utente<input type="text" id="l-user" autocomplete="username" required /></label>
+        <label>Password<input type="password" id="l-pass" autocomplete="current-password" required /></label>
+        <p class="errore" id="lErr" hidden>Credenziali non corrette. Riprovate.</p>
+        <button type="submit" class="btn btn-pieno">Accedi</button>
+        <!-- ⚠ Solo per la bozza: da RIMUOVERE nella versione definitiva -->
+        <button type="button" class="prova" id="lProva">
+          <span class="prova-t">Credenziali di prova</span>
+          <span class="prova-v">masgioielli · trapani146</span>
+          <span class="prova-d">toccate qui per compilare — spariranno nella versione definitiva</span>
+        </button>
+        <p class="nota">Nella versione reale l’accesso è protetto sul server, con utenti e permessi.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- PANNELLO -->
+  <section class="testa-pagina" id="pannello" hidden>
+    <div class="misura">
+      <div class="intro a">
+        <span class="occhiello">Area riservata</span>
+        <h1>I marchi <span class="it oro">che trattate</span></h1>
+        <p>Quello che aggiungete qui compare subito nella fascia in home page. <button type="button" id="esci" class="esci">Esci dall’area riservata</button></p>
+      </div>
+    </div>
+
+    <div class="misura pann-in">
+      <form class="modulo a" id="brandForm">
+        <h2 id="formTitolo" class="form-t">Nuovo marchio</h2>
+        <label>Nome del marchio<input type="text" id="b-nome" required maxlength="40" placeholder="Es. Orsini 1912" /></label>
+        <label>Reparto
+          <select id="b-reparto">
+            {REPARTI.map((r) => <option>{r}</option>)}
+          </select>
+        </label>
+        <label>Nota interna <small>(facoltativa, non compare sul sito)</small>
+          <input type="text" id="b-nota" maxlength="80" placeholder="Es. rivenditore autorizzato dal 2018" />
+        </label>
+        <button type="submit" class="btn btn-pieno" id="salva">Aggiungi il marchio</button>
+        <button type="button" class="annulla" id="annulla" hidden>Annulla la modifica</button>
+        <p class="nota">Dimostrazione: i marchi restano su questo dispositivo. Nella versione reale sono salvati sul sito e visibili a tutti.</p>
+      </form>
+
+      <div class="a">
+        <h2 class="form-t">Marchi in elenco</h2>
+        <ul class="elenco" id="elenco"></ul>
+        <div class="pann-azioni">
+          <a href="/demoMasGioielli/" class="btn btn-vuoto">Guarda come appaiono in home</a>
+          <button type="button" class="ripristina" id="ripristina">Ripristina gli esempi</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="misura">
+      <p class="promemoria">💡 <b>Per il titolare:</b> è la stessa logica con cui, nella versione definitiva, si gestiscono anche i pezzi della collezione: si carica una volta e il sito si aggiorna da solo.</p>
+    </div>
+  </section>
+
+  <style>
+    .testa-pagina{padding-top:calc(var(--tastata) + clamp(2.5rem,6vw,4.5rem));padding-bottom:clamp(2.5rem,5vw,4rem)}
+    /* qui si lavora: il titolo non deve occupare mezzo schermo come in vetrina */
+    #pannello .intro h1{font-size:clamp(2.2rem,4.2vw,3.2rem)}
+    #pannello .intro p{margin-top:1rem}
+
+    /* accesso */
+    .accesso-in{max-width:420px;margin-inline:auto}
+    .accesso-form{margin-top:2.5rem}
+    .errore{color:#a4442c;font-size:.85rem}
+    .prova{display:grid;gap:.3rem;text-align:center;background:var(--carta);border:1px dashed var(--oro);padding:1rem;cursor:pointer;font-family:inherit;transition:background .25s}
+    .prova:hover{background:var(--avorio-2)}
+    .prova-t{font-size:.64rem;letter-spacing:.24em;text-transform:uppercase;color:var(--oro)}
+    .prova-v{font-family:var(--disp);font-size:1.25rem;color:var(--inchiostro)}
+    .prova-d{font-size:.74rem;color:var(--grigio)}
+
+    /* pannello */
+    .esci{background:none;border:0;padding:0;font:inherit;font-size:.9rem;color:var(--oro);cursor:pointer;border-bottom:1px solid var(--oro)}
+    .pann-in{display:grid;grid-template-columns:.95fr 1.05fr;gap:clamp(2.5rem,6vw,5rem);align-items:start;margin-top:clamp(2rem,4vw,3rem)}
+    .pann-in>*{min-width:0}
+    .form-t{font-size:clamp(1.5rem,2.8vw,2rem);margin-bottom:.4rem}
+    .modulo small{letter-spacing:0;text-transform:none;font-weight:400;color:var(--grigio)}
+    .annulla{background:none;border:0;color:var(--grigio);font-size:.8rem;text-decoration:underline;cursor:pointer;font-family:inherit}
+    .annulla:hover{color:#a4442c}
+
+    .elenco{list-style:none;margin-top:1.4rem;border-top:1px solid var(--filo)}
+    /* :global — le righe sono iniettate via JS e non ricevono lo scope di Astro */
+    :global(.el-riga){display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--filo)}
+    :global(.el-riga.in-modifica){background:var(--carta);box-shadow:-12px 0 0 var(--carta),12px 0 0 var(--carta)}
+    :global(.el-tx b){display:block;font-family:var(--disp);font-weight:400;font-size:1.35rem;line-height:1.2}
+    :global(.el-tx span){font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--oro)}
+    :global(.el-tx i){display:block;font-size:.82rem;color:var(--grigio);font-style:normal}
+    :global(.el-riga button){background:none;border:1px solid var(--filo);width:34px;height:34px;cursor:pointer;color:var(--grafite);font-size:.85rem;transition:border-color .25s,color .25s}
+    :global(.el-riga button:hover){border-color:var(--oro);color:var(--oro)}
+    :global(.el-riga .el-del:hover){border-color:#a4442c;color:#a4442c}
+    :global(.el-vuoto){padding:2.2rem 0;color:var(--grigio);font-family:var(--disp);font-style:italic;font-size:1.25rem;text-align:center;border-bottom:1px solid var(--filo)}
+    .pann-azioni{display:flex;align-items:center;gap:2rem;flex-wrap:wrap;margin-top:2rem}
+    .ripristina{background:none;border:0;color:var(--grigio);font-size:.8rem;text-decoration:underline;cursor:pointer;font-family:inherit}
+    .ripristina:hover{color:var(--oro)}
+
+    @media (max-width:900px){.pann-in{grid-template-columns:1fr}}
+  </style>
+
+  <script>
+    import { BRAND_BASE, leggiBrand, scriviBrand, esc } from './_shared.js';
+    const $ = (s) => document.querySelector(s);
+
+    /* ---- accesso (nella versione reale: autenticazione lato server) ---- */
+    const USER = 'masgioielli', PASS = 'trapani146';
+    const secAccesso = $('#accesso'), secPannello = $('#pannello');
+    const gate = () => {
+      const dentro = sessionStorage.getItem('mas-auth') === 'ok';
+      secAccesso.hidden = dentro;
+      secPannello.hidden = !dentro;
+    };
+    $('#loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const u = $('#l-user').value.trim().toLowerCase();
+      const p = $('#l-pass').value;
+      if (u === USER && p === PASS) { sessionStorage.setItem('mas-auth', 'ok'); $('#lErr').hidden = true; gate(); }
+      else $('#lErr').hidden = false;
+    });
+    $('#lProva').addEventListener('click', () => { $('#l-user').value = USER; $('#l-pass').value = PASS; $('#l-pass').focus(); });
+    $('#esci').addEventListener('click', () => { sessionStorage.removeItem('mas-auth'); gate(); window.scrollTo({ top: 0 }); });
+    gate();
+
+    /* ---- marchi ---- */
+    // se non ha mai salvato nulla parto dagli esempi, così vede subito com'è fatto
+    let marchi = leggiBrand() ?? BRAND_BASE.map((b) => ({ ...b }));
+    let inModifica = null;
+
+    const elenco = $('#elenco'), form = $('#brandForm');
+    const setModo = (mod) => {
+      $('#formTitolo').textContent = mod ? 'Modifica marchio' : 'Nuovo marchio';
+      $('#salva').textContent = mod ? 'Salva le modifiche' : 'Aggiungi il marchio';
+      $('#annulla').hidden = !mod;
+    };
+    const reset = () => { form.reset(); inModifica = null; setModo(false); };
+
+    const render = () => {
+      elenco.innerHTML = marchi.length
+        ? marchi.map((b) => `<li class="el-riga${b.id === inModifica ? ' in-modifica' : ''}">
+            <div class="el-tx"><span>${esc(b.reparto || '')}</span><b>${esc(b.nome)}</b>${b.nota ? `<i>${esc(b.nota)}</i>` : ''}</div>
+            <button type="button" class="el-mod" data-mod="${esc(b.id)}" aria-label="Modifica ${esc(b.nome)}">✎</button>
+            <button type="button" class="el-del" data-del="${esc(b.id)}" aria-label="Elimina ${esc(b.nome)}">✕</button>
+          </li>`).join('')
+        : '<li class="el-vuoto">Nessun marchio in elenco.<br/>In home comparirà una frase generica al posto della fascia.</li>';
+
+      elenco.querySelectorAll('[data-del]').forEach((b) => b.addEventListener('click', () => {
+        marchi = marchi.filter((m) => m.id !== b.dataset.del);
+        if (inModifica === b.dataset.del) reset();
+        scriviBrand(marchi); render();
+      }));
+      elenco.querySelectorAll('[data-mod]').forEach((b) => b.addEventListener('click', () => {
+        const m = marchi.find((x) => x.id === b.dataset.mod);
+        if (!m) return;
+        $('#b-nome').value = m.nome; $('#b-reparto').value = m.reparto || 'Gioielleria'; $('#b-nota').value = m.nota || '';
+        inModifica = m.id; setModo(true); render();
+        $('#b-nome').focus();
+        form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }));
+    };
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nome = $('#b-nome').value.trim();
+      if (!nome) return;
+      const dati = { nome, reparto: $('#b-reparto').value, nota: $('#b-nota').value.trim() };
+      if (inModifica) marchi = marchi.map((m) => (m.id === inModifica ? { ...m, ...dati } : m));
+      else marchi = [...marchi, { id: 'm' + Date.now(), ...dati }];
+      scriviBrand(marchi); reset(); render();
+    });
+    $('#annulla').addEventListener('click', () => { reset(); render(); });
+    $('#ripristina').addEventListener('click', () => {
+      marchi = BRAND_BASE.map((b) => ({ ...b }));
+      scriviBrand(marchi); reset(); render();
+    });
+
+    setModo(false); render();
+  </script>
+</Layout>
