@@ -86,7 +86,17 @@ const schema = {
         <span class="marchio-nome">MasGioielli</span>
         <span class="marchio-sotto" aria-hidden="true">Gioielleria · Torino · dal {INFO.fondata}</span>
       </a>
-      <a href={'tel:' + INFO.telHref} class="testata-tel">{INFO.tel}</a>
+      <div class="testata-dx">
+        <a href={'tel:' + INFO.telHref} class="testata-tel">{INFO.tel}</a>
+        <a href={BASE + 'riservata/'} class={'testata-riservata' + (active === 'Riservata' ? ' on' : '')}
+           aria-current={active === 'Riservata' ? 'page' : undefined} title="Area riservata al titolare">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <rect x="5" y="10.5" width="14" height="9.5" rx="1.5"/>
+            <path d="M8.2 10.5V7.6a3.8 3.8 0 0 1 7.6 0v2.9"/>
+          </svg>
+          <span>Area riservata</span>
+        </a>
+      </div>
     </div>
     <nav class="menu" id="menuNav">
       {NAV.map(([href, label]) => (
@@ -180,8 +190,16 @@ const schema = {
     .marchio{grid-column:2;display:inline-flex;flex-direction:column;align-items:center;gap:.42rem;color:var(--inchiostro);text-align:center}
     .marchio-nome{font-family:var(--disp);font-size:1.95rem;font-weight:500;letter-spacing:.2em;text-indent:.2em;text-transform:uppercase;line-height:1;transition:font-size .35s var(--e),letter-spacing .35s var(--e)}
     .marchio-sotto{font-size:.56rem;font-weight:500;letter-spacing:.34em;text-indent:.34em;text-transform:uppercase;color:var(--oro);line-height:1;transition:opacity .3s,max-height .35s var(--e);max-height:1.2em;overflow:hidden}
-    .testata-tel{grid-column:3;justify-self:end;font-size:.78rem;letter-spacing:.1em;color:var(--grafite)}
+    .testata-dx{grid-column:3;justify-self:end;display:inline-flex;align-items:center;gap:1.1rem}
+    .testata-tel{font-size:.78rem;letter-spacing:.1em;color:var(--grafite)}
     .testata-tel:hover{color:var(--oro)}
+    /* accesso al pannello: discreto, non e' un richiamo per i clienti */
+    .testata-riservata{display:inline-flex;align-items:center;gap:.45rem;padding:.42rem .8rem;
+      border:1px solid var(--filo);font-size:.64rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;
+      color:var(--grigio);transition:color .25s,border-color .25s,background .25s}
+    .testata-riservata:hover{color:var(--oro);border-color:var(--oro)}
+    .testata-riservata.on{color:var(--oro);border-color:var(--oro);background:var(--carta)}
+    .testata-riservata svg{flex:none}
     .menu{display:flex;justify-content:center;gap:clamp(1.4rem,3vw,2.8rem);padding:0 1rem .8rem}
     .menu a{font-size:.72rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--grafite);padding-bottom:.2rem;border-bottom:1px solid transparent;transition:color .25s,border-color .25s}
     .menu a:hover{color:var(--inchiostro)}
@@ -298,6 +316,8 @@ const schema = {
       .menu-btn{display:flex}
       .marchio{align-items:center}
       .testata-tel{display:none}
+      .testata-riservata span{display:none}
+      .testata-riservata{padding:.5rem;gap:0}
       .menu{display:none;flex-direction:column;align-items:center;gap:1.4rem;padding:1.4rem 1rem 1.8rem;border-top:1px solid var(--filo)}
       .testata.aperta .menu{display:flex}
       .chiusura-in{grid-template-columns:1fr;gap:2rem}
