@@ -157,6 +157,10 @@ const schema = {
     html{scroll-behavior:smooth;scroll-padding-top:130px;overflow-x:clip}
     @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
     body{background:var(--avorio);color:var(--inchiostro);font-family:var(--sans);font-size:1rem;line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    /* grana di carta: toglie la piattezza al fondo avorio senza farsi notare */
+    body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.05;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E")}
+    @media (prefers-reduced-motion:no-preference){body::before{opacity:.05}}
     img{display:block;max-width:100%}
     a{color:inherit;text-decoration:none}
     [hidden]{display:none !important}
@@ -224,6 +228,10 @@ const schema = {
     .intro p{color:var(--grafite);margin-top:1.4rem;font-size:1.02rem;max-width:56ch}
     .intro.centro p{margin-inline:auto}
     .filo{height:1px;background:var(--filo);border:0;margin:0}
+    /* fregio: filetto con rombo al centro, come separatore tra i momenti della pagina */
+    .fregio{display:flex;align-items:center;justify-content:center;gap:1.1rem;color:var(--oro)}
+    .fregio::before,.fregio::after{content:'';height:1px;flex:1;max-width:180px;background:var(--filo)}
+    .fregio span{width:7px;height:7px;border:1px solid var(--oro);transform:rotate(45deg)}
 
     /* bottoni: sobri, senza raggio */
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-family:var(--sans);font-size:.74rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;padding:1.05rem 2.1rem;border:1px solid var(--inchiostro);background:var(--inchiostro);color:var(--avorio);cursor:pointer;transition:background .45s var(--e),color .45s var(--e),border-color .45s var(--e)}
