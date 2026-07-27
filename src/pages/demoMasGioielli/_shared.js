@@ -99,7 +99,7 @@ const LS = 'mas-desideri';
 export const leggiLista = () => { try { return JSON.parse(localStorage.getItem(LS) || '[]').filter((x) => x && x.id); } catch { return []; } };
 export const scriviLista = (a) => localStorage.setItem(LS, JSON.stringify(a));
 
-// Controlli condivisi per un modale .mmodal: apertura/chiusura, focus, Escape,
+// Controlli condivisi per un modale .velo: apertura/chiusura, focus, Escape,
 // focus-trap e sfondo inert (il resto della pagina non è raggiungibile).
 export function initModal(modal) {
   let ultimo = null;
@@ -107,14 +107,14 @@ export function initModal(modal) {
   const open = () => {
     ultimo = document.activeElement;
     modal.hidden = false;
-    document.body.classList.add('mmodal-open');
+    document.body.classList.add('velo-aperto');
     sfondo(true);
-    (modal.querySelector('.mmodal-x') || modal).focus();
+    (modal.querySelector('.velo-x') || modal).focus();
   };
   const close = () => {
     modal.hidden = true;
     sfondo(false);
-    document.body.classList.remove('mmodal-open');
+    document.body.classList.remove('velo-aperto');
     if (ultimo) { ultimo.focus(); ultimo = null; }
   };
   modal.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', close));

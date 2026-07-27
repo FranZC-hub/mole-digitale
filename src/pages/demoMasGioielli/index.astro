@@ -1,215 +1,248 @@
 ---
 import Layout from './_Layout.astro';
 import { INFO, PEZZI, orariSettimana, prezzoLabel } from './_shared.js';
-const ORARI = orariSettimana();       // render statico: visibile anche senza JavaScript
-const inVetrina = PEZZI.slice(0, 4);
+const ORARI = orariSettimana();          // reso lato server: leggibile anche senza JavaScript
+const rail = PEZZI.slice(0, 6);
 const WA = `https://wa.me/${INFO.wa}`;
-const servizi = [
-  { ic: '💍', t: 'Gioielleria', d: 'Oro, argento e pietre preziose scelti uno a uno. Classici che durano e pezzi che non si vedono altrove.', href: 'vetrina/' },
-  { ic: '⌚', t: 'Orologeria', d: 'Vendita, revisione e restauro. Dal solo tempo al cronografo, fino alla pendoleria d\'epoca.', href: 'vetrina/?cat=Orologi' },
-  { ic: '🔨', t: 'Laboratorio', d: 'Creazioni su misura, trasformazioni e riparazioni: qui il gioiello nasce e rinasce, a pochi passi dal banco.', href: 'laboratorio/' },
-  { ic: '📜', t: 'Perizie', d: 'Valutazioni per successioni, divisioni ereditarie e cassette di sicurezza. Con la massima discrezione.', href: 'perizie/' },
+const mestieri = [
+  { n: '01', t: 'Gioielleria', d: 'Oro, argento e pietre scelti uno a uno. Il classico che dura e il pezzo che non si vede altrove.', href: 'vetrina/' },
+  { n: '02', t: 'Orologeria', d: 'Vendita, revisione e restauro: dal solo tempo al cronografo, fino alla pendoleria d’epoca.', href: 'vetrina/?cat=Orologi' },
+  { n: '03', t: 'Atelier', d: 'Creazioni su misura, trasformazioni e riparazioni. Il banco è dietro il negozio, non altrove.', href: 'laboratorio/' },
+  { n: '04', t: 'Perizie', d: 'Valutazioni per successioni, divisioni ereditarie e cassette di sicurezza. Con discrezione.', href: 'perizie/' },
 ];
 ---
-<Layout title="Preziosi di qualità dal 1996" active="Home">
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-text r">
-      <span class="mkick">Gioielleria · Torino · dal {INFO.fondata}</span>
-      <h1>Un gioiello non si compra.<br/><span class="oro it">Si sceglie.</span></h1>
-      <p>Dal {INFO.fondata} in Corso Trapani lavoriamo l'oro come si faceva una volta: a mano, un pezzo alla volta. Vendiamo, creiamo, ripariamo e valutiamo — sempre guardandoci negli occhi.</p>
-      <div class="hero-cta">
-        <a href="/demoMasGioielli/vetrina/" class="mbtn mbtn-oro mbtn-lg">Guarda la vetrina</a>
-        <a href={WA} target="_blank" rel="noopener" class="mbtn mbtn-ghost mbtn-lg">💬 Scrivici su WhatsApp</a>
+<Layout title="Preziosi di qualità dal 1996" active="Maison">
+
+  <!-- APERTURA: tipografia grande a sinistra, fotografia a vivo a destra -->
+  <section class="apertura">
+    <div class="apertura-testo">
+      <span class="occhiello">Torino · dal {INFO.fondata}</span>
+      <h1>Un gioiello<br/>non si compra.<br/><span class="it oro">Si sceglie.</span></h1>
+      <p>Dal {INFO.fondata}, in Corso Trapani, lavoriamo l’oro come si faceva una volta: a mano, un pezzo alla volta. Vendiamo, creiamo, ripariamo e valutiamo — sempre guardandoci negli occhi.</p>
+      <div class="apertura-azioni">
+        <a href="/demoMasGioielli/vetrina/" class="btn">Vedi la collezione</a>
+        <a href={WA} target="_blank" rel="noopener" class="link-filo">Scrivici su WhatsApp</a>
       </div>
-      <ul class="hero-trust">
-        <li><b>★ {INFO.stelle}</b> su Google · {INFO.recensioni} recensioni</li>
-        <li>Laboratorio interno</li>
-        <li>Perizie e valutazioni</li>
+    </div>
+    <div class="apertura-foto">
+      <img src="/img/demo-gioielleria/p-solitario.webp" width="640" height="480"
+           alt="Anello solitario con diamante ovale indossato al dito" fetchpriority="high" />
+    </div>
+  </section>
+
+  <!-- RIGA DI FIDUCIA -->
+  <section class="fiducia">
+    <div class="misura fiducia-in">
+      <p><b>★ {INFO.stelle}</b> su {INFO.recensioni} recensioni Google</p>
+      <p>Laboratorio artigianale interno</p>
+      <p>Perizie e valutazioni</p>
+      <p class="fiducia-ora"><span class="stato" id="stato"><span class="pt"></span><span id="statoTxt">Orari del negozio</span></span></p>
+    </div>
+  </section>
+
+  <!-- I MESTIERI: elenco editoriale numerato, niente riquadri -->
+  <section class="banda">
+    <div class="misura">
+      <div class="intro a">
+        <span class="occhiello">Cosa facciamo</span>
+        <h2>Quattro mestieri,<br/>un solo banco.</h2>
+      </div>
+      <h3 class="sr-only">I nostri mestieri</h3>
+      <ul class="mestieri">
+        {mestieri.map((m) => (
+          <li class="a">
+            <a href={'/demoMasGioielli/' + m.href}>
+              <span class="mest-n">{m.n}</span>
+              <span class="mest-t">{m.t}</span>
+              <span class="mest-d">{m.d}</span>
+              <span class="mest-fr" aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))}
       </ul>
     </div>
+  </section>
 
-    <aside class="hero-panel r">
-      <img src="/img/demo-gioielleria/hero.webp" width="660" height="660" alt="Anello solitario con diamante ovale, lavorazione MasGioielli" fetchpriority="high" />
-      <div class="hero-ora">
-        <p class="mstato" id="stato"><span class="punto"></span><b id="statoTxt">Orari del negozio</b></p>
-        <p class="hero-ind">{INFO.via} — {INFO.citta}</p>
+  <!-- COLLEZIONE: rail orizzontale, immagini con didascalia sotto -->
+  <section class="banda collezione">
+    <div class="misura">
+      <div class="coll-testa a">
+        <div class="intro">
+          <span class="occhiello">La collezione</span>
+          <h2>Qualche pezzo<br/>che ci piace.</h2>
+        </div>
+        <a href="/demoMasGioielli/vetrina/" class="link-filo coll-tutti">Vedi tutto</a>
       </div>
-    </aside>
-  </section>
-
-  <!-- SERVIZI -->
-  <section class="msection">
-    <div class="mhead mhead-c r">
-      <span class="mkick">Cosa facciamo</span>
-      <h2>Quattro mestieri, <span class="oro it">un solo banco</span></h2>
-      <p>Non siamo solo un negozio: siamo anche il laboratorio dove il gioiello viene creato, aggiustato e valutato.</p>
-    </div>
-    <h3 class="sr-only">Elenco dei servizi</h3>
-    <div class="serv-grid">
-      {servizi.map((s) => (
-        <a class="mcard serv r" href={'/demoMasGioielli/' + s.href}>
-          <span class="mic" aria-hidden="true">{s.ic}</span>
-          <h3>{s.t}</h3>
-          <p>{s.d}</p>
-          <span class="serv-go">Scopri →</span>
-        </a>
-      ))}
-    </div>
-  </section>
-
-  <!-- VETRINA IN EVIDENZA -->
-  <section class="msection sec-vetrina">
-    <div class="mhead mhead-c r">
-      <span class="mkick">In vetrina</span>
-      <h2>Qualche pezzo <span class="oro it">che ci piace</span></h2>
-      <p>Una piccola selezione. In negozio ce n'è molti di più — e se non trovi quello giusto, lo creiamo.</p>
     </div>
     <h3 class="sr-only">Pezzi in evidenza</h3>
-    <div class="vet-grid">
-      {inVetrina.map((p) => (
-        <a class="vet-card r" href={'/demoMasGioielli/vetrina/#' + p.id}>
-          <div class="vet-img"><img src={p.img} width="640" height="480" alt={p.alt} loading="lazy" /></div>
-          <div class="vet-body">
-            <span class="vet-cat">{p.cat}</span>
-            <h3>{p.nome}</h3>
-            <p class="vet-mat">{p.materiale}</p>
-            <b class="vet-prezzo">{prezzoLabel(p.prezzo)}</b>
-          </div>
+    <div class="rail" id="rail" tabindex="0" role="region" aria-label="Pezzi in evidenza, scorrevole orizzontalmente">
+      {rail.map((p) => (
+        <a class="rail-el" href={'/demoMasGioielli/vetrina/#' + p.id}>
+          <div class="rail-foto"><img src={p.img} width="640" height="480" alt={p.alt} loading="lazy" /></div>
+          <p class="rail-cat">{p.cat}</p>
+          <p class="rail-nome">{p.nome}</p>
+          <p class="rail-prezzo">{prezzoLabel(p.prezzo)}</p>
         </a>
       ))}
     </div>
-    <p class="acenter r"><a href="/demoMasGioielli/vetrina/" class="mbtn mbtn-ghost">Vedi tutta la vetrina →</a></p>
   </section>
 
-  <!-- LABORATORIO -->
-  <section class="lab-band">
-    <div class="lab-in">
-      <div class="r">
-        <span class="mkick">Il laboratorio</span>
-        <h2>Quello che gli altri <span class="oro it">mandano via, noi lo facciamo qui.</span></h2>
-        <p>Una maglia che si è rotta, un anello da stringere, un orologio del nonno fermo da anni. Il banco è dietro il negozio: vediamo il pezzo insieme e ti diciamo subito cosa si può fare e quanto costa.</p>
-        <div class="lab-cta">
-          <a href="/demoMasGioielli/laboratorio/" class="mbtn mbtn-oro">Chiedi un preventivo</a>
-          <a href="/demoMasGioielli/perizie/" class="mbtn mbtn-ghost">Richiedi una perizia</a>
+  <!-- ATELIER: banda scura, citazione grande -->
+  <section class="scuro atelier">
+    <div class="misura atelier-in">
+      <div class="a">
+        <span class="occhiello">L’atelier</span>
+        <blockquote class="atelier-q">
+          «Quello che gli altri<br/>mandano via,<br/><span class="it atelier-oro">noi lo facciamo qui.»</span>
+        </blockquote>
+      </div>
+      <div class="atelier-testo a">
+        <p>Una maglia che si è spezzata, un anello da stringere, l’orologio del nonno fermo da vent’anni. Il banco è dietro il negozio: guardiamo il pezzo insieme e vi diciamo subito cosa si può fare, e quanto costa.</p>
+        <ul class="atelier-lista">
+          <li>Creazioni su misura, dal disegno al pezzo finito</li>
+          <li>Riparazioni, saldature, misure e rimonta di pietre</li>
+          <li>Orologeria e pendoleria, anche d’epoca</li>
+        </ul>
+        <div class="atelier-azioni">
+          <a href="/demoMasGioielli/laboratorio/" class="btn btn-chiaro">Preventivo in 30 secondi</a>
+          <a href="/demoMasGioielli/laboratorio/#misura" class="link-filo atelier-link">Che misura porti?</a>
         </div>
       </div>
-      <ul class="lab-list r">
-        <li><b>Creazioni su misura</b><span>Dal disegno al pezzo finito, insieme a te.</span></li>
-        <li><b>Riparazioni e trasformazioni</b><span>Saldature, misure, rimonta di pietre, restauro.</span></li>
-        <li><b>Orologeria e pendoleria</b><span>Revisioni, pile, cinturini e orologi d'epoca.</span></li>
-      </ul>
     </div>
   </section>
 
-  <!-- RECENSIONI -->
-  <section class="msection">
-    <div class="mhead mhead-c r">
-      <span class="mkick">Dicono di noi</span>
-      <h2><span class="oro">★ {INFO.stelle}</span> su {INFO.recensioni} recensioni Google</h2>
+  <!-- PERIZIE: molta aria, centrato -->
+  <section class="banda perizie">
+    <div class="misura stretta perizie-in a">
+      <span class="occhiello centro">Perizie e valutazioni</span>
+      <h2>Sapere quanto vale,<br/><span class="it oro">con discrezione.</span></h2>
+      <p>Successioni, divisioni tra eredi, apertura di cassette di sicurezza. La prima stima verbale è sempre gratuita, e quello che ci portate resta tra noi.</p>
+      <a href="/demoMasGioielli/perizie/" class="btn btn-vuoto">Richiedi una perizia</a>
     </div>
-    <h3 class="sr-only">Recensioni dei clienti</h3>
-    <div class="mgrid3">
-      <blockquote class="mcard rev r"><div class="stelle" role="img" aria-label="Valutazione: 5 stelle su 5">★★★★★</div><p>«Mi hanno rimontato la pietra dell'anello di mia madre come fosse nuovo. Persone competenti e oneste.»</p><footer>Silvia R. · recensione Google</footer></blockquote>
-      <blockquote class="mcard rev r"><div class="stelle" role="img" aria-label="Valutazione: 5 stelle su 5">★★★★★</div><p>«Perizia per la successione fatta con serietà e discrezione totale. Ci hanno spiegato tutto con calma.»</p><footer>Marco T. · recensione Google</footer></blockquote>
-      <blockquote class="mcard rev r"><div class="stelle" role="img" aria-label="Valutazione: 5 stelle su 5">★★★★★</div><p>«Ho fatto fare le fedi su misura: seguiti passo passo, risultato bellissimo. Prezzo giusto.»</p><footer>Elena e Paolo · recensione Google</footer></blockquote>
-    </div>
-    <p class="md-hint r">💡 <b>Per il titolare:</b> qui compariranno le <b>vere recensioni Google</b> del negozio, aggiornate da sole: niente da copiare a mano.</p>
   </section>
 
-  <!-- ORARI + INDIRIZZO -->
-  <section class="msection sec-orari">
-    <div class="orari-grid">
-      <div class="r">
-        <span class="mkick">Vieni a trovarci</span>
-        <h2>{INFO.via}<br/><span class="oro it">{INFO.citta}</span></h2>
-        <p class="orari-p">Siamo in zona San Paolo, con parcheggio in strada. Per le perizie e le creazioni su misura ti consigliamo di avvisarci: ti dedichiamo il tempo che serve.</p>
-        <div class="orari-cta">
-          <a href={'tel:' + INFO.telHref} class="mbtn mbtn-oro">📞 {INFO.tel}</a>
-          <a href="/demoMasGioielli/contatti/" class="mbtn mbtn-ghost">Come arrivare</a>
+  <!-- UNA SOLA VOCE -->
+  <section class="banda voce">
+    <div class="misura stretta a">
+      <blockquote class="voce-q">
+        <p>«Mi hanno rimontato la pietra dell’anello di mia madre come fosse nuovo. Persone competenti e oneste.»</p>
+        <footer><span class="voce-st" role="img" aria-label="Valutazione: 5 stelle su 5">★★★★★</span> Silvia R. — recensione Google</footer>
+      </blockquote>
+      <p class="promemoria">💡 <b>Per il titolare:</b> qui comparirà una selezione delle <b>vere recensioni Google</b>, aggiornata da sola: niente da copiare a mano.</p>
+    </div>
+  </section>
+
+  <!-- VISITA: indirizzo e orari, a filo -->
+  <section class="banda visita">
+    <div class="misura visita-in">
+      <div class="a">
+        <span class="occhiello">Vieni a trovarci</span>
+        <h2>{INFO.via}<br/><span class="it oro">{INFO.citta}</span></h2>
+        <p class="visita-p">Zona San Paolo, si parcheggia davanti. Per le perizie e le creazioni su misura vi consigliamo di avvisarci: vi dedichiamo il tempo che serve.</p>
+        <div class="visita-azioni">
+          <a href={'tel:' + INFO.telHref} class="btn">{INFO.tel}</a>
+          <a href="/demoMasGioielli/contatti/" class="link-filo">Come arrivare</a>
         </div>
       </div>
-      <div class="orari-card r">
-        <p class="mstato" id="stato2"><span class="punto"></span><b id="statoTxt2">Orari del negozio</b></p>
-        <ul class="morari" id="listaOrari">
-          {ORARI.map((o) => <li class={o.i === 1 ? 'chiuso' : undefined}><span>{o.giorno}</span><b>{o.label}</b></li>)}
+      <div class="a">
+        <h3 class="visita-h3">Orari di apertura</h3>
+        <ul class="orari" id="listaOrari">
+          {ORARI.map((o) => <li><span>{o.giorno}</span><b>{o.label}</b></li>)}
         </ul>
       </div>
     </div>
   </section>
 
   <style>
-    .hero{max-width:1180px;margin:0 auto;padding:9rem clamp(1.2rem,5vw,3rem) 3rem;display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(2rem,5vw,4rem);align-items:center}
-    .hero>*{min-width:0}
-    .hero h1{font-size:clamp(2.8rem,6.4vw,5rem);margin:.6rem 0 1.2rem}
-    .hero-text>p{color:var(--muted);font-size:1.1rem;max-width:52ch;margin-bottom:1.9rem}
-    .hero-cta{display:flex;gap:.9rem;flex-wrap:wrap;margin-bottom:1.9rem}
-    .hero-trust{list-style:none;display:flex;flex-direction:column;gap:.45rem;font-size:.92rem;color:var(--muted)}
-    .hero-trust b{color:var(--oro-l)}
-    .hero-panel{position:relative}
-    .hero-panel img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:2px;border:1px solid var(--linea)}
-    .hero-ora{position:absolute;left:1.2rem;right:1.2rem;bottom:1.2rem;background:rgba(13,11,9,.9);backdrop-filter:blur(8px);border:1px solid var(--linea);border-radius:2px;padding:.9rem 1.1rem}
-    .hero-ind{color:var(--muted);font-size:.86rem;margin-top:.25rem}
+    /* ---------- apertura ---------- */
+    .apertura{display:grid;grid-template-columns:1fr 42vw;align-items:center;gap:clamp(2rem,5vw,4rem);
+      padding-top:calc(var(--tastata) + clamp(2.5rem,7vw,5.5rem));padding-bottom:clamp(3rem,7vw,5.5rem)}
+    .apertura>*{min-width:0}
+    .apertura-testo{padding-left:clamp(1.2rem,5vw,3.2rem);max-width:44rem;justify-self:end;width:100%}
+    .apertura h1{font-size:clamp(2.9rem,7vw,5.6rem);margin:1.6rem 0 0}
+    .apertura-testo>p{color:var(--grafite);font-size:1.05rem;max-width:46ch;margin-top:1.7rem}
+    .apertura-azioni{display:flex;align-items:center;gap:2rem;flex-wrap:wrap;margin-top:2.4rem}
+    .apertura-foto img{width:100%;height:clamp(360px,62vh,620px);object-fit:cover}
 
-    .serv-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem}
-    .serv-grid>*{min-width:0}
-    .serv{display:flex;flex-direction:column}
-    .serv-go{margin-top:auto;padding-top:1rem;color:var(--oro-l);font-size:.86rem;font-weight:600}
+    /* ---------- riga di fiducia ---------- */
+    .fiducia{border-block:1px solid var(--filo)}
+    .fiducia-in{display:flex;justify-content:space-between;align-items:center;gap:1.5rem;flex-wrap:wrap;padding-block:1.15rem;font-size:.82rem;letter-spacing:.04em;color:var(--grafite)}
+    .fiducia-in b{color:var(--oro);font-weight:500}
+    .fiducia-ora{margin-left:auto}
 
-    .sec-vetrina{padding-top:1rem}
-    .vet-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem}
-    .vet-grid>*{min-width:0}
-    .vet-card{background:var(--card);border:1px solid var(--linea);border-radius:3px;overflow:hidden;transition:transform .25s var(--e),border-color .25s}
-    .vet-card:hover{transform:translateY(-5px);border-color:var(--oro-d)}
-    .vet-img{overflow:hidden;background:var(--nero-2)}
-    .vet-img img{width:100%;aspect-ratio:4/3;object-fit:cover;transition:transform .6s var(--e)}
-    .vet-card:hover .vet-img img{transform:scale(1.05)}
-    .vet-body{padding:1.1rem 1.2rem 1.3rem}
-    .vet-cat{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--oro)}
-    .vet-body h3{font-size:1.3rem;margin:.3rem 0 .2rem}
-    .vet-mat{color:var(--muted-2);font-size:.82rem;margin-bottom:.6rem}
-    .vet-prezzo{color:var(--oro-l);font-size:1.05rem}
-    .acenter{text-align:center;margin-top:2rem}
+    /* ---------- mestieri ---------- */
+    .mestieri{list-style:none;margin-top:clamp(2.5rem,5vw,4rem);border-top:1px solid var(--filo)}
+    .mestieri a{display:grid;grid-template-columns:auto 15rem 1fr auto;align-items:baseline;gap:clamp(1rem,3vw,2.5rem);
+      padding:clamp(1.5rem,3vw,2.2rem) 0;border-bottom:1px solid var(--filo);transition:padding-left .4s var(--e)}
+    .mestieri a:hover{padding-left:1rem}
+    .mest-n{font-family:var(--disp);font-size:1rem;color:var(--oro)}
+    .mest-t{font-family:var(--disp);font-size:clamp(1.7rem,3.2vw,2.5rem);line-height:1.1}
+    .mest-d{color:var(--grafite);font-size:.96rem;max-width:52ch}
+    .mest-fr{color:var(--oro);font-size:1.1rem;opacity:0;transition:opacity .3s var(--e)}
+    .mestieri a:hover .mest-fr{opacity:1}
 
-    .lab-band{background:var(--nero-2);border-block:1px solid var(--linea)}
-    .lab-in{max-width:1180px;margin:0 auto;padding:clamp(3rem,6vw,4.5rem) clamp(1.2rem,5vw,3rem);display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(2rem,5vw,3.5rem);align-items:center}
-    .lab-in>*{min-width:0}
-    .lab-in h2{font-size:clamp(1.9rem,4vw,2.9rem);margin:.5rem 0 1rem}
-    .lab-in p{color:var(--muted);margin-bottom:1.6rem}
-    .lab-cta{display:flex;gap:.9rem;flex-wrap:wrap}
-    .lab-list{list-style:none;display:grid;gap:1rem}
-    .lab-list li{border-left:2px solid var(--oro-d);padding-left:1.1rem}
-    .lab-list b{display:block;font-family:var(--disp);font-size:1.3rem;color:var(--panna)}
-    .lab-list span{color:var(--muted);font-size:.93rem}
+    /* ---------- collezione: rail orizzontale ---------- */
+    .collezione{padding-bottom:clamp(3.5rem,7vw,6rem)}
+    .coll-testa{display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap}
+    .coll-tutti{white-space:nowrap}
+    .rail{display:flex;gap:clamp(1rem,2.5vw,2rem);overflow-x:auto;scroll-snap-type:x mandatory;
+      padding:clamp(2.2rem,4vw,3.2rem) clamp(1.2rem,5vw,3.2rem) .8rem;scrollbar-width:thin}
+    .rail::-webkit-scrollbar{height:2px}
+    .rail::-webkit-scrollbar-thumb{background:var(--filo)}
+    .rail-el{flex:0 0 clamp(230px,26vw,330px);scroll-snap-align:start}
+    .rail-foto{overflow:hidden;background:var(--avorio-2)}
+    .rail-foto img{width:100%;aspect-ratio:4/5;object-fit:cover;transition:transform 1.1s var(--e)}
+    .rail-el:hover .rail-foto img{transform:scale(1.04)}
+    .rail-cat{font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--oro);margin-top:1.1rem}
+    .rail-nome{font-family:var(--disp);font-size:1.5rem;line-height:1.2;margin-top:.3rem}
+    .rail-prezzo{color:var(--grafite);font-size:.9rem;margin-top:.2rem}
 
-    .rev{display:flex;flex-direction:column}
-    .stelle{color:var(--oro);letter-spacing:3px;margin-bottom:.6rem}
-    .rev p{flex:1;font-size:.98rem;color:var(--panna)}
-    .rev footer{margin-top:.9rem;font-size:.84rem;color:var(--muted-2)}
+    /* ---------- atelier ---------- */
+    .atelier{padding:clamp(4.5rem,10vw,8rem) 0}
+    .atelier-in{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(2.5rem,6vw,5rem);align-items:center}
+    .atelier-in>*{min-width:0}
+    .atelier-q{font-family:var(--disp);font-size:clamp(2.2rem,4.6vw,3.6rem);line-height:1.12;color:var(--avorio);margin-top:1.5rem}
+    .atelier-oro{color:var(--oro-c)}
+    .atelier-link{color:var(--avorio);border-color:var(--oro-c)}
+    .atelier-lista{list-style:none;margin:1.8rem 0;display:grid;gap:0}
+    .atelier-lista li{padding:.85rem 0;border-bottom:1px solid var(--filo-c);font-size:.95rem;color:#b7ada0}
+    .atelier-lista li:first-child{border-top:1px solid var(--filo-c)}
+    .atelier-azioni{display:flex;align-items:center;gap:2rem;flex-wrap:wrap;margin-top:2rem}
 
-    .sec-orari{padding-top:1rem}
-    .orari-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(2rem,5vw,3.5rem);align-items:center}
-    .orari-grid>*{min-width:0}
-    .orari-grid h2{font-size:clamp(1.9rem,4vw,2.9rem);margin:.5rem 0 1rem}
-    .orari-p{color:var(--muted);margin-bottom:1.6rem}
-    .orari-cta{display:flex;gap:.9rem;flex-wrap:wrap}
-    .orari-card{background:var(--card);border:1px solid var(--linea);border-radius:3px;padding:1.6rem}
-    .orari-card .mstato{margin-bottom:1rem}
+    /* ---------- perizie ---------- */
+    .perizie-in{text-align:center}
+    .perizie-in h2{font-size:clamp(2.2rem,5vw,3.6rem);margin:1.5rem 0 0}
+    .perizie-in>p{color:var(--grafite);margin:1.5rem auto 2.3rem;max-width:52ch}
 
-    @media (max-width:960px){
-      .hero{grid-template-columns:1fr;padding-top:8rem}
-      .serv-grid{grid-template-columns:1fr 1fr}
-      .vet-grid{grid-template-columns:1fr 1fr}
-      .lab-in,.orari-grid{grid-template-columns:1fr}
-    }
-    @media (max-width:560px){
-      .serv-grid,.vet-grid{grid-template-columns:1fr}
+    /* ---------- voce ---------- */
+    .voce{padding-top:0}
+    .voce-q{text-align:center;border-top:1px solid var(--filo);border-bottom:1px solid var(--filo);padding:clamp(2.5rem,6vw,4rem) 0}
+    .voce-q p{font-family:var(--disp);font-style:italic;font-size:clamp(1.5rem,3.4vw,2.4rem);line-height:1.3;color:var(--inchiostro)}
+    .voce-q footer{margin-top:1.5rem;font-size:.8rem;letter-spacing:.08em;color:var(--grigio)}
+    .voce-st{color:var(--oro);letter-spacing:2px}
+
+    /* ---------- visita ---------- */
+    .visita-in{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(2.5rem,6vw,5rem);align-items:start}
+    .visita-in>*{min-width:0}
+    .visita-in h2{font-size:clamp(2rem,4.4vw,3.2rem);margin:1.4rem 0 0}
+    .visita-p{color:var(--grafite);margin:1.4rem 0 2.2rem;max-width:48ch}
+    .visita-azioni{display:flex;align-items:center;gap:2rem;flex-wrap:wrap}
+    .visita-h3{font-family:var(--sans);font-size:.66rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--oro);margin-bottom:1rem}
+
+    @media (max-width:980px){
+      .apertura{grid-template-columns:1fr;gap:2.5rem;padding-top:calc(var(--tastata) + 2rem)}
+      .apertura-testo{padding-inline:clamp(1.2rem,5vw,3.2rem);justify-self:stretch;max-width:none}
+      .apertura-foto img{height:clamp(300px,52vh,460px)}
+      .mestieri a{grid-template-columns:auto 1fr;row-gap:.5rem}
+      .mest-d{grid-column:2}
+      .mest-fr{display:none}
+      .atelier-in,.visita-in{grid-template-columns:1fr}
+      .fiducia-ora{margin-left:0}
     }
   </style>
 
   <script>
     import { renderOrari } from './_shared.js';
-    renderOrari(document.getElementById('listaOrari'), document.getElementById('statoTxt2'));
-    renderOrari(null, document.getElementById('statoTxt'));
+    renderOrari(document.getElementById('listaOrari'), document.getElementById('statoTxt'));
   </script>
 </Layout>
