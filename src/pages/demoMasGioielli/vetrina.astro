@@ -1,0 +1,271 @@
+---
+import Layout from './_Layout.astro';
+import { INFO, PEZZI, CATEGORIE, prezzoLabel } from './_shared.js';
+// Vetrina interattiva: ricerca per nome, filtro per categoria, scheda di dettaglio
+// e "lista desideri" che il cliente manda in negozio su WhatsApp prima di passare.
+---
+<Layout title="Vetrina" active="Vetrina" desc={`I gioielli e gli orologi di ${INFO.nome} a Torino: anelli, collane, orecchini e orologi. Segna quelli che ti interessano e prenota la visione in negozio.`}>
+  <section class="msection" style="padding-top:8rem;">
+    <div class="mhead mhead-c r">
+      <span class="mkick">La vetrina</span>
+      <h1>Scegli con <span class="oro it">calma</span></h1>
+      <p>Segna i pezzi che ti interessano: te li prepariamo sul banco per quando passi. Nessun acquisto online, nessun impegno.</p>
+    </div>
+
+    <div class="filtri r">
+      <div class="cerca">
+        <span class="cerca-ic" aria-hidden="true">✧</span>
+        <input type="search" id="cerca" placeholder="Cerca un pezzo per nome…" aria-label="Cerca un pezzo per nome" autocomplete="off" />
+      </div>
+      <div class="chips" id="chips" role="group" aria-label="Filtra per categoria">
+        <button type="button" class="chip on" data-cat="all" aria-pressed="true">Tutto</button>
+        {CATEGORIE.map((c) => <button type="button" class="chip" data-cat={c} aria-pressed="false">{c}</button>)}
+      </div>
+    </div>
+    <p class="risultati r" id="risultati" hidden aria-live="polite"></p>
+
+    <h2 class="sr-only">Pezzi in vetrina</h2>
+    <div class="pgrid" id="griglia">
+      {PEZZI.map((p) => (
+        <article class="pcard r" id={p.id}
+          data-id={p.id} data-nome={p.nome} data-cat={p.cat} data-img={p.img}
+          data-prezzo={p.prezzo} data-materiale={p.materiale} data-desc={p.desc} data-alt={p.alt}>
+          <div class="pimg"><img src={p.img} width="640" height="480" alt={p.alt} loading="lazy" /></div>
+          <button type="button" class="pcuore" aria-label={`Aggiungi ${p.nome} alla lista desideri`} title="Aggiungi alla lista desideri">♡</button>
+          <div class="pbody">
+            <span class="pcat">{p.cat}</span>
+            <h3><button type="button" class="papri" aria-haspopup="dialog">{p.nome}</button></h3>
+            <p class="pmat">{p.materiale}</p>
+            <b class="pprezzo">{prezzoLabel(p.prezzo)}</b>
+          </div>
+        </article>
+      ))}
+    </div>
+    <p class="nores r" id="nores" hidden>Nessun pezzo con questo nome. Prova con un'altra parola — o chiedici direttamente: in negozio c'è molto altro.</p>
+
+    <p class="md-hint r">💡 <b>Per il titolare:</b> la vetrina si aggiorna dal gestionale: carichi foto, prezzo e descrizione una volta sola e compaiono qui. Le richieste dei clienti ti arrivano su WhatsApp già scritte.</p>
+  </section>
+
+  <!-- BOTTONE LISTA DESIDERI -->
+  <button class="lista-fab" id="listaFab" aria-label="Apri la tua lista desideri">
+    ♡<span class="lista-badge" id="conta" hidden>0</span>
+  </button>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- SCHEDA DEL PEZZO -->
+  <div class="mmodal" id="scheda" hidden role="dialog" aria-modal="true" aria-labelledby="sNome">
+    <div class="mmodal-back" data-close></div>
+    <div class="mmodal-card">
+      <button type="button" class="mmodal-x" data-close aria-label="Chiudi">✕</button>
+      <img id="sImg" class="s-img" src="" width="640" height="480" alt="" />
+      <span class="pcat" id="sCat"></span>
+      <h2 id="sNome"></h2>
+      <p class="s-mat" id="sMat"></p>
+      <p class="mmodal-desc" id="sDesc"></p>
+      <b class="s-prezzo" id="sPrezzo"></b>
+      <button type="button" class="mbtn mbtn-oro mbtn-block mbtn-lg" id="sAggiungi">♡ Aggiungi alla lista</button>
+      <p class="mform-note">Prezzi indicativi della bozza. In negozio ti mostriamo il pezzo dal vivo.</p>
+    </div>
+  </div>
+
+  <!-- LISTA DESIDERI -->
+  <div class="mmodal" id="lista" hidden role="dialog" aria-modal="true" aria-labelledby="lTitolo">
+    <div class="mmodal-back" data-close></div>
+    <div class="mmodal-card">
+      <button type="button" class="mmodal-x" data-close aria-label="Chiudi">✕</button>
+      <h2 id="lTitolo">♡ La tua lista</h2>
+      <div class="lista-righe" id="listaRighe"></div>
+      <div class="lista-piede" id="listaPiede" hidden>
+        <label>Quando vorresti passare? <small>(facoltativo)</small>
+          <input type="date" id="lData" />
+        </label>
+        <button type="button" class="mbtn mbtn-oro mbtn-block mbtn-lg" id="lInvia">💬 Chiedi di vederli in negozio</button>
+        <button type="button" class="lista-svuota" id="lSvuota">Svuota la lista</button>
+        <p class="mform-note">Demo: la lista resta su questo dispositivo. «Chiedi» apre WhatsApp col messaggio già pronto per il negozio.</p>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .filtri{display:flex;gap:1rem;align-items:center;justify-content:space-between;flex-wrap:wrap;max-width:900px;margin:0 auto 1.2rem}
+    .cerca{position:relative;flex:1;min-width:240px}
+    .cerca-ic{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--oro);pointer-events:none}
+    .cerca input{width:100%;padding:.85rem 1rem .85rem 2.5rem;border:1px solid var(--linea);border-radius:2px;background:var(--nero-2);color:var(--panna);font-family:var(--sans);font-size:1rem}
+    .cerca input:focus{outline:2px solid var(--oro);border-color:transparent}
+    .chips{display:flex;gap:.5rem;flex-wrap:wrap}
+    .chip{background:none;border:1px solid var(--linea);color:var(--muted);border-radius:999px;padding:.55rem 1.1rem;font-family:var(--sans);font-size:.84rem;cursor:pointer;transition:all .2s}
+    .chip:hover{border-color:var(--oro-d);color:var(--panna)}
+    .chip.on{background:var(--oro);border-color:var(--oro);color:#1a1408;font-weight:700}
+    .risultati{text-align:center;color:var(--muted-2);font-size:.9rem;margin-bottom:1.4rem}
+
+    .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem}
+    .pgrid>*{min-width:0}
+    .pcard{position:relative;background:var(--card);border:1px solid var(--linea);border-radius:3px;overflow:hidden;transition:transform .25s var(--e),border-color .25s}
+    .pcard:hover{transform:translateY(-5px);border-color:var(--oro-d)}
+    .pcard[hidden]{display:none}
+    .pimg{overflow:hidden;background:var(--nero-2)}
+    .pimg img{width:100%;aspect-ratio:4/3;object-fit:cover;transition:transform .6s var(--e)}
+    .pcard:hover .pimg img{transform:scale(1.06)}
+    .pcuore{position:absolute;top:.8rem;right:.8rem;width:40px;height:40px;border-radius:50%;border:1px solid var(--linea);background:rgba(13,11,9,.82);color:var(--oro-l);font-size:1.2rem;line-height:1;cursor:pointer;display:grid;place-items:center;transition:all .2s}
+    .pcuore:hover{background:var(--oro);color:#1a1408;border-color:var(--oro);transform:scale(1.08)}
+    .pcuore.on{background:var(--oro);color:#1a1408;border-color:var(--oro)}
+    .pbody{padding:1.2rem 1.3rem 1.4rem}
+    .pcat{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--oro)}
+    .pbody h3{font-size:1.4rem;margin:.3rem 0 .25rem}
+    /* il nome è un vero <button> (raggiungibile da tastiera) con l'aspetto del titolo */
+    .papri{background:none;border:0;padding:0;margin:0;font:inherit;color:inherit;cursor:pointer;text-align:left}
+    .papri:hover{color:var(--oro-l)}
+    .pmat{color:var(--muted-2);font-size:.83rem;margin-bottom:.7rem}
+    .pprezzo{color:var(--oro-l);font-size:1.1rem}
+    .nores{text-align:center;color:var(--muted);padding:2rem 1rem}
+
+    .s-img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:2px;border:1px solid var(--linea)}
+    .s-mat{color:var(--muted-2);font-size:.88rem}
+    .mmodal-desc{color:var(--muted);line-height:1.6}
+    .s-prezzo{color:var(--oro-l);font-size:1.5rem;font-family:var(--disp)}
+
+    .lista-fab{position:fixed;left:18px;bottom:18px;z-index:160;width:54px;height:54px;border-radius:50%;border:1px solid var(--oro-d);background:var(--card);color:var(--oro-l);font-size:1.35rem;cursor:pointer;display:grid;place-items:center;transition:transform .2s var(--e)}
+    .lista-fab:hover{transform:scale(1.08);background:var(--oro);color:#1a1408}
+    .lista-fab.pulse{animation:puls .45s var(--e)}
+    @keyframes puls{40%{transform:scale(1.22)}}
+    @media (prefers-reduced-motion:reduce){.lista-fab.pulse{animation:none}}
+    .lista-badge{position:absolute;top:-4px;right:-4px;min-width:22px;height:22px;padding:0 5px;border-radius:999px;background:var(--oro);color:#1a1408;font-size:.74rem;font-weight:800;display:grid;place-items:center;border:2px solid var(--nero);font-family:var(--sans)}
+
+    .lista-righe{display:grid;grid-template-columns:minmax(0,1fr);gap:.6rem;margin:.4rem 0}
+    :global(.lriga){display:flex;align-items:center;gap:.8rem;min-width:0;background:var(--nero-2);border:1px solid var(--linea);border-radius:2px;padding:.6rem .7rem}
+    :global(.lriga img){width:52px;height:44px;object-fit:cover;border-radius:2px;flex:none}
+    :global(.lriga .tx){flex:1;min-width:0}
+    :global(.lriga .tx b){display:block;font-size:.95rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--disp);font-size:1.1rem}
+    :global(.lriga .tx span){font-size:.82rem;color:var(--oro-l)}
+    :global(.lriga button){background:none;border:1px solid var(--linea);border-radius:2px;width:32px;height:32px;flex:none;cursor:pointer;color:#e0705f}
+    :global(.lriga button:hover){border-color:#e0705f}
+    :global(.lvuota){text-align:center;color:var(--muted);background:var(--nero-2);border:1px dashed var(--linea);border-radius:2px;padding:1.8rem 1rem}
+    .lista-piede{display:flex;flex-direction:column;gap:.8rem;margin-top:.4rem}
+    .lista-piede label{display:flex;flex-direction:column;gap:.35rem;font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+    .lista-piede small{font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted-2)}
+    .lista-piede input{padding:.75rem .8rem;border:1px solid var(--linea);border-radius:2px;background:var(--nero-2);color:var(--panna);font-family:var(--sans);font-size:1rem}
+    .lista-piede input:focus{outline:2px solid var(--oro);border-color:transparent}
+    .lista-svuota{background:none;border:0;color:var(--muted-2);font-size:.84rem;text-decoration:underline;cursor:pointer;font-family:inherit}
+    .lista-svuota:hover{color:#e0705f}
+
+    .toast{position:fixed;left:50%;bottom:84px;transform:translate(-50%,10px);z-index:170;background:var(--oro);color:#1a1408;padding:.6rem 1.1rem;border-radius:2px;font-size:.9rem;font-weight:700;max-width:90vw;text-align:center;opacity:0;pointer-events:none;transition:opacity .25s var(--e),transform .25s var(--e)}
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+
+    @media (max-width:960px){.pgrid{grid-template-columns:1fr 1fr}}
+    @media (max-width:560px){.pgrid{grid-template-columns:1fr}.filtri{flex-direction:column;align-items:stretch}}
+  </style>
+
+  <script>
+    import { INFO, PEZZI, esc, leggiLista, scriviLista, initModal, prezzoLabel } from './_shared.js';
+
+    const $ = (s) => document.querySelector(s);
+    const griglia = $('#griglia');
+    const cards = [...griglia.querySelectorAll('.pcard')];
+    const fab = $('#listaFab'), conta = $('#conta'), toastEl = $('#toast');
+    let lista = leggiLista();
+
+    // ---------- lista desideri ----------
+    const sync = () => {
+      conta.hidden = lista.length === 0;
+      conta.textContent = String(lista.length);
+      fab.setAttribute('aria-label', lista.length ? `Apri la lista desideri — ${lista.length} ${lista.length === 1 ? 'pezzo' : 'pezzi'}` : 'La tua lista desideri è vuota');
+      const ids = new Set(lista.map((i) => i.id));
+      cards.forEach((c) => {
+        const on = ids.has(c.dataset.id);
+        const b = c.querySelector('.pcuore');
+        b.classList.toggle('on', on);
+        b.textContent = on ? '♥' : '♡';
+      });
+    };
+    let tT;
+    const toast = (m) => { toastEl.textContent = m; toastEl.classList.add('show'); clearTimeout(tT); tT = setTimeout(() => toastEl.classList.remove('show'), 1900); };
+    const flash = () => { fab.classList.remove('pulse'); void fab.offsetWidth; fab.classList.add('pulse'); };
+
+    const aggiungi = (d) => {
+      if (lista.some((i) => i.id === d.id)) { toast('Già nella tua lista'); return; }
+      lista.push({ id: d.id, nome: d.nome, prezzo: d.prezzo, img: d.img });
+      scriviLista(lista); sync(); flash();
+      toast('♥ ' + d.nome + ' aggiunto');
+    };
+    const togli = (id) => { lista = lista.filter((i) => i.id !== id); scriviLista(lista); sync(); renderLista(); };
+
+    // ---------- filtri ----------
+    const cerca = $('#cerca'), chips = [...document.querySelectorAll('.chip')], risultati = $('#risultati');
+    let cat = 'all';
+    const filtra = () => {
+      const q = cerca.value.trim().toLowerCase();
+      let n = 0;
+      cards.forEach((c) => {
+        const ok = c.dataset.nome.toLowerCase().includes(q) && (cat === 'all' || c.dataset.cat === cat);
+        c.hidden = !ok; if (ok) { c.classList.add('in'); n++; }
+      });
+      $('#nores').hidden = n !== 0;
+      const attivo = q !== '' || cat !== 'all';
+      risultati.hidden = !attivo;
+      if (attivo) risultati.textContent = `${n} ${n === 1 ? 'pezzo trovato' : 'pezzi trovati'}`;
+    };
+    cerca.addEventListener('input', filtra);
+    chips.forEach((b) => b.addEventListener('click', () => {
+      cat = b.dataset.cat;
+      chips.forEach((o) => { const on = o === b; o.classList.toggle('on', on); o.setAttribute('aria-pressed', String(on)); });
+      filtra();
+    }));
+    // categoria passata via URL dalla home (?cat=Orologi)
+    const catUrl = new URLSearchParams(location.search).get('cat');
+    if (catUrl) { const b = chips.find((x) => x.dataset.cat === catUrl); if (b) b.click(); }
+
+    // ---------- scheda del pezzo ----------
+    const scheda = initModal($('#scheda'));
+    let corrente = null;
+    const apri = (d) => {
+      corrente = d;
+      $('#sImg').src = d.img; $('#sImg').alt = d.alt || d.nome;
+      $('#sCat').textContent = d.cat;
+      $('#sNome').textContent = d.nome;
+      $('#sMat').textContent = d.materiale;
+      $('#sDesc').textContent = d.desc;
+      $('#sPrezzo').textContent = prezzoLabel(d.prezzo);
+      const dentro = lista.some((i) => i.id === d.id);
+      $('#sAggiungi').textContent = dentro ? '♥ Già nella tua lista' : '♡ Aggiungi alla lista';
+      scheda.open();
+    };
+    $('#sAggiungi').addEventListener('click', () => { if (corrente) { aggiungi(corrente); scheda.close(); } });
+    cards.forEach((c) => {
+      c.querySelector('.papri').addEventListener('click', () => apri(c.dataset));
+      c.querySelector('.pimg').addEventListener('click', () => apri(c.dataset));
+      c.querySelector('.pcuore').addEventListener('click', (e) => { e.stopPropagation(); aggiungi(c.dataset); });
+    });
+
+    // ---------- modale lista ----------
+    const modLista = initModal($('#lista'));
+    const righe = $('#listaRighe'), piede = $('#listaPiede'), data = $('#lData');
+    data.min = new Date().toISOString().slice(0, 10);
+    function renderLista() {
+      if (!lista.length) {
+        righe.innerHTML = '<div class="lvuota">La tua lista è vuota.<br/>Tocca il ♡ sui pezzi che ti interessano.</div>';
+        piede.hidden = true; return;
+      }
+      righe.innerHTML = lista.map((i) => `<div class="lriga"><img src="${esc(i.img)}" alt="" width="52" height="44" /><div class="tx"><b>${esc(i.nome)}</b><span>${esc(prezzoLabel(i.prezzo))}</span></div><button type="button" data-rm="${esc(i.id)}" aria-label="Togli ${esc(i.nome)} dalla lista">✕</button></div>`).join('');
+      righe.querySelectorAll('[data-rm]').forEach((b) => b.addEventListener('click', () => togli(b.dataset.rm)));
+      piede.hidden = false;
+    }
+    fab.addEventListener('click', () => { renderLista(); modLista.open(); });
+    $('#lSvuota').addEventListener('click', () => { lista = []; scriviLista(lista); sync(); renderLista(); });
+
+    $('#lInvia').addEventListener('click', () => {
+      if (!lista.length) return;
+      const voci = lista.map((i) => `• ${i.nome} — ${prezzoLabel(i.prezzo)}`).join('\n');
+      let quando = '';
+      if (data.value) { const [y, m, g] = data.value.split('-'); quando = `\nPasserei il ${g}/${m}/${y}.`; }
+      const msg = `Buongiorno ${INFO.nome}! 👋\nVorrei vedere questi pezzi in negozio:\n\n${voci}\n${quando}\nGrazie!`;
+      window.open(`https://wa.me/${INFO.wa}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
+    });
+
+    sync();
+    // se arrivo da un link con #id, apro direttamente la scheda del pezzo
+    if (location.hash) {
+      const c = cards.find((x) => '#' + x.dataset.id === location.hash);
+      if (c) apri(c.dataset);
+    }
+  </script>
+</Layout>

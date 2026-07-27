@@ -1,0 +1,53 @@
+---
+import Layout from './_Layout.astro';
+import { INFO } from './_shared.js';
+// ⚠️ BOZZA: testo di base da far verificare a un consulente prima della pubblicazione.
+---
+<Layout title="Privacy e cookie" active="" desc="Informativa privacy della bozza dimostrativa.">
+  <section class="msection" style="padding-top:8rem;max-width:820px;">
+    <div class="mhead r">
+      <span class="mkick">Informativa</span>
+      <h1>Privacy e <span class="oro it">cookie</span></h1>
+    </div>
+
+    <div class="priv-flag r">
+      ⚠️ <b>Bozza dimostrativa.</b> Questo testo è un modello di partenza: prima della pubblicazione va verificato e completato con un consulente (dati del titolare, responsabili esterni, tempi di conservazione definitivi).
+    </div>
+
+    <div class="priv r">
+      <h2>Chi tratta i dati</h2>
+      <p>Titolare del trattamento è <b>{INFO.nome}</b>, {INFO.via} — {INFO.cap} {INFO.citta}, P.IVA {INFO.piva}. Per qualsiasi richiesta: <a href={'mailto:' + INFO.email}>{INFO.email}</a> — {INFO.tel}.</p>
+
+      <h2>Quali dati raccogliamo</h2>
+      <p>Solo quelli che ci scrivi tu nei moduli del sito (nome, telefono o email, ed eventuali informazioni che aggiungi nel messaggio). Non raccogliamo dati particolari e non usiamo profilazione pubblicitaria.</p>
+
+      <h2>Perché li usiamo</h2>
+      <p>Per rispondere alla tua richiesta — un'informazione, una riparazione, una perizia — e per ricontattarti. La base giuridica è il tuo consenso e l'esecuzione di misure precontrattuali (art. 6 GDPR).</p>
+
+      <h2>Per quanto tempo</h2>
+      <p>Conserviamo i dati per il tempo necessario a gestire la richiesta e agli obblighi di legge, poi li cancelliamo.</p>
+
+      <h2>A chi li comunichiamo</h2>
+      <p>A nessuno per finalità commerciali. Possono trattarli, per nostro conto, i fornitori tecnici del sito e della posta elettronica, nominati responsabili del trattamento.</p>
+
+      <h2>La lista desideri e gli strumenti del sito</h2>
+      <p>La lista desideri della vetrina e la calibrazione del misura-anello restano <b>solo sul tuo dispositivo</b> (memoria locale del browser): non vengono inviate a noi né a terzi. Puoi cancellarle svuotando la lista o i dati del browser.</p>
+
+      <h2>Cookie e statistiche</h2>
+      <p>Il sito non usa cookie di profilazione. Le visite sono conteggiate in forma anonima e aggregata (pagina e giorno), senza salvare indirizzi IP né identificare le persone.</p>
+
+      <h2>I tuoi diritti</h2>
+      <p>Puoi chiedere in qualsiasi momento accesso, rettifica, cancellazione, limitazione e portabilità dei dati, oppure opporti al trattamento e revocare il consenso: basta scrivere a <a href={'mailto:' + INFO.email}>{INFO.email}</a>. Puoi inoltre rivolgerti al Garante per la protezione dei dati personali.</p>
+    </div>
+  </section>
+
+  <style>
+    .priv-flag{background:rgba(201,162,74,.07);border:1px dashed var(--oro-d);border-radius:3px;padding:1rem 1.3rem;color:var(--muted);font-size:.93rem;margin-bottom:2.4rem}
+    .priv-flag b{color:var(--panna)}
+    .priv h2{font-size:1.5rem;margin:2rem 0 .5rem;color:var(--oro-l)}
+    .priv h2:first-child{margin-top:0}
+    .priv p{color:var(--muted);margin-bottom:.4rem}
+    .priv b{color:var(--panna)}
+    .priv a{color:var(--oro-l);text-decoration:underline}
+  </style>
+</Layout>

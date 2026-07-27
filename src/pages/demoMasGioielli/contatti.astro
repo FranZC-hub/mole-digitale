@@ -1,0 +1,118 @@
+---
+import Layout from './_Layout.astro';
+import { INFO, orariSettimana } from './_shared.js';
+const ORARI = orariSettimana();   // render statico: visibile anche senza JavaScript
+const WA = `https://wa.me/${INFO.wa}`;
+const MAPPA = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(INFO.via + ', ' + INFO.citta)}`;
+---
+<Layout title="Contatti e orari" active="Contatti" desc={`Dove siamo e come contattarci: ${INFO.via}, ${INFO.citta}. Telefono ${INFO.tel}, WhatsApp ${INFO.waLabel}. Aperti da martedì a sabato.`}>
+  <section class="msection" style="padding-top:8rem;">
+    <div class="mhead mhead-c r">
+      <span class="mkick">Vieni a trovarci</span>
+      <h1>Ci trovi in <span class="oro it">Corso Trapani</span></h1>
+      <p>Il modo migliore per scegliere un gioiello resta guardarlo dal vivo. Passa quando vuoi — o scrivici prima, così ti prepariamo quello che ti interessa.</p>
+    </div>
+
+    <h2 class="sr-only">Come contattarci</h2>
+    <div class="cont-grid">
+      <a class="mcard cont r" href={'tel:' + INFO.telHref}>
+        <span class="mic" aria-hidden="true">📞</span>
+        <h3>Telefono</h3>
+        <p><b>{INFO.tel}</b><br/>negli orari di apertura</p>
+      </a>
+      <a class="mcard cont r" href={WA} target="_blank" rel="noopener">
+        <span class="mic" aria-hidden="true">💬</span>
+        <h3>WhatsApp</h3>
+        <p><b>{INFO.waLabel}</b><br/>mandaci anche una foto del pezzo</p>
+      </a>
+      <a class="mcard cont r" href={'mailto:' + INFO.email}>
+        <span class="mic" aria-hidden="true">✉</span>
+        <h3>Email</h3>
+        <p><b>{INFO.email}</b><br/>per richieste non urgenti</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="msection sec-dove">
+    <div class="dove-grid">
+      <div class="r">
+        <span class="mkick">Il negozio</span>
+        <h2>{INFO.via}<br/><span class="oro it">{INFO.cap} {INFO.citta}</span></h2>
+        <p class="dove-p">Zona San Paolo. Si parcheggia in strada davanti al negozio; fermate GTT a pochi passi.</p>
+
+        <div class="stato-box">
+          <p class="mstato" id="stato"><span class="punto"></span><b id="statoTxt">Orari del negozio</b></p>
+        </div>
+
+        <h3 class="dove-h3">Orari di apertura</h3>
+        <ul class="morari" id="listaOrari">
+          {ORARI.map((o) => <li><span>{o.giorno}</span><b>{o.label}</b></li>)}
+        </ul>
+
+        <div class="dove-cta">
+          <a href={MAPPA} target="_blank" rel="noopener" class="mbtn mbtn-oro">📍 Apri in Google Maps</a>
+          <a href={WA} target="_blank" rel="noopener" class="mbtn mbtn-ghost">Scrivici su WhatsApp</a>
+        </div>
+      </div>
+
+      <form class="mform r" id="contForm">
+        <h3 class="form-h3">Scrivici da qui</h3>
+        <label>Il tuo nome<input type="text" id="c-nome" required autocomplete="name" /></label>
+        <label>Telefono o email<input type="text" id="c-rec" required autocomplete="tel" /></label>
+        <label>Di cosa hai bisogno?
+          <select id="c-motivo">
+            <option>Informazioni su un gioiello</option>
+            <option>Una riparazione</option>
+            <option>Una creazione su misura</option>
+            <option>Una perizia o valutazione</option>
+            <option>Altro</option>
+          </select>
+        </label>
+        <label>Messaggio<textarea id="c-msg" rows="4" maxlength="600" placeholder="Raccontaci pure con parole tue"></textarea></label>
+        <label class="mconsent">
+          <input type="checkbox" id="c-privacy" required />
+          <span>Ho letto l'<a href="/demoMasGioielli/privacy/">informativa privacy</a> e acconsento al trattamento dei dati.</span>
+        </label>
+        <button type="submit" class="mbtn mbtn-oro mbtn-block mbtn-lg">Invia il messaggio →</button>
+        <p class="mform-ok" id="contOk" role="status" aria-live="polite"></p>
+        <p class="mform-note">Bozza dimostrativa: nella versione reale il messaggio arriva subito in negozio.</p>
+      </form>
+    </div>
+
+    <p class="md-hint r">💡 <b>Per il titolare:</b> il widget «aperto ora / chiuso» tiene conto della chiusura del lunedì. È il dettaglio che evita al cliente il viaggio a vuoto — e a voi la telefonata per dirlo.</p>
+  </section>
+
+  <style>
+    .cont-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
+    .cont-grid>*{min-width:0}
+    .cont b{color:var(--oro-l);font-size:1.05rem}
+
+    .sec-dove{padding-top:1rem}
+    .dove-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.6rem,4vw,3rem);align-items:start}
+    .dove-grid>*{min-width:0}
+    .dove-grid h2{font-size:clamp(1.8rem,3.8vw,2.6rem);margin:.5rem 0 1rem}
+    .dove-p{color:var(--muted);margin-bottom:1.4rem}
+    .stato-box{background:var(--card);border:1px solid var(--linea);border-radius:3px;padding:.9rem 1.1rem;margin-bottom:1.6rem;display:inline-block}
+    .dove-h3{font-family:var(--sans);font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:var(--oro);margin-bottom:.8rem}
+    .dove-cta{display:flex;gap:.9rem;flex-wrap:wrap;margin-top:1.8rem}
+    .form-h3{font-size:1.5rem;margin-bottom:.3rem}
+    @media (max-width:860px){
+      .cont-grid{grid-template-columns:1fr}
+      .dove-grid{grid-template-columns:1fr}
+    }
+  </style>
+
+  <script>
+    import { renderOrari } from './_shared.js';
+    renderOrari(document.getElementById('listaOrari'), document.getElementById('statoTxt'));
+
+    document.getElementById('contForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nome = document.getElementById('c-nome').value.trim();
+      const ok = document.getElementById('contOk');
+      ok.innerHTML = `✅ Grazie <b>${nome || ''}</b>, messaggio registrato: ti rispondiamo al più presto. <i>(demo: nessun dato è stato inviato)</i>`;
+      ok.style.display = 'block';
+      e.target.reset();
+    });
+  </script>
+</Layout>

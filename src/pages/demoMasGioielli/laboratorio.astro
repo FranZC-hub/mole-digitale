@@ -1,0 +1,214 @@
+---
+import Layout from './_Layout.astro';
+import { INFO } from './_shared.js';
+// Laboratorio: due strumenti che tolgono attrito prima ancora che il cliente entri —
+// 1) preventivo guidato per riparazioni  2) calibro per la misura dell'anello.
+const lavori = [
+  { ic: '✎', t: 'Creazioni su misura', d: 'Dal disegno al pezzo finito. Portaci un\'idea, una foto o un gioiello di famiglia da reinterpretare.' },
+  { ic: '⚒', t: 'Trasformazioni', d: 'Un gioiello che non metti più può tornare a vivere in un\'altra forma, con le stesse pietre.' },
+  { ic: '🔧', t: 'Riparazioni', d: 'Saldature, cambio misura, rimonta di pietre, chiusure, catene spezzate, lucidature.' },
+  { ic: '⌚', t: 'Orologeria', d: 'Pile, cinturini, accorciatura bracciali, revisioni complete e impermeabilità.' },
+  { ic: '🕰', t: 'Pendoleria', d: 'Orologi da tasca, sveglie e pendoli d\'epoca: revisione della meccanica e restauro.' },
+  { ic: '✨', t: 'Manutenzione', d: 'Pulizia a ultrasuoni, lucidatura e controllo delle griffe: il tuo gioiello torna come nuovo.' },
+];
+---
+<Layout title="Laboratorio" active="Laboratorio" desc={`Il laboratorio artigianale di ${INFO.nome} a Torino: creazioni su misura, riparazioni, trasformazioni, orologeria e pendoleria. Preventivo indicativo online.`}>
+  <section class="msection" style="padding-top:8rem;">
+    <div class="mhead mhead-c r">
+      <span class="mkick">Il laboratorio</span>
+      <h1>Qui il gioiello <span class="oro it">nasce e rinasce</span></h1>
+      <p>Il banco è dietro il negozio. Non mandiamo via niente: quello che si può salvare, lo salviamo noi — con le mani, come si è sempre fatto.</p>
+    </div>
+
+    <h2 class="sr-only">Cosa facciamo in laboratorio</h2>
+    <div class="lab-grid">
+      {lavori.map((l) => (
+        <article class="mcard r">
+          <span class="mic" aria-hidden="true">{l.ic}</span>
+          <h3>{l.t}</h3>
+          <p>{l.d}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- PREVENTIVO GUIDATO -->
+  <section class="msection sec-prev" id="preventivo">
+    <div class="mhead mhead-c r">
+      <span class="mkick">Preventivo in 30 secondi</span>
+      <h2>Quanto costa <span class="oro it">aggiustarlo?</span></h2>
+      <p>Rispondi a tre domande e ti diamo una fascia di prezzo indicativa. Il preventivo esatto lo facciamo con il pezzo in mano — sempre gratis e senza impegno.</p>
+    </div>
+
+    <div class="prev-wrap r">
+      <form class="mform prev-form" id="prevForm">
+        <label>Che cos'è?
+          <select id="p-oggetto">
+            <option value="anello">Anello</option>
+            <option value="collana">Collana o bracciale</option>
+            <option value="orecchini">Orecchini</option>
+            <option value="orologio">Orologio</option>
+            <option value="pendolo">Orologio da tasca / pendolo</option>
+          </select>
+        </label>
+        <label>Cosa serve?
+          <select id="p-intervento"></select>
+        </label>
+        <label>In che materiale?
+          <select id="p-materiale">
+            <option value="oro">Oro</option>
+            <option value="argento">Argento</option>
+            <option value="acciaio">Acciaio</option>
+            <option value="altro">Non lo so</option>
+          </select>
+        </label>
+        <p class="mform-note">Le fasce sono indicative e servono solo a darti un'idea: il prezzo vero dipende dal pezzo.</p>
+      </form>
+
+      <aside class="prev-out r" aria-live="polite">
+        <span class="mkick">Stima indicativa</span>
+        <p class="prev-cifra" id="prevCifra">€ 30 – 60</p>
+        <p class="prev-tempi" id="prevTempi">In genere pronto in 3–5 giorni.</p>
+        <p class="prev-nota" id="prevNota">Portacelo in negozio: lo guardiamo insieme e ti confermiamo subito.</p>
+        <a class="mbtn mbtn-oro mbtn-block" id="prevWa" href="#" target="_blank" rel="noopener">💬 Manda la richiesta su WhatsApp</a>
+        <p class="mform-note">Ti apriamo WhatsApp col messaggio già scritto: aggiungi una foto e ti rispondiamo.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- CALIBRO MISURA ANELLO -->
+  <section class="msection sec-calibro" id="misura">
+    <div class="mhead mhead-c r">
+      <span class="mkick">Strumento</span>
+      <h2>Che misura <span class="oro it">di anello porti?</span></h2>
+      <p>La domanda più frequente del negozio. Prendi un anello che già ti va bene, appoggialo allo schermo e fallo combaciare con il cerchio: ti diciamo la misura italiana.</p>
+    </div>
+
+    <div class="cal-wrap r">
+      <div class="cal-step">
+        <h3><span class="cal-n">1</span> Calibra lo schermo</h3>
+        <p>Appoggia una <b>tessera</b> (bancomat, carta d'identità) sulla barra e muovi il cursore finché combaciano.</p>
+        <div class="cal-card" id="calCard" aria-hidden="true"></div>
+        <label class="cal-range">Larghezza della tessera
+          <input type="range" id="calRange" min="180" max="480" value="300" step="1" aria-describedby="calHint" />
+        </label>
+        <p class="mform-note" id="calHint">Una tessera standard è larga 85,6 mm. Serve solo la prima volta.</p>
+      </div>
+
+      <div class="cal-step">
+        <h3><span class="cal-n">2</span> Appoggia il tuo anello</h3>
+        <p>Fai combaciare il <b>bordo interno</b> dell'anello con il cerchio d'oro.</p>
+        <div class="cal-ring-box">
+          <div class="cal-ring" id="calRing"></div>
+        </div>
+        <!-- valore in DECIMI di millimetro: 140 = 14,0 mm … 230 = 23,0 mm (misure reali) -->
+        <label class="cal-range">Diametro interno
+          <input type="range" id="ringRange" min="140" max="230" value="170" step="1" aria-describedby="ringOut" />
+        </label>
+        <p class="cal-out" id="ringOut" aria-live="polite">Misura italiana <b>—</b></p>
+        <a class="mbtn mbtn-ghost mbtn-block" id="misuraWa" href="#" target="_blank" rel="noopener">Salva la misura e scrivici</a>
+      </div>
+    </div>
+    <p class="md-hint r">💡 <b>Per il titolare:</b> è lo strumento che fa entrare la gente in negozio già decisa. Chi conosce la propria misura compra; chi non la sa, rimanda.</p>
+  </section>
+
+  <style>
+    .lab-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
+    .lab-grid>*{min-width:0}
+
+    .sec-prev{padding-top:1rem}
+    .prev-wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:1.6rem;align-items:start;max-width:940px;margin:0 auto}
+    .prev-wrap>*{min-width:0}
+    .prev-out{background:var(--card);border:1px solid var(--oro-d);border-radius:3px;padding:1.8rem;display:flex;flex-direction:column;gap:.5rem;text-align:center}
+    .prev-cifra{font-family:var(--disp);font-size:clamp(2.4rem,6vw,3.4rem);color:var(--oro-l);line-height:1}
+    .prev-tempi{color:var(--panna);font-size:.95rem}
+    .prev-nota{color:var(--muted);font-size:.9rem;margin-bottom:.8rem}
+
+    .sec-calibro{padding-top:1rem}
+    .cal-wrap{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem;max-width:940px;margin:0 auto}
+    .cal-wrap>*{min-width:0}
+    .cal-step{background:var(--card);border:1px solid var(--linea);border-radius:3px;padding:1.8rem}
+    .cal-step h3{font-size:1.35rem;display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem}
+    .cal-n{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--oro);color:#1a1408;font-family:var(--sans);font-size:.9rem;font-weight:800;flex:none}
+    .cal-step>p{color:var(--muted);font-size:.93rem;margin-bottom:1.2rem}
+    .cal-card{height:54px;border:2px dashed var(--oro);border-radius:6px;background:rgba(201,162,74,.08);margin:0 auto 1rem;transition:width .1s linear}
+    .cal-ring-box{height:150px;display:grid;place-items:center;margin-bottom:1rem}
+    .cal-ring{border:3px solid var(--oro);border-radius:50%;background:rgba(201,162,74,.06);transition:width .1s linear,height .1s linear}
+    .cal-range{display:flex;flex-direction:column;gap:.4rem;font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+    .cal-range input[type=range]{width:100%;accent-color:var(--oro)}
+    .cal-out{text-align:center;font-size:1.05rem;color:var(--panna);margin:.8rem 0 1rem}
+    /* :global — il contenuto è iniettato via JS e non riceve lo scope di Astro */
+    .cal-out :global(b){font-family:var(--disp);font-size:2.4rem;line-height:1.1;color:var(--oro-l);display:block;margin:.2rem 0}
+    .cal-out :global(.mform-note){display:block;margin-top:.1rem}
+
+    @media (max-width:960px){
+      .lab-grid{grid-template-columns:1fr 1fr}
+      .prev-wrap,.cal-wrap{grid-template-columns:1fr}
+    }
+    @media (max-width:560px){.lab-grid{grid-template-columns:1fr}}
+  </style>
+
+  <script>
+    import { INFO } from './_shared.js';
+    const $ = (s) => document.querySelector(s);
+    const WA = (t) => `https://wa.me/${INFO.wa}?text=${encodeURIComponent(t)}`;
+
+    /* ---------------- preventivo guidato ---------------- */
+    // Fasce indicative: coppie [min, max] in euro + tempi tipici.
+    const INTERVENTI = {
+      anello:    [['misura', 'Cambio misura', [25, 45], '2–4 giorni'], ['saldatura', 'Saldatura', [20, 40], '2–4 giorni'], ['pietra', 'Rimonta di una pietra', [35, 90], '4–7 giorni'], ['lucidatura', 'Lucidatura e pulizia', [15, 30], '1–2 giorni']],
+      collana:   [['catena', 'Catena spezzata', [20, 40], '2–4 giorni'], ['chiusura', 'Sostituzione chiusura', [25, 55], '2–5 giorni'], ['accorcia', 'Accorciare o allungare', [25, 60], '3–5 giorni'], ['lucidatura', 'Lucidatura e pulizia', [15, 30], '1–2 giorni']],
+      orecchini: [['perno', 'Perno o farfallina', [15, 35], '2–3 giorni'], ['chiusura', 'Chiusura a monachella', [25, 50], '3–5 giorni'], ['pietra', 'Rimonta di una pietra', [35, 90], '4–7 giorni']],
+      orologio:  [['pila', 'Cambio pila', [10, 18], 'in giornata'], ['cinturino', 'Cinturino o bracciale', [25, 80], 'in giornata'], ['maglie', 'Accorciare il bracciale', [10, 20], 'in giornata'], ['revisione', 'Revisione completa', [90, 260], '2–4 settimane'], ['vetro', 'Sostituzione vetro', [45, 130], '1–2 settimane']],
+      pendolo:   [['revisione', 'Revisione della meccanica', [120, 320], '3–6 settimane'], ['restauro', 'Restauro conservativo', [180, 500], '4–8 settimane'], ['quadrante', 'Pulizia quadrante e cassa', [60, 150], '2–3 settimane']],
+    };
+    // Moltiplicatore per materiale: sull'oro il lavoro è più delicato.
+    const MAT = { oro: 1.15, argento: 1, acciaio: 1, altro: 1 };
+
+    const selOgg = $('#p-oggetto'), selInt = $('#p-intervento'), selMat = $('#p-materiale');
+    const popolaInterventi = () => {
+      selInt.innerHTML = INTERVENTI[selOgg.value].map(([v, l]) => `<option value="${v}">${l}</option>`).join('');
+    };
+    const calcola = () => {
+      const voce = INTERVENTI[selOgg.value].find(([v]) => v === selInt.value) || INTERVENTI[selOgg.value][0];
+      const [, label, [min, max], tempi] = voce;
+      const k = MAT[selMat.value] ?? 1;
+      const a = Math.round((min * k) / 5) * 5, b = Math.round((max * k) / 5) * 5;
+      $('#prevCifra').textContent = `€ ${a} – ${b}`;
+      $('#prevTempi').textContent = tempi === 'in giornata' ? 'Di solito si fa in giornata.' : `In genere pronto in ${tempi}.`;
+      const oggLabel = selOgg.options[selOgg.selectedIndex].text;
+      $('#prevWa').href = WA(`Buongiorno ${INFO.nome}! 👋\nAvrei bisogno di un lavoro in laboratorio:\n\n• Oggetto: ${oggLabel}\n• Intervento: ${label}\n• Materiale: ${selMat.options[selMat.selectedIndex].text}\n\n(Stima vista sul sito: € ${a}–${b}) Vi mando una foto. Grazie!`);
+    };
+    selOgg.addEventListener('change', () => { popolaInterventi(); calcola(); });
+    selInt.addEventListener('change', calcola);
+    selMat.addEventListener('change', calcola);
+    popolaInterventi(); calcola();
+
+    /* ---------------- calibro misura anello ----------------
+       Lo schermo si calibra con una tessera standard (85,6 mm): da lì ricavo
+       quanti pixel valgono un millimetro e converto il diametro in misura italiana
+       (misura = circonferenza interna in mm − 40). */
+    const CARD_MM = 85.6;
+    const calRange = $('#calRange'), calCard = $('#calCard');
+    const ringRange = $('#ringRange'), calRing = $('#calRing'), ringOut = $('#ringOut');
+    const LS = 'mas-calibra';
+
+    const pxPerMm = () => +calRange.value / CARD_MM;
+    const aggiornaCard = () => { calCard.style.width = calRange.value + 'px'; try { localStorage.setItem(LS, calRange.value); } catch {} };
+    const aggiornaAnello = () => {
+      // Lo slider è in DECIMI di mm (misura reale dell'anello): i pixel a schermo si
+      // ricavano dalla calibrazione, non il contrario.
+      const mm = +ringRange.value / 10;            // diametro interno in mm
+      const px = mm * pxPerMm();
+      calRing.style.width = px + 'px'; calRing.style.height = px + 'px';
+      const circ = Math.PI * mm;                   // circonferenza interna
+      const misura = Math.round(circ - 40);        // sistema italiano: circonferenza − 40
+      ringOut.innerHTML = `Misura italiana <b>${misura > 0 ? misura : '—'}</b><span class="mform-note">diametro ${mm.toFixed(1)} mm · circonferenza ${circ.toFixed(1)} mm</span>`;
+      $('#misuraWa').href = WA(`Buongiorno ${INFO.nome}! 👋\nHo misurato il mio anello sul vostro sito: risulta misura ${misura} (diametro interno ${mm.toFixed(1)} mm).\nVorrei una conferma in negozio. Grazie!`);
+    };
+    calRange.addEventListener('input', () => { aggiornaCard(); aggiornaAnello(); });
+    ringRange.addEventListener('input', aggiornaAnello);
+    try { const s = localStorage.getItem(LS); if (s) calRange.value = s; } catch {}
+    aggiornaCard(); aggiornaAnello();
+  </script>
+</Layout>

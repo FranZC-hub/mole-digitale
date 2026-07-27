@@ -1,0 +1,263 @@
+---
+// BOZZA CLIENTE — MasGioielli (Corso Trapani 146/b, Torino)
+// Anteprima non ufficiale realizzata da Mole Digitale su dati pubblici del sito attuale
+// (masgioielli.it): indirizzo, telefono, orari, servizi e recensioni Google sono quelli veri.
+import '@fontsource-variable/cormorant';
+import '@fontsource-variable/inter';
+import { INFO } from './_shared.js';
+
+interface Props { title: string; desc?: string; active?: string }
+const {
+  title,
+  desc = `${INFO.nome} — gioielleria, orologeria, laboratorio artigianale e perizie a Torino dal ${INFO.fondata}. ${INFO.via}, ${INFO.citta}.`,
+  active = '',
+} = Astro.props;
+
+const BASE = '/demoMasGioielli/';
+const NAV = [
+  ['', 'Home'], ['vetrina/', 'Vetrina'], ['laboratorio/', 'Laboratorio'],
+  ['perizie/', 'Perizie'], ['contatti/', 'Contatti'],
+];
+const WA = `https://wa.me/${INFO.wa}`;
+
+// Dati strutturati per la ricerca locale ("gioielleria Torino"): si attivano quando
+// si toglie il noindex. ⚠️ Coordinate approssimative: da confermare col cliente.
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'JewelryStore',
+  name: INFO.nome,
+  description: `Gioielleria con laboratorio artigianale a Torino dal ${INFO.fondata}: creazioni su misura, riparazioni, orologeria e perizie.`,
+  address: { '@type': 'PostalAddress', streetAddress: INFO.via, addressLocality: INFO.citta, postalCode: INFO.cap, addressRegion: 'TO', addressCountry: 'IT' },
+  geo: { '@type': 'GeoCoordinates', latitude: 45.0738, longitude: 7.6421 },
+  telephone: '+39' + INFO.telHref.replace('+39', ''),
+  email: INFO.email,
+  url: 'https://www.masgioielli.it/',
+  vatID: INFO.piva,
+  foundingDate: String(INFO.fondata),
+  sameAs: [INFO.fb, INFO.ig],
+  aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.9', reviewCount: String(INFO.recensioni) },
+  openingHoursSpecification: [
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], opens: '09:30', closes: '12:30' },
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], opens: '15:30', closes: '19:30' },
+  ],
+};
+---
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>{title} — {INFO.nome} · Torino</title>
+  <meta name="description" content={desc} />
+  <meta name="theme-color" content="#12100d" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%2312100d'/><path d='M12 4l3.2 4.2L12 20 8.8 8.2z' fill='%23c9a24a'/><path d='M6 8.2h12L12 4z' fill='%23e3c887'/></svg>" />
+  <meta property="og:title" content={title + ' — ' + INFO.nome} />
+  <meta property="og:description" content={desc} />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="it_IT" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+</head>
+<body>
+  <a class="mskip" href="#main">Salta al contenuto</a>
+  <a class="demo-flag" href="/dypa">✦ Anteprima realizzata da <b>Mole Digitale</b><span class="flag-more"> — bozza di proposta per {INFO.nome}</span></a>
+
+  <header class="mnav" id="mnav">
+    <a href={BASE} class="mbrand" aria-label={INFO.nome + ' — home'}>
+      <svg class="mlogo" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.4l3.6 4.6L12 20.6 8.4 8z" fill="var(--oro)"/><path d="M5.6 8h12.8L12 3.4z" fill="var(--oro-l)"/></svg>
+      <span><b>Mas</b>Gioielli</span>
+    </a>
+    <nav class="mlinks" id="mlinks">
+      {NAV.map(([href, label]) => (
+        <a href={BASE + href} class={active === label ? 'on' : undefined} aria-current={active === label ? 'page' : undefined}>{label}</a>
+      ))}
+    </nav>
+    <button class="mnav-toggle" id="mToggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="mlinks">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <a href={BASE + 'contatti/'} class="mbtn mbtn-oro mnav-cta">Vieni in negozio</a>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <slot />
+  </main>
+
+  <footer class="mfoot">
+    <div class="mfoot-in">
+      <div>
+        <p class="mfoot-brand">
+          <svg class="mlogo" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.4l3.6 4.6L12 20.6 8.4 8z" fill="var(--oro)"/><path d="M5.6 8h12.8L12 3.4z" fill="var(--oro-l)"/></svg>
+          <b>{INFO.nome}</b>
+        </p>
+        <p>Preziosi di qualità dal {INFO.fondata}.</p>
+        <p>{INFO.via} — {INFO.cap} {INFO.citta}</p>
+        <p>P.IVA {INFO.piva}</p>
+      </div>
+      <div>
+        <h2>Contatti</h2>
+        <p><a href={'tel:' + INFO.telHref}>{INFO.tel}</a></p>
+        <p><a href={WA} target="_blank" rel="noopener">WhatsApp {INFO.waLabel}</a></p>
+        <p><a href={'mailto:' + INFO.email}>{INFO.email}</a></p>
+      </div>
+      <div>
+        <h2>Il negozio</h2>
+        <p>Mar–Sab 9:30–12:30</p>
+        <p>e 15:30–19:30</p>
+        <p>Lunedì chiuso</p>
+        <p style="margin-top:.6rem"><a href={INFO.fb} target="_blank" rel="noopener">Facebook</a> · <a href={INFO.ig} target="_blank" rel="noopener">Instagram</a></p>
+      </div>
+    </div>
+    <p class="mfoot-note">Bozza dimostrativa · <a href="/">Mole Digitale</a> · <a href={BASE + 'privacy/'}>Privacy</a></p>
+  </footer>
+
+  <a class="wa-fab" href={WA} target="_blank" rel="noopener" aria-label="Scrivici su WhatsApp">
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.5-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c2.3 1 2.3.7 2.7.6a2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1z"/></svg>
+  </a>
+
+  <style is:global>
+    :root{
+      --nero:#12100d; --nero-2:#1a1713; --card:#201c17; --linea:rgba(226,205,155,.16);
+      --oro:#c9a24a; --oro-l:#e3c887; --oro-d:#8d6f2c;
+      --panna:#f4efe6; --muted:#b3a894; --muted-2:#8d8371;
+      --disp:'Cormorant Variable',Georgia,serif; --sans:'Inter Variable',system-ui,sans-serif;
+      --e:cubic-bezier(.2,.7,.2,1);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:96px;overflow-x:clip}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    body{background:var(--nero);color:var(--panna);font-family:var(--sans);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    img{display:block;max-width:100%}
+    a{color:inherit;text-decoration:none}
+    [hidden]{display:none !important}
+    a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--oro-l);outline-offset:3px;border-radius:3px}
+    h1,h2,h3{font-family:var(--disp);font-weight:600;line-height:1.08;letter-spacing:-.01em}
+    .oro{color:var(--oro-l)}
+    .it{font-style:italic}
+    /* titolo di sezione letto solo dagli screen reader: evita i salti h1 → h3 */
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+
+    .mskip{position:fixed;top:-60px;left:.6rem;z-index:400;background:var(--oro);color:#1a1408;padding:.6rem 1rem;border-radius:0 0 10px 10px;font-weight:700;font-size:.9rem;transition:top .2s}
+    .mskip:focus{top:0}
+
+    .demo-flag{position:fixed;top:0;left:0;right:0;z-index:300;text-align:center;font-size:.78rem;padding:.4rem .8rem;background:#0b0906;color:var(--oro-l);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-bottom:1px solid var(--linea)}
+    .demo-flag b{color:var(--panna)}
+    @media (max-width:640px){.flag-more{display:none}}
+
+    .mnav{position:fixed;top:29px;left:0;right:0;z-index:200;display:flex;align-items:center;gap:1.1rem;padding:.85rem clamp(1rem,4vw,2.6rem);background:rgba(18,16,13,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--linea)}
+    .mbrand{display:inline-flex;align-items:center;gap:.6rem;font-family:var(--disp);font-size:1.35rem;letter-spacing:.02em}
+    .mbrand b{font-weight:700;color:var(--oro-l)}
+    .mlogo{width:30px;height:30px;flex:none}
+    .mlinks{display:flex;gap:1.5rem;margin-left:auto}
+    .mlinks a{font-size:.82rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);position:relative;transition:color .2s}
+    .mlinks a::after{content:'';position:absolute;left:0;bottom:-6px;height:1px;width:0;background:var(--oro);transition:width .3s var(--e)}
+    .mlinks a:hover{color:var(--panna)}
+    .mlinks a:hover::after,.mlinks a.on::after{width:100%}
+    .mlinks a.on{color:var(--oro-l)}
+    .mnav-toggle{display:none;background:none;border:0;color:var(--panna);cursor:pointer;width:44px;height:44px;border-radius:10px;place-items:center;margin-left:auto}
+
+    .mbtn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;font-weight:600;font-size:.88rem;padding:.72rem 1.4rem;border-radius:2px;cursor:pointer;border:1px solid transparent;transition:transform .2s var(--e),background .2s,color .2s;white-space:nowrap;font-family:var(--sans);letter-spacing:.03em}
+    .mbtn-oro{background:var(--oro);color:#1a1408;font-weight:700}
+    .mbtn-oro:hover{background:var(--oro-l);transform:translateY(-2px)}
+    .mbtn-ghost{border-color:var(--linea);color:var(--panna)}
+    .mbtn-ghost:hover{border-color:var(--oro);color:var(--oro-l);transform:translateY(-2px)}
+    .mbtn-lg{padding:.95rem 1.9rem;font-size:.95rem}
+    .mbtn-block{width:100%}
+
+    .msection{max-width:1180px;margin:0 auto;padding:clamp(3.2rem,7vw,5.5rem) clamp(1.2rem,5vw,3rem)}
+    .mhead{max-width:660px;margin-bottom:clamp(1.8rem,4vw,2.8rem)}
+    .mhead-c{margin-left:auto;margin-right:auto;text-align:center}
+    .mkick{display:inline-block;font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:var(--oro);margin-bottom:1rem}
+    .mhead h1{font-size:clamp(2.6rem,6vw,4.4rem)}
+    .mhead h2{font-size:clamp(2rem,4.6vw,3.2rem)}
+    .mhead p{color:var(--muted);margin-top:1rem;font-size:1.05rem}
+
+    .mgrid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
+    .mgrid3>*{min-width:0}
+    .mcard{background:var(--card);border:1px solid var(--linea);border-radius:3px;padding:1.8rem;transition:transform .25s var(--e),border-color .25s}
+    .mcard:hover{transform:translateY(-4px);border-color:var(--oro-d)}
+    .mcard h3{font-size:1.45rem;margin-bottom:.5rem}
+    .mcard p{color:var(--muted);font-size:.95rem}
+    .mic{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;border:1px solid var(--oro-d);color:var(--oro-l);margin-bottom:1.1rem;font-size:1.2rem}
+
+    /* orari live */
+    .mstato{display:inline-flex;align-items:center;gap:.5rem;font-size:.92rem;color:var(--panna)}
+    .mstato .punto{width:9px;height:9px;border-radius:50%;background:#4ec97f;box-shadow:0 0 8px #4ec97f;flex:none}
+    .mstato.is-closed .punto{background:#e0705f;box-shadow:0 0 8px #e0705f}
+    .morari{list-style:none;display:grid;gap:.42rem;font-size:.94rem}
+    .morari :global(li){display:flex;justify-content:space-between;gap:1rem;padding-bottom:.36rem;border-bottom:1px dashed var(--linea);color:var(--muted)}
+    .morari :global(li.oggi){color:var(--oro-l);font-weight:600}
+
+    /* form condivisi */
+    .mform{background:var(--card);border:1px solid var(--linea);border-radius:3px;padding:clamp(1.5rem,3vw,2.2rem);display:flex;flex-direction:column;gap:1rem}
+    .mform label{display:flex;flex-direction:column;gap:.4rem;font-size:.82rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+    .mform input,.mform select,.mform textarea{min-width:0;width:100%;padding:.8rem .9rem;border:1px solid var(--linea);border-radius:2px;font-family:var(--sans);font-size:1rem;background:var(--nero-2);color:var(--panna)}
+    .mform input:focus,.mform select:focus,.mform textarea:focus{outline:2px solid var(--oro);border-color:transparent}
+    .mform-note{font-size:.8rem;color:var(--muted-2);text-align:center;font-weight:400;text-transform:none;letter-spacing:0}
+    .mform-ok{display:none;background:rgba(201,162,74,.12);border:1px solid var(--oro-d);border-radius:2px;padding:1rem;color:var(--panna);font-size:.95rem}
+    .mconsent{flex-direction:row !important;align-items:flex-start;gap:.6rem;font-size:.8rem;font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted)}
+    .mconsent input{width:auto;min-width:0;margin-top:.2rem;accent-color:var(--oro)}
+    .mconsent a{color:var(--oro-l);text-decoration:underline}
+
+    /* modale condiviso */
+    .mmodal{position:fixed;inset:0;z-index:320;display:grid;place-items:center;padding:1.2rem}
+    .mmodal-back{position:absolute;inset:0;background:rgba(6,5,3,.72);backdrop-filter:blur(4px)}
+    .mmodal-card{position:relative;background:var(--card);border:1px solid var(--linea);border-radius:3px;padding:clamp(1.5rem,4vw,2.2rem);width:100%;max-width:460px;max-height:88vh;overflow:auto;display:flex;flex-direction:column;gap:.7rem;animation:mpop .25s var(--e)}
+    @keyframes mpop{from{opacity:0;transform:translateY(14px) scale(.98)}}
+    @media (prefers-reduced-motion:reduce){.mmodal-card{animation:none}}
+    .mmodal-card h2{font-size:1.7rem}
+    .mmodal-x{position:absolute;top:.7rem;right:.7rem;width:36px;height:36px;border-radius:50%;border:1px solid var(--linea);background:var(--nero-2);color:var(--panna);font-size:1rem;cursor:pointer}
+    .mmodal-x:hover{border-color:var(--oro);color:var(--oro-l)}
+    body.mmodal-open{overflow:hidden}
+
+    /* riquadro nota "per il titolare" */
+    .md-hint{text-align:center;background:rgba(201,162,74,.07);border:1px dashed var(--oro-d);border-radius:3px;padding:1rem 1.3rem;color:var(--muted);font-size:.93rem;margin-top:1.8rem}
+    .md-hint b{color:var(--panna)}
+    .md-hint a{color:var(--oro-l);font-weight:600;text-decoration:underline}
+
+    .mfoot{background:#0d0b09;border-top:1px solid var(--linea);margin-top:2rem}
+    .mfoot-in{max-width:1180px;margin:0 auto;padding:3rem clamp(1.2rem,5vw,3rem) 1.6rem;display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:1.8rem;font-size:.93rem;color:var(--muted)}
+    .mfoot-in h2{font-family:var(--sans);font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:var(--oro);margin-bottom:.7rem}
+    .mfoot-in p{margin-bottom:.35rem}
+    .mfoot-in a:hover{color:var(--oro-l)}
+    .mfoot-brand{display:flex;align-items:center;gap:.5rem;font-family:var(--disp);font-size:1.3rem;color:var(--panna);margin-bottom:.6rem !important}
+    .mfoot-note{max-width:1180px;margin:0 auto;padding:1rem clamp(1.2rem,5vw,3rem) 1.8rem;border-top:1px solid var(--linea);font-size:.8rem;color:var(--muted-2)}
+    .mfoot-note a{color:var(--muted);text-decoration:underline}
+
+    .wa-fab{position:fixed;right:18px;bottom:18px;z-index:160;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#06301a;box-shadow:0 14px 30px -10px rgba(37,211,102,.6);transition:transform .2s var(--e)}
+    .wa-fab:hover{transform:scale(1.08)}
+
+    .r{opacity:0;transform:translateY(16px);transition:opacity .7s var(--e),transform .7s var(--e)}
+    .r.in{opacity:1;transform:none}
+    @media (prefers-reduced-motion:reduce){.r{opacity:1;transform:none;transition:none}}
+
+    @media (max-width:960px){
+      .mlinks{display:none}
+      .mnav.open .mlinks{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1.1rem;background:rgba(18,16,13,.98);backdrop-filter:blur(12px);border-bottom:1px solid var(--linea);padding:1.3rem clamp(1.2rem,5vw,3rem) 1.5rem}
+      .mnav-toggle{display:grid}
+      .mgrid3{grid-template-columns:1fr}
+      .mfoot-in{grid-template-columns:1fr}
+    }
+    @media (max-width:420px){
+      .mbrand{font-size:1.1rem}
+      .mnav-cta{padding:.55rem .9rem;font-size:.78rem}
+      .mnav{gap:.5rem;padding-left:.8rem;padding-right:.8rem}
+    }
+  </style>
+
+  <script>
+    const nav = document.getElementById('mnav');
+    const tog = document.getElementById('mToggle');
+    tog.addEventListener('click', () => { const o = nav.classList.toggle('open'); tog.setAttribute('aria-expanded', String(o)); });
+    document.querySelectorAll('.mlinks a').forEach((a) => a.addEventListener('click', () => nav.classList.remove('open')));
+    document.addEventListener('click', (e) => { if (nav.classList.contains('open') && !nav.contains(e.target)) { nav.classList.remove('open'); tog.setAttribute('aria-expanded', 'false'); } });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { nav.classList.remove('open'); tog.setAttribute('aria-expanded', 'false'); } });
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.1 });
+    document.querySelectorAll('.r').forEach((el) => io.observe(el));
+    // statistiche first-party (misura le visite del cliente alla bozza)
+    try { if (!navigator.webdriver && !['localhost', '127.0.0.1'].includes(location.hostname)) {
+      fetch('/stats.php?p=' + encodeURIComponent(location.pathname) + '&r=', { keepalive: true }).catch(() => {});
+    } } catch (_) {}
+  </script>
+</body>
+</html>
