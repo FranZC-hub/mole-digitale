@@ -75,7 +75,7 @@ const reviews = [
       </div>
       <ul class="suhero-trust r"><li>★ 4,9 su Google</li><li>● Pesce fresco ogni giorno</li><li>● Asporto & delivery</li></ul>
     </div>
-    <div class="suhero-media r"><img src="/img/demo-sushi/hero.webp" alt="Selezione di sushi e sashimi del ristorante Hashi" /></div>
+    <div class="suhero-media r"><img width="1100" height="950" src="/img/demo-sushi/hero.webp" alt="Selezione di sushi e sashimi del ristorante Hashi" /></div>
   </section>
 
   <!-- MENU -->
@@ -117,7 +117,7 @@ const reviews = [
   <!-- OMAKASE / FILOSOFIA -->
   <section class="suomakase" id="omakase">
     <div class="suoma-grid">
-      <div class="suoma-media r"><img src="/img/demo-sushi/s1.webp" alt="Lo chef prepara il sushi al banco di Hashi" /></div>
+      <div class="suoma-media r"><img width="1100" height="850" src="/img/demo-sushi/s1.webp" alt="Lo chef prepara il sushi al banco di Hashi" /></div>
       <div class="suoma-text">
         <span class="sukick2 r">Omakase</span>
         <h2 class="r">«Mi affido <span class="sumark">allo chef</span>»</h2>
@@ -182,7 +182,8 @@ const reviews = [
   <style is:global>
     :root{
       --bg:#141110;--bg2:#1b1614;--card:#1e1815;--ink:#f4ede4;--muted:#a89a8d;
-      --red:#d6452f;--red-l:#e8694f;--red-d:#b3331f;--line:rgba(255,255,255,.1);--soft:0 24px 50px -26px rgba(0,0,0,.75);
+      /* --red appena piu' profondo (#d6452f → #d2442e): col testo bianco serve 4,5:1 */
+      --red:#d2442e;--red-l:#e8694f;--red-d:#b3331f;--line:rgba(255,255,255,.1);--soft:0 24px 50px -26px rgba(0,0,0,.75);
       --disp:'Jost Variable',system-ui,sans-serif;--sans:'Inter Variable',system-ui,sans-serif;--e:cubic-bezier(.2,.7,.2,1);
     }
     *{margin:0;padding:0;box-sizing:border-box}

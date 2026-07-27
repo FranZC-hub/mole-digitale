@@ -19,6 +19,7 @@ const MAPS_EMBED = 'https://www.google.com/maps?q=' + encodeURIComponent(Q) + '&
         </div>
       </div>
       <div class="dinfo">
+        <h2 class="sr-only">Informazioni utili</h2>
         <div class="fcard r"><span class="fic" aria-hidden="true">🕐</span><h3>Orari di apertura</h3>
           <ul class="dhours" id="dHours">
             {HOURS.map((h) => <li><span>{h.day}</span><b>{h.label}</b></li>)}

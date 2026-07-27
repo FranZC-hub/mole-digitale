@@ -16,6 +16,7 @@ const bookHref = (nome) => PREN + '?servizio=' + encodeURIComponent(nome);
     </div>
     <p class="sresults r" id="sResults" hidden aria-live="polite"></p>
 
+    <h2 class="sr-only">Elenco dei servizi</h2>
     <div class="sgrid" id="sGrid">
       {BASE_SERVICES.map((s) => (
         <article class="fcard r" data-nome={s.nome} data-em={s.em} data-desc={s.desc ?? ''} data-nuovo={s.nuovo ? '1' : ''} data-prenotabile={s.prenotabile ? '1' : ''}>

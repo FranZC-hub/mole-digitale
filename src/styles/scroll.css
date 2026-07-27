@@ -17,6 +17,24 @@
 }
 @keyframes progressGrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
+/* ---------- Parallasse del watermark "MOLE" nel footer: 100% CSS nativo ----------
+   Prima era una gsap/ScrollTrigger: essendo il footer presente in ogni pagina,
+   costringeva a caricare ScrollTrigger (~21 KB) ovunque. Qui e' decorativo, quindi
+   dove animation-timeline non e' supportato semplicemente non si muove. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .footer-watermark {
+      animation: watermarkShift linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+    }
+  }
+}
+@keyframes watermarkShift {
+  from { transform: translateX(-50%) translateX(3%); }
+  to   { transform: translateX(-50%) translateX(-3%); }
+}
+
 /* ---------- Hero animato con GSAP solo se JS è attivo ----------
    Senza JS gli elementi restano visibili (nessun contenuto nascosto). */
 .hero-title .word { opacity: 1; }                             /* visibile senza JS */

@@ -24,13 +24,29 @@ ErrorDocument 404 /404.html
 # --- Proteggi i file di configurazione, i lead e le statistiche ---
 # Di norma questi file stanno SOPRA la cartella pubblica (contact.php/stats.php scrivono in ../),
 # quindi non sono raggiungibili dal web: questo blocco e' una rete di sicurezza se finissero qui.
-<FilesMatch "^(mail-config.*\.php|leads\.csv|stats\.csv)$">
+<FilesMatch "^(mail-config.*\.php|leads\.csv|stats.*\.csv)$">
   Require all denied
 </FilesMatch>
+
+# --- Compressione (riduce di ~70% HTML/CSS/JS in trasferimento) ---
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/x-javascript text/javascript
+  AddOutputFilterByType DEFLATE application/json application/xml application/rss+xml
+  AddOutputFilterByType DEFLATE image/svg+xml application/manifest+json
+  # I font woff2 e le immagini sono gia' compressi: ricomprimerli non serve.
+</IfModule>
+<IfModule mod_brotli.c>
+  AddOutputFilterByType BROTLI_COMPRESS text/html text/css text/xml
+  AddOutputFilterByType BROTLI_COMPRESS application/javascript text/javascript
+  AddOutputFilterByType BROTLI_COMPRESS application/json application/xml image/svg+xml
+</IfModule>
 
 # --- Cache asset statici ---
 <IfModule mod_expires.c>
   ExpiresActive On
+  # L'HTML cambia a ogni pubblicazione: cache breve + rivalidazione.
+  ExpiresByType text/html "access plus 10 minutes"
   ExpiresByType text/css "access plus 1 year"
   ExpiresByType application/javascript "access plus 1 year"
   ExpiresByType font/woff2 "access plus 1 year"

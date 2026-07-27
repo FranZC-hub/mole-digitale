@@ -15,6 +15,7 @@ npm-debug.log*
 mail-config.php
 leads.csv
 stats.csv
+stats-*.csv
 
 # deploy FTP (file di stato creato sul server dall'action)
 .ftp-deploy-sync-state.json

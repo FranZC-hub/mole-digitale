@@ -73,6 +73,15 @@ jobs:
             mail-config.example.php
             leads.csv
             stats.csv
+            stats-*.csv
+            # Subset dei font che il sito (in italiano) non usa mai: grazie a unicode-range
+            # il browser non li richiede nemmeno, quindi non caricarli fa solo risparmiare
+            # ~500 KB di upload. Se un giorno servisse un'altra lingua, togli queste righe.
+            **/*-cyrillic-*.woff2
+            **/*-cyrillic-ext-*.woff2
+            **/*-greek-*.woff2
+            **/*-greek-ext-*.woff2
+            **/*-vietnamese-*.woff2
 
       - name: Avviso (secret FTP non ancora configurati)
         if: env.HAS_FTP != 'true'

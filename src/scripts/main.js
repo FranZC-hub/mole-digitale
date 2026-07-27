@@ -5,9 +5,10 @@
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-gsap.registerPlugin(ScrollTrigger);
+// ScrollTrigger (~21 KB) serve solo al parallasse dell'hero: lo carico a richiesta
+// nelle poche pagine che hanno un hero, non su tutto il sito.
+let ScrollTrigger = null;
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const finePointer = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
@@ -25,7 +26,7 @@ if (!reduced) {
   lenis = new Lenis({ lerp: 0.1, smoothWheel: true, wheelMultiplier: 1 });
   const raf = (time) => { lenis.raf(time); requestAnimationFrame(raf); };
   requestAnimationFrame(raf);
-  lenis.on('scroll', ({ scroll }) => { setNav(scroll); ScrollTrigger.update(); });
+  lenis.on('scroll', ({ scroll }) => { setNav(scroll); ScrollTrigger?.update(); });
 
   /* --- Hero: entrata cinematografica con GSAP (solo nelle pagine con hero) --- */
   if (document.querySelector('.hero-title')) {
@@ -41,20 +42,17 @@ if (!reduced) {
         { opacity: 0, x: 40, rotateY: -15 },
         { opacity: 1, x: 0, rotateY: 0, duration: 1.1 }, 0.4);
 
-    // Parallasse del mockup hero (solo qui)
-    gsap.to('.hero-visual', {
-      yPercent: -10, ease: 'none',
-      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
+    // Parallasse del mockup hero: carico ScrollTrigger solo adesso (import dinamico)
+    import('gsap/ScrollTrigger').then((m) => {
+      ScrollTrigger = m.ScrollTrigger;
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.to('.hero-visual', {
+        yPercent: -10, ease: 'none',
+        scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
+      });
     });
   }
-
-  const watermark = document.querySelector('.footer-watermark');
-  if (watermark) {
-    gsap.to(watermark, {
-      xPercent: -6, ease: 'none',
-      scrollTrigger: { trigger: '.footer', start: 'top bottom', end: 'bottom bottom', scrub: true },
-    });
-  }
+  // Il parallasse del watermark nel footer ora e' in CSS nativo (scroll.css).
 } else {
   window.addEventListener('scroll', () => setNav(window.scrollY), { passive: true });
 }

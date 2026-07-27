@@ -27,7 +27,7 @@ const HOURS = weeklyHours(); // render statico degli orari: visibili anche senza
 
   <!-- FOTO FARMACIA -->
   <section class="aphoto r">
-    <img src="/img/demo-farmacia/hero.webp" alt="L'interno della farmacia, luminoso e fornito" loading="lazy" />
+    <img width="1200" height="850" src="/img/demo-farmacia/hero.webp" alt="L'interno della farmacia, luminoso e fornito" loading="lazy" />
     <div class="aphoto-cap"><b>Benvenuti in farmacia.</b><span>Scaffali forniti, personale che ti conosce, il consiglio di sempre.</span></div>
   </section>
 
@@ -103,7 +103,8 @@ const HOURS = weeklyHours(); // render statico degli orari: visibili anche senza
     .aoff{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
     .aoff>*{min-width:0}
     .aoff-card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.4rem;display:flex;flex-direction:column;gap:.3rem}
-    .aoff-tag{align-self:flex-start;background:#e05555;color:#fff;font-weight:800;font-size:.8rem;padding:.25rem .7rem;border-radius:999px}
+    /* #c74c4c e non #e05555: col testo bianco serve 4.5:1 (WCAG AA) */
+    .aoff-tag{align-self:flex-start;background:#c74c4c;color:#fff;font-weight:800;font-size:.8rem;padding:.25rem .7rem;border-radius:999px}
     .aoff-card h3{font-size:1.02rem}
     .aoff-card p{color:var(--muted)}
     .aoff-card s{opacity:.7}

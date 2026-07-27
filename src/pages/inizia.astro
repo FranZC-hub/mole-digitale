@@ -15,7 +15,9 @@ import Layout from '../layouts/Layout.astro';
       <p class="section-lead">2 minuti, niente di tecnico: con queste risposte prepariamo la tua <b>prima bozza gratuita</b>. Se una domanda non fa per te, saltala.</p>
     </div>
 
-    <form class="brief glass" id="briefForm" data-reveal>
+    <!-- action/method: se il JavaScript non parte, il brief viene comunque inviato
+         a contact.php con un invio classico (nessun lead perso). -->
+    <form class="brief glass" id="briefForm" action="/contact.php" method="post" data-reveal>
       <fieldset>
         <legend>1 · Chi sei</legend>
         <div class="field"><input type="text" id="b-nome" name="nome" required placeholder=" " autocomplete="name" /><label for="b-nome">Il tuo nome *</label></div>
@@ -25,23 +27,23 @@ import Layout from '../layouts/Layout.astro';
 
       <fieldset>
         <legend>2 · La tua attività</legend>
-        <div class="field"><input type="text" id="b-settore" placeholder=" " /><label for="b-settore">Che cosa fai? (es. ristorante, estetista…)</label></div>
-        <div class="field"><input type="text" id="b-zona" placeholder=" " /><label for="b-zona">Dove sei? (quartiere / città)</label></div>
-        <div class="field"><textarea id="b-punti" rows="2" placeholder=" "></textarea><label for="b-punti">Cosa ti rende diverso dai concorrenti?</label></div>
+        <div class="field"><input type="text" id="b-settore" name="settore" placeholder=" " /><label for="b-settore">Che cosa fai? (es. ristorante, estetista…)</label></div>
+        <div class="field"><input type="text" id="b-zona" name="zona" placeholder=" " /><label for="b-zona">Dove sei? (quartiere / città)</label></div>
+        <div class="field"><textarea id="b-punti" name="punti" rows="2" placeholder=" "></textarea><label for="b-punti">Cosa ti rende diverso dai concorrenti?</label></div>
       </fieldset>
 
       <fieldset>
         <legend>3 · Il sito che vorresti</legend>
         <p class="brief-sub">Cosa deve fare il sito? (scegli pure più di una)</p>
         <div class="brief-checks">
-          <label><input type="checkbox" value="farmi trovare su Google" /> Farmi trovare su Google</label>
-          <label><input type="checkbox" value="ricevere prenotazioni" /> Ricevere prenotazioni</label>
-          <label><input type="checkbox" value="mostrare i miei lavori/prodotti" /> Mostrare lavori/prodotti</label>
-          <label><input type="checkbox" value="vendere online" /> Vendere online</label>
-          <label><input type="checkbox" value="ricevere richieste su WhatsApp" /> Richieste su WhatsApp</label>
+          <label><input type="checkbox" name="obiettivi[]" value="farmi trovare su Google" /> Farmi trovare su Google</label>
+          <label><input type="checkbox" name="obiettivi[]" value="ricevere prenotazioni" /> Ricevere prenotazioni</label>
+          <label><input type="checkbox" name="obiettivi[]" value="mostrare i miei lavori/prodotti" /> Mostrare lavori/prodotti</label>
+          <label><input type="checkbox" name="obiettivi[]" value="vendere online" /> Vendere online</label>
+          <label><input type="checkbox" name="obiettivi[]" value="ricevere richieste su WhatsApp" /> Richieste su WhatsApp</label>
         </div>
-        <div class="field"><input type="text" id="b-esempi" placeholder=" " /><label for="b-esempi">Siti che ti piacciono? (anche dei concorrenti)</label></div>
-        <div class="field"><input type="text" id="b-materiale" placeholder=" " /><label for="b-materiale">Hai già logo / foto / testi? (sì, no, in parte)</label></div>
+        <div class="field"><input type="text" id="b-esempi" name="esempi" placeholder=" " /><label for="b-esempi">Siti che ti piacciono? (anche dei concorrenti)</label></div>
+        <div class="field"><input type="text" id="b-materiale" name="materiale" placeholder=" " /><label for="b-materiale">Hai già logo / foto / testi? (sì, no, in parte)</label></div>
       </fieldset>
 
       <div class="hp" aria-hidden="true"><label>Non compilare<input type="text" name="website" tabindex="-1" autocomplete="off" /></label></div>

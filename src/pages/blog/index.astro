@@ -12,6 +12,7 @@ const fmt = (d) => d.toLocaleDateString('it-IT', { day: 'numeric', month: 'long'
       <h1>Guide e consigli, <span class="grad">senza giri di parole</span>.</h1>
       <p class="section-lead">Cose utili su siti web, Google e presenza online — spiegate semplici.</p>
     </div>
+    <h2 class="sr-only">Tutti gli articoli</h2>
     <div class="blog-list">
       {posts.map((p) => (
         <a class="blog-card glass" href={`/blog/${p.id}/`} data-reveal>

@@ -25,13 +25,33 @@ const exists = (url) => {
 };
 
 let broken = 0;
+const linkate = new Set(); // pagine raggiunte da almeno un link interno
 for (const file of htmls) {
   const html = fs.readFileSync(file, 'utf8');
   const hrefs = [...html.matchAll(/(?:href|src)="(\/[^"]*)"/g)].map((m) => m[1]);
   for (const h of new Set(hrefs)) {
     if (h.startsWith('//')) continue; // protocollo-relativo (esterno)
     if (!exists(h)) { console.error(`ROTTO  ${h}  ←  ${file}`); broken++; }
+    const pulito = h.split('#')[0].split('?')[0].replace(/\/$/, '');
+    if (pulito) linkate.add(pulito);
   }
 }
-console.log(broken === 0 ? `✓ Link interni ok (${htmls.length} pagine controllate)` : `✗ ${broken} link rotti`);
-process.exit(broken === 0 ? 0 : 1);
+
+// Pagine ORFANE: indicizzabili ma senza nemmeno un link interno che le raggiunga.
+// Google le scopre a fatica e le considera poco importanti: quasi sempre e' una svista.
+const orfane = [];
+for (const file of htmls) {
+  const html = fs.readFileSync(file, 'utf8');
+  if (/name="robots"[^>]*noindex/i.test(html)) continue;      // le demo sono noindex: ok
+  const url = '/' + path.relative(DIST, file).replace(/\\/g, '/').replace(/index\.html$/, '');
+  const chiave = url.replace(/\/$/, '');
+  if (chiave === '' || chiave === '/404') continue;            // home e pagina d'errore
+  if (!linkate.has(chiave)) orfane.push(url);
+}
+for (const u of orfane) console.error(`ORFANA  ${u}  (indicizzabile ma nessun link interno la raggiunge)`);
+
+const ok = broken === 0 && orfane.length === 0;
+console.log(ok
+  ? `✓ Link interni ok (${htmls.length} pagine controllate, nessuna orfana)`
+  : `✗ ${broken} link rotti, ${orfane.length} pagine orfane`);
+process.exit(ok ? 0 : 1);

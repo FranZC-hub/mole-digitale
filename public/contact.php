@@ -78,6 +78,28 @@ $telefono  = mb_substr(trim($data['telefono']  ?? ''), 0, 120);
 $messaggio = mb_substr(trim($data['messaggio'] ?? ''), 0, 3000);
 $website   = $data['website'] ?? ''; // honeypot anti-spam
 
+// Brief di /inizia inviato SENZA JavaScript: i campi arrivano separati (con JS il
+// messaggio e' gia' composto dal browser). Qui li ricompongo cosi' non si perde nulla.
+$briefCampi = [
+  'settore'   => 'Settore',
+  'zona'      => 'Zona',
+  'punti'     => 'Punti di forza',
+  'esempi'    => 'Siti di riferimento',
+  'materiale' => 'Materiale pronto',
+];
+$brief = [];
+foreach ($briefCampi as $campo => $etichetta) {
+  $v = trim((string) ($data[$campo] ?? ''));
+  if ($v !== '') { $brief[] = "$etichetta: " . mb_substr($v, 0, 300); }
+}
+if (!empty($data['obiettivi']) && is_array($data['obiettivi'])) {
+  $ob = array_slice(array_map(fn($o) => mb_substr(trim((string) $o), 0, 60), $data['obiettivi']), 0, 10);
+  $brief[] = 'Obiettivi: ' . implode(', ', $ob);
+}
+if ($brief) {
+  $messaggio = mb_substr(trim($messaggio . "\n\n— BRIEF DAL SITO —\n" . implode("\n", $brief)), 0, 3000);
+}
+
 // Un bot ha compilato il campo nascosto: rispondiamo "ok" senza inviare.
 if ($website !== '') { finish(200, true, 'Grazie!', $isJson); }
 

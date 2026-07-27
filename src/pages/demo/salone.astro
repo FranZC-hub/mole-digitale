@@ -45,13 +45,13 @@ import '@fontsource-variable/playfair-display';
       </div>
       <div class="hmeta hl"><span><b>★ 4,9</b> su Google</span><span><b>15+</b> anni</span><span><b>Mar–Sab</b></span></div>
     </div>
-    <div class="hero-img" data-parallax><img src="/img/demo-salone/hero.webp" alt="Salone Aurora" /></div>
+    <div class="hero-img" data-parallax><img width="900" height="1180" src="/img/demo-salone/hero.webp" alt="Salone Aurora" /></div>
   </section>
 
   <!-- LISTINO -->
   <section class="dsection listino" id="servizi">
     <div class="listino-grid">
-      <div class="listino-side r" data-clip><img src="/img/demo-salone/piatto-2.webp" alt="Listino prezzi del Salone Aurora" /></div>
+      <div class="listino-side r" data-clip><img width="840" height="1000" src="/img/demo-salone/piatto-2.webp" alt="Listino prezzi del Salone Aurora" /></div>
       <div>
         <span class="kick r">Listino</span>
         <h2 class="r">I nostri <span class="it">servizi</span></h2>
@@ -112,9 +112,9 @@ import '@fontsource-variable/playfair-display';
   <section class="dsection team" id="team">
     <div class="head"><span class="kick r">Il team</span><h2 class="r">Le mani <span class="it">che ti curano</span></h2></div>
     <div class="team-grid">
-      <figure class="member r"><div class="m-img"><img src="/img/demo-salone/galleria-1.webp" alt="Giulia" /></div><figcaption><b>Giulia</b><span>Color specialist</span></figcaption></figure>
-      <figure class="member r"><div class="m-img"><img src="/img/demo-salone/galleria-3.webp" alt="Marta" /></div><figcaption><b>Marta</b><span>Hair stylist</span></figcaption></figure>
-      <figure class="member r"><div class="m-img"><img src="/img/demo-salone/interno.webp" alt="Sara" /></div><figcaption><b>Sara</b><span>Trattamenti</span></figcaption></figure>
+      <figure class="member r"><div class="m-img"><img width="600" height="760" src="/img/demo-salone/galleria-1.webp" alt="Giulia" /></div><figcaption><b>Giulia</b><span>Color specialist</span></figcaption></figure>
+      <figure class="member r"><div class="m-img"><img width="600" height="760" src="/img/demo-salone/galleria-3.webp" alt="Marta" /></div><figcaption><b>Marta</b><span>Hair stylist</span></figcaption></figure>
+      <figure class="member r"><div class="m-img"><img width="600" height="760" src="/img/demo-salone/interno.webp" alt="Sara" /></div><figcaption><b>Sara</b><span>Trattamenti</span></figcaption></figure>
     </div>
   </section>
 
@@ -122,12 +122,12 @@ import '@fontsource-variable/playfair-display';
   <section class="dsection galleria" id="galleria">
     <div class="head"><span class="kick r">Galleria</span><h2 class="r">I nostri <span class="it">lavori</span></h2></div>
     <div class="masonry">
-      <img class="r" src="/img/demo-salone/taglio-1.webp" alt="Caschetto castano realizzato al Salone Aurora" loading="lazy" />
-      <img class="r" src="/img/demo-salone/taglio-2.webp" alt="Ricci ramati luminosi" loading="lazy" />
-      <img class="r" src="/img/demo-salone/taglio-3.webp" alt="Onde morbide su capelli castani" loading="lazy" />
-      <img class="r" src="/img/demo-salone/taglio-4.webp" alt="Colore biondo luminoso" loading="lazy" />
-      <img class="r" src="/img/demo-salone/taglio-5.webp" alt="Capelli lunghi castani con piega" loading="lazy" />
-      <img class="r" src="/img/demo-salone/taglio-6.webp" alt="Ricci scuri definiti" loading="lazy" />
+      <img width="700" height="880" class="r" src="/img/demo-salone/taglio-1.webp" alt="Caschetto castano realizzato al Salone Aurora" loading="lazy" />
+      <img width="700" height="880" class="r" src="/img/demo-salone/taglio-2.webp" alt="Ricci ramati luminosi" loading="lazy" />
+      <img width="700" height="880" class="r" src="/img/demo-salone/taglio-3.webp" alt="Onde morbide su capelli castani" loading="lazy" />
+      <img width="700" height="880" class="r" src="/img/demo-salone/taglio-4.webp" alt="Colore biondo luminoso" loading="lazy" />
+      <img width="700" height="880" class="r" src="/img/demo-salone/taglio-5.webp" alt="Capelli lunghi castani con piega" loading="lazy" />
+      <img width="700" height="880" class="r" src="/img/demo-salone/taglio-6.webp" alt="Ricci scuri definiti" loading="lazy" />
     </div>
   </section>
 
@@ -164,7 +164,7 @@ import '@fontsource-variable/playfair-display';
     .dnav{position:fixed;top:31px;left:0;right:0;z-index:150;display:flex;align-items:center;gap:1.5rem;padding:1.1rem clamp(1rem,4vw,3rem);transition:.4s var(--e)}
     .dnav.solid{background:rgba(251,245,242,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding-top:.8rem;padding-bottom:.8rem}
     .dbrand{font-family:var(--serif);font-size:1.4rem;font-weight:600;display:inline-flex;align-items:center;gap:.6rem}
-    .dbrand em{font-style:italic;color:var(--rose)}
+    .dbrand em{font-style:italic;color:#a15b6e} /* rosa piu' profondo: 4,6:1 sul fondo chiaro */
     .dot{width:14px;height:14px;border-radius:50%;background:var(--rose);box-shadow:0 0 0 4px var(--rose-soft);flex:none}
     .dlinks{display:flex;gap:1.8rem;margin-left:auto}
     .dlinks a{font-size:.95rem;color:var(--muted);position:relative;transition:color .25s}
@@ -172,7 +172,8 @@ import '@fontsource-variable/playfair-display';
     .dlinks a:hover{color:var(--ink)}.dlinks a:hover::after{width:100%}
 
     .dbtn{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.6rem;border-radius:999px;font-weight:600;font-size:.95rem;cursor:pointer;transition:transform .25s var(--e),background .25s;white-space:nowrap}
-    .dbtn-solid{background:var(--rose);color:#fff;box-shadow:0 12px 28px -12px var(--rose)}
+    /* testo scuro sul rosa (non bianco): mantiene il rosa del brand e passa da 3,4:1 a 5,2:1 */
+    .dbtn-solid{background:var(--rose);color:#2b1200;box-shadow:0 12px 28px -12px var(--rose)}
     .dbtn-solid:hover{transform:translateY(-3px);background:var(--rose-d)}
     .dbtn-ghost{border:1px solid var(--line);color:var(--ink)}.dbtn-ghost:hover{background:#fff;transform:translateY(-3px)}
     /* CTA nav EDITORIALE (firma boutique): testo sottolineato, niente pill */
@@ -233,7 +234,8 @@ import '@fontsource-variable/playfair-display';
     .masonry img:hover{transform:scale(1.02)}
 
     .dfoot{max-width:1180px;margin:0 auto;padding:2.5rem clamp(1.2rem,5vw,3rem);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.9rem;border-top:1px solid var(--line)}
-    .dfoot b{color:var(--ink);font-family:var(--serif)}.dfoot a{color:var(--rose-d)}
+    /* il link nel testo va distinto anche senza colore: sottolineato (WCAG 1.4.1) */
+    .dfoot b{color:var(--ink);font-family:var(--serif)}.dfoot a{color:var(--rose-d);text-decoration:underline}
 
     .r{opacity:0;transform:translateY(32px)}.hl{opacity:0}[data-clip]{clip-path:inset(0 0 100% 0)}
     .dnav-toggle{display:none;background:none;border:0;color:var(--ink);cursor:pointer;width:44px;height:44px;border-radius:10px;place-items:center;margin-left:auto}

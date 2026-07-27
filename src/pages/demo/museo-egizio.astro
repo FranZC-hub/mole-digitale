@@ -58,7 +58,7 @@ const mostre = [
   <main id="main">
   <!-- HERO -->
   <section class="hero" id="top">
-    <img class="hero-bg" src="/img/demo-egizio/hero.webp" alt="Galleria di statue del Museo Egizio" fetchpriority="high" decoding="async" />
+    <img width="1500" height="1000" class="hero-bg" src="/img/demo-egizio/hero.webp" alt="Galleria di statue del Museo Egizio" fetchpriority="high" decoding="async" />
     <div class="hero-shade"></div>
     <div class="hero-rays" aria-hidden="true"></div>
     <div class="hero-content r">
@@ -99,7 +99,7 @@ const mostre = [
 
   <!-- CAPOLAVORO -->
   <section class="feature" id="kha">
-    <div class="feature-img r"><img src="/img/demo-egizio/geroglifici.webp" alt="Dettaglio di geroglifici incisi" /></div>
+    <div class="feature-img r"><img width="900" height="698" src="/img/demo-egizio/geroglifici.webp" alt="Dettaglio di geroglifici incisi" /></div>
     <div class="feature-text r">
       <p class="kick">Il tesoro del museo</p>
       <h2>La <span class="it gold">Tomba di Kha</span>, intatta da 3.400 anni</h2>
@@ -279,7 +279,8 @@ const mostre = [
   </section>
   </main>
 
-  <a class="mobilebar" href="#biglietti" aria-label="Vai ai biglietti">
+  <!-- niente aria-label: il nome accessibile e' il testo visibile stesso (WCAG 2.5.3) -->
+  <a class="mobilebar" href="#biglietti">
     <span>🎟️ Biglietti <i>da €1</i></span><b>Acquista →</b>
   </a>
 

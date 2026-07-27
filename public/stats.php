@@ -59,6 +59,18 @@ $p = substr((string) ($_GET['p'] ?? ''), 0, 120);
 $r = substr((string) ($_GET['r'] ?? ''), 0, 80);
 if ($p === '' || $p[0] !== '/') { exit; }
 
+// Anti-flood: al massimo un conteggio ogni 2 secondi per visitatore (l'IP non viene
+// salvato, serve solo come nome del file temporaneo). Evita che ricariche ripetute
+// o uno script gonfino le statistiche.
+$rl = sys_get_temp_dir() . '/md_st_' . md5(($_SERVER['REMOTE_ADDR'] ?? 'x') . date('Ymd')) . '.txt';
+if (@is_file($rl) && (time() - @filemtime($rl)) < 2) { exit; }
+@touch($rl);
+
+// Il file non deve crescere all'infinito: oltre 2 MB (~40k visite) archivio e riparto.
+if (@is_file($FILE) && @filesize($FILE) > 2 * 1024 * 1024) {
+  @rename($FILE, dirname($FILE) . '/stats-' . date('Y-m') . '.csv');
+}
+
 // pulizia anti-injection CSV
 $clean = fn($s) => str_replace(['"', "\r", "\n"], '', $s);
 @file_put_contents(

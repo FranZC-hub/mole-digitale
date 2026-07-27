@@ -192,7 +192,7 @@ function icon(n) {
   <style is:global>
     :root{
       --bg:#ffffff;--bg2:#eef6fc;--ink:#0f2233;--muted:#5b6b78;
-      --blue:#0e7cc4;--blue-d:#0a5e96;--navy:#0d2236;--orange:#ff7a30;--orange-d:#e8631a;
+      --blue:#0e7bc2;--blue-d:#0a5e96;--navy:#0d2236;--orange:#ff7a30;--orange-d:#e8631a;
       --line:rgba(15,34,51,.12);--soft:0 20px 46px -24px rgba(13,40,65,.45);
       --disp:'Space Grotesk Variable',system-ui,sans-serif;--sans:'Inter Variable',system-ui,sans-serif;--e:cubic-bezier(.2,.7,.2,1);
     }
@@ -221,7 +221,9 @@ function icon(n) {
     .vgnav.solid .vgnav-toggle{color:var(--navy)}
 
     .vgbtn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;font-weight:700;font-size:.92rem;padding:.7rem 1.3rem;border-radius:12px;cursor:pointer;border:0;transition:transform .2s var(--e),background .2s;white-space:nowrap;font-family:var(--sans)}
-    .vgbtn-solid{background:var(--orange);color:#fff;box-shadow:0 12px 26px -12px var(--orange)}.vgbtn-solid:hover{background:var(--orange-d);transform:translateY(-3px)}
+    /* testo scuro sull'arancio (non bianco): mantiene l'arancio brillante del brand
+       e porta il contrasto da 2,6:1 a 6,8:1 (WCAG AA richiede 4,5:1) */
+    .vgbtn-solid{background:var(--orange);color:#2b1200;box-shadow:0 12px 26px -12px var(--orange)}.vgbtn-solid:hover{background:var(--orange-d);color:#fff;transform:translateY(-3px)}
     .vgbtn-lg{padding:.95rem 1.7rem;font-size:1rem}.vgbtn-block{width:100%}
 
     /* HERO */
@@ -267,7 +269,7 @@ function icon(n) {
     .vgdest-cap b{font-family:var(--disp);font-size:1.3rem;display:block}
     .vgdest-cap span{font-size:.85rem;color:#d7e6f2}
     .vgdest-big .vgdest-cap b{font-size:1.9rem}
-    .vgdest-p{flex:none;background:var(--orange);color:#fff;font-weight:700;font-size:.82rem;padding:.35rem .7rem;border-radius:999px;white-space:nowrap}
+    .vgdest-p{flex:none;background:var(--orange);color:#2b1200;font-weight:700;font-size:.82rem;padding:.35rem .7rem;border-radius:999px;white-space:nowrap}
 
     /* TIPI */
     .vgtipi-sec{background:linear-gradient(150deg,var(--navy),var(--blue-d));color:#fff}
