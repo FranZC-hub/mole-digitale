@@ -241,7 +241,7 @@ main:focus { outline: none; }
 .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 18px 42px -10px rgba(124,92,255,.8); }
 .btn-ghost { background: var(--surface); color: var(--text); border-color: var(--border); backdrop-filter: blur(10px); }
 .btn-ghost:hover { background: var(--surface-2); transform: translateY(-3px); }
-.btn-wa { background: linear-gradient(135deg,#25D366,#128C7E); color:#fff; box-shadow: 0 10px 30px -8px rgba(37,211,102,.5); }
+.btn-wa { background: linear-gradient(135deg,#12874a,#0d6b5e); color:#fff; /* verde WhatsApp scurito: col brand originale il bianco stava a 2:1 */ box-shadow: 0 10px 30px -8px rgba(37,211,102,.5); }
 .btn-wa:hover { transform: translateY(-3px); box-shadow: 0 18px 42px -10px rgba(37,211,102,.7); }
 .btn svg { transition: transform .25s var(--ease); }
 .btn:hover svg { transform: translateX(3px); }

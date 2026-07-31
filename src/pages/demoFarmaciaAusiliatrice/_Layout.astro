@@ -103,9 +103,9 @@ const pharmacySchema = {
 
   <style is:global>
     :root{
-      /* --cel-d leggermente scurito (#0c7d34 → #0c7b33): serve a superare 4.5:1 sul
-         verde chiarissimo delle etichette .fkick, resta identico all'occhio. */
-      --blu:#0e7a3a;--blu-d:#0a5b2b;--cel:#17a63f;--cel-d:#0c7b33;--rosso:#d3372f;
+      /* --cel-d scurito fino a #0c7631: sul verde chiarissimo delle etichette .fkick
+         serve 4.5:1, e misurato sui pixel veri il valore precedente si fermava a 4,48. */
+      --blu:#0e7a3a;--blu-d:#0a5b2b;--cel:#17a63f;--cel-d:#0c7631;--rosso:#d3372f;
       --bg:#f6faf7;--bg2:#e9f4ec;--card:#ffffff;--ink:#16243a;--muted:#5b6b80;
       --line:rgba(22,36,58,.12);--soft:0 18px 42px -22px rgba(12,70,35,.4);
       --disp:'Manrope Variable',system-ui,sans-serif;--sans:'Inter Variable',system-ui,sans-serif;--e:cubic-bezier(.2,.7,.2,1);
@@ -189,8 +189,8 @@ const pharmacySchema = {
     .ffoot-in b{color:#fff}
     .ffoot-in a:hover{color:#fff;text-decoration:underline}
     .ffoot-brand{display:flex;align-items:center;gap:.5rem;font-size:1.02rem;margin-bottom:.6rem !important}
-    /* #a8c7b3 e non #8fb79d: sul verde scuro del footer serve 4.5:1 (WCAG AA) */
-    .ffoot-note{max-width:1150px;margin:0 auto;padding:1rem clamp(1.2rem,5vw,3rem) 1.6rem;border-top:1px solid rgba(255,255,255,.14);font-size:.8rem;color:#a8c7b3}
+    /* #abc9b5: sul verde scuro del footer serve 4.5:1 (WCAG AA) — misurato sui pixel */
+    .ffoot-note{max-width:1150px;margin:0 auto;padding:1rem clamp(1.2rem,5vw,3rem) 1.6rem;border-top:1px solid rgba(255,255,255,.14);font-size:.8rem;color:#abc9b5}
     .ffoot-note a{color:#d0e7d8;text-decoration:underline}
 
     .wa-fab{position:fixed;right:18px;bottom:18px;z-index:160;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 30px -10px rgba(37,211,102,.7);transition:transform .2s var(--e)}

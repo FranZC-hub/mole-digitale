@@ -29,7 +29,7 @@ import '@fontsource-variable/space-grotesk';
     <div class="lnav-side">
       <button class="wish-btn" id="wishBtn" aria-label="I miei preferiti">
         <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 20s-7-4.6-9.3-9C1.2 8 2.6 5 5.6 5 7.6 5 9 6.3 12 9c3-2.7 4.4-4 6.4-4 3 0 4.4 3 2.9 6-2.3 4.4-9.3 9-9.3 9z"/></svg>
-        <span class="wish-count" id="wishCount" hidden>0</span>
+        <span class="wish-count" id="wishCount" hidden aria-hidden="true">0</span>
       </button>
       <button class="lnav-toggle" id="navToggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="llinks">
         <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
@@ -345,8 +345,8 @@ import '@fontsource-variable/space-grotesk';
 
   <style is:global>
     :root{
-      --bg:#faf7f2; --card:#fffdfa; --ink:#1b1916; --muted:#8a8178; --line:#ece4d8;
-      --emer:#0e6b57; --emer-d:#0a5546; --gold:#b6892f; --blush:#b9456a;
+      --bg:#faf7f2; --card:#fffdfa; --ink:#1b1916; --muted:#716a62; --line:#ece4d8;
+      --emer:#0e6b57; --emer-d:#0a5546; --gold:#896723; --blush:#b9456a;
       --disp:'Space Grotesk Variable','Space Grotesk',system-ui,sans-serif;
       --sans:'Inter Variable',system-ui,sans-serif;
       --ease:cubic-bezier(.2,.7,.2,1); --radius:18px;
@@ -693,6 +693,8 @@ import '@fontsource-variable/space-grotesk';
       emptyEl.style.display = n ? 'none' : 'flex';
       itemsEl.style.display = n ? 'block' : 'none';
       if (n) { countEl.hidden = false; countEl.textContent = n; } else countEl.hidden = true;
+      // il numerino è decorativo: il conteggio va nel nome accessibile, non nel testo visibile
+      $("#wishBtn").setAttribute("aria-label", n ? `I miei preferiti (${n})` : "I miei preferiti");
     }
     document.querySelectorAll('.heart').forEach((h) => {
       h.addEventListener('click', () => {

@@ -165,8 +165,8 @@ function icon(n) {
   <style is:global>
     :root{
       /* --muted e --pink-d scuriti quel tanto che basta per il 4.5:1 (WCAG AA) sui fondi rosa */
-      --bg:#fdf3f9;--bg2:#f8e6f1;--card:#ffffff;--ink:#2a1b33;--muted:#83697f;
-      --pink:#e0559b;--pink-d:#ba3679;--purple:#7c4dff;--purple-d:#5e34d6;
+      --bg:#fdf3f9;--bg2:#f8e6f1;--card:#ffffff;--ink:#2a1b33;--muted:#776074;
+      --pink:#e0559b;--pink-d:#ba3679;--purple:#7c4dff; --purple-t:#6841d6;--purple-d:#5e34d6;
       --line:rgba(42,27,51,.1);--soft:0 20px 46px -24px rgba(120,40,100,.45);
       --disp:'Outfit Variable',system-ui,sans-serif;--sans:'Inter Variable',system-ui,sans-serif;--e:cubic-bezier(.2,.7,.2,1);
     }
@@ -209,7 +209,7 @@ function icon(n) {
     .nlsection{max-width:1180px;margin:0 auto;padding:clamp(3.5rem,8vw,6rem) clamp(1.2rem,5vw,3rem)}
     .nlhead{max-width:640px;margin-bottom:clamp(2rem,4vw,3rem)}
     .nlhead-c{margin-left:auto;margin-right:auto;text-align:center}
-    .nlkick{display:inline-block;font-weight:700;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--purple);background:rgba(124,77,255,.1);padding:.35rem .8rem;border-radius:999px;margin-bottom:.9rem}
+    .nlkick{display:inline-block;font-weight:700;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--purple-t);background:rgba(124,77,255,.1);padding:.35rem .8rem;border-radius:999px;margin-bottom:.9rem}
     .nlkick.light{background:rgba(255,255,255,.2);color:#fff}
     .nlhead h2{font-size:clamp(1.9rem,4.6vw,3.1rem)}.nlhead p{color:var(--muted);margin-top:.8rem;font-size:1.05rem}
 
@@ -219,7 +219,7 @@ function icon(n) {
     .nlmenu-cat{font-size:1.35rem;color:var(--pink-d);margin-bottom:1rem;padding-bottom:.6rem;border-bottom:2px solid var(--bg2)}
     .nlmenu-col ul{list-style:none;display:grid;gap:.85rem}
     .nlmenu-col li{display:flex;align-items:baseline;gap:.5rem}
-    .nlmenu-n{font-weight:600}.nlmenu-p{font-family:var(--disp);font-weight:700;color:var(--purple)}
+    .nlmenu-n{font-weight:600}.nlmenu-p{font-family:var(--disp);font-weight:700;color:var(--purple-t)}
     .nlmenu-dots{flex:1;border-bottom:2px dotted var(--line);transform:translateY(-4px)}
 
     /* MASONRY */
@@ -243,7 +243,7 @@ function icon(n) {
     .nlrevs{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem}
     .nlrevs>*{min-width:0}
     .nlrev{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:18px;padding:1.6rem;display:flex;flex-direction:column;gap:.7rem}
-    .nlstars{color:#ffe3f1;letter-spacing:2px}.nlrev p{flex:1}.nlrev b{font-weight:700}
+    .nlstars{color:#ffffff;letter-spacing:2px}.nlrev p{flex:1}.nlrev b{font-weight:700}
 
     /* CTA */
     .nlcta{padding:clamp(3rem,7vw,5rem) clamp(1.2rem,5vw,3rem)}
