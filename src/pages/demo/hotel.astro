@@ -1,0 +1,720 @@
+---
+// DEMO standalone — "Albergo del Teatro", boutique hotel a Torino. Tema verde bosco + ottone.
+// Sito a sé (non usa il Layout di Mole Digitale). JS vanilla, nessuna libreria.
+//
+// Il lavoro di un sito d'albergo è UNO: far prenotare DIRETTO invece che sulle OTA,
+// dove se ne va il 15–18% di commissione. Quindi il motore di preventivo sta in cima,
+// e accanto al prezzo c'è sempre quanto costerebbe la stessa camera su Booking.
+// Seconda cosa che nessun sito d'albergo italiano fa bene: l'inglese. C'è il cambio lingua.
+import '@fontsource-variable/cormorant';
+import '@fontsource-variable/jost';
+
+const CAMERE = [
+  { k: 'singola', n: 'Singola', en: 'Single', mq: 14, letti: '1 letto singolo', lettiEn: '1 single bed', max: 1, base: 79,
+    d: 'Piccola e ordinata, affacciata sulla corte interna: si dorme in silenzio anche in centro.',
+    dEn: 'Small and tidy, facing the inner courtyard: quiet sleep even in the city centre.' },
+  { k: 'matrimoniale', n: 'Matrimoniale', en: 'Double', mq: 20, letti: '1 letto matrimoniale', lettiEn: '1 double bed', max: 2, base: 99,
+    d: 'La camera di sempre: soffitti alti, parquet originale e un bagno rifatto l’anno scorso.',
+    dEn: 'Our classic room: high ceilings, original parquet and a bathroom renovated last year.' },
+  { k: 'superior', n: 'Superior con vista Mole', en: 'Superior with Mole view', mq: 26, letti: '1 matrimoniale + divano letto', lettiEn: '1 double + sofa bed', max: 3, base: 129,
+    d: 'Il terzo piano, la finestra grande e la Mole che si accende alle nove di sera.',
+    dEn: 'Third floor, a large window and the Mole lighting up at nine in the evening.' },
+  { k: 'suite', n: 'Suite dei Palchi', en: 'Palchi Suite', mq: 38, letti: '1 matrimoniale + zona giorno', lettiEn: '1 double + living area', max: 4, base: 179,
+    d: 'Due stanze comunicanti, vasca separata e la scrivania buona per chi resta a lavorare.',
+    dEn: 'Two connecting rooms, separate bathtub and a proper desk for those who stay to work.' },
+];
+
+const SERVIZI = [
+  { t: 'Colazione inclusa', tEn: 'Breakfast included', d: 'Dalle 7 alle 10:30, servita al tavolo. Torte fatte in casa, uova su richiesta.', dEn: 'From 7 to 10:30, served at the table. Homemade cakes, eggs on request.' },
+  { t: 'Wi‑Fi in tutto il palazzo', tEn: 'Wi‑Fi throughout', d: 'Fibra vera, anche nelle camere in fondo al corridoio. Nessuna registrazione.', dEn: 'Real fibre, even in the rooms at the end of the hall. No sign-up.' },
+  { t: 'Parcheggio convenzionato', tEn: 'Partner car park', d: '18 € al giorno nell’autorimessa a 80 metri: ve lo prenotiamo noi.', dEn: '€18 a day in the garage 80 metres away: we book it for you.' },
+  { t: 'Check‑in 14:00 · check‑out 11:00', tEn: 'Check-in 2 pm · check-out 11 am', d: 'Arrivate prima o partite tardi? Il bagaglio resta qui, senza costi.', dEn: 'Arriving early or leaving late? We keep your luggage, free of charge.' },
+  { t: 'Animali benvenuti', tEn: 'Pets welcome', d: 'Fino a 10 kg, senza supplemento. La ciotola ve la diamo noi.', dEn: 'Up to 10 kg, no surcharge. We provide the bowl.' },
+  { t: 'Ascensore e camera accessibile', tEn: 'Lift and accessible room', d: 'Ascensore a tutti i piani e una camera al primo piano senza barriere.', dEn: 'Lift to all floors and a step-free room on the first floor.' },
+];
+
+const VICINO = [
+  { l: 'Mole Antonelliana', m: '200 m', p: '3 min a piedi', pEn: '3 min walk' },
+  { l: 'Museo Egizio', m: '700 m', p: '9 min a piedi', pEn: '9 min walk' },
+  { l: 'Piazza San Carlo', m: '650 m', p: '8 min a piedi', pEn: '8 min walk' },
+  { l: 'Stazione di Porta Nuova', m: '900 m', p: '12 min a piedi', pEn: '12 min walk' },
+  { l: 'Aeroporto di Caselle', m: '17 km', p: '30 min in treno', pEn: '30 min by train' },
+];
+
+const FAQ = [
+  { q: 'Posso arrivare dopo le 23?', qEn: 'Can I arrive after 11 pm?',
+    a: 'Sì. La reception è presidiata fino alle 23, dopo di che vi mandiamo il codice del portone e la chiave è in cassetta. Ditecelo il giorno prima.',
+    aEn: 'Yes. Reception is staffed until 11 pm; after that we send you the door code and the key is in the box. Just let us know the day before.' },
+  { q: 'Come si cancella una prenotazione?', qEn: 'How do I cancel a booking?',
+    a: 'Prenotando qui: gratis fino a 3 giorni prima dell’arrivo, senza carta bloccata. Basta un messaggio.',
+    aEn: 'Booking here: free of charge up to 3 days before arrival, with no card pre-authorisation. A message is enough.' },
+  { q: 'C’è la culla per il bambino?', qEn: 'Is a cot available for a baby?',
+    a: 'Sì, gratuita fino a 2 anni: due culle disponibili, meglio chiederle in anticipo. I bambini fino a 12 anni dormono nel letto dei genitori senza supplemento.',
+    aEn: 'Yes, free up to 2 years: we have two cots, better to request in advance. Children up to 12 sleep in their parents’ bed at no extra cost.' },
+  { q: 'La colazione va bene per celiaci o vegani?', qEn: 'Is breakfast coeliac or vegan friendly?',
+    a: 'Sì, ma avvisateci prima: compriamo la mattina e prepariamo a parte, su un piano dedicato.',
+    aEn: 'Yes, but tell us in advance: we shop in the morning and prepare separately, on a dedicated surface.' },
+  { q: 'Quanto costa la tassa di soggiorno?', qEn: 'How much is the city tax?',
+    a: '3,00 € a persona per notte, per un massimo di 7 notti. Non è inclusa nel prezzo della camera e si paga qui, in contanti o con carta. Non la prendiamo noi: la giriamo al Comune.',
+    aEn: '€3.00 per person per night, for a maximum of 7 nights. It is not included in the room rate and is paid here, by cash or card. We do not keep it: it goes to the City.' },
+];
+
+const RECENSIONI = [
+  { t: 'Camera piccola ma silenziosissima, e la colazione è di quelle vere. Ci torniamo.', tEn: 'Small room but incredibly quiet, and breakfast is the real thing. We’ll be back.', a: 'Chiara, Milano' },
+  { t: 'Siamo arrivati a mezzanotte e mezza e hanno lasciato la luce accesa e le indicazioni sul tavolo.', tEn: 'We arrived at half past midnight and they had left the light on and directions on the table.', a: 'Thomas, München' },
+  { t: 'Prenotato dal loro sito: 22 € in meno a notte rispetto a Booking, stessa camera.', tEn: 'Booked on their site: €22 less per night than Booking, same room.', a: 'Luca, Genova' },
+];
+
+const TEL = '011 000 0000';
+const TEL_HREF = '+390110000000';
+const WA = 'https://wa.me/390110000000';
+const INDIRIZZO = 'Via Verdi 12, Torino';
+const MAPPA = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(INDIRIZZO);
+---
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Albergo del Teatro — Hotel in centro a Torino · Prenota diretto</title>
+  <meta name="description" content="Albergo del Teatro: 18 camere in un palazzo dell’Ottocento a 200 metri dalla Mole. Colazione inclusa, cancellazione gratuita e il prezzo migliore prenotando direttamente." />
+  <meta name="theme-color" content="#0f241d" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='5' fill='%230f241d'/><path d='M7 17V8m0 4.5h5M12 17V8' stroke='%23d8bd7a' stroke-width='1.9' stroke-linecap='round' fill='none'/><circle cx='16.5' cy='9' r='1.3' fill='%23d8bd7a'/></svg>" />
+</head>
+<body>
+
+  <a class="demo-flag" href="/">★ Demo realizzata da <b>Mole Digitale</b> · torna al sito ↩</a>
+
+  <!-- NAV -->
+  <header class="hnav" id="hnav">
+    <a href="#top" class="hbrand">
+      <span class="hbrand-m" aria-hidden="true">T</span>
+      <span class="hbrand-t">Albergo <em>del Teatro</em></span>
+    </a>
+    <nav class="hlinks" id="hlinks" aria-label="Menu">
+      <a href="#camere" data-en="Rooms">Camere</a>
+      <a href="#servizi" data-en="Services">Servizi</a>
+      <a href="#dove" data-en="Location">Dove siamo</a>
+      <a href="#domande" data-en="FAQ">Domande</a>
+      <a href="#prenota" class="solo-mobile" data-en="Book">Prenota</a>
+    </nav>
+    <div class="hnav-dx">
+      <div class="lingua" role="group" aria-label="Lingua / Language">
+        <button type="button" class="lng on" data-lng="it" aria-pressed="true">IT</button>
+        <button type="button" class="lng" data-lng="en" aria-pressed="false">EN</button>
+      </div>
+      <button class="hnav-toggle" id="navToggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="hlinks">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <a href="#prenota" class="hbtn hbtn-oro" data-en="Book">Prenota</a>
+    </div>
+  </header>
+
+  <main id="main">
+
+  <!-- HERO + MOTORE DI PRENOTAZIONE -->
+  <section class="hero" id="top">
+    <div class="hero-in">
+      <p class="occhiello r" data-en="18 rooms in the centre of Turin · since 1954">18 camere nel centro di Torino · dal 1954</p>
+      <h1 class="hero-t r">
+        <span data-en="Two hundred metres">Duecento metri</span><br/>
+        <span class="it" data-en="from the Mole.">dalla Mole.</span>
+      </h1>
+      <p class="hero-s r" data-en="A nineteenth-century building, a lift that creaks a little, and breakfast served at the table. Book here and you pay less than anywhere else: no commission in between.">Un palazzo dell’Ottocento, un ascensore che cigola un po’, e la colazione servita al tavolo. Prenotate qui e pagate meno che altrove: in mezzo non c’è nessuna commissione.</p>
+
+      <!-- Il motore: sta in cima perché è il lavoro numero uno del sito -->
+      <div class="motore r" id="prenota">
+        <div class="mot-campi">
+          <label><span data-en="Check-in">Arrivo</span><input type="date" id="dataIn" /></label>
+          <label><span data-en="Check-out">Partenza</span><input type="date" id="dataOut" /></label>
+          <label><span data-en="Guests">Ospiti</span>
+            <select id="ospiti">
+              <option value="1">1</option><option value="2" selected>2</option>
+              <option value="3">3</option><option value="4">4</option>
+            </select>
+          </label>
+          <label><span data-en="Room">Camera</span>
+            <select id="tipo">
+              {CAMERE.map((c) => <option value={c.k} data-en={c.en} selected={c.k === 'matrimoniale'}>{c.n}</option>)}
+            </select>
+          </label>
+          <button type="button" class="hbtn hbtn-oro mot-btn" id="calcola" data-en="See the price">Vedi il prezzo</button>
+        </div>
+        <p class="mot-err" id="motErr" role="alert" hidden></p>
+      </div>
+
+      <!-- Esito del preventivo -->
+      <div class="esito r" id="esito" hidden>
+        <div class="es-testa">
+          <div>
+            <span class="es-et" id="esEt">Il vostro soggiorno</span>
+            <p class="es-riga" id="esRiga"></p>
+          </div>
+          <div class="es-prezzo">
+            <b id="esTot">—</b>
+            <span id="esNotti"></span>
+          </div>
+        </div>
+        <ul class="es-voci" id="esVoci"></ul>
+        <div class="es-conf" id="esConf">
+          <div>
+            <span class="es-conf-et" id="esConfEt">Sullo stesso portale di prenotazione</span>
+            <p class="es-conf-p" id="esConfP"></p>
+          </div>
+          <b class="es-risp" id="esRisp"></b>
+        </div>
+        <div class="es-azioni">
+          <a class="hbtn hbtn-wa" id="esWa" href={WA} target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.5-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c2.3 1 2.3.7 2.7.6a2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1z"/></svg>
+            <span data-en="Request these dates">Richiedi queste date</span>
+          </a>
+          <a class="hbtn hbtn-filo" href={'tel:' + TEL_HREF} data-en={'Call ' + TEL}>Chiama {TEL}</a>
+        </div>
+        <p class="es-nota" id="esNota">Demo: nessuna prenotazione viene registrata. Sul sito vero la richiesta arriva in reception e la disponibilità è quella reale del gestionale.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PERCHÉ DIRETTO -->
+  <section class="banda-oro">
+    <div class="misura oro-in">
+      <h2 class="sr-only" data-en="Why book direct">Perché prenotare diretto</h2>
+      <div class="oro-p"><b data-en="No commission">Zero commissioni</b><span data-en="What you would pay to the portal stays in your pocket.">Quello che dareste al portale resta nelle vostre tasche.</span></div>
+      <div class="oro-p"><b data-en="Free cancellation">Cancellazione gratuita</b><span data-en="Up to 3 days before, without blocking your card.">Fino a 3 giorni prima, senza bloccare la carta.</span></div>
+      <div class="oro-p"><b data-en="Best room available">La camera migliore</b><span data-en="Of that type, we assign the best one to those who book direct.">Fra quelle di quel tipo, a chi prenota diretto diamo la migliore.</span></div>
+    </div>
+  </section>
+
+  <!-- CAMERE -->
+  <section class="sez" id="camere">
+    <div class="misura">
+      <div class="testa">
+        <span class="kicker r" data-en="The rooms">Le camere</span>
+        <h2 class="r"><span data-en="Eighteen, and no two">Diciotto, e non ce ne sono</span> <span class="it" data-en="are alike.">due uguali.</span></h2>
+        <p class="lead r" data-en="Prices are per room per night, breakfast included. City tax is separate.">I prezzi sono per camera, a notte, colazione inclusa. La tassa di soggiorno è a parte.</p>
+      </div>
+
+      <div class="camere">
+        {CAMERE.map((c) => (
+          <article class="camera r" data-camera={c.k}>
+            <div class="cam-testa">
+              <h3 data-en={c.en}>{c.n}</h3>
+              <p class="cam-da"><span data-en="from">da</span> <b>{c.base} €</b></p>
+            </div>
+            <p class="cam-d" data-en={c.dEn}>{c.d}</p>
+            <ul class="cam-dati">
+              <li><span data-en="Size">Superficie</span><b>{c.mq} m²</b></li>
+              <li><span data-en="Beds">Letti</span><b data-en={c.lettiEn}>{c.letti}</b></li>
+              <li><span data-en="Sleeps">Ospiti</span><b>{c.max}</b></li>
+            </ul>
+            <button type="button" class="cam-btn" data-scegli={c.k} data-en="Check dates →">Verifica le date →</button>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVIZI -->
+  <section class="sez sez-chiara" id="servizi">
+    <div class="misura">
+      <div class="testa">
+        <span class="kicker r" data-en="Included">Compreso nel prezzo</span>
+        <h2 class="r"><span data-en="The things that">Le cose che</span> <span class="it" data-en="actually matter.">contano davvero.</span></h2>
+      </div>
+      <div class="serv">
+        {SERVIZI.map((s) => (
+          <div class="serv-c r"><b data-en={s.tEn}>{s.t}</b><span data-en={s.dEn}>{s.d}</span></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- DOVE -->
+  <section class="sez" id="dove">
+    <div class="misura dove-in">
+      <div class="r">
+        <span class="kicker" data-en="Where we are">Dove siamo</span>
+        <h2 class="dove-h">{INDIRIZZO}</h2>
+        <p class="dove-p" data-en="In the quadrilatero, on a street where cars barely pass. Everything worth seeing in Turin is within a twenty-minute walk — and the tram stop is right outside.">Nel quadrilatero, in una via dove le auto quasi non passano. Tutto quello che a Torino vale la pena vedere è a meno di venti minuti a piedi — e la fermata del tram è davanti al portone.</p>
+        <div class="dove-azioni">
+          <a href={MAPPA} target="_blank" rel="noopener" class="hbtn hbtn-oro" data-en="Open in Google Maps">Apri in Google Maps</a>
+          <a href={'tel:' + TEL_HREF} class="hbtn hbtn-filo">{TEL}</a>
+        </div>
+      </div>
+      <div class="r">
+        <h3 class="h3" data-en="Walking distance">A piedi da qui</h3>
+        <ul class="vicino">
+          {VICINO.map((v) => (
+            <li><span>{v.l}</span><b>{v.m}</b><i data-en={v.pEn}>{v.p}</i></li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECENSIONI -->
+  <section class="banda-scura">
+    <div class="misura">
+      <h2 class="sr-only" data-en="Reviews">Recensioni</h2>
+      <div class="rece">
+        {RECENSIONI.map((r) => (
+          <figure class="rec r">
+            <blockquote data-en={r.tEn}>{r.t}</blockquote>
+            <figcaption>{r.a}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- DOMANDE -->
+  <section class="sez sez-chiara" id="domande">
+    <div class="misura stretta">
+      <div class="testa">
+        <span class="kicker r" data-en="FAQ">Domande frequenti</span>
+        <h2 class="r"><span data-en="What people ask us">Quello che ci chiedete</span> <span class="it" data-en="on the phone.">al telefono.</span></h2>
+      </div>
+      <div class="faq">
+        {FAQ.map((f, i) => (
+          <details class="dom r" open={i === 0}>
+            <summary data-en={f.qEn}>{f.q}</summary>
+            <p data-en={f.aEn}>{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <footer class="hfoot">
+    <div class="misura hfoot-in">
+      <span>Albergo del Teatro · {INDIRIZZO} · {TEL}</span>
+      <span>Demo · <a href="/">Mole Digitale</a></span>
+    </div>
+  </footer>
+
+  <a class="wa-fab" href={WA} target="_blank" rel="noopener" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.5-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c2.3 1 2.3.7 2.7.6a2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1z"/></svg>
+  </a>
+
+  <style is:global>
+    :root{
+      --bosco:#0f241d; --bosco-2:#143029; --panna:#f6f2ea; --carta:#fffdf8;
+      --inchiostro:#132019; --grigio:#4d6157; --ottone:#836618; --ottone-c:#d8bd7a;
+      --filo:rgba(19,32,25,.14); --filo-c:rgba(246,242,234,.16); --muted-c:#a9bbb1;
+      --disp:'Cormorant Variable',Georgia,serif;
+      --sans:'Jost Variable',system-ui,sans-serif;
+      --e:cubic-bezier(.16,1,.3,1);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    [hidden]{display:none !important}
+    html{scroll-behavior:smooth;overflow-x:clip;scroll-padding-top:110px}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    body{background:var(--panna);color:var(--inchiostro);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    img,svg{display:block;max-width:100%}
+    a{color:inherit;text-decoration:none}
+    button,input,select{font:inherit;color:inherit}
+    h1,h2,h3{font-family:var(--disp);font-weight:600;line-height:1.05;letter-spacing:-.01em}
+    .it{font-style:italic;color:var(--ottone)}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    :focus-visible{outline:2px solid var(--ottone-c);outline-offset:3px;border-radius:3px}
+    .misura{max-width:1140px;margin:0 auto;padding-inline:clamp(1.2rem,5vw,3rem)}
+    .misura.stretta{max-width:820px}
+
+    .demo-flag{position:fixed;top:0;left:0;right:0;z-index:200;text-align:center;font-size:.8rem;line-height:1.4;
+      padding:.4rem .6rem;background:rgba(9,20,16,.94);backdrop-filter:blur(8px);color:#cfdbd4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .demo-flag b{color:var(--ottone-c)}
+    .wa-fab{position:fixed;right:18px;bottom:18px;z-index:160;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 30px -10px rgba(37,211,102,.6);transition:transform .2s var(--e)}
+    .wa-fab:hover{transform:scale(1.08)}
+
+    /* NAV */
+    .hnav{position:fixed;top:31px;left:0;right:0;z-index:150;display:flex;align-items:center;gap:1.4rem;
+      padding:1rem clamp(1.2rem,5vw,3rem);color:var(--panna);transition:.35s var(--e)}
+    .hnav.solid{background:rgba(15,36,29,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--filo-c);padding-block:.6rem}
+    .hbrand{display:inline-flex;align-items:center;gap:.7rem;margin-right:auto;white-space:nowrap}
+    .hbrand-m{width:34px;height:34px;border:1px solid var(--ottone-c);color:var(--ottone-c);display:grid;place-items:center;
+      font-family:var(--disp);font-size:1.15rem;flex:none}
+    .hbrand-t{font-family:var(--disp);font-size:1.35rem;font-weight:600}
+    .hbrand-t em{font-style:italic;color:var(--ottone-c)}
+    .hlinks{display:flex;gap:1.6rem}
+    .hlinks a{font-size:.9rem;letter-spacing:.03em;color:#cfdbd4;position:relative;transition:color .25s}
+    .hlinks a::after{content:'';position:absolute;left:0;bottom:-5px;height:1px;width:0;background:var(--ottone-c);transition:width .3s var(--e)}
+    .hlinks a:hover{color:var(--panna)} .hlinks a:hover::after{width:100%}
+    .hlinks .solo-mobile{display:none}
+    .hnav-dx{display:flex;align-items:center;gap:.8rem}
+    .lingua{display:flex;border:1px solid var(--filo-c);border-radius:999px;overflow:hidden}
+    .lng{background:none;border:0;padding:.35rem .7rem;font-size:.76rem;letter-spacing:.1em;color:#cfdbd4;cursor:pointer;transition:.2s}
+    .lng:hover{color:var(--panna)}
+    .lng.on{background:var(--ottone-c);color:#14241d;font-weight:600}
+    .hnav-toggle{display:none;background:none;border:0;cursor:pointer;width:42px;height:42px;border-radius:10px;place-items:center;color:inherit}
+
+    .hbtn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem 1.5rem;border:0;cursor:pointer;
+      font-size:.88rem;letter-spacing:.05em;text-transform:uppercase;font-weight:500;transition:transform .25s var(--e),background .25s,color .25s;white-space:nowrap}
+    .hbtn-oro{background:var(--ottone-c);color:#14241d}
+    .hbtn-oro:hover{transform:translateY(-2px);background:#e5cd93}
+    .hbtn-filo{border:1px solid var(--filo);color:var(--inchiostro)}
+    .hbtn-filo:hover{background:rgba(19,32,25,.05);transform:translateY(-2px)}
+    .hbtn-wa{background:#25d366;color:#0b3d1c}
+    .hbtn-wa:hover{transform:translateY(-2px);background:#20bd5b}
+
+    /* HERO */
+    .hero{background:var(--bosco);color:var(--panna);padding:calc(31px + 8rem) 0 clamp(3rem,7vw,5rem);position:relative;overflow:hidden}
+    .hero::before{content:'';position:absolute;inset:0;background:
+      radial-gradient(60% 50% at 78% 18%,rgba(216,189,122,.13),transparent 70%),
+      radial-gradient(50% 40% at 10% 90%,rgba(216,189,122,.07),transparent 70%)}
+    .hero-in{position:relative;max-width:1140px;margin:0 auto;padding-inline:clamp(1.2rem,5vw,3rem)}
+    .occhiello{font-size:.74rem;letter-spacing:.24em;text-transform:uppercase;color:var(--ottone-c);margin-bottom:1.3rem}
+    .hero-t{font-size:clamp(2.9rem,8vw,5.8rem);margin-bottom:1.3rem}
+    .hero-t .it{color:var(--ottone-c)}
+    .hero-s{font-size:1.1rem;color:var(--muted-c);max-width:52ch;margin-bottom:2.4rem}
+
+    /* MOTORE */
+    .motore{background:rgba(246,242,234,.06);border:1px solid var(--filo-c);padding:1.2rem;backdrop-filter:blur(6px)}
+    .mot-campi{display:grid;grid-template-columns:1.2fr 1.2fr .7fr 1.5fr auto;gap:.8rem;align-items:end}
+    .mot-campi>*{min-width:0}
+    .mot-campi label{display:grid;gap:.35rem;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ottone-c)}
+    .mot-campi input,.mot-campi select{background:rgba(9,20,16,.5);border:1px solid var(--filo-c);color:var(--panna);
+      padding:.7rem .8rem;font-size:.95rem;letter-spacing:0;text-transform:none;width:100%;border-radius:0}
+    .mot-campi input::-webkit-calendar-picker-indicator{filter:invert(1) opacity(.6);cursor:pointer}
+    .mot-btn{height:44px}
+    .mot-err{margin-top:.8rem;color:#ffbfa8;font-size:.88rem}
+
+    /* ESITO */
+    .esito{background:var(--carta);color:var(--inchiostro);margin-top:1.2rem;padding:clamp(1.3rem,3vw,1.8rem)}
+    .es-testa{display:flex;align-items:flex-start;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;
+      border-bottom:1px solid var(--filo);padding-bottom:1rem}
+    .es-et{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ottone)}
+    .es-riga{font-family:var(--disp);font-size:clamp(1.3rem,2.6vw,1.8rem);line-height:1.2;margin-top:.2rem}
+    .es-prezzo{text-align:right}
+    .es-prezzo b{display:block;font-family:var(--disp);font-size:clamp(2rem,4vw,2.8rem);line-height:1;font-variant-numeric:tabular-nums}
+    .es-prezzo span{font-size:.82rem;color:var(--grigio)}
+    .es-voci{list-style:none;display:grid;gap:.45rem;padding:1rem 0}
+    .es-voci li{display:flex;justify-content:space-between;gap:1rem;font-size:.92rem;color:var(--grigio)}
+    .es-voci li b{color:var(--inchiostro);font-variant-numeric:tabular-nums;white-space:nowrap}
+    .es-conf{display:flex;align-items:center;justify-content:space-between;gap:1.2rem;flex-wrap:wrap;
+      background:rgba(131,102,24,.10);padding:.9rem 1.1rem;margin-bottom:1.2rem}
+    .es-conf-et{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ottone)}
+    .es-conf-p{font-size:.92rem;color:var(--grigio);margin-top:.15rem}
+    .es-risp{font-family:var(--disp);font-size:1.5rem;color:var(--ottone);white-space:nowrap}
+    .es-azioni{display:flex;gap:.7rem;flex-wrap:wrap}
+    .es-nota{font-size:.78rem;color:var(--grigio);margin-top:1rem}
+
+    /* BANDA ORO */
+    .banda-oro{background:var(--ottone-c);color:#14241d}
+    .oro-in{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;padding-block:clamp(1.6rem,3vw,2.2rem)}
+    .oro-in>*{min-width:0}
+    .oro-p b{display:block;font-family:var(--disp);font-size:1.35rem;font-weight:600}
+    .oro-p span{font-size:.9rem;opacity:.82}
+
+    /* SEZIONI */
+    .sez{padding-block:clamp(3.5rem,8vw,6rem)}
+    .sez-chiara{background:var(--carta)}
+    .testa{max-width:680px;margin-bottom:clamp(2rem,4vw,3rem)}
+    .kicker{display:inline-block;font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ottone);margin-bottom:.8rem}
+    .testa h2{font-size:clamp(2rem,5vw,3.2rem)}
+    .lead{color:var(--grigio);margin-top:.9rem}
+    .h3{font-family:var(--sans);font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ottone);font-weight:600;margin-bottom:1rem}
+
+    /* CAMERE */
+    .camere{display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(2rem,5vw,4rem)}
+    .camere>*{min-width:0}
+    .camera{padding:clamp(1.4rem,2.6vw,1.9rem) 0;border-bottom:1px solid var(--filo)}
+    .camera:nth-child(-n+2){border-top:1px solid var(--filo)}
+    .cam-testa{display:flex;align-items:baseline;justify-content:space-between;gap:1rem}
+    .cam-testa h3{font-size:clamp(1.5rem,2.8vw,2rem)}
+    .cam-da{font-size:.85rem;color:var(--grigio);white-space:nowrap}
+    .cam-da b{font-family:var(--disp);font-size:1.5rem;color:var(--ottone)}
+    .cam-d{color:var(--grigio);font-size:.95rem;margin-top:.5rem}
+    .cam-dati{list-style:none;display:flex;gap:1.8rem;flex-wrap:wrap;margin:1.1rem 0}
+    .cam-dati span{display:block;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--grigio)}
+    .cam-dati b{font-weight:500;font-size:.95rem}
+    .cam-btn{background:none;border:0;border-bottom:1px solid var(--ottone);color:var(--ottone);padding:0 0 .2rem;
+      cursor:pointer;font-size:.88rem;transition:.25s var(--e)}
+    .cam-btn:hover{color:var(--inchiostro);border-color:var(--inchiostro)}
+
+    /* SERVIZI */
+    .serv{display:grid;grid-template-columns:repeat(3,1fr);gap:0 clamp(2rem,4vw,3.5rem)}
+    .serv>*{min-width:0}
+    .serv-c{padding:1.2rem 0;border-bottom:1px solid var(--filo)}
+    .serv-c:nth-child(-n+3){border-top:1px solid var(--filo)}
+    .serv-c b{display:block;font-family:var(--disp);font-size:1.3rem;font-weight:600}
+    .serv-c span{color:var(--grigio);font-size:.92rem}
+
+    /* DOVE */
+    .dove-in{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(2rem,5vw,4rem);align-items:start}
+    .dove-in>*{min-width:0}
+    .dove-h{font-size:clamp(1.9rem,4vw,2.8rem);margin:.4rem 0 0}
+    .dove-p{color:var(--grigio);margin:1rem 0 1.6rem;max-width:46ch}
+    .dove-azioni{display:flex;gap:.7rem;flex-wrap:wrap}
+    .vicino{list-style:none}
+    .vicino li{display:grid;grid-template-columns:1fr auto auto;gap:1rem;align-items:baseline;
+      padding:.7rem 0;border-bottom:1px solid var(--filo);font-size:.95rem}
+    .vicino li:first-child{border-top:1px solid var(--filo)}
+    .vicino b{font-family:var(--disp);font-size:1.15rem;color:var(--ottone);font-variant-numeric:tabular-nums}
+    .vicino i{font-style:normal;font-size:.82rem;color:var(--grigio);min-width:8.5rem;text-align:right}
+
+    /* RECENSIONI */
+    .banda-scura{background:var(--bosco);color:var(--panna);padding-block:clamp(3rem,6vw,4.5rem)}
+    .rece{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1.5rem,4vw,3rem)}
+    .rece>*{min-width:0}
+    .rec blockquote{font-family:var(--disp);font-size:1.25rem;line-height:1.4;font-style:italic}
+    .rec blockquote::before{content:'«';color:var(--ottone-c)}
+    .rec blockquote::after{content:'»';color:var(--ottone-c)}
+    .rec figcaption{margin-top:.7rem;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ottone-c)}
+
+    /* DOMANDE */
+    .faq{display:grid}
+    .dom{border-bottom:1px solid var(--filo)}
+    .dom:first-child{border-top:1px solid var(--filo)}
+    .dom summary{cursor:pointer;list-style:none;padding:1.1rem 2rem 1.1rem 0;position:relative;
+      font-family:var(--disp);font-size:1.3rem;font-weight:600}
+    .dom summary::-webkit-details-marker{display:none}
+    .dom summary::after{content:'+';position:absolute;right:.2rem;top:50%;transform:translateY(-50%);
+      color:var(--ottone);font-family:var(--sans);font-size:1.3rem;transition:transform .3s var(--e)}
+    .dom[open] summary::after{content:'−'}
+    .dom summary:hover{color:var(--ottone)}
+    .dom p{color:var(--grigio);font-size:.95rem;padding-bottom:1.2rem;max-width:66ch}
+
+    .hfoot{background:var(--bosco);color:var(--muted-c);padding-block:1.6rem;border-top:1px solid var(--filo-c)}
+    .hfoot-in{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font-size:.85rem}
+    .hfoot a{color:var(--ottone-c)}
+
+    /* Reveal */
+    .r{opacity:0;transform:translateY(18px)}
+    .r.in{opacity:1;transform:none;transition:opacity .7s var(--e),transform .7s var(--e)}
+
+    @media (max-width:1000px){
+      .mot-campi{grid-template-columns:1fr 1fr;}
+      .mot-btn{grid-column:1/-1;height:46px}
+      .serv{grid-template-columns:1fr 1fr}
+      .serv-c:nth-child(-n+3){border-top:0}
+      .serv-c:nth-child(-n+2){border-top:1px solid var(--filo)}
+      .rece{grid-template-columns:1fr;gap:1.8rem}
+    }
+    @media (max-width:900px){
+      .hlinks{display:none}
+      .hnav-toggle{display:grid}
+      .hnav.aperta{background:rgba(15,36,29,.97);backdrop-filter:blur(14px)}
+      .hnav.aperta .hlinks{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1.1rem;
+        background:rgba(15,36,29,.98);border-bottom:1px solid var(--filo-c);padding:1.2rem clamp(1.2rem,5vw,3rem) 1.5rem}
+      .camere,.dove-in{grid-template-columns:1fr}
+      .camera:nth-child(-n+2){border-top:0}
+      .camera:first-child{border-top:1px solid var(--filo)}
+      .oro-in{grid-template-columns:1fr;gap:1.1rem}
+      .hbrand-t{font-size:1.15rem}
+      .hnav-dx .hbtn{padding:.55rem 1rem;font-size:.78rem}
+    }
+    @media (max-width:560px){
+      /* marchio + lingua + hamburger + CTA non ci stanno: il "Prenota" passa nel menu */
+      .hnav-dx>.hbtn{display:none}
+      .hlinks .solo-mobile{display:block}
+      .hbrand-t{font-size:1.05rem}
+      .serv{grid-template-columns:1fr}
+      .serv-c:nth-child(-n+2){border-top:0}
+      .serv-c:first-child{border-top:1px solid var(--filo)}
+      .vicino li{grid-template-columns:1fr auto}
+      .vicino i{grid-column:1/-1;text-align:left;min-width:0}
+      .es-prezzo{text-align:left}
+    }
+    @media (prefers-reduced-motion:reduce){ .r{opacity:1 !important;transform:none !important} }
+  </style>
+
+  <script>
+    // ---------- dati ----------
+    const CAMERE = {
+      singola:      { base: 79,  n: 'Singola',                 en: 'Single',                    max: 1 },
+      matrimoniale: { base: 99,  n: 'Matrimoniale',            en: 'Double',                    max: 2 },
+      superior:     { base: 129, n: 'Superior con vista Mole',  en: 'Superior with Mole view',  max: 3 },
+      suite:        { base: 179, n: 'Suite dei Palchi',         en: 'Palchi Suite',             max: 4 },
+    };
+    // Torino: alta stagione in primavera, a settembre-ottobre e sotto Natale. Agosto è morto.
+    const STAGIONE = [0.85, 0.85, 1, 1.15, 1.15, 1.1, 0.9, 0.8, 1.15, 1.15, 1, 1.05];
+    const TASSA = 3.00;         // € a persona a notte
+    const TASSA_MAX_NOTTI = 7;
+    const COMMISSIONE = 0.18;   // quanto trattiene il portale
+
+    const T = {
+      it: {
+        soggiorno: 'Il vostro soggiorno', notti: (n) => n === 1 ? '1 notte' : `${n} notti`,
+        camera: 'Camera', tassa: 'Tassa di soggiorno', tassaD: (p, n) => `${p} × ${n} × 3,00 €`,
+        colazione: 'Colazione per tutti', inclusa: 'inclusa',
+        portale: 'La stessa camera, su un portale',
+        portaleP: 'Stesso letto, stessa colazione, prezzo più alto: la differenza è la commissione.',
+        portaleC: (p, d) => `${p} invece di ${d}. Stesso letto, stessa colazione: la differenza se la prende il portale.`,
+        risparmio: (v) => `risparmiate ${v} €`,
+        errDate: 'Serve una data di arrivo e una di partenza.',
+        errOrdine: 'La partenza deve venire dopo l’arrivo.',
+        errPassato: 'La data di arrivo è già passata.',
+        errLunga: 'Per soggiorni oltre 30 notti chiamateci: vi facciamo un prezzo dedicato.',
+        errOspiti: (n, c) => `In ${c} ci stanno al massimo ${n} ospiti. Provate un’altra camera.`,
+        nota: 'Demo: nessuna prenotazione viene registrata. Sul sito vero la richiesta arriva in reception e la disponibilità è quella reale del gestionale.',
+        wa: (r) => `Buongiorno! Vorrei prenotare all'Albergo del Teatro:\n${r}\n\n(richiesta inviata dal sito)`,
+        dal: 'dal', al: 'al', per: 'per', ospiti: (n) => n === 1 ? '1 ospite' : `${n} ospiti`,
+      },
+      en: {
+        soggiorno: 'Your stay', notti: (n) => n === 1 ? '1 night' : `${n} nights`,
+        camera: 'Room', tassa: 'City tax', tassaD: (p, n) => `${p} × ${n} × €3.00`,
+        colazione: 'Breakfast for everyone', inclusa: 'included',
+        portale: 'The same room, on a booking portal',
+        portaleP: 'Same bed, same breakfast, higher price: the difference is the commission.',
+        portaleC: (p, d) => `${p} instead of ${d}. Same bed, same breakfast: the difference goes to the portal.`,
+        risparmio: (v) => `you save €${v}`,
+        errDate: 'We need an arrival and a departure date.',
+        errOrdine: 'Departure must come after arrival.',
+        errPassato: 'The arrival date is in the past.',
+        errLunga: 'For stays longer than 30 nights please call us: we will quote a dedicated rate.',
+        errOspiti: (n, c) => `The ${c} sleeps ${n} guests at most. Please try another room.`,
+        nota: 'Demo: no booking is actually recorded. On the real site the request reaches reception and availability comes from the hotel system.',
+        wa: (r) => `Hello! I would like to book at Albergo del Teatro:\n${r}\n\n(request sent from the website)`,
+        dal: 'from', al: 'to', per: 'for', ospiti: (n) => n === 1 ? '1 guest' : `${n} guests`,
+      },
+    };
+
+    let lng = 'it';
+    const euro = (n) => n.toFixed(2).replace('.', ',');
+    const money = (n) => lng === 'en' ? '€' + n.toFixed(2) : euro(n) + ' €';
+
+    // ---------- lingua ----------
+    function applica(l) {
+      lng = l;
+      document.documentElement.lang = l;
+      document.querySelectorAll('[data-en]').forEach((el) => {
+        if (el.dataset.it === undefined) el.dataset.it = el.textContent;
+        el.textContent = l === 'en' ? el.dataset.en : el.dataset.it;
+      });
+      document.querySelectorAll('.lng').forEach((b) => {
+        const on = b.dataset.lng === l;
+        b.classList.toggle('on', on);
+        b.setAttribute('aria-pressed', String(on));
+      });
+      document.getElementById('esEt').textContent = T[l].soggiorno;
+      document.getElementById('esConfEt').textContent = T[l].portale;
+      document.getElementById('esConfP').textContent = T[l].portaleP;
+      document.getElementById('esNota').textContent = T[l].nota;
+      if (!document.getElementById('esito').hidden) calcola(true);
+      try { localStorage.setItem('teatro-lng', l); } catch (_) {}
+    }
+    document.querySelectorAll('.lng').forEach((b) => b.addEventListener('click', () => applica(b.dataset.lng)));
+
+    // ---------- nav ----------
+    const hnav = document.getElementById('hnav');
+    addEventListener('scroll', () => hnav.classList.toggle('solid', scrollY > 30), { passive: true });
+    const toggle = document.getElementById('navToggle');
+    toggle.addEventListener('click', () => {
+      const o = hnav.classList.toggle('aperta');
+      toggle.setAttribute('aria-expanded', String(o));
+    });
+    document.querySelectorAll('.hlinks a').forEach((a) => a.addEventListener('click', () => {
+      hnav.classList.remove('aperta'); toggle.setAttribute('aria-expanded', 'false');
+    }));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && hnav.classList.contains('aperta')) { hnav.classList.remove('aperta'); toggle.setAttribute('aria-expanded', 'false'); }
+    });
+
+    // ---------- date ----------
+    const iso = (d) => d.toISOString().slice(0, 10);
+    const oggi = new Date(); oggi.setHours(12, 0, 0, 0);
+    const dataIn = document.getElementById('dataIn');
+    const dataOut = document.getElementById('dataOut');
+    const piu = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+    dataIn.min = iso(oggi);
+    dataOut.min = iso(piu(oggi, 1));
+    dataIn.value = iso(piu(oggi, 7));
+    dataOut.value = iso(piu(oggi, 9));
+    dataIn.addEventListener('change', () => {
+      const i = new Date(dataIn.value);
+      if (!isNaN(i)) {
+        dataOut.min = iso(piu(i, 1));
+        if (new Date(dataOut.value) <= i) dataOut.value = iso(piu(i, 2));
+      }
+    });
+
+    // ---------- preventivo ----------
+    const err = document.getElementById('motErr');
+    const esito = document.getElementById('esito');
+    const dataLunga = (d) => d.toLocaleDateString(lng === 'en' ? 'en-GB' : 'it-IT', { day: 'numeric', month: 'long' });
+
+    function calcola(silenzioso) {
+      const a = new Date(dataIn.value), b = new Date(dataOut.value);
+      const ospiti = +document.getElementById('ospiti').value;
+      const k = document.getElementById('tipo').value;
+      const cam = CAMERE[k];
+      const nome = lng === 'en' ? cam.en : cam.n;
+      const mostra = (m) => { err.textContent = m; err.hidden = false; esito.hidden = true; };
+
+      if (isNaN(a) || isNaN(b)) return mostra(T[lng].errDate);
+      const zero = new Date(); zero.setHours(0, 0, 0, 0);
+      if (a < zero) return mostra(T[lng].errPassato);
+      const notti = Math.round((b - a) / 86400000);
+      if (notti < 1) return mostra(T[lng].errOrdine);
+      if (notti > 30) return mostra(T[lng].errLunga);
+      if (ospiti > cam.max) return mostra(T[lng].errOspiti(cam.max, nome));
+      err.hidden = true;
+
+      // notte per notte: la tariffa segue la stagione del giorno
+      let camere = 0;
+      for (let i = 0; i < notti; i++) {
+        const g = piu(a, i);
+        camere += cam.base * STAGIONE[g.getMonth()];
+      }
+      camere = Math.round(camere);
+      const tassa = TASSA * ospiti * Math.min(notti, TASSA_MAX_NOTTI);
+      const totale = camere + tassa;
+      const portale = Math.round(camere / (1 - COMMISSIONE));
+      const risparmio = portale - camere;
+
+      document.getElementById('esRiga').textContent =
+        `${nome} · ${T[lng].dal} ${dataLunga(a)} ${T[lng].al} ${dataLunga(b)}`;
+      document.getElementById('esTot').textContent = money(totale);
+      document.getElementById('esNotti').textContent = `${T[lng].notti(notti)} · ${T[lng].ospiti(ospiti)}`;
+      document.getElementById('esVoci').innerHTML =
+        `<li><span>${T[lng].camera} — ${T[lng].notti(notti)}</span><b>${money(camere)}</b></li>` +
+        `<li><span>${T[lng].colazione}</span><b>${T[lng].inclusa}</b></li>` +
+        `<li><span>${T[lng].tassa} — ${T[lng].tassaD(ospiti, Math.min(notti, TASSA_MAX_NOTTI))}</span><b>${money(tassa)}</b></li>`;
+      document.getElementById('esRisp').textContent = T[lng].risparmio(risparmio);
+      document.getElementById('esConfP').textContent = T[lng].portaleC(money(portale), money(camere));
+
+      const righe = `${nome}\n${dataLunga(a)} → ${dataLunga(b)} (${T[lng].notti(notti)})\n${T[lng].ospiti(ospiti)}\n${T[lng].camera}: ${money(camere)} + ${T[lng].tassa} ${money(tassa)}`;
+      document.getElementById('esWa').href = 'https://wa.me/390110000000?text=' + encodeURIComponent(T[lng].wa(righe));
+
+      esito.hidden = false;
+      esito.classList.add('in');
+      if (!silenzioso) esito.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    document.getElementById('calcola').addEventListener('click', () => calcola(false));
+
+    // dalle camere si torna al motore con il tipo già scelto
+    document.querySelectorAll('[data-scegli]').forEach((b) => b.addEventListener('click', () => {
+      document.getElementById('tipo').value = b.dataset.scegli;
+      const max = CAMERE[b.dataset.scegli].max;
+      const sel = document.getElementById('ospiti');
+      if (+sel.value > max) sel.value = String(max);
+      document.getElementById('prenota').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      calcola(true);
+    }));
+
+    // ---------- reveal ----------
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('.r').forEach((el) => el.classList.add('in'));
+    } else {
+      const io = new IntersectionObserver((es) => es.forEach((en) => {
+        if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+      }), { threshold: 0.12, rootMargin: '0px 0px -40px' });
+      document.querySelectorAll('.r').forEach((el) => io.observe(el));
+    }
+
+    // ---------- avvio ----------
+    let salvata = null;
+    try { salvata = localStorage.getItem('teatro-lng'); } catch (_) {}
+    applica(salvata === 'en' || (!salvata && !navigator.language.startsWith('it')) ? 'en' : 'it');
+
+    // Statistiche first-party (nessun cookie, niente IP): conta la visita alla demo
+    try { if (!navigator.webdriver && !["localhost","127.0.0.1"].includes(location.hostname)) {
+      let sref = ""; try { const u = new URL(document.referrer); if (u.host !== location.host) sref = u.host; } catch (_) {}
+      fetch("/stats.php?p=" + encodeURIComponent(location.pathname) + "&r=" + encodeURIComponent(sref), { keepalive: true }).catch(() => {});
+    } } catch (_) {}
+  </script>
+</body>
+</html>

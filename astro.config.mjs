@@ -9,7 +9,18 @@ export default defineConfig({
   // ⚠️ Dominio reale del sito (usato per sitemap, canonical e OG)
   site: 'https://www.moledigitale.it',
   build: { inlineStylesheets: 'auto' },
-  // Sitemap: escludo le pagine noindex (singole demo, /dypa, /crediti) e /privacy.
-  // La galleria /demo resta indicizzabile.
-  integrations: [sitemap({ filter: (page) => !/\/demo\/.+/.test(page) && !page.includes('/privacy') && !page.includes('/dypa') && !page.includes('/crediti') && !page.includes('/demoFarmacia') })],
+  // Sitemap: dentro solo le pagine che vogliamo su Google.
+  // Fuori: le singole demo (/demo/bar/, /demo/sushi/…), le bozze dei clienti
+  // (/demoFarmaciaAusiliatrice/, /demoMasGioielli/, /demoClienti/) e le pagine di servizio.
+  // La galleria /demo/ resta indicizzabile.
+  integrations: [
+    sitemap({
+      filter: (page) => {
+        const p = new URL(page).pathname;
+        if (p.startsWith('/demo/') && p !== '/demo/') return false;
+        if (/^\/demo[A-Z]/.test(p)) return false;
+        return !['/privacy', '/dypa', '/crediti'].some((x) => p.startsWith(x));
+      },
+    }),
+  ],
 });

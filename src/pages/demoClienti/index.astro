@@ -1,0 +1,157 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+// PAGINA PRIVATA — raccoglie le bozze fatte per clienti reali.
+// Volutamente NON collegata da nessuna pagina del sito: ci si arriva solo con il link diretto.
+// È noindex ed è esclusa dalla sitemap (vedi il filtro in astro.config.mjs), quindi non finisce su Google.
+// Le demo generiche di settore stanno invece in /demo, quelle sono pubbliche.
+
+const clienti = [
+  {
+    nome: 'Farmacia dell’Ausiliatrice',
+    settore: 'Farmacia',
+    dove: 'Torino',
+    url: '/demoFarmaciaAusiliatrice/',
+    stato: 'Bozza da mostrare',
+    pitch: 'Una farmacia di quartiere che fa molto più che vendere farmaci: il sito mette in prima fila i servizi su prenotazione e le offerte del mese.',
+    dentro: [
+      'Orari veri con “aperta ora / chiusa ora” calcolato sul momento, pausa pranzo compresa',
+      'Servizi con prenotazione: Holter, ECG, tamponi, autoanalisi',
+      'Offerte con ricerca, scheda del prodotto e lista della spesa da mandare su WhatsApp con la data di ritiro',
+      'Pannello di gestione: la farmacia aggiunge e modifica i propri servizi da sola',
+    ],
+    pagine: [
+      { t: 'Home', u: '/demoFarmaciaAusiliatrice/' },
+      { t: 'Servizi', u: '/demoFarmaciaAusiliatrice/servizi/' },
+      { t: 'Offerte', u: '/demoFarmaciaAusiliatrice/offerte/' },
+      { t: 'Prenotazioni', u: '/demoFarmaciaAusiliatrice/prenotazioni/' },
+      { t: 'Chi siamo', u: '/demoFarmaciaAusiliatrice/chi-siamo/' },
+      { t: 'Dove siamo', u: '/demoFarmaciaAusiliatrice/dove-siamo/' },
+      { t: 'Contatti', u: '/demoFarmaciaAusiliatrice/contatti/' },
+    ],
+    accesso: { t: 'Pannello di gestione', u: '/demoFarmaciaAusiliatrice/gestione/', user: 'ausiliatrice', pass: 'farmacia2026' },
+  },
+  {
+    nome: 'MasGioielli',
+    settore: 'Gioielleria e laboratorio orafo',
+    dove: 'Corso Trapani 146/b, Torino',
+    url: '/demoMasGioielli/',
+    stato: 'Bozza da mostrare',
+    pitch: 'Gioielleria dal 1996. Il sito è costruito attorno alle due cose che valgono davvero: il laboratorio e le perizie.',
+    dentro: [
+      'Vetrina con lista desideri da inviare al negozio',
+      'Laboratorio: preventivo riparazione e misura-anello che si calibra sullo schermo',
+      'Perizie per successioni e divisioni ereditarie — la pagina che porta il lavoro più redditizio',
+      'Area riservata: il titolare decide da solo quali marchi mostrare in home',
+    ],
+    pagine: [
+      { t: 'Home', u: '/demoMasGioielli/' },
+      { t: 'Vetrina', u: '/demoMasGioielli/vetrina/' },
+      { t: 'Laboratorio', u: '/demoMasGioielli/laboratorio/' },
+      { t: 'Perizie', u: '/demoMasGioielli/perizie/' },
+      { t: 'Contatti', u: '/demoMasGioielli/contatti/' },
+    ],
+    accesso: { t: 'Area riservata', u: '/demoMasGioielli/riservata/', user: 'masgioielli', pass: 'trapani146' },
+  },
+];
+---
+<Layout
+  title="Bozze clienti — pagina privata | Mole Digitale"
+  description="Pagina privata: raccolta delle bozze realizzate per clienti reali."
+  noindex={true}
+>
+  <section class="section" style="padding-top:8rem;">
+    <div class="section-head" data-reveal>
+      <span class="kicker">Riservato</span>
+      <h1>Bozze per <span class="grad">clienti reali</span>.</h1>
+      <p class="section-lead">I siti già impostati su attività vere, pronti da far vedere. Non sono le demo di settore: qui ci sono nomi, indirizzi e servizi reali.</p>
+    </div>
+
+    <div class="avviso glass" data-reveal>
+      <b>Questa pagina è privata.</b>
+      <p>Non è collegata da nessuna parte del sito, non compare nella sitemap ed è marcata <code>noindex</code>: ci si arriva solo con questo indirizzo. Chi ha il link, però, entra — quindi occhio a dove lo incolli. E ricorda che qui dentro ci sono <b>due clienti diversi</b>: se mandi questa pagina a uno, vede anche la bozza dell’altro. Per un singolo cliente, manda il link della sua bozza.</p>
+    </div>
+
+    <div class="clienti">
+      {clienti.map((c) => (
+        <article class="cliente glass" data-reveal>
+          <header class="cl-testa">
+            <div>
+              <span class="cl-stato">{c.stato}</span>
+              <h2>{c.nome}</h2>
+              <p class="cl-meta">{c.settore} · {c.dove}</p>
+            </div>
+            <a href={c.url} class="btn btn-primary cl-apri">Apri la bozza →</a>
+          </header>
+
+          <p class="cl-pitch">{c.pitch}</p>
+
+          <h3 class="cl-h3">Cosa c’è dentro</h3>
+          <ul class="cl-dentro">
+            {c.dentro.map((d) => <li>{d}</li>)}
+          </ul>
+
+          <h3 class="cl-h3">Le pagine</h3>
+          <nav class="cl-pagine" aria-label={'Pagine della bozza ' + c.nome}>
+            {c.pagine.map((p) => <a href={p.u}>{p.t}</a>)}
+          </nav>
+
+          <div class="cl-accesso">
+            <div>
+              <span class="cl-acc-et">{c.accesso.t}</span>
+              <p class="cl-acc-cred">utente <code>{c.accesso.user}</code> · password <code>{c.accesso.pass}</code></p>
+            </div>
+            <a href={c.accesso.u} class="btn btn-ghost">Apri →</a>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <p class="chiusa" data-reveal>
+      Le demo generiche di settore, quelle pubbliche, stanno in <a href="/demo/">/demo</a>.
+    </p>
+  </section>
+
+  <style>
+    .avviso{max-width:820px;margin:0 auto 3rem;padding:1.6rem 1.8rem;border-radius:var(--radius);
+      border-left:3px solid var(--warning)}
+    .avviso b{color:var(--text)}
+    .avviso p{color:var(--muted);font-size:.95rem;margin-top:.4rem}
+    .avviso code{background:rgba(255,255,255,.08);border-radius:6px;padding:.1rem .4rem;font-size:.88em}
+
+    .clienti{display:grid;gap:1.6rem;max-width:900px;margin:0 auto}
+    .cliente{padding:clamp(1.6rem,3vw,2.4rem);border-radius:var(--radius)}
+    /* griglia e non flex-wrap: così il pulsante non salta a capo quando entrano i font (CLS) */
+    .cl-testa{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:1.5rem}
+    .cl-stato{display:inline-block;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;
+      color:var(--warning);border:1px solid rgba(255,200,61,.35);border-radius:999px;padding:.2rem .7rem;margin-bottom:.7rem}
+    .cl-testa h2{font-size:clamp(1.5rem,3vw,2rem);line-height:1.15}
+    .cl-meta{color:var(--muted-2);font-size:.9rem;margin-top:.3rem}
+    .cl-apri{flex:none}
+    .cl-pitch{color:var(--muted);margin-top:1.2rem;max-width:60ch}
+
+    .cl-h3{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2);font-weight:700;margin:1.8rem 0 .7rem}
+    .cl-dentro{list-style:none;display:grid;gap:.5rem}
+    .cl-dentro li{color:var(--muted);font-size:.94rem;padding-left:1.4rem;position:relative}
+    .cl-dentro li::before{content:'';position:absolute;left:0;top:.55em;width:6px;height:6px;border-radius:50%;background:var(--c1)}
+
+    .cl-pagine{display:flex;flex-wrap:wrap;gap:.5rem}
+    .cl-pagine a{border:1px solid var(--border);border-radius:999px;padding:.35rem .9rem;font-size:.86rem;
+      color:var(--muted);transition:.25s var(--ease)}
+    .cl-pagine a:hover{border-color:rgba(124,92,255,.55);color:var(--text);transform:translateY(-1px)}
+
+    .cl-accesso{display:flex;align-items:center;justify-content:space-between;gap:1.2rem;flex-wrap:wrap;
+      margin-top:1.8rem;padding-top:1.4rem;border-top:1px solid var(--border)}
+    .cl-acc-et{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-2);font-weight:700}
+    .cl-acc-cred{color:var(--muted);font-size:.92rem;margin-top:.25rem}
+    .cl-acc-cred code{background:rgba(255,255,255,.08);border-radius:6px;padding:.12rem .45rem;color:var(--text)}
+
+    .chiusa{text-align:center;color:var(--muted-2);font-size:.9rem;margin-top:2.6rem}
+    .chiusa a{color:var(--c2);border-bottom:1px solid rgba(34,211,238,.4)}
+
+    @media (max-width:640px){
+      .cl-testa{grid-template-columns:1fr}
+      .cl-apri{width:100%;justify-content:center}
+    }
+  </style>
+</Layout>

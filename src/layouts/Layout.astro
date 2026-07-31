@@ -2,6 +2,10 @@
 // Font self-hosted (niente più richieste a Google Fonts → più veloce + GDPR-friendly)
 import '@fontsource-variable/inter';
 import '@fontsource-variable/space-grotesk';
+// I due woff2 latini vengono precaricati: senza, il testo viene disegnato col ripiego
+// e poi si riflowa quando arriva il font vero — cioè CLS su tutte le pagine di testo.
+import interWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import groteskWoff2 from '@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url';
 import '../styles/global.css';
 import '../styles/scroll.css';
 
@@ -132,6 +136,8 @@ const articleSchema = article ? {
   <meta name="theme-color" content="#07070c" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta name="color-scheme" content="dark" />
+  <link rel="preload" as="font" type="font/woff2" href={interWoff2} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href={groteskWoff2} crossorigin />
   <link rel="canonical" href={canonical} />
 
   <meta name="geo.region" content="IT-TO" />

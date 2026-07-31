@@ -26,7 +26,7 @@ const demos = [
   { k: 'osteopata',    name: 'Àsse',               cat: 'Osteopatia',        url: '/demo/osteopata',    desc: 'Per chi è + percorso a timeline',
     cerca: 'osteopata osteopatia fisioterapista fisioterapia chiropratico mal di schiena dolore lombalgia sciatica cervicale postura riabilitazione' },
   { k: 'viaggi',       name: 'Vàgo',               cat: 'Agenzia viaggi',    url: '/demo/viaggi',       desc: 'Hero con ricerca + destinazioni bento',
-    cerca: 'agenzia viaggi vacanze tour operator voli hotel crociere biglietteria turismo' },
+    cerca: 'agenzia viaggi vacanze tour operator voli crociere biglietteria turismo pacchetti' },
   { k: 'nails',        name: 'Lúnula',             cat: 'Nail studio',       url: '/demo/nails',        desc: 'Listino + gallery masonry di nail art',
     cerca: 'nail unghie manicure pedicure ricostruzione gel semipermanente nail art onicotecnica' },
   { k: 'animali',      name: 'Zampe Amiche',       cat: 'Veterinario',       url: '/demo/animali',      desc: 'Servizi + urgenze 24/7 + prenotazione',
@@ -47,6 +47,8 @@ const demos = [
     cerca: 'orologiaio orologi orologeria riparazione batteria revisione cinturino vintage' },
   { k: 'bar',          name: 'Caffè Portici',      cat: 'Bar e caffetteria', url: '/demo/bar',          desc: 'Il sito cambia con l’ora + ordina e ritira',
     cerca: 'bar caffetteria caffè colazione brioche cappuccino aperitivo spritz pranzo tavola calda pasticceria' },
+  { k: 'hotel',        name: 'Albergo del Teatro', cat: 'Hotel',             url: '/demo/hotel',        desc: 'Preventivo per date + prenotazione diretta, IT/EN',
+    cerca: 'hotel albergo bed and breakfast b&b affittacamere pensione locanda camere ospiti turisti prenotazione booking notte soggiorno' },
 ];
 
 // Scorciatoie sotto il campo: i settori più cercati.
@@ -57,7 +59,7 @@ const scorciatoie = ['bar', 'ristorante', 'parrucchiere', 'dentista'];
     <div class="section-head" data-reveal>
       <span class="kicker">Demo</span>
       <h1>Esempi di siti che <span class="grad">facciamo</span>.</h1>
-      <p class="section-lead">Ventuno attività, ventuno stili diversi — ogni sito ha una sua struttura. Aprili e prova a cliccare: prenotazioni, menu, carrello, calcolatori e preventivi che funzionano davvero.</p>
+      <p class="section-lead">Ventidue attività, ventidue stili diversi — ogni sito ha una sua struttura. Aprili e prova a cliccare: prenotazioni, menu, carrello, calcolatori e preventivi che funzionano davvero.</p>
     </div>
 
     <!-- RICERCA -->
@@ -73,7 +75,7 @@ const scorciatoie = ['bar', 'ristorante', 'parrucchiere', 'dentista'];
           <span>Più cercati:</span>
           {scorciatoie.map((s) => <button type="button" class="cerca-tag" data-tag={s}>{s}</button>)}
         </p>
-        <p class="cerca-esito" id="cercaEsito" role="status" aria-live="polite">21 demo</p>
+        <p class="cerca-esito" id="cercaEsito" role="status" aria-live="polite">{demos.length} demo</p>
       </div>
     </div>
 
@@ -151,19 +153,28 @@ const scorciatoie = ['bar', 'ristorante', 'parrucchiere', 'dentista'];
       'un', 'uno', 'una', 'e', 'a', 'ad', 'da', 'in', 'su', 'per', 'con', 'al', 'allo', 'alla', 'ai', 'agli', 'alle',
       'che', 'mio', 'mia', 'sito', 'siti']);
 
-    // Due indici: quello "forte" (nome, settore, descrizione) pesa di più di quello dei sinonimi.
+    // Tre indici: il testo intero, le sue parole singole, e quello "forte" (nome + settore).
     const indice = schede.map((s) => piatto(s.dataset.cerca || ''));
+    const parole = schede.map((s) => new Set(piatto(s.dataset.cerca || '').split(/[^a-z0-9]+/).filter(Boolean)));
     const indiceForte = schede.map((s) => piatto(s.dataset.forte || ''));
 
     function filtra(q) {
       const termini = piatto(q).split(/\s+/).filter(Boolean).filter((t) => !SERVIZIO.has(t));
+
+      // Chi cerca «bar» non vuole il barbiere. Quindi: se qualche demo combacia per PAROLA INTERA,
+      // mostro solo quelle; il match parziale resta come rete di sicurezza mentre si sta digitando
+      // (così «par», che non è una parola di nessuno, trova comunque il parrucchiere).
+      const esatte = schede.map((s, i) => termini.every((t) => parole[i].has(t)));
+      const larghe = schede.map((s, i) => termini.every((t) => indice[i].includes(t)));
+      const preciso = esatte.some(Boolean);
+
       let trovate = 0;
       schede.forEach((s, i) => {
-        const ok = termini.every((t) => indice[i].includes(t));
+        const ok = preciso ? esatte[i] : larghe[i];
         s.hidden = !ok;
         if (!ok) { s.style.order = ''; return; }
         trovate++;
-        // Chi cerca «bar» vuole il bar, non il barbiere: chi combacia nel titolo o nel settore va prima.
+        // A parità di pertinenza, chi combacia nel nome o nel settore va prima.
         const punti = termini.filter((t) => indiceForte[i].includes(t)).length;
         s.style.order = String(-punti);
       });
