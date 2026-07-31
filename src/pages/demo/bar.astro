@@ -1,0 +1,998 @@
+---
+// DEMO standalone — "Caffè Portici", bar di quartiere a Torino. Tema CHIARO (crema + espresso + ambra).
+// Sito a sé (non usa il Layout di Mole Digitale). JS vanilla, nessuna libreria.
+//
+// L'idea portante: un bar non vende "prodotti", vende MOMENTI DELLA GIORNATA.
+// Alle 7:30 chi cerca il bar vuole sapere se è aperto e se può ordinare la colazione;
+// alle 12:30 vuole sapere cosa c'è di pranzo; alle 18 vuole l'aperitivo.
+// Quindi il sito si riconfigura da solo in base all'ora: è la cosa che nessun bar ha.
+import '@fontsource-variable/inter';
+import '@fontsource-variable/fraunces';
+
+// Orari reali da bar: apertura molto presto, domenica solo mattina.
+const ORARI = [
+  { g: 'Lunedì',    apre: '06:30', chiude: '20:00' },
+  { g: 'Martedì',   apre: '06:30', chiude: '20:00' },
+  { g: 'Mercoledì', apre: '06:30', chiude: '20:00' },
+  { g: 'Giovedì',   apre: '06:30', chiude: '20:00' },
+  { g: 'Venerdì',   apre: '06:30', chiude: '20:00' },
+  { g: 'Sabato',    apre: '07:00', chiude: '20:00' },
+  { g: 'Domenica',  apre: '07:30', chiude: '13:00' },
+];
+
+// Le quattro fasce della giornata al banco. Il colore torna sul quadrante in home.
+const FASCE = [
+  { k: 'colazione', t: 'Colazione', da: '06:30', a: '11:00', col: '#f0b95e', d: 'Brioche sfornate alle 6, cappuccino come si deve, e il caffè che ti ricordiamo a memoria.', voci: ['Caffè e brioche 2,50 €', 'Cappuccino e brioche 2,90 €', 'Spremuta fatta al momento'] },
+  { k: 'pranzo',    t: 'Pranzo',    da: '11:30', a: '14:30', col: '#e2892f', d: 'Un primo, un contorno, acqua e caffè: mangi in mezz’ora e torni in ufficio. Buoni pasto accettati.', voci: ['Formula pranzo 10 €', 'Panini e insalatone', 'Piatto del giorno'] },
+  { k: 'merenda',   t: 'Merenda',   da: '15:00', a: '17:30', col: '#c4571d', d: 'Il pomeriggio tranquillo: tè, torte fatte in casa, Wi‑Fi libero e i tavolini che restano liberi a lungo.', voci: ['Torta della casa 3 €', 'Tè e infusi', 'Wi‑Fi e prese ai tavoli'] },
+  { k: 'aperitivo', t: 'Aperitivo', da: '17:30', a: '20:00', col: '#8c3a17', d: 'Spritz, vermouth di Torino e il tagliere che arriva senza chiederlo. Il dehors sotto i portici è la parte migliore.', voci: ['Aperitivo con tagliere 7 €', 'Vermouth di Torino', 'Dehors da 30 posti'] },
+];
+
+// Quadrante delle 24 ore: ogni fascia è un arco. Calcolato a build time, così esiste anche senza JS.
+const minuti = (s) => { const [h, m] = s.split(':').map(Number); return h * 60 + m; };
+const RAGGIO = 78;
+const CIRCONF = 2 * Math.PI * RAGGIO;
+const arco = (da, a) => {
+  const s = (minuti(da) / 1440) * CIRCONF;
+  const e = (minuti(a) / 1440) * CIRCONF;
+  return { len: e - s, off: -s };
+};
+const TACCHE = Array.from({ length: 24 }, (_, h) => ({ h, grande: h % 6 === 0 }));
+
+// Menu del pranzo, giorno per giorno (indice = getDay(): 0 = domenica).
+const SETTIMANA = [
+  { g: 'Domenica',  primo: null, secondo: null, nota: 'La domenica siamo aperti solo la mattina: colazione fino alle 13.' },
+  { g: 'Lunedì',    primo: 'Risotto ai porri e toma',      secondo: 'Svizzera con patate al forno' },
+  { g: 'Martedì',   primo: 'Pasta e fagioli',              secondo: 'Pollo al limone e insalata' },
+  { g: 'Mercoledì', primo: 'Lasagna al forno',             secondo: 'Frittata di zucchine e verdure' },
+  { g: 'Giovedì',   primo: 'Gnocchi al Castelmagno',       secondo: 'Arrosto con purè' },
+  { g: 'Venerdì',   primo: 'Pasta al pomodoro fresco',     secondo: 'Merluzzo gratinato e spinaci' },
+  { g: 'Sabato',    primo: 'Piatto unico: club sandwich',  secondo: 'Insalatona grande del Portici' },
+];
+
+// Listino per l'ordine da asporto.
+const LISTINO = [
+  { c: 'Caffetteria', n: 'Caffè espresso',         p: 1.20 },
+  { c: 'Caffetteria', n: 'Caffè macchiato',        p: 1.40 },
+  { c: 'Caffetteria', n: 'Cappuccino',             p: 1.60 },
+  { c: 'Caffetteria', n: 'Latte macchiato',        p: 1.70 },
+  { c: 'Caffetteria', n: 'Caffè d’orzo',      p: 1.40 },
+  { c: 'Caffetteria', n: 'Tè o infuso',            p: 2.00 },
+  { c: 'Caffetteria', n: 'Cioccolata calda',       p: 2.80 },
+  { c: 'Caffetteria', n: 'Spremuta d’arancia', p: 3.20 },
+  { c: 'Dolce',       n: 'Brioche vuota',          p: 1.30 },
+  { c: 'Dolce',       n: 'Brioche alla crema',     p: 1.50 },
+  { c: 'Dolce',       n: 'Brioche integrale ai frutti', p: 1.60 },
+  { c: 'Dolce',       n: 'Torta della casa',       p: 3.00 },
+  { c: 'Dolce',       n: 'Bicerin',                p: 4.50 },
+  { c: 'Salato',      n: 'Tramezzino tonno e carciofi', p: 3.50 },
+  { c: 'Salato',      n: 'Panino crudo e toma',    p: 5.00 },
+  { c: 'Salato',      n: 'Focaccia farcita',       p: 4.00 },
+  { c: 'Salato',      n: 'Insalatona',             p: 7.50 },
+  { c: 'Salato',      n: 'Piatto del giorno',      p: 10.00 },
+];
+const CATEGORIE = ['Tutto', 'Caffetteria', 'Dolce', 'Salato'];
+const prezzo = (p) => p.toFixed(2).replace('.', ',') + ' €';
+
+const SERATE = [
+  { q: 'Ogni giovedì', t: 'Musica dal vivo', d: 'Dalle 19 un duo acustico sotto i portici. Si beve, si chiacchiera, non si urla.' },
+  { q: 'Toro e Juve',  t: 'Partite sul maxischermo', d: 'Tutte le partite di campionato, con panino e birra a 8 €. Meglio prenotare il tavolo.' },
+  { q: 'Su richiesta', t: 'Feste e compleanni', d: 'La sala interna (40 posti) è vostra la domenica pomeriggio. Torta portata da casa: nessun problema.' },
+];
+
+const INFO = [
+  { t: 'Wi‑Fi libero',      d: 'Senza registrazione, e prese di corrente ai tavoli interni.' },
+  { t: 'Buoni pasto',       d: 'Accettiamo i principali buoni pasto, cartacei ed elettronici.' },
+  { t: 'Dehors coperto',    d: '30 posti sotto i portici: si sta fuori anche quando piove.' },
+  { t: 'Carte e Satispay',  d: 'Si paga come volete, anche il caffè da 1,20 €.' },
+  { t: 'Cani ammessi',      d: 'Dentro e fuori. La ciotola dell’acqua è vicino all’ingresso.' },
+  { t: 'Ingresso a livello', d: 'Niente gradini all’entrata e bagno accessibile.' },
+];
+
+const TEL = '011 000 0000';
+const TEL_HREF = '+390110000000';
+const WA = 'https://wa.me/390110000000';
+const INDIRIZZO = 'Via Po 24, Torino';
+const MAPPA = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(INDIRIZZO);
+---
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Caffè Portici — Bar a Torino · Colazione, pranzo e aperitivo</title>
+  <meta name="description" content="Caffè Portici, bar in Via Po a Torino: colazione dalle 6:30, formula pranzo a 10 € con buoni pasto, aperitivo con tagliere e dehors sotto i portici. Ordina e ritira senza fare la coda." />
+  <meta name="theme-color" content="#fbf4e9" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 9h12v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V9z' fill='%23a8481a'/><path d='M16 10h2a2 2 0 0 1 0 4h-2' fill='none' stroke='%23241a12' stroke-width='1.6'/><path d='M7 3v2M11 3v2' stroke='%23241a12' stroke-width='1.6' stroke-linecap='round'/></svg>" />
+</head>
+<body>
+
+  <a class="demo-flag" href="/siti-web-bar-torino">★ Demo di <b>Mole Digitale</b><span class="flag-lungo"> · Vuoi un sito così per il tuo bar?</span> · <b>Scopri di più →</b></a>
+
+  <!-- NAV -->
+  <header class="bnav" id="bnav">
+    <a href="#top" class="bbrand">
+      <svg class="bbrand-i" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+        <path d="M4 9h12v5.5A4.5 4.5 0 0 1 11.5 19h-3A4.5 4.5 0 0 1 4 14.5V9z"/><path d="M16 10.5h1.8a2.2 2.2 0 0 1 0 4.4H16"/><path d="M7.5 3v2.4M11 3v2.4"/>
+      </svg>
+      <span>Caffè <em>Portici</em></span>
+    </a>
+    <nav class="blinks" id="blinks" aria-label="Menu principale">
+      <a href="#giornata">La giornata</a>
+      <a href="#pranzo">Pranzo</a>
+      <a href="#ordina">Ordina</a>
+      <a href="#serate">Serate</a>
+      <a href="#dove">Dove siamo</a>
+    </nav>
+    <button class="bnav-toggle" id="navToggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="blinks">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <a href="#ordina" class="bbtn bbtn-solid bnav-cta">Ordina e ritira</a>
+  </header>
+
+  <main id="main">
+
+  <!-- HERO -->
+  <section class="bhero" id="top">
+    <div class="bhero-in">
+      <div class="bhero-testo">
+        <p class="bocchiello r">Bar sotto i portici · Torino dal 1968</p>
+        <h1 class="bhero-t r">Il tuo bar,<br/><span class="it">dalle 6:30.</span></h1>
+        <p class="bhero-s r">Il caffè che sai tu, la brioche ancora calda, il pranzo in mezz’ora e l’aperitivo quando cala la luce. Sempre lo stesso banco, dal 1968.</p>
+
+        <!-- IL PEZZO FORTE: lo stato del bar in questo momento -->
+        <div class="adesso r" id="adesso">
+          <p class="stato" id="stato">
+            <span class="pallino" id="pallino" aria-hidden="true"></span>
+            <span id="statoTxt">Aperto tutti i giorni dalle 6:30</span>
+          </p>
+          <p class="adesso-t" id="adessoT">Colazione, pranzo e aperitivo</p>
+          <p class="adesso-d" id="adessoD">Colazione dalle 6:30, pranzo dalle 11:30, aperitivo dalle 17:30.</p>
+        </div>
+
+        <div class="bhero-cta r">
+          <a href="#ordina" class="bbtn bbtn-solid">Ordina e ritira</a>
+          <a href="#pranzo" class="bbtn bbtn-ghost">Il pranzo di oggi</a>
+        </div>
+      </div>
+
+      <!-- Il quadrante della giornata: le 24 ore, con le quattro fasce come archi.
+           È statico nell'HTML (si vede anche senza JS); la lancetta la muove il JS. -->
+      <div class="bhero-arte r">
+        <div class="quadrante-box">
+          <svg class="quadrante" viewBox="0 0 200 200" role="img"
+               aria-label="La giornata del bar: colazione dalle 6:30 alle 11, pranzo dalle 11:30 alle 14:30, merenda dalle 15 alle 17:30, aperitivo dalle 17:30 alle 20.">
+            <g transform="rotate(-90 100 100)">
+              <circle class="q-base" cx="100" cy="100" r={RAGGIO} />
+              {FASCE.map((f) => (
+                <circle class="q-arco" cx="100" cy="100" r={RAGGIO} stroke={f.col}
+                        stroke-dasharray={`${arco(f.da, f.a).len} ${CIRCONF}`}
+                        stroke-dashoffset={arco(f.da, f.a).off} />
+              ))}
+            </g>
+            <g class="q-tacche">
+              {TACCHE.map((t) => (
+                <line x1="100" y1={t.grande ? 8 : 11} x2="100" y2={t.grande ? 18 : 15}
+                      class={t.grande ? 'tacca grande' : 'tacca'}
+                      transform={`rotate(${(t.h / 24) * 360} 100 100)`} />
+              ))}
+            </g>
+            <g class="q-lancetta" id="lancetta" hidden>
+              <circle class="q-ora-alone" cx="100" cy="22" r="10" />
+              <circle class="q-ora-punto" cx="100" cy="22" r="6" />
+            </g>
+          </svg>
+          <div class="q-centro">
+            <b id="qOra">6:30 → 20:00</b>
+            <span id="qFascia">la nostra giornata</span>
+          </div>
+        </div>
+        <ul class="q-legenda">
+          {FASCE.map((f) => (
+            <li><span class="q-punto" style={`background:${f.col}`} aria-hidden="true"></span>{f.t}<b>{f.da}</b></li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- LA GIORNATA -->
+  <section class="bsez" id="giornata">
+    <div class="btesta">
+      <span class="bkicker r">La giornata al banco</span>
+      <h2 class="r">Quattro bar <span class="it">in uno.</span></h2>
+      <p class="blead r">Lo stesso locale cambia faccia quattro volte al giorno. Qui trovi cosa c’è adesso — e cosa ci sarà tra un’ora.</p>
+    </div>
+    <div class="fasce">
+      {FASCE.map((f) => (
+        <article class={'fascia r fascia-' + f.k} style={`--col:${f.col}`} data-fascia={f.k} data-da={f.da} data-a={f.a}>
+          <span class="fascia-badge" data-badge hidden>in corso adesso</span>
+          <span class="fascia-ico" aria-hidden="true">
+            {f.k === 'colazione' && <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 9h12v5.5A4.5 4.5 0 0 1 11.5 19h-3A4.5 4.5 0 0 1 4 14.5V9z"/><path d="M16 10.5h1.8a2.2 2.2 0 0 1 0 4.4H16"/><path d="M7.5 3v2.4M11 3v2.4"/></svg>}
+            {f.k === 'pranzo' && <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 3v6a2.5 2.5 0 0 0 5 0V3"/><path d="M8.5 11v10"/><path d="M17 3c1.8 1.2 2.6 3 2.6 5.6 0 2.2-.9 3.4-2.6 3.6v8.8"/></svg>}
+            {f.k === 'merenda' && <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 14a8 8 0 0 1 16 0"/><path d="M2.5 17.5h19"/><path d="M4.5 21h15"/><path d="M12 6.5V4"/></svg>}
+            {f.k === 'aperitivo' && <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16l-8 8.5z"/><path d="M12 12.5V20"/><path d="M8 20h8"/></svg>}
+          </span>
+          <p class="fascia-ore">{f.da} – {f.a}</p>
+          <h3>{f.t}</h3>
+          <p class="fascia-d">{f.d}</p>
+          <ul class="fascia-l">{f.voci.map((v) => <li>{v}</li>)}</ul>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- PRANZO -->
+  <section class="bsez bpranzo" id="pranzo">
+    <div class="btesta">
+      <span class="bkicker r">Il pranzo</span>
+      <h2 class="r">Mangi bene, <span class="it">in mezz’ora.</span></h2>
+      <p class="blead r">Cucina nostra, porzioni vere, e nessuna attesa: alle 12:30 il piatto è già pronto.</p>
+    </div>
+
+    <div class="pdg-oggi r" id="pdgOggi" hidden>
+      <span class="pdg-et" id="pdgEt">Oggi</span>
+      <div class="pdg-piatti" id="pdgPiatti"></div>
+      <p class="pdg-nota" id="pdgNota"></p>
+    </div>
+
+    <div class="pranzo-in">
+      <div class="r">
+        <h3 class="bh3">Il menu della settimana</h3>
+        <ul class="sett" id="sett">
+          {[1, 2, 3, 4, 5, 6, 0].map((i) => (
+            <li class="sett-g" data-giorno={i}>
+              <b>{SETTIMANA[i].g}</b>
+              <span>{SETTIMANA[i].primo ? SETTIMANA[i].primo + ' · ' + SETTIMANA[i].secondo : SETTIMANA[i].nota}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <aside class="formula r">
+        <span class="formula-et">Formula pranzo</span>
+        <p class="formula-p">10 <span>€</span></p>
+        <ul class="formula-l">
+          <li>Un primo o un secondo del giorno</li>
+          <li>Contorno di verdure</li>
+          <li>Acqua e caffè</li>
+          <li>Pane e coperto inclusi</li>
+        </ul>
+        <p class="formula-bp">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4V7z"/><path d="M14 7v10" stroke-dasharray="2 2.5"/></svg>
+          <b>Buoni pasto accettati</b><br/>Cartacei ed elettronici, dei principali circuiti.
+        </p>
+        <a href="#ordina" class="bbtn bbtn-solid formula-btn">Prenota il piatto</a>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ORDINA E RITIRA -->
+  <section class="bsez bordina" id="ordina">
+    <div class="btesta">
+      <span class="bkicker r">Ordina e ritira</span>
+      <h2 class="r">Salta <span class="it">la coda.</span></h2>
+      <p class="blead r">Ordina dal telefono mentre esci dall’ufficio: prepariamo tutto per l’ora che ci dici. Si paga al banco, al ritiro.</p>
+    </div>
+
+    <div class="ord-in">
+      <div class="ord-lista">
+        <div class="chips" role="group" aria-label="Filtra per categoria">
+          {CATEGORIE.map((c, i) => (
+            <button type="button" class={'chip' + (i === 0 ? ' on' : '')} data-cat={c}>{c}</button>
+          ))}
+        </div>
+        <div id="listino">
+          {CATEGORIE.slice(1).map((cat) => (
+            <section class="gruppo r" data-gruppo={cat}>
+              <h3 class="gr-h">{cat}</h3>
+              <ul class="voci">
+                {LISTINO.filter((v) => v.c === cat).map((v) => (
+                  <li class="voce" data-cat={v.c} data-nome={v.n} data-prezzo={v.p}>
+                    <b class="voce-n">{v.n}</b>
+                    <span class="voce-filo" aria-hidden="true"></span>
+                    <span class="voce-p">{prezzo(v.p)}</span>
+                    <div class="stepper">
+                      <button type="button" class="st-btn" data-meno aria-label={'Togli una unità di ' + v.n}>−</button>
+                      <output class="st-q" data-q aria-label={'Quantità di ' + v.n}>0</output>
+                      <button type="button" class="st-btn" data-piu aria-label={'Aggiungi ' + v.n}>+</button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      </div>
+
+      <aside class="carrello r" id="carrello">
+        <div class="carr-box">
+        <h3 class="carr-h">Il tuo ordine <span class="carr-n" id="carrN" aria-live="polite">0</span></h3>
+
+        <p class="carr-vuoto" id="carrVuoto">Aggiungi quello che ti serve dall’elenco: qui vedrai il riepilogo e il totale.</p>
+
+        <ul class="carr-l" id="carrL" hidden></ul>
+
+        <div class="carr-tot" id="carrTot" hidden>
+          <span>Totale indicativo</span>
+          <b id="totale">0,00 €</b>
+        </div>
+
+        <div class="carr-form" id="carrForm" hidden>
+          <label>Ritiro
+            <select id="ora"></select>
+          </label>
+          <label>A nome di
+            <input type="text" id="nome" placeholder="Come ti chiamiamo al banco" autocomplete="name" maxlength="40" />
+          </label>
+          <label class="carr-check">
+            <input type="checkbox" id="ufficio" />
+            <span>Consegna in ufficio <small>(entro 300 m, da 15 €)</small></span>
+          </label>
+          <a class="bbtn bbtn-wa" id="inviaWa" href={WA} target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.5-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c2.3 1 2.3.7 2.7.6a2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1z"/></svg>
+            Manda l’ordine su WhatsApp
+          </a>
+          <button type="button" class="carr-svuota" id="svuota">Svuota l’ordine</button>
+          <p class="carr-nota">Demo: si apre WhatsApp con l’ordine già scritto. Nessun pagamento online, si paga al banco.</p>
+        </div>
+        </div>
+
+        <ol class="come">
+          <li><b>Scegli</b>Quello che ti serve, anche per tutto l’ufficio.</li>
+          <li><b>Dicci l’ora</b>Serve un quarto d’ora: prepariamo tutto per quel momento.</li>
+          <li><b>Ritira e paga</b>Ti diamo il sacchetto senza farti fare la fila.</li>
+        </ol>
+      </aside>
+    </div>
+  </section>
+
+  <!-- FEDELTÀ -->
+  <section class="bfedelta">
+    <div class="fed-in">
+      <div class="r">
+        <span class="bkicker bkicker-chiaro">La tessera del banco</span>
+        <h2 class="fed-h">Il decimo caffè<br/><span class="it-chiaro">lo offriamo noi.</span></h2>
+        <p class="fed-p">Nessuna app da scaricare, nessun dato da lasciare: una tessera di cartoncino, un timbro alla volta. Chiedila alla cassa — vale anche sui cappuccini.</p>
+      </div>
+      <div class="fed-carta r" aria-hidden="true">
+        <span class="fed-carta-et">Caffè Portici · tessera</span>
+        <div class="fed-bolli">
+          {[1,2,3,4,5,6,7,8,9,10].map((n) => (
+            <span class={'bollo' + (n <= 7 ? ' pieno' : '') + (n === 10 ? ' omaggio' : '')}>
+              {n === 10
+                ? <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="m12 3 2.5 5.5 6 .7-4.4 4.1 1.2 5.9L12 16.3 6.7 19.2l1.2-5.9L3.5 9.2l6-.7z"/></svg>
+                : <svg class="bollo-i" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M5 9h10v4.5A4.5 4.5 0 0 1 10.5 18h-1A4.5 4.5 0 0 1 5 13.5V9z"/><path d="M15 10.5h1.6a2 2 0 0 1 0 4H15"/><path d="M8.5 3.5v2.2M11.5 3.5v2.2"/></svg>}
+            </span>
+          ))}
+        </div>
+        <span class="fed-carta-p">7 su 10 — ci siamo quasi</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERATE -->
+  <section class="bsez" id="serate">
+    <div class="btesta">
+      <span class="bkicker r">Le serate</span>
+      <h2 class="r">Non solo <span class="it">caffè.</span></h2>
+    </div>
+    <div class="serate">
+      {SERATE.map((s) => (
+        <article class="serata r">
+          <span class="serata-q">{s.q}</span>
+          <h3>{s.t}</h3>
+          <p>{s.d}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- INFO PRATICHE -->
+  <section class="bsez binfo" id="info">
+    <div class="btesta">
+      <span class="bkicker r">Buono a sapersi</span>
+      <h2 class="r">Le cose che <span class="it">chiedete sempre.</span></h2>
+    </div>
+    <div class="info-g">
+      {INFO.map((i) => (
+        <div class="info-c r"><b>{i.t}</b><span>{i.d}</span></div>
+      ))}
+    </div>
+  </section>
+
+  <!-- DOVE E QUANDO -->
+  <section class="bsez bdove" id="dove">
+    <div class="dove-in">
+      <div class="r">
+        <span class="bkicker">Dove e quando</span>
+        <h2 class="dove-h">{INDIRIZZO}</h2>
+        <p class="dove-p">Sotto i portici, a due passi da piazza Vittorio. Fermata GTT davanti al locale, parcheggio in piazza Vittorio.</p>
+        <p class="stato dove-stato"><span class="pallino" id="pallino2" aria-hidden="true"></span><span id="statoTxt2">Aperto tutti i giorni dalle 6:30</span></p>
+        <div class="dove-azioni">
+          <a href={MAPPA} target="_blank" rel="noopener" class="bbtn bbtn-solid">Apri in Google Maps</a>
+          <a href={'tel:' + TEL_HREF} class="bbtn bbtn-ghost">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 3h3l1.5 4-2 1.5a12 12 0 0 0 5.5 5.5L16 12l4 1.5v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4 6.2 2 2 0 0 1 6 4z"/></svg>
+            {TEL}
+          </a>
+        </div>
+      </div>
+      <div class="r">
+        <h3 class="bh3">Orari di apertura</h3>
+        <ul class="orari" id="orari">
+          {ORARI.map((o, i) => (
+            <li data-giorno={(i + 1) % 7}><span>{o.g}</span><b>{o.apre} – {o.chiude}</b></li>
+          ))}
+        </ul>
+        <p class="orari-nota">La domenica pomeriggio siamo chiusi. Il 1° gennaio e a Ferragosto anche noi ci riposiamo.</p>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <footer class="bfoot">
+    <span>Caffè Portici · {INDIRIZZO} · {TEL}</span>
+    <span>Demo · <a href="/">Mole Digitale</a></span>
+  </footer>
+
+  <a class="wa-fab" href={WA} target="_blank" rel="noopener" aria-label="Scrivici su WhatsApp">
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.5-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c2.3 1 2.3.7 2.7.6a2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1z"/></svg>
+  </a>
+
+  <style is:global>
+    :root{
+      --crema:#fbf4e9; --panna:#fffaf3; --espresso:#241a12; --moka:#6b5443;
+      --ambra:#a8481a; --ambra-viva:#e07b2c; --ambra-chiara:#e8a33f;
+      --verde:#2f6b3e; --filo:rgba(36,26,18,.13); --filo-chiaro:rgba(251,244,233,.16);
+      --disp:'Fraunces Variable',Georgia,serif;
+      --sans:'Inter Variable',system-ui,sans-serif;
+      --e:cubic-bezier(.16,1,.3,1);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    [hidden]{display:none !important}
+    html{scroll-behavior:smooth;overflow-x:clip;scroll-padding-top:110px}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    body{background:var(--crema);color:var(--espresso);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    img,svg{display:block;max-width:100%}
+    a{color:inherit;text-decoration:none}
+    button,input,select{font:inherit;color:inherit}
+    h1,h2,h3{font-family:var(--disp);font-weight:600;line-height:1.05;letter-spacing:-.015em}
+    .it{font-style:italic;color:var(--ambra)}
+    .it-chiaro{font-style:italic;color:var(--ambra-chiara)}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    :focus-visible{outline:2px solid var(--ambra);outline-offset:3px;border-radius:4px}
+
+    .demo-flag{position:fixed;top:0;left:0;right:0;z-index:200;text-align:center;font-size:.8rem;line-height:1.4;
+      padding:.4rem .6rem;background:rgba(36,26,18,.92);backdrop-filter:blur(8px);color:#e4d6c4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .demo-flag b{color:var(--ambra-chiara)}
+    .wa-fab{position:fixed;right:18px;bottom:18px;z-index:160;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 30px -10px rgba(37,211,102,.6);transition:transform .2s var(--e)}
+    .wa-fab:hover{transform:scale(1.08)}
+
+    /* NAV */
+    .bnav{position:fixed;top:31px;left:0;right:0;z-index:150;display:flex;align-items:center;gap:1.4rem;
+      padding:1rem clamp(1rem,4vw,3rem);transition:.35s var(--e)}
+    .bnav.solid{background:rgba(251,244,233,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--filo);padding-block:.65rem}
+    .bbrand{display:inline-flex;align-items:center;gap:.6rem;font-family:var(--disp);font-size:1.4rem;font-weight:600;margin-right:auto;white-space:nowrap}
+    .bbrand em{font-style:italic;color:var(--ambra)}
+    .bbrand-i{color:var(--ambra);flex:none}
+    .blinks{display:flex;gap:1.6rem}
+    .blinks a{font-size:.94rem;color:var(--moka);position:relative;transition:color .25s}
+    .blinks a::after{content:'';position:absolute;left:0;bottom:-5px;height:1.5px;width:0;background:var(--ambra);transition:width .3s var(--e)}
+    .blinks a:hover{color:var(--espresso)} .blinks a:hover::after{width:100%}
+    .bnav-toggle{display:none;background:none;border:0;cursor:pointer;width:44px;height:44px;border-radius:10px;place-items:center}
+    .bnav-toggle:hover{background:rgba(36,26,18,.07)}
+
+    .bbtn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.8rem 1.5rem;border-radius:999px;font-weight:600;font-size:.94rem;cursor:pointer;border:0;transition:transform .25s var(--e),background .25s,box-shadow .25s;white-space:nowrap}
+    .bbtn-solid{background:var(--espresso);color:var(--crema);box-shadow:0 10px 24px -12px rgba(36,26,18,.8)}
+    .bbtn-solid:hover{transform:translateY(-2px);background:#3a2a1c}
+    .bbtn-ghost{border:1.5px solid var(--filo);color:var(--espresso);background:transparent}
+    .bbtn-ghost:hover{background:rgba(36,26,18,.05);transform:translateY(-2px)}
+    .bbtn-wa{background:#25d366;color:#0b3d1c;width:100%;box-shadow:0 10px 24px -12px rgba(37,211,102,.9)}
+    .bbtn-wa:hover{transform:translateY(-2px);background:#20bd5b}
+
+    /* HERO */
+    .bhero{padding:calc(31px + 7.5rem) clamp(1.2rem,5vw,3rem) clamp(3rem,7vw,5rem)}
+    .bhero-in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(2rem,5vw,4rem);align-items:center}
+    .bhero-in>*{min-width:0}
+    .bocchiello{font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ambra);margin-bottom:1.1rem}
+    .bhero-t{font-size:clamp(2.9rem,8vw,5.6rem);margin-bottom:1.2rem}
+    .bhero-s{font-size:1.12rem;color:var(--moka);max-width:46ch;margin-bottom:1.8rem}
+    .bhero-cta{display:flex;gap:.9rem;flex-wrap:wrap;margin-top:1.8rem}
+
+    /* stato "adesso" */
+    .adesso{background:var(--panna);border:1px solid var(--filo);border-radius:18px;padding:1.2rem 1.4rem;max-width:520px;box-shadow:0 18px 40px -30px rgba(36,26,18,.6)}
+    .stato{display:flex;align-items:center;gap:.5rem;font-size:.82rem;letter-spacing:.04em;text-transform:uppercase;color:var(--moka);font-weight:600}
+    .pallino{width:9px;height:9px;border-radius:50%;background:var(--moka);flex:none}
+    .pallino.aperto{background:var(--verde);box-shadow:0 0 0 4px rgba(47,107,62,.16)}
+    .pallino.chiuso{background:#a33a2a;box-shadow:0 0 0 4px rgba(163,58,42,.14)}
+    .adesso-t{font-family:var(--disp);font-size:clamp(1.4rem,3vw,1.85rem);font-weight:600;line-height:1.15;margin:.5rem 0 .25rem}
+    .adesso-d{font-size:.94rem;color:var(--moka)}
+
+    /* quadrante delle 24 ore */
+    .bhero-arte{display:grid;justify-items:center;gap:1.4rem}
+    .quadrante-box{position:relative;width:min(100%,330px);aspect-ratio:1}
+    .quadrante-box::before{content:'';position:absolute;inset:8%;border-radius:50%;background:radial-gradient(circle at 40% 32%,#fdf0da,#f4e0c2);z-index:0}
+    .quadrante{position:relative;z-index:1;width:100%;height:100%;overflow:visible}
+    .q-base{fill:none;stroke:rgba(36,26,18,.09);stroke-width:15}
+    .q-arco{fill:none;stroke-width:15;stroke-linecap:butt}
+    .tacca{stroke:rgba(36,26,18,.22);stroke-width:1}
+    .tacca.grande{stroke:rgba(36,26,18,.45);stroke-width:1.6}
+    .q-lancetta{transition:transform .6s var(--e)}
+    .q-ora-alone{fill:var(--crema)}
+    .q-ora-punto{fill:var(--espresso);stroke:var(--crema);stroke-width:2.5}
+    .q-centro{position:absolute;inset:0;z-index:2;display:grid;align-content:center;justify-items:center;text-align:center;pointer-events:none}
+    .q-centro b{font-family:var(--disp);font-size:2.1rem;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+    .q-centro span{font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--moka);margin-top:.35rem;font-weight:600}
+    .q-legenda{list-style:none;display:grid;grid-template-columns:repeat(2,auto);gap:.45rem 1.6rem;font-size:.82rem;color:var(--moka)}
+    .q-legenda li{display:inline-flex;align-items:center;gap:.4rem}
+    .q-legenda b{color:var(--espresso);font-variant-numeric:tabular-nums}
+    .q-punto{width:9px;height:9px;border-radius:3px;flex:none}
+
+    /* SEZIONI */
+    .bsez{max-width:1180px;margin:0 auto;padding:clamp(3.5rem,8vw,6.5rem) clamp(1.2rem,5vw,3rem)}
+    .btesta{max-width:680px;margin-bottom:clamp(2rem,4vw,3.2rem)}
+    .bkicker{display:inline-block;font-size:.76rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ambra);margin-bottom:.8rem;font-weight:600}
+    .bkicker-chiaro{color:var(--ambra-chiara)}
+    .btesta h2{font-size:clamp(2rem,5vw,3.3rem)}
+    .blead{color:var(--moka);font-size:1.05rem;margin-top:.9rem}
+    .bh3{font-family:var(--sans);font-size:.76rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ambra);font-weight:600;margin-bottom:1rem}
+
+    /* FASCE */
+    .fasce{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem}
+    .fasce>*{min-width:0}
+    .fascia{position:relative;background:var(--panna);border:1px solid var(--filo);border-top:3px solid var(--col,var(--ambra));border-radius:4px 4px 18px 18px;padding:1.5rem 1.4rem;transition:transform .3s var(--e),box-shadow .3s var(--e),border-color .3s}
+    .fascia:hover{transform:translateY(-4px);box-shadow:0 22px 44px -32px rgba(36,26,18,.75)}
+    .fascia.ora{border-left-color:var(--ambra);border-right-color:var(--ambra);border-bottom-color:var(--ambra);box-shadow:0 0 0 2px rgba(168,72,26,.16),0 22px 44px -32px rgba(36,26,18,.7);background:#fff7ec}
+    .fascia-badge{position:absolute;top:-11px;left:1.2rem;background:var(--ambra);color:#fff;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600;padding:.24rem .7rem;border-radius:999px}
+    .fascia-ico{color:var(--ambra);display:block;margin-bottom:.9rem}
+    .fascia-ore{font-size:.8rem;letter-spacing:.08em;color:var(--moka);font-weight:600}
+    .fascia h3{font-size:1.5rem;margin:.15rem 0 .5rem}
+    .fascia-d{font-size:.92rem;color:var(--moka)}
+    .fascia-l{list-style:none;margin-top:1rem;border-top:1px solid var(--filo);padding-top:.8rem;display:grid;gap:.35rem}
+    .fascia-l li{font-size:.87rem;color:var(--moka);padding-left:1rem;position:relative}
+    .fascia-l li::before{content:'';position:absolute;left:0;top:.62em;width:5px;height:5px;border-radius:50%;background:var(--ambra-viva)}
+
+    /* PRANZO */
+    .pdg-oggi{background:var(--espresso);color:var(--crema);border-radius:20px;padding:clamp(1.5rem,3vw,2.2rem);margin-bottom:1.6rem}
+    .pdg-et{font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ambra-chiara);font-weight:600}
+    .pdg-piatti{display:flex;flex-wrap:wrap;gap:.6rem 2.6rem;margin-top:.6rem}
+    .pdg-piatto{font-family:var(--disp);font-size:clamp(1.4rem,3vw,2rem);font-weight:600;line-height:1.15}
+    .pdg-piatto small{display:block;font-family:var(--sans);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:#cbb9a5;font-weight:600;margin-bottom:.15rem}
+    .pdg-nota{color:#cbb9a5;font-size:.92rem;margin-top:.9rem}
+    .pranzo-in{display:grid;grid-template-columns:1.35fr .65fr;gap:clamp(1.5rem,4vw,3rem);align-items:start}
+    .pranzo-in>*{min-width:0}
+    .sett{list-style:none}
+    .sett-g{display:grid;grid-template-columns:8.5rem 1fr;gap:1rem;padding:.85rem 0;border-bottom:1px solid var(--filo);align-items:baseline}
+    .sett-g:first-child{border-top:1px solid var(--filo)}
+    .sett-g b{font-weight:600}
+    .sett-g span{color:var(--moka);font-size:.95rem}
+    .sett-g.oggi{background:#fff7ec;border-radius:10px;padding-inline:.8rem;margin-inline:-.8rem;border-bottom-color:transparent}
+    .sett-g.oggi b{color:var(--ambra)}
+    .sett-g.oggi b::after{content:' · oggi';font-size:.72rem;letter-spacing:.1em;text-transform:uppercase}
+    .formula{background:var(--panna);border:1px solid var(--filo);border-radius:20px;padding:1.6rem 1.5rem;position:sticky;top:120px}
+    .formula-et{font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ambra);font-weight:600}
+    .formula-p{font-family:var(--disp);font-size:3.6rem;font-weight:600;line-height:1;margin:.2rem 0 .9rem}
+    .formula-p span{font-size:1.6rem;color:var(--moka)}
+    .formula-l{list-style:none;display:grid;gap:.5rem;border-top:1px solid var(--filo);padding-top:.9rem}
+    .formula-l li{font-size:.92rem;color:var(--moka);padding-left:1.3rem;position:relative}
+    .formula-l li::before{content:'✓';position:absolute;left:0;color:var(--verde);font-weight:700}
+    .formula-bp{font-size:.88rem;color:var(--moka);background:rgba(168,72,26,.07);border-radius:12px;padding:.8rem .9rem;margin:1.1rem 0}
+    .formula-bp b{color:var(--espresso)}
+    .formula-bp svg{display:inline-block;vertical-align:-4px;margin-right:.35rem;color:var(--ambra)}
+    .bbtn svg{flex:none}
+    .formula-btn{width:100%}
+
+    /* ORDINA */
+    .bordina{background:var(--panna);max-width:none;border-block:1px solid var(--filo)}
+    .bordina>*{max-width:1180px;margin-inline:auto}
+    .ord-in{display:grid;grid-template-columns:1.4fr .6fr;gap:clamp(1.5rem,4vw,3rem);align-items:start}
+    .ord-in>*{min-width:0}
+    .chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.2rem}
+    .chip{background:transparent;border:1.5px solid var(--filo);border-radius:999px;padding:.45rem 1.1rem;font-size:.88rem;font-weight:600;color:var(--moka);cursor:pointer;transition:.2s var(--e)}
+    .chip:hover{border-color:var(--ambra);color:var(--ambra)}
+    .chip.on{background:var(--espresso);border-color:var(--espresso);color:var(--crema)}
+    .gruppo{margin-bottom:1.8rem}
+    .gr-h{font-family:var(--sans);font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ambra);font-weight:600;padding-bottom:.5rem;border-bottom:1.5px solid var(--espresso)}
+    .voci{list-style:none;display:grid}
+    .voce{display:grid;grid-template-columns:auto minmax(1rem,1fr) auto auto;gap:.7rem;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--filo)}
+    .voce:last-child{border-bottom:0}
+    .voce-n{font-weight:500;min-width:0}
+    .voce-filo{border-bottom:1px dotted rgba(36,26,18,.3);transform:translateY(-3px)}
+    .voce-p{font-family:var(--disp);font-size:1.1rem;font-weight:600;color:var(--ambra);white-space:nowrap;font-variant-numeric:tabular-nums}
+    .voce.presa{background:#fff7ec;border-radius:10px;padding-inline:.7rem;margin-inline:-.7rem;border-bottom-color:transparent}
+    .voce.presa .voce-filo{border-bottom-color:transparent}
+    .stepper{display:flex;align-items:center;gap:.15rem;background:var(--crema);border:1px solid var(--filo);border-radius:999px;padding:.15rem}
+    .st-btn{width:32px;height:32px;border:0;background:transparent;border-radius:50%;cursor:pointer;font-size:1.15rem;line-height:1;color:var(--espresso);transition:background .2s}
+    .st-btn:hover{background:rgba(36,26,18,.09)}
+    .st-q{min-width:1.6rem;text-align:center;font-weight:600;font-variant-numeric:tabular-nums}
+
+    .carrello{position:sticky;top:120px}
+    .carr-box{background:var(--crema);border:1px solid var(--filo);border-radius:20px;padding:1.5rem}
+    .come{list-style:none;counter-reset:p;margin-top:1.2rem;display:grid;gap:.9rem}
+    .come li{counter-increment:p;display:grid;grid-template-columns:1.6rem 1fr;gap:.1rem .7rem;font-size:.86rem;color:var(--moka)}
+    .come li::before{content:counter(p);grid-row:1/3;width:1.6rem;height:1.6rem;border-radius:50%;background:rgba(168,72,26,.12);color:var(--ambra);display:grid;place-items:center;font-weight:700;font-size:.78rem}
+    .come b{color:var(--espresso);font-weight:600;font-size:.92rem}
+    .carr-h{font-size:1.4rem;display:flex;align-items:center;gap:.6rem;margin-bottom:.9rem}
+    .carr-n{font-family:var(--sans);font-size:.8rem;font-weight:700;background:var(--ambra);color:#fff;min-width:1.5rem;height:1.5rem;border-radius:999px;display:grid;place-items:center;padding-inline:.4rem}
+    .carr-vuoto{font-size:.92rem;color:var(--moka)}
+    .carr-l{list-style:none;display:grid;gap:.55rem;max-height:250px;overflow-y:auto}
+    .carr-r{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:.6rem;align-items:center;font-size:.92rem}
+    .carr-r span{min-width:0;overflow-wrap:anywhere}
+    .carr-r b{font-variant-numeric:tabular-nums;white-space:nowrap}
+    .carr-x{border:0;background:transparent;cursor:pointer;color:var(--moka);width:26px;height:26px;border-radius:50%;line-height:1}
+    .carr-x:hover{background:rgba(36,26,18,.09);color:var(--espresso)}
+    .carr-tot{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--filo);margin-top:.9rem;padding-top:.9rem;font-size:.9rem;color:var(--moka)}
+    .carr-tot b{font-family:var(--disp);font-size:1.6rem;color:var(--espresso)}
+    .carr-form{display:grid;gap:.8rem;margin-top:1rem}
+    .carr-form label{display:grid;gap:.3rem;font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;color:var(--moka);font-weight:600}
+    .carr-form select,.carr-form input[type=text]{padding:.65rem .8rem;border:1px solid var(--filo);border-radius:10px;background:var(--panna);font-size:.95rem;letter-spacing:0;text-transform:none;color:var(--espresso);width:100%}
+    .carr-form label.carr-check{display:flex;align-items:flex-start;gap:.55rem;font-size:.86rem;letter-spacing:0;text-transform:none;font-weight:400;color:var(--moka)}
+    .carr-check input{margin-top:.25rem;accent-color:var(--ambra);flex:none}
+    .carr-check small{display:block;color:var(--moka);opacity:.85}
+    .carr-svuota{background:none;border:0;color:var(--moka);font-size:.86rem;text-decoration:underline;cursor:pointer;justify-self:center}
+    .carr-svuota:hover{color:var(--ambra)}
+    .carr-nota{font-size:.78rem;color:var(--moka);text-align:center}
+
+    /* FEDELTÀ */
+    .bfedelta{background:var(--espresso);color:var(--crema);padding:clamp(3.5rem,8vw,6rem) clamp(1.2rem,5vw,3rem)}
+    .fed-in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4rem);align-items:center}
+    .fed-in>*{min-width:0}
+    .fed-h{font-size:clamp(2rem,5vw,3.2rem)}
+    .fed-p{color:#cbb9a5;margin-top:1.1rem;max-width:46ch}
+    .fed-carta{background:linear-gradient(140deg,#33251a,#241a12);border:1px solid var(--filo-chiaro);border-radius:18px;padding:1.5rem;box-shadow:0 30px 60px -35px rgba(0,0,0,.9);width:min(100%,380px);margin-left:auto}
+    .fed-carta-et{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ambra-chiara);font-weight:600}
+    .fed-bolli{display:grid;grid-template-columns:repeat(5,1fr);gap:.6rem;margin:1.1rem 0 .8rem}
+    .bollo{aspect-ratio:1;border-radius:50%;border:1.5px dashed rgba(251,244,233,.28);display:grid;place-items:center;color:rgba(251,244,233,.2)}
+    .bollo.pieno{background:var(--ambra-viva);border:1.5px solid var(--ambra-viva);color:#3a2110}
+    .bollo.omaggio{border-color:var(--ambra-chiara);color:var(--ambra-chiara);border-style:solid}
+    .fed-carta-p{font-size:.86rem;color:#cbb9a5}
+
+    /* SERATE */
+    .serate{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem}
+    .serate>*{min-width:0}
+    .serata{background:var(--panna);border:1px solid var(--filo);border-radius:18px;padding:1.5rem 1.4rem;transition:transform .3s var(--e),box-shadow .3s var(--e)}
+    .serata:hover{transform:translateY(-4px);box-shadow:0 22px 44px -32px rgba(36,26,18,.75)}
+    .serata-q{font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ambra);font-weight:600}
+    .serata h3{font-size:1.5rem;margin:.35rem 0 .5rem}
+    .serata p{color:var(--moka);font-size:.93rem}
+
+    /* INFO */
+    .info-g{display:grid;grid-template-columns:repeat(3,1fr);gap:0 clamp(1.5rem,4vw,3rem)}
+    .info-g>*{min-width:0}
+    .info-c{padding:1.1rem 0;border-bottom:1px solid var(--filo)}
+    .info-c:nth-child(-n+3){border-top:1px solid var(--filo)}
+    .info-c b{display:block;font-family:var(--disp);font-size:1.25rem;font-weight:600}
+    .info-c span{color:var(--moka);font-size:.92rem}
+
+    /* DOVE */
+    .dove-in{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(2rem,5vw,4rem);align-items:start}
+    .dove-in>*{min-width:0}
+    .dove-h{font-size:clamp(1.9rem,4.4vw,2.9rem);margin:.5rem 0 0}
+    .dove-p{color:var(--moka);margin:1rem 0 1.2rem;max-width:44ch}
+    .dove-stato{margin-bottom:1.6rem}
+    .dove-azioni{display:flex;gap:.8rem;flex-wrap:wrap}
+    .orari{list-style:none}
+    .orari li{display:flex;justify-content:space-between;gap:1rem;padding:.65rem 0;border-bottom:1px solid var(--filo);font-size:.95rem}
+    .orari li:first-child{border-top:1px solid var(--filo)}
+    .orari li span{color:var(--moka)}
+    .orari li.oggi{background:#fff7ec;border-radius:10px;padding-inline:.8rem;margin-inline:-.8rem;border-bottom-color:transparent}
+    .orari li.oggi span{color:var(--ambra);font-weight:600}
+    .orari-nota{font-size:.85rem;color:var(--moka);margin-top:.9rem}
+
+    .bfoot{max-width:1180px;margin:0 auto;padding:2rem clamp(1.2rem,5vw,3rem);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--moka);font-size:.85rem;border-top:1px solid var(--filo)}
+    .bfoot a{color:var(--ambra);border-bottom:1px solid var(--ambra)}
+
+    /* Reveal */
+    .r{opacity:0;transform:translateY(20px)}
+    .r.in{opacity:1;transform:none;transition:opacity .7s var(--e),transform .7s var(--e)}
+
+    @media (max-width:1000px){
+      .fasce{grid-template-columns:repeat(2,1fr)}
+      .serate{grid-template-columns:1fr}
+      .info-g{grid-template-columns:repeat(2,1fr)}
+      .info-c:nth-child(-n+3){border-top:0}
+      .info-c:nth-child(-n+2){border-top:1px solid var(--filo)}
+    }
+    @media (max-width:900px){
+      .bhero-in,.pranzo-in,.ord-in,.fed-in,.dove-in{grid-template-columns:1fr}
+      .bhero-arte{order:-1}
+      .quadrante-box{width:min(72%,260px)}
+      .q-centro b{font-size:1.7rem}
+      .formula,.carrello{position:static}
+      .blinks{display:none}
+      .bnav-toggle{display:grid}
+      .bnav-cta{padding:.55rem 1rem;font-size:.82rem}
+      .bnav{gap:.6rem}
+      .bnav.bopen{background:rgba(251,244,233,.97);backdrop-filter:blur(14px)}
+      .bnav.bopen .blinks{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1.1rem;background:rgba(251,244,233,.98);backdrop-filter:blur(14px);border-bottom:1px solid var(--filo);padding:1.2rem clamp(1.2rem,5vw,3rem) 1.5rem}
+    }
+    @media (max-width:640px){
+      .flag-lungo{display:none}
+      .demo-flag{font-size:.74rem}
+    }
+    @media (max-width:560px){
+      .fasce,.info-g{grid-template-columns:1fr}
+      .info-c:nth-child(-n+2){border-top:0}
+      .info-c:first-child{border-top:1px solid var(--filo)}
+      .sett-g{grid-template-columns:1fr;gap:.15rem}
+      .voce{grid-template-columns:minmax(0,1fr) auto;row-gap:.35rem;padding:.7rem 0}
+      .voce-filo{display:none}
+      .voce .stepper{grid-column:2;grid-row:1/3}
+      .voce-p{grid-column:1}
+      .fed-carta{margin-inline:auto}
+    }
+    @media (prefers-reduced-motion:reduce){
+      .r{opacity:1 !important;transform:none !important}
+    }
+  </style>
+
+  <script>
+    // ---------- dati condivisi con il markup ----------
+    const ORARI = [
+      { apre: '07:30', chiude: '13:00' }, // domenica (indice = getDay)
+      { apre: '06:30', chiude: '20:00' },
+      { apre: '06:30', chiude: '20:00' },
+      { apre: '06:30', chiude: '20:00' },
+      { apre: '06:30', chiude: '20:00' },
+      { apre: '06:30', chiude: '20:00' },
+      { apre: '07:00', chiude: '20:00' },
+    ];
+    const GIORNI = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'];
+    const SETTIMANA = [
+      { primo: null, secondo: null, nota: 'La domenica siamo aperti solo la mattina: colazione fino alle 13.' },
+      { primo: 'Risotto ai porri e toma', secondo: 'Svizzera con patate al forno' },
+      { primo: 'Pasta e fagioli', secondo: 'Pollo al limone e insalata' },
+      { primo: 'Lasagna al forno', secondo: 'Frittata di zucchine e verdure' },
+      { primo: 'Gnocchi al Castelmagno', secondo: 'Arrosto con purè' },
+      { primo: 'Pasta al pomodoro fresco', secondo: 'Merluzzo gratinato e spinaci' },
+      { primo: 'Piatto unico: club sandwich', secondo: 'Insalatona grande del Portici' },
+    ];
+    const min = (hhmm) => { const [h, m] = hhmm.split(':').map(Number); return h * 60 + m; };
+    const hhmm = (t) => String(Math.floor(t / 60) % 24).padStart(2, '0') + ':' + String(t % 60).padStart(2, '0');
+    const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const eur = (n) => n.toFixed(2).replace('.', ',') + ' €';
+
+    // ---------- nav ----------
+    const bnav = document.getElementById('bnav');
+    addEventListener('scroll', () => bnav.classList.toggle('solid', scrollY > 30), { passive: true });
+    const toggle = document.getElementById('navToggle');
+    toggle.addEventListener('click', () => {
+      const o = bnav.classList.toggle('bopen');
+      toggle.setAttribute('aria-expanded', String(o));
+    });
+    document.querySelectorAll('.blinks a').forEach((a) => a.addEventListener('click', () => {
+      bnav.classList.remove('bopen'); toggle.setAttribute('aria-expanded', 'false');
+    }));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && bnav.classList.contains('bopen')) { bnav.classList.remove('bopen'); toggle.setAttribute('aria-expanded', 'false'); }
+    });
+
+    // ---------- il bar "adesso" ----------
+    function apertoOra(d) {
+      const o = ORARI[d.getDay()];
+      const t = d.getHours() * 60 + d.getMinutes();
+      return t >= min(o.apre) && t < min(o.chiude);
+    }
+    function prossimaApertura(da) {
+      const d = new Date(da);
+      for (let i = 0; i < 8; i++) {
+        const o = ORARI[d.getDay()];
+        const base = i === 0 ? da.getHours() * 60 + da.getMinutes() : -1;
+        if (base < min(o.apre)) { d.setHours(Math.floor(min(o.apre) / 60), min(o.apre) % 60, 0, 0); return d; }
+        d.setDate(d.getDate() + 1); d.setHours(0, 0, 0, 0);
+      }
+      return d;
+    }
+    function aggiornaStato() {
+      const now = new Date();
+      const o = ORARI[now.getDay()];
+      const t = now.getHours() * 60 + now.getMinutes();
+      const aperto = apertoOra(now);
+      const testo = aperto
+        ? (min(o.chiude) - t <= 45 ? `Aperto, ma chiudiamo alle ${o.chiude}` : `Aperto adesso · fino alle ${o.chiude}`)
+        : (() => { const p = prossimaApertura(now); const oggi = p.getDate() === now.getDate();
+            return `Chiuso · riapriamo ${oggi ? 'alle' : GIORNI[p.getDay()] + ' alle'} ${String(p.getHours()).padStart(2, '0')}:${String(p.getMinutes()).padStart(2, '0')}`; })();
+
+      ['pallino', 'pallino2'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.className = 'pallino ' + (aperto ? 'aperto' : 'chiuso');
+      });
+      ['statoTxt', 'statoTxt2'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = testo;
+      });
+
+      // fascia in corso
+      const fasce = [...document.querySelectorAll('[data-fascia]')];
+      let corrente = null, prossima = null;
+      fasce.forEach((f) => {
+        const da = min(f.dataset.da), a = min(f.dataset.a);
+        const dentro = aperto && t >= da && t < a;
+        f.classList.toggle('ora', dentro);
+        f.querySelector('[data-badge]').hidden = !dentro;
+        if (dentro) corrente = f;
+        if (!prossima && da > t) prossima = f;
+      });
+
+      // quadrante: lancetta sull'ora vera + orologio al centro
+      const lancetta = document.getElementById('lancetta');
+      lancetta.setAttribute('transform', `rotate(${(t / 1440) * 360} 100 100)`);
+      lancetta.removeAttribute('hidden'); // `hidden` è una proprietà di HTMLElement, non di SVGElement
+      document.getElementById('qOra').textContent = hhmm(t);
+      document.getElementById('qFascia').textContent = corrente
+        ? corrente.querySelector('h3').textContent
+        : (aperto ? 'siamo aperti' : 'chiuso');
+
+      const aT = document.getElementById('adessoT');
+      const aD = document.getElementById('adessoD');
+      if (corrente) {
+        const a = min(corrente.dataset.a);
+        aT.textContent = 'È ora di ' + corrente.querySelector('h3').textContent.toLowerCase();
+        aD.textContent = corrente.querySelector('.fascia-d').textContent + ' Fino alle ' + hhmm(a) + '.';
+      } else if (prossima && aperto) {
+        const manca = min(prossima.dataset.da) - t;
+        aT.textContent = 'Tra poco: ' + prossima.querySelector('h3').textContent.toLowerCase();
+        aD.textContent = `Si comincia alle ${prossima.dataset.da}, tra ${manca} minuti. Intanto il banco è aperto: caffè, bibite e dolci.`;
+      } else {
+        const p = prossimaApertura(now);
+        aT.textContent = 'Adesso siamo chiusi';
+        aD.textContent = `Riapriamo ${p.getDate() === now.getDate() ? 'oggi' : GIORNI[p.getDay()]} alle ${String(p.getHours()).padStart(2, '0')}:${String(p.getMinutes()).padStart(2, '0')}. Puoi comunque lasciare un ordine: lo prepariamo per l'apertura.`;
+      }
+    }
+
+    // ---------- oggi: menu e orari ----------
+    function evidenziaOggi() {
+      const g = new Date().getDay();
+      document.querySelectorAll('#orari li').forEach((li) => li.classList.toggle('oggi', +li.dataset.giorno === g));
+      document.querySelectorAll('.sett-g').forEach((li) => li.classList.toggle('oggi', +li.dataset.giorno === g));
+
+      const m = SETTIMANA[g], box = document.getElementById('pdgOggi');
+      document.getElementById('pdgEt').textContent = 'Oggi, ' + GIORNI[g];
+      if (m.primo) {
+        document.getElementById('pdgPiatti').innerHTML =
+          `<p class="pdg-piatto"><small>Primo</small>${esc(m.primo)}</p>` +
+          `<p class="pdg-piatto"><small>Secondo</small>${esc(m.secondo)}</p>`;
+        document.getElementById('pdgNota').textContent = 'Con contorno, acqua e caffè: 10 €. Si serve dalle 11:30 alle 14:30.';
+      } else {
+        document.getElementById('pdgPiatti').innerHTML = '<p class="pdg-piatto">Oggi niente cucina</p>';
+        document.getElementById('pdgNota').textContent = m.nota;
+      }
+      box.hidden = false;
+    }
+
+    // ---------- ordine ----------
+    const CHIAVE = 'portici-ordine';
+    let ordine = {};
+    try { ordine = JSON.parse(localStorage.getItem(CHIAVE) || '{}') || {}; } catch (_) { ordine = {}; }
+    const salva = () => { try { localStorage.setItem(CHIAVE, JSON.stringify(ordine)); } catch (_) {} };
+
+    const voci = [...document.querySelectorAll('.voce')];
+    const carrL = document.getElementById('carrL');
+    const carrVuoto = document.getElementById('carrVuoto');
+    const carrTot = document.getElementById('carrTot');
+    const carrForm = document.getElementById('carrForm');
+
+    function disegnaOrdine() {
+      const righe = Object.entries(ordine).filter(([, q]) => q > 0);
+      const pezzi = righe.reduce((s, [, q]) => s + q, 0);
+      const totale = righe.reduce((s, [n, q]) => s + q * prezzoDi(n), 0);
+
+      document.getElementById('carrN').textContent = String(pezzi);
+      carrL.innerHTML = righe.map(([n, q]) =>
+        `<li class="carr-r"><span>${q}× ${esc(n)}</span><b>${eur(q * prezzoDi(n))}</b>` +
+        `<button type="button" class="carr-x" data-rimuovi="${esc(n)}" aria-label="Togli ${esc(n)} dall'ordine">✕</button></li>`
+      ).join('');
+      document.getElementById('totale').textContent = eur(totale);
+
+      const vuoto = righe.length === 0;
+      carrVuoto.hidden = !vuoto;
+      carrL.hidden = vuoto;
+      carrTot.hidden = vuoto;
+      carrForm.hidden = vuoto;
+
+      voci.forEach((v) => {
+        const q = ordine[v.dataset.nome] || 0;
+        v.querySelector('[data-q]').textContent = String(q);
+        v.classList.toggle('presa', q > 0);
+      });
+      aggiornaLink();
+    }
+    const prezzoDi = (nome) => {
+      const v = voci.find((x) => x.dataset.nome === nome);
+      return v ? parseFloat(v.dataset.prezzo) : 0;
+    };
+    function cambia(nome, delta) {
+      ordine[nome] = Math.max(0, Math.min(30, (ordine[nome] || 0) + delta));
+      if (ordine[nome] === 0) delete ordine[nome];
+      salva(); disegnaOrdine();
+    }
+
+    document.getElementById('listino').addEventListener('click', (e) => {
+      const piu = e.target.closest('[data-piu]'), meno = e.target.closest('[data-meno]');
+      if (!piu && !meno) return;
+      cambia(e.target.closest('.voce').dataset.nome, piu ? 1 : -1);
+    });
+    carrL.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-rimuovi]');
+      if (!b) return;
+      delete ordine[b.dataset.rimuovi];
+      salva(); disegnaOrdine();
+    });
+    document.getElementById('svuota').addEventListener('click', () => { ordine = {}; salva(); disegnaOrdine(); });
+
+    // filtri categoria
+    document.querySelector('.chips').addEventListener('click', (e) => {
+      const c = e.target.closest('.chip');
+      if (!c) return;
+      document.querySelectorAll('.chip').forEach((x) => x.classList.toggle('on', x === c));
+      const cat = c.dataset.cat;
+      document.querySelectorAll('.gruppo').forEach((g) => {
+        g.hidden = !(cat === 'Tutto' || g.dataset.gruppo === cat);
+      });
+    });
+
+    // orari di ritiro: prossimi slot da 10 minuti dentro l'orario di apertura
+    function riempiOrari() {
+      const sel = document.getElementById('ora');
+      const now = new Date();
+      let d = new Date(now.getTime() + 15 * 60000);
+      d.setMinutes(Math.ceil(d.getMinutes() / 10) * 10, 0, 0);
+      if (!apertoOra(d)) d = prossimaApertura(d);
+      const opts = [];
+      for (let i = 0; i < 30; i++) {
+        if (!apertoOra(d)) { d = prossimaApertura(d); if (opts.length) break; }
+        const oggi = d.getDate() === now.getDate();
+        const et = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+        opts.push(`<option>${oggi ? 'Oggi' : GIORNI[d.getDay()].charAt(0).toUpperCase() + GIORNI[d.getDay()].slice(1)} alle ${et}</option>`);
+        d = new Date(d.getTime() + 10 * 60000);
+      }
+      sel.innerHTML = opts.join('');
+    }
+
+    function aggiornaLink() {
+      const righe = Object.entries(ordine).filter(([, q]) => q > 0);
+      const totale = righe.reduce((s, [n, q]) => s + q * prezzoDi(n), 0);
+      const nome = (document.getElementById('nome').value || '').trim();
+      const ora = document.getElementById('ora').value || '';
+      const uff = document.getElementById('ufficio').checked;
+      const testo = 'Ciao Caffè Portici! Vorrei ordinare:\n'
+        + righe.map(([n, q]) => `• ${q}× ${n}`).join('\n')
+        + `\n\nTotale indicativo: ${eur(totale)}`
+        + (ora ? `\nRitiro: ${ora}` : '')
+        + (nome ? `\nA nome di: ${nome}` : '')
+        + (uff ? '\nConsegna in ufficio (siamo entro 300 m)' : '')
+        + '\n\n(messaggio inviato dal sito)';
+      document.getElementById('inviaWa').href = 'https://wa.me/390110000000?text=' + encodeURIComponent(testo);
+    }
+    ['nome', 'ora', 'ufficio'].forEach((id) => {
+      const el = document.getElementById(id);
+      el.addEventListener('input', aggiornaLink);
+      el.addEventListener('change', aggiornaLink);
+    });
+
+    // ---------- reveal ----------
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('.r').forEach((el) => el.classList.add('in'));
+    } else {
+      const io = new IntersectionObserver((es) => es.forEach((en) => {
+        if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+      }), { threshold: 0.12, rootMargin: '0px 0px -40px' });
+      document.querySelectorAll('.r').forEach((el) => io.observe(el));
+    }
+
+    // ---------- avvio ----------
+    aggiornaStato();
+    evidenziaOggi();
+    riempiOrari();
+    disegnaOrdine();
+    setInterval(aggiornaStato, 60000);
+
+    // Statistiche first-party (nessun cookie, niente IP): conta la visita alla demo
+    try { if (!navigator.webdriver && !["localhost","127.0.0.1"].includes(location.hostname)) {
+      let sref = ""; try { const u = new URL(document.referrer); if (u.host !== location.host) sref = u.host; } catch (_) {}
+      fetch("/stats.php?p=" + encodeURIComponent(location.pathname) + "&r=" + encodeURIComponent(sref), { keepalive: true }).catch(() => {});
+    } } catch (_) {}
+  </script>
+</body>
+</html>
