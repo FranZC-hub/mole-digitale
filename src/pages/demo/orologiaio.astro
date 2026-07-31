@@ -661,7 +661,11 @@ import '@fontsource-variable/space-grotesk';
 
     /* reveal */
     /* Reveal — ingresso laterale "da blueprint", firma di Cronos */
-    .r{opacity:0;transform:translateX(-30px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+    /* Lo stato nascosto vale solo se il JavaScript c'è: senza, il contenuto
+       resterebbe invisibile per sempre invece di limitarsi a non animarsi. */
+    @media (scripting: enabled){
+      .r{opacity:0;transform:translateX(-30px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+    }
     .r.in{opacity:1;transform:none}
 
     @media (max-width:960px){

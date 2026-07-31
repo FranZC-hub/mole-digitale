@@ -352,7 +352,11 @@ function icon(n) {
     .wa-fab:hover{transform:scale(1.08)}
 
     /* reveal "direzionale": entra da sinistra come il percorso in timeline */
-    .r{opacity:0;transform:translateX(-34px);transition:opacity .6s var(--e),transform .6s var(--e)}
+    /* Lo stato nascosto vale solo se il JavaScript c'è: senza, il contenuto
+       resterebbe invisibile per sempre invece di limitarsi a non animarsi. */
+    @media (scripting: enabled){
+      .r{opacity:0;transform:translateX(-34px);transition:opacity .6s var(--e),transform .6s var(--e)}
+    }
     .r.in{opacity:1;transform:none}
     .ostl .r:nth-child(2){transition-delay:.12s}.ostl .r:nth-child(3){transition-delay:.24s}
     .osgrid .r:nth-child(2){transition-delay:.06s}.osgrid .r:nth-child(3){transition-delay:.12s}

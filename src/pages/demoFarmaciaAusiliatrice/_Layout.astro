@@ -199,7 +199,11 @@ const pharmacySchema = {
     /* emoji delle card offerta (home + pagina /offerte) */
     .pem{font-size:2rem;line-height:1}
 
-    .r{opacity:0;transform:translateY(16px);transition:opacity .6s var(--e),transform .6s var(--e)}
+    /* Lo stato nascosto vale solo se il JavaScript c'è: senza, il contenuto
+       resterebbe invisibile per sempre invece di limitarsi a non animarsi. */
+    @media (scripting: enabled){
+      .r{opacity:0;transform:translateY(16px);transition:opacity .6s var(--e),transform .6s var(--e)}
+    }
     .r.in{opacity:1;transform:none}
     @media (prefers-reduced-motion:reduce){.r{opacity:1;transform:none;transition:none}}
 

@@ -273,7 +273,11 @@ function icon(n) {
     .wa-fab:hover{transform:scale(1.08)}
 
     /* reveal "pop": scala con rimbalzo giocoso */
-    .r{opacity:0;transform:scale(.86) translateY(10px);transition:opacity .45s ease,transform .6s cubic-bezier(.34,1.7,.64,1)}
+    /* Lo stato nascosto vale solo se il JavaScript c'è: senza, il contenuto
+       resterebbe invisibile per sempre invece di limitarsi a non animarsi. */
+    @media (scripting: enabled){
+      .r{opacity:0;transform:scale(.86) translateY(10px);transition:opacity .45s ease,transform .6s cubic-bezier(.34,1.7,.64,1)}
+    }
     .r.in{opacity:1;transform:none}
     .nlperks .r:nth-child(2){transition-delay:.09s}.nlperks .r:nth-child(3){transition-delay:.18s}
     .nlrevs .r:nth-child(2){transition-delay:.09s}.nlrevs .r:nth-child(3){transition-delay:.18s}

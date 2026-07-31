@@ -446,8 +446,12 @@ const quote = [
     .seg-b{background:none;border:0;color:var(--muted);font-family:var(--sans);font-weight:600;font-size:.92rem;padding:.55rem 1rem;border-radius:9px;cursor:pointer;transition:all .2s}
     .seg-b:hover{color:var(--cream)}
     .seg-b.is-on{background:linear-gradient(135deg,#f3d488,var(--gold-d));color:#27190a}
-    input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:999px;background:linear-gradient(90deg,var(--gold) var(--p,16%),rgba(244,236,221,.16) var(--p,16%));outline:none;margin:.3rem 0 1rem}
-    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3cf,var(--gold) 55%,var(--gold-d));cursor:pointer;border:2px solid #2a1f0c;box-shadow:0 4px 14px -2px rgba(232,195,114,.8)}
+    /* L'elemento è alto 24px (bersaglio touch WCAG 2.5.8); il binario resta sottile
+       perché il colore sta sullo pseudo-elemento, non sull'input. */
+    input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:24px;background:transparent;outline:none;margin:.3rem 0 1rem;cursor:pointer}
+    input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:999px;background:linear-gradient(90deg,var(--gold) var(--p,16%),rgba(244,236,221,.16) var(--p,16%))}
+    input[type=range]::-moz-range-track{height:6px;border-radius:999px;background:linear-gradient(90deg,var(--gold) var(--p,16%),rgba(244,236,221,.16) var(--p,16%))}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;margin-top:-9px;width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3cf,var(--gold) 55%,var(--gold-d));cursor:pointer;border:2px solid #2a1f0c;box-shadow:0 4px 14px -2px rgba(232,195,114,.8)}
     input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--gold);cursor:pointer;border:2px solid #2a1f0c}
     .calc-presets{display:flex;gap:.5rem;flex-wrap:wrap}
     .calc-presets button{background:rgba(244,236,221,.05);border:1px solid var(--line);color:var(--muted);font-family:var(--sans);font-size:.8rem;padding:.4rem .8rem;border-radius:999px;cursor:pointer;transition:all .2s}
@@ -582,8 +586,14 @@ const quote = [
     @keyframes wapulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.6);opacity:0}}
 
     /* Reveal — "messa a fuoco" (blur-in), firma di Aureo */
-    .r{opacity:0;transform:translateY(20px);filter:blur(8px)}
-    .hl{opacity:0}
+    /* Lo stato nascosto vale solo se il JavaScript c'è: senza, il contenuto
+       resterebbe invisibile per sempre invece di limitarsi a non animarsi. */
+    @media (scripting: enabled){
+      .r{opacity:0;transform:translateY(20px);filter:blur(8px)}
+    }
+    @media (scripting: enabled){
+      .hl{opacity:0}
+    }
 
     @media (max-width:980px){
       /* hero full-bleed: testo a sinistra leggibile, overlay più scuro su mobile */

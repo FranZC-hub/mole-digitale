@@ -317,7 +317,11 @@ function icon(n) {
     .wa-fab:hover{transform:scale(1.08)}
 
     /* reveal "energico": salita con molla (leggero overshoot da viaggio) */
-    .r{opacity:0;transform:translateY(30px);transition:opacity .5s ease,transform .65s cubic-bezier(.34,1.56,.64,1)}
+    /* Lo stato nascosto vale solo se il JavaScript c'è: senza, il contenuto
+       resterebbe invisibile per sempre invece di limitarsi a non animarsi. */
+    @media (scripting: enabled){
+      .r{opacity:0;transform:translateY(30px);transition:opacity .5s ease,transform .65s cubic-bezier(.34,1.56,.64,1)}
+    }
     .r.in{opacity:1;transform:none}
     .vgbento .r:nth-child(2){transition-delay:.07s}.vgbento .r:nth-child(3){transition-delay:.14s}
     .vgbento .r:nth-child(4){transition-delay:.21s}.vgbento .r:nth-child(5){transition-delay:.28s}

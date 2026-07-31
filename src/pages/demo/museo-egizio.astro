@@ -453,7 +453,11 @@ const mostre = [
     .toast.on{transform:translate(-50%,0);opacity:1;visibility:visible}
 
     /* reveal */
-    .r{opacity:0;transform:translateY(36px);filter:blur(5px);transition:opacity .9s var(--ease),transform .9s var(--ease),filter .9s var(--ease)}
+    /* Lo stato nascosto vale solo se il JavaScript c'è: senza, il contenuto
+       resterebbe invisibile per sempre invece di limitarsi a non animarsi. */
+    @media (scripting: enabled){
+      .r{opacity:0;transform:translateY(36px);filter:blur(5px);transition:opacity .9s var(--ease),transform .9s var(--ease),filter .9s var(--ease)}
+    }
     .r.in{opacity:1;transform:none;filter:blur(0)}
     @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.r{opacity:1;transform:none;filter:none;transition:none}}
 

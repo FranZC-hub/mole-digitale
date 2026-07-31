@@ -482,7 +482,11 @@ const MAPPA = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComp
     .hfoot a{color:var(--ottone-c)}
 
     /* Reveal */
-    .r{opacity:0;transform:translateY(18px)}
+    /* Lo stato nascosto vale solo se il JavaScript c'è: senza, il contenuto
+       resterebbe invisibile per sempre invece di limitarsi a non animarsi. */
+    @media (scripting: enabled){
+      .r{opacity:0;transform:translateY(18px)}
+    }
     .r.in{opacity:1;transform:none;transition:opacity .7s var(--e),transform .7s var(--e)}
 
     @media (max-width:1000px){

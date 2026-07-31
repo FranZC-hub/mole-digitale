@@ -283,7 +283,11 @@ import '@fontsource-variable/space-grotesk';
     .rh b{color:var(--cream);font-size:.92rem}
     .rh .rs{margin-left:auto;color:#fbbc04;font-size:.8rem}
 
-    .r{opacity:0;transform:translateY(30px)}.hl{opacity:0}[data-clip]{clip-path:inset(0 0 100% 0)}
+    /* Lo stato nascosto vale solo se il JavaScript c'è: senza, il contenuto
+       resterebbe invisibile per sempre invece di limitarsi a non animarsi. */
+    @media (scripting: enabled){
+      .r{opacity:0;transform:translateY(30px)}.hl{opacity:0}[data-clip]{clip-path:inset(0 0 100% 0)}
+    }
     .dnav-toggle{display:none;background:none;border:0;color:var(--cream);cursor:pointer;width:44px;height:44px;border-radius:10px;place-items:center;margin-left:auto}
     .dnav-toggle:hover{background:rgba(238,241,243,.08)}
     @media (max-width:900px){

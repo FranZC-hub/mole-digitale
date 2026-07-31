@@ -325,7 +325,11 @@ function icon(n) {
     .wa-fab:hover{transform:scale(1.08)}
 
     /* reveal "pulito": svelamento a tendina dal basso (wipe fresco) */
-    .r{opacity:0;clip-path:inset(24% 0 0 0);transform:translateY(12px);transition:opacity .55s ease,clip-path .7s var(--e),transform .7s var(--e)}
+    /* Lo stato nascosto vale solo se il JavaScript c'è: senza, il contenuto
+       resterebbe invisibile per sempre invece di limitarsi a non animarsi. */
+    @media (scripting: enabled){
+      .r{opacity:0;clip-path:inset(24% 0 0 0);transform:translateY(12px);transition:opacity .55s ease,clip-path .7s var(--e),transform .7s var(--e)}
+    }
     .r.in{opacity:1;clip-path:inset(0);transform:none}
     .lvsteps .r:nth-child(2){transition-delay:.09s}.lvsteps .r:nth-child(3){transition-delay:.18s}
     .lvserv .r:nth-child(2){transition-delay:.05s}.lvserv .r:nth-child(3){transition-delay:.1s}
