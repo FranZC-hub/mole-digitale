@@ -472,6 +472,10 @@ function icon(n) {
     demoNav('nl');
     demoReveal(0.1);
 
+    // Colore scelto dalle pastiglie: dichiarato qui perché aggiornaPrenotazione()
+    // lo legge e viene eseguita prima del blocco che gestisce le pastiglie.
+    let coloreScelto = null;
+
     // ---------- durata leggibile ----------
     const durata = (m) => m >= 60 ? (m % 60 ? Math.floor(m / 60) + ' ora' + (m >= 120 ? 'e' : '') + ' e ' + (m % 60) + ' minuti' : (m / 60) + (m === 60 ? ' ora' : ' ore')) : m + ' minuti';
     const iso = (d) => d.toISOString().slice(0, 10);
@@ -546,7 +550,6 @@ function icon(n) {
     // corrispondente nella gallery e la scelta finisce nella richiesta WhatsApp.
     // (Prima ricoloravano tutto il sito: un effetto che non portava appuntamenti
     //  e che su due tinte su cinque mandava i testi sotto la soglia di leggibilità.)
-    let coloreScelto = null;
     const etichetta = document.getElementById('nlSwSel');
     const pastiglie = [...document.querySelectorAll('.nlsw-b')];
     const schede = [...document.querySelectorAll('.nlmasonry img')];
