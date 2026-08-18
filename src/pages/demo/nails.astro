@@ -5,11 +5,41 @@
 import '@fontsource-variable/outfit';
 import '@fontsource-variable/inter';
 
+// Prezzo E durata: chi prenota vuole sapere quanto tempo si ferma, non solo quanto spende.
 const listino = [
-  { cat: 'Manicure', items: [['Manicure classica', '15€'], ['Semipermanente', '22€'], ['Semiperm. + nail art', '28€']] },
-  { cat: 'Ricostruzione', items: [['Gel su unghia naturale', '35€'], ['Ricostruzione completa', '45€'], ['Refill', '35€']] },
-  { cat: 'Pedicure', items: [['Pedicure estetico', '25€'], ['Pedicure + semipermanente', '38€'], ['Spa pedicure', '42€']] },
-  { cat: 'Extra & dettagli', items: [['Nail art (a dito)', '2€'], ['French / baby boomer', '+5€'], ['Rimozione', '10€']] },
+  { cat: 'Manicure', items: [['Manicure classica', '15€', '40 min'], ['Semipermanente', '22€', '1 h'], ['Semiperm. + nail art', '28€', '1 h 15']] },
+  { cat: 'Ricostruzione', items: [['Gel su unghia naturale', '35€', '1 h 30'], ['Ricostruzione completa', '45€', '2 h'], ['Refill', '35€', '1 h 30']] },
+  { cat: 'Pedicure', items: [['Pedicure estetico', '25€', '50 min'], ['Pedicure + semipermanente', '38€', '1 h 15'], ['Spa pedicure', '42€', '1 h 30']] },
+  { cat: 'Extra & dettagli', items: [['Nail art (a dito)', '2€', '—'], ['French / baby boomer', '+5€', '+15 min'], ['Rimozione', '10€', '20 min']] },
+];
+
+// Servizi prenotabili, con la durata in minuti e ogni quante settimane conviene tornare.
+const servizi = [
+  { n: 'Semipermanente mani', min: 60, sett: 3 },
+  { n: 'Semipermanente + nail art', min: 75, sett: 3 },
+  { n: 'Ricostruzione gel', min: 120, sett: 4 },
+  { n: 'Refill', min: 90, sett: 4 },
+  { n: 'Manicure classica', min: 40, sett: 2 },
+  { n: 'Pedicure estetico', min: 50, sett: 5 },
+  { n: 'Pedicure + semipermanente', min: 75, sett: 5 },
+];
+
+// Quello che in salone si spiega a voce dieci volte al giorno.
+const cura = [
+  { t: 'I guanti sono tuoi amici', d: 'Detersivi e acqua calda a lungo sono i nemici numero uno: con i guanti il semipermanente dura una settimana in più.' },
+  { t: 'Olio per cuticole ogni sera', d: 'Trenta secondi prima di dormire. Unghia idratata significa smalto che non si stacca ai lati.' },
+  { t: 'Non usarle come attrezzi', d: 'Aprire lattine e staccare etichette è il modo più veloce per sollevare il gel. Usa la punta del dito, non l’unghia.' },
+  { t: 'Non staccarlo mai da sola', d: 'Tirare via il semipermanente porta via anche strati di unghia naturale. La rimozione da noi costa 10 € e ti salva mesi di ricrescita.' },
+];
+
+// Le domande che arrivano davvero in chat.
+const pratiche = [
+  { t: 'Porta la tua ispirazione', d: 'Foto da Instagram o Pinterest: le guardiamo insieme e ti diciamo subito se è fattibile sulla tua unghia.' },
+  { t: 'Pagamenti', d: 'Contanti, carte e Satispay. Il buono regalo si fa in cassa in due minuti.' },
+  { t: 'Dove siamo', d: 'Via Lagrange 8, zona pedonale: parcheggio in via Cavour o metro Porta Nuova a 5 minuti.' },
+  { t: 'Unghie mangiate o rovinate', d: 'Nessun giudizio: si parte da lì e si sistema. È il lavoro che ci piace di più.' },
+  { t: 'Se non puoi venire', d: 'Avvisaci almeno 24 ore prima e spostiamo senza problemi. Sotto le 24 ore il posto resta vuoto e a noi dispiace.' },
+  { t: 'Quanto dura l’appuntamento', d: 'Da 40 minuti a 2 ore secondo il servizio: lo trovi scritto nel listino, così organizzi la giornata.' },
 ];
 const perks = [
   { ic: 'shield', t: 'Igiene certificata', d: 'Strumenti sterilizzati e monouso. La tua sicurezza prima di tutto.' },
@@ -21,7 +51,12 @@ const reviews = [
   { n: 'Giada R.', txt: 'Ambiente curatissimo, ragazze super gentili. Esco sempre con la manicure dei sogni.' },
   { n: 'Sofia M.', txt: 'Ho portato una foto Pinterest impossibile e l’hanno ricreata identica. Magiche.' },
 ];
-const gallery = ['n1', 'n2', 'n3', 'n4', 'n5', 'n6'];
+// Schede-campione delle finiture: disegnate da noi, così sono coerenti fra loro.
+// In un sito vero qui vanno le foto dei lavori del salone.
+const gallery = [
+  { f: 'n1', t: 'Rosa cipria' }, { f: 'n2', t: 'Nude latte' }, { f: 'n3', t: 'Glitter fucsia' },
+  { f: 'n4', t: 'Viola notte' }, { f: 'n5', t: 'Rosso ciliegia' }, { f: 'n6', t: 'Cromo specchio' },
+];
 function icon(n) {
   const w = (p) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
   const m = {
@@ -51,6 +86,7 @@ function icon(n) {
     <nav class="nllinks" id="nllinks">
       <a href="#listino">Listino</a>
       <a href="#gallery">Gallery</a>
+      <a href="#ritocco">Ritocco</a>
       <a href="#perche">Perché noi</a>
       <a href="#contatti">Contatti</a>
     </nav>
@@ -69,9 +105,9 @@ function icon(n) {
       <a href="#listino" class="nlbtn nlbtn-ghost nlbtn-lg">Vedi il listino</a>
     </div>
     <div class="nlstrip r">
-      <img width="660" height="807" src="/img/demo-nails/n1.webp" alt="Nail art rosa" loading="lazy" />
-      <img width="660" height="807" src="/img/demo-nails/n2.webp" alt="Manicure semipermanente" loading="lazy" />
-      <img width="660" height="807" src="/img/demo-nails/n3.webp" alt="Unghie decorate" loading="lazy" />
+      <img width="660" height="807" src="/img/demo-nails/n1.webp" alt="Campione della finitura Rosa cipria" loading="lazy" />
+      <img width="660" height="807" src="/img/demo-nails/n2.webp" alt="Campione della finitura Nude latte" loading="lazy" />
+      <img width="660" height="807" src="/img/demo-nails/n3.webp" alt="Campione della finitura Glitter fucsia" loading="lazy" />
     </div>
   </section>
 
@@ -84,7 +120,11 @@ function icon(n) {
           <h3 class="nlmenu-cat">{c.cat}</h3>
           <ul>
             {c.items.map((it) => (
-              <li><span class="nlmenu-n">{it[0]}</span><span class="nlmenu-dots" aria-hidden="true"></span><span class="nlmenu-p">{it[1]}</span></li>
+              <li>
+                <span class="nlmenu-n">{it[0]}<small class="nlmenu-d">{it[2]}</small></span>
+                <span class="nlmenu-dots" aria-hidden="true"></span>
+                <span class="nlmenu-p">{it[1]}</span>
+              </li>
             ))}
           </ul>
         </div>
@@ -104,8 +144,8 @@ function icon(n) {
       <button type="button" data-c1="#8b5cf6" data-c2="#4438ca" style="background:linear-gradient(135deg,#8b5cf6,#4438ca)" aria-label="Viola profondo"></button>
     </div>
     <div class="nlmasonry r">
-      {gallery.map((g, i) => (
-        <img src={`/img/demo-nails/${g}.webp`} alt={`Nail art Lúnula ${i + 1}`} loading="lazy" />
+      {gallery.map((g) => (
+        <img src={`/img/demo-nails/${g.f}.webp`} alt={`Finitura ${g.t} da Lúnula`} loading="lazy" />
       ))}
     </div>
   </section>
@@ -116,6 +156,41 @@ function icon(n) {
     <div class="nlperks">
       {perks.map((p) => (
         <article class="nlperk r"><span class="nlperk-ic" set:html={icon(p.ic)} aria-hidden="true"></span><h3>{p.t}</h3><p>{p.d}</p></article>
+      ))}
+    </div>
+  </section>
+
+  <!-- QUANDO TORNARE: il calcolo che porta il secondo appuntamento -->
+  <section class="nlsection nlrit-sec" id="ritocco">
+    <div class="nlrit r">
+      <div>
+        <span class="nlkick">Quando tornare</span>
+        <h2>Il momento giusto per il <span class="nlmark">ritocco</span></h2>
+        <p class="nlrit-p">Aspettare troppo rovina il lavoro: il gel si solleva e l’unghia sotto si indebolisce. Dicci quand’è stato l’ultimo appuntamento e ti diciamo la settimana giusta.</p>
+        <div class="nlrit-campi">
+          <label>Ultimo appuntamento<input type="date" id="ultimo" /></label>
+          <label>Cosa ti sei fatta
+            <select id="ritServizio">
+              {servizi.map((sv) => <option value={sv.sett} data-nome={sv.n}>{sv.n}</option>)}
+            </select>
+          </label>
+          <button type="button" class="nlbtn nlbtn-solid" id="calcolaRit">Calcola</button>
+        </div>
+        <div class="nlrit-esito" id="ritEsito" hidden>
+          <b id="ritQuando"></b>
+          <span id="ritNota"></span>
+          <a class="nlbtn nlbtn-wa" id="ritWa" href="https://wa.me/390110000000" target="_blank" rel="noopener">Prenota quella settimana su WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COME FARLE DURARE -->
+  <section class="nlsection nlcura-sec" id="cura">
+    <div class="nlhead nlhead-c r"><span class="nlkick">Dopo l’appuntamento</span><h2>Come farle <span class="nlmark">durare di più</span></h2><p>Quattro cose che raddoppiano la tenuta. Le ripetiamo a tutte, ma scritte restano.</p></div>
+    <div class="nlcura">
+      {cura.map((c, i) => (
+        <article class="nlcura-c r"><span class="nlcura-n">{String(i + 1).padStart(2, '0')}</span><h3>{c.t}</h3><p>{c.d}</p></article>
       ))}
     </div>
   </section>
@@ -132,6 +207,16 @@ function icon(n) {
     </div>
   </section>
 
+  <!-- BUONO A SAPERSI -->
+  <section class="nlsection nlprat-sec" id="info">
+    <div class="nlhead nlhead-c r"><span class="nlkick">Buono a sapersi</span><h2>Quello che ci <span class="nlmark">chiedete sempre</span></h2></div>
+    <div class="nlprat">
+      {pratiche.map((x) => (
+        <div class="nlprat-c r"><b>{x.t}</b><span>{x.d}</span></div>
+      ))}
+    </div>
+  </section>
+
   <!-- CTA / CONTATTI -->
   <section class="nlcta" id="contatti">
     <div class="nlcta-in r">
@@ -141,18 +226,30 @@ function icon(n) {
         <p>Scrivici per fissare il tuo appuntamento: ti rispondiamo in giornata. Porta pure le tue ispirazioni!</p>
         <div class="nlcta-side">
           <a href="tel:+390110000000" class="nlbtn nlbtn-solid nlbtn-lg">📞 011 000 0000</a>
-          <a href="#contatti" class="nlbtn nlbtn-ghost nlbtn-lg">WhatsApp</a>
+          <a href="https://wa.me/390110000000" target="_blank" rel="noopener" class="nlbtn nlbtn-ghost nlbtn-lg">WhatsApp</a>
         </div>
         <p class="nlcta-note">📍 Via Lagrange 8, Torino · Mar–Sab 9:30–19:30</p>
       </div>
-      <form class="nlform" onsubmit="return false">
-        <label>Il tuo nome<input type="text" placeholder="Giulia Bianchi" autocomplete="name" /></label>
-        <label>Telefono<input type="tel" placeholder="333 000 0000" autocomplete="tel" /></label>
+      <form class="nlform" id="prenForm">
+        <label>Il tuo nome<input type="text" id="pNome" placeholder="Giulia Bianchi" autocomplete="name" required /></label>
         <label>Servizio
-          <select><option>Manicure / Semipermanente</option><option>Ricostruzione gel</option><option>Nail art</option><option>Pedicure</option><option>Non so, consigliatemi</option></select>
+          <select id="pServizio">
+            {servizi.map((sv) => <option value={sv.min} data-nome={sv.n}>{sv.n} · {sv.min >= 60 ? (sv.min / 60 % 1 ? Math.floor(sv.min / 60) + ' h ' + (sv.min % 60) : sv.min / 60 + ' h') : sv.min + ' min'}</option>)}
+            <option value="0" data-nome="Non so, consigliatemi">Non so, consigliatemi</option>
+          </select>
         </label>
-        <button class="nlbtn nlbtn-solid nlbtn-lg nlbtn-block" type="submit">Richiedi appuntamento →</button>
-        <p class="nlform-note">🔒 È una demo: nessun dato viene inviato.</p>
+        <div class="nlform-riga">
+          <label>Quando<input type="date" id="pGiorno" /></label>
+          <label>Fascia
+            <select id="pFascia"><option>Mattina</option><option>Primo pomeriggio</option><option>Tardo pomeriggio</option><option>Indifferente</option></select>
+          </label>
+        </div>
+        <p class="nlform-durata" id="pDurata">Ti fermi circa <b>1 ora</b>: teniamo il posto solo per te.</p>
+        <a class="nlbtn nlbtn-wa nlbtn-lg nlbtn-block" id="pWa" href="https://wa.me/390110000000" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.5-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c2.3 1 2.3.7 2.7.6a2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1z"/></svg>
+          Chiedi questo appuntamento
+        </a>
+        <p class="nlform-note">Si apre WhatsApp con la richiesta già scritta. Confermiamo noi il posto: nessun dato viene salvato qui.</p>
       </form>
     </div>
   </section>
@@ -163,6 +260,9 @@ function icon(n) {
   <a class="wa-fab" href="https://wa.me/390110000000" target="_blank" rel="noopener" aria-label="Scrivici su WhatsApp"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.5-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c2.3 1 2.3.7 2.7.6a2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1z"/></svg></a>
 
   <style is:global>
+    /* Il display:none del browser per [hidden] perde contro qualsiasi regola d'autore
+       che imposti display: senza !important, badge e pannelli "nascosti" restano visibili. */
+    [hidden]{display:none !important}
     :root{
       /* --muted e --pink-d scuriti quel tanto che basta per il 4.5:1 (WCAG AA) sui fondi rosa */
       --bg:#fdf3f9;--bg2:#f8e6f1;--card:#ffffff;--ink:#2a1b33;--muted:#776074;
@@ -210,7 +310,7 @@ function icon(n) {
     .nlhead{max-width:640px;margin-bottom:clamp(2rem,4vw,3rem)}
     .nlhead-c{margin-left:auto;margin-right:auto;text-align:center}
     .nlkick{display:inline-block;font-weight:700;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--purple-t);background:rgba(124,77,255,.1);padding:.35rem .8rem;border-radius:999px;margin-bottom:.9rem}
-    .nlkick.light{background:rgba(255,255,255,.2);color:#fff}
+    .nlkick.light{background:rgba(24,8,32,.24);color:#fff} /* velo scuro, non chiaro: col bianco sopra serve 4.5:1 */
     .nlhead h2{font-size:clamp(1.9rem,4.6vw,3.1rem)}.nlhead p{color:var(--muted);margin-top:.8rem;font-size:1.05rem}
 
     /* LISTINO */
@@ -221,6 +321,44 @@ function icon(n) {
     .nlmenu-col li{display:flex;align-items:baseline;gap:.5rem}
     .nlmenu-n{font-weight:600}.nlmenu-p{font-family:var(--disp);font-weight:700;color:var(--purple-t)}
     .nlmenu-dots{flex:1;border-bottom:2px dotted var(--line);transform:translateY(-4px)}
+    .nlmenu-d{display:block;font-weight:400;font-size:.78rem;color:var(--muted);letter-spacing:.02em}
+
+    /* QUANDO TORNARE */
+    .nlrit{background:var(--card);border:1px solid var(--line);border-radius:28px;padding:clamp(1.6rem,4vw,3rem);box-shadow:var(--soft)}
+    .nlrit-p{color:var(--muted);margin:.9rem 0 1.4rem;max-width:60ch}
+    .nlrit-campi{display:grid;grid-template-columns:1fr 1.4fr auto;gap:.9rem;align-items:end}
+    .nlrit-campi>*{min-width:0}
+    .nlrit-campi label{display:grid;gap:.35rem;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+    .nlrit-campi input,.nlrit-campi select{padding:.7rem .8rem;border:1px solid var(--line);border-radius:12px;background:var(--bg);
+      font-size:.95rem;letter-spacing:0;text-transform:none;color:var(--ink);width:100%;font-weight:400}
+    .nlrit-campi .nlbtn{height:44px}
+    .nlrit-esito{margin-top:1.4rem;padding:1.1rem 1.3rem;border-radius:18px;background:var(--bg2);display:grid;gap:.5rem;justify-items:start}
+    .nlrit-esito b{font-family:var(--disp);font-size:clamp(1.2rem,2.6vw,1.6rem);color:var(--pink-d)}
+    .nlrit-esito span{color:var(--muted);font-size:.94rem}
+
+    /* COME FARLE DURARE */
+    .nlcura{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem}
+    .nlcura>*{min-width:0}
+    .nlcura-c{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.4rem}
+    .nlcura-n{font-family:var(--disp);font-weight:800;font-size:1.5rem;color:var(--pink);display:block;margin-bottom:.4rem}
+    .nlcura-c h3{font-size:1.1rem;margin-bottom:.4rem}
+    .nlcura-c p{color:var(--muted);font-size:.92rem}
+
+    /* BUONO A SAPERSI */
+    .nlprat{display:grid;grid-template-columns:repeat(3,1fr);gap:0 clamp(1.6rem,4vw,3rem)}
+    .nlprat>*{min-width:0}
+    .nlprat-c{padding:1.15rem 0;border-bottom:1px solid var(--line)}
+    .nlprat-c:nth-child(-n+3){border-top:1px solid var(--line)}
+    .nlprat-c b{display:block;font-family:var(--disp);font-size:1.12rem;margin-bottom:.2rem}
+    .nlprat-c span{color:var(--muted);font-size:.92rem}
+
+    /* modulo di prenotazione */
+    .nlform-riga{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+    .nlform-riga>*{min-width:0}
+    .nlform-durata{font-size:.88rem;color:var(--muted);background:var(--bg2);border-radius:12px;padding:.6rem .8rem}
+    .nlform-durata b{color:var(--ink)}
+    .nlbtn-wa{background:#25d366;color:#0b3d1c}
+    .nlbtn-wa:hover{background:#20bd5b}
 
     /* MASONRY */
     .nlgal-sec{background:var(--bg2);padding:clamp(3.5rem,8vw,6rem) clamp(1.2rem,5vw,3rem)}
@@ -237,12 +375,15 @@ function icon(n) {
     .nlperk h3{font-size:1.25rem;margin-bottom:.4rem}.nlperk p{color:var(--muted);font-size:.95rem}
 
     /* RECENSIONI band */
-    .nlrev-sec{background:linear-gradient(140deg,var(--purple),var(--pink));color:#fff}
+    /* Sulla banda recensioni il rosa del marchio lascia il bianco a 3,5:1: qui uso
+   versioni più profonde delle stesse tinte. Il punto critico è il CENTRO del
+   gradiente, più chiaro di entrambi gli estremi: ora anche lì il bianco sta a 4,6:1. */
+    .nlrev-sec{background:linear-gradient(140deg,#6b42db,#c14985);color:#fff}
     .nlrev-in{max-width:1180px;margin:0 auto;padding:clamp(3.5rem,8vw,6rem) clamp(1.2rem,5vw,3rem)}
     .nlrev-h{color:#fff}
     .nlrevs{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem}
     .nlrevs>*{min-width:0}
-    .nlrev{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:18px;padding:1.6rem;display:flex;flex-direction:column;gap:.7rem}
+    .nlrev{background:rgba(24,8,32,.16);border:1px solid rgba(255,255,255,.22);border-radius:18px;padding:1.6rem;display:flex;flex-direction:column;gap:.7rem}
     .nlstars{color:#ffffff;letter-spacing:2px}.nlrev p{flex:1}.nlrev b{font-weight:700}
 
     /* CTA */
@@ -290,6 +431,12 @@ function icon(n) {
       .nlnav>.nlbtn-solid{padding:.5rem .9rem;font-size:.82rem}
       .nlmenu{grid-template-columns:1fr}
       .nlmasonry{column-count:2}
+      .nlcura{grid-template-columns:repeat(2,1fr)}
+      .nlprat{grid-template-columns:repeat(2,1fr)}
+      .nlprat-c:nth-child(-n+3){border-top:0}
+      .nlprat-c:nth-child(-n+2){border-top:1px solid var(--line)}
+      .nlrit-campi{grid-template-columns:1fr 1fr}
+      .nlrit-campi .nlbtn{grid-column:1/-1}
       .nlperks{grid-template-columns:1fr}
       .nlrevs{grid-template-columns:1fr}
       .nlcta-in{grid-template-columns:1fr}
@@ -297,6 +444,12 @@ function icon(n) {
     @media (max-width:560px){
       .nlstrip{grid-template-columns:1fr 1fr}.nlstrip img:nth-child(3){display:none}.nlstrip img:nth-child(2){transform:none}
       .nlmasonry{column-count:1}
+      .nlcura{grid-template-columns:1fr}
+      .nlprat{grid-template-columns:1fr}
+      .nlprat-c:nth-child(-n+2){border-top:0}
+      .nlprat-c:first-child{border-top:1px solid var(--line)}
+      .nlrit-campi{grid-template-columns:1fr}
+      .nlform-riga{grid-template-columns:1fr}
     }
   </style>
 
@@ -304,6 +457,72 @@ function icon(n) {
     import { demoNav, demoReveal, demoAccordion } from '../../scripts/demo-common.js';
     demoNav('nl');
     demoReveal(0.1);
+
+    // ---------- durata leggibile ----------
+    const durata = (m) => m >= 60 ? (m % 60 ? Math.floor(m / 60) + ' ora' + (m >= 120 ? 'e' : '') + ' e ' + (m % 60) + ' minuti' : (m / 60) + (m === 60 ? ' ora' : ' ore')) : m + ' minuti';
+    const iso = (d) => d.toISOString().slice(0, 10);
+
+    // ---------- quando tornare per il ritocco ----------
+    const ultimo = document.getElementById('ultimo');
+    const oggi = new Date(); oggi.setHours(12, 0, 0, 0);
+    ultimo.max = iso(oggi);
+    ultimo.value = iso(new Date(oggi.getTime() - 18 * 86400000));
+
+    document.getElementById('calcolaRit').addEventListener('click', () => {
+      const d = new Date(ultimo.value);
+      const esito = document.getElementById('ritEsito');
+      if (isNaN(d)) { esito.hidden = true; return; }
+      const sel = document.getElementById('ritServizio');
+      const sett = +sel.value, nome = sel.selectedOptions[0].dataset.nome;
+      const quando = new Date(d.getTime() + sett * 7 * 86400000);
+      const giorni = Math.round((quando - oggi) / 86400000);
+      const fmt = (x) => x.toLocaleDateString('it-IT', { day: 'numeric', month: 'long' });
+
+      document.getElementById('ritQuando').textContent = giorni <= 0
+        ? 'Sei già nella settimana giusta'
+        : giorni <= 7 ? `Fra pochi giorni: intorno al ${fmt(quando)}`
+        : `Intorno al ${fmt(quando)}`;
+      document.getElementById('ritNota').textContent = giorni <= 0
+        ? `Dall’ultimo appuntamento («${nome}») sono passate più di ${sett} settimane: meglio non aspettare ancora, il gel inizia a sollevarsi.`
+        : `Per «${nome}» consigliamo di tornare dopo ${sett} settimane. Mancano ${giorni} giorni: ti conviene fissare adesso, i posti del sabato vanno via presto.`;
+      document.getElementById('ritWa').href = 'https://wa.me/390110000000?text=' + encodeURIComponent(
+        `Ciao Lúnula! Vorrei prenotare il ritocco (${nome}) intorno al ${fmt(quando)}. Che disponibilità avete?`);
+      esito.hidden = false;
+    });
+
+    // ---------- richiesta di appuntamento ----------
+    const pServizio = document.getElementById('pServizio');
+    const pGiorno = document.getElementById('pGiorno');
+    pGiorno.min = iso(oggi);
+    pGiorno.value = iso(new Date(oggi.getTime() + 3 * 86400000));
+
+    function aggiornaPrenotazione() {
+      const min = +pServizio.value;
+      const nome = pServizio.selectedOptions[0].dataset.nome;
+      const nota = document.getElementById('pDurata');
+      nota.innerHTML = min
+        ? `Ti fermi circa <b>${durata(min)}</b>: teniamo il posto solo per te.`
+        : 'Nessun problema: ti facciamo due domande in chat e scegliamo insieme.';
+
+      const g = new Date(pGiorno.value);
+      const quando = isNaN(g) ? '' : g.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' });
+      const chi = (document.getElementById('pNome').value || '').trim();
+      const righe = ['Ciao Lúnula! Vorrei un appuntamento.', ''];
+      righe.push('Servizio: ' + nome + (min ? ' (circa ' + durata(min) + ')' : ''));
+      if (quando) righe.push('Quando: ' + quando);
+      righe.push('Fascia: ' + document.getElementById('pFascia').value);
+      if (chi) righe.push('A nome di: ' + chi);
+      righe.push('', '(richiesta inviata dal sito)');
+      const testo = righe.join(String.fromCharCode(10));
+      document.getElementById('pWa').href = 'https://wa.me/390110000000?text=' + encodeURIComponent(testo);
+    }
+    ['pNome', 'pServizio', 'pGiorno', 'pFascia'].forEach((id) => {
+      const el = document.getElementById(id);
+      el.addEventListener('input', aggiornaPrenotazione);
+      el.addEventListener('change', aggiornaPrenotazione);
+    });
+    document.getElementById('prenForm').addEventListener('submit', (e) => e.preventDefault());
+    aggiornaPrenotazione();
     // Swatch smalto: cambia gli accenti di tutta la pagina
     document.querySelectorAll('#nlSwatch button').forEach((b) => b.addEventListener('click', () => {
       document.querySelectorAll('#nlSwatch button').forEach((o) => o.classList.toggle('on', o === b));

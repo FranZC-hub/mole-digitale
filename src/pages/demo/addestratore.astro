@@ -227,8 +227,6 @@ function icon(name) {
       <img width="800" height="1000" class="r" src="/img/demo-cani/agility.webp" alt="Cane che salta un ostacolo di agility" loading="lazy" />
       <img width="800" height="1000" class="r" src="/img/demo-cani/puppy.webp" alt="Cucciolo che riposa" loading="lazy" />
       <img width="760" height="760" class="r" src="/img/demo-cani/g1.webp" alt="Border collie in un campo" loading="lazy" />
-      <img width="800" height="1000" class="r" src="/img/demo-cani/passeggiata.webp" alt="Passeggiata educativa al guinzaglio" loading="lazy" />
-      <img width="760" height="760" class="r" src="/img/demo-cani/g2.webp" alt="Cane che gioca a riportare la palla" loading="lazy" />
     </div>
   </section>
 
@@ -299,6 +297,9 @@ function icon(name) {
   </a>
 
   <style is:global>
+    /* Il display:none del browser per [hidden] perde contro qualsiasi regola d'autore
+       che imposti display: senza !important, badge e pannelli "nascosti" restano visibili. */
+    [hidden]{display:none !important}
     :root{
       --bg:#faf6ee; --bg2:#f1ebdb; --card:#ffffff; --ink:#22301f; --muted:#616a57;
       --green:#2f7d4f; --green-d:#235f3c; --amber:#ef9d2e; --amber-d:#8d5611;

@@ -11,6 +11,9 @@
   <title>:::: PIZZERIA DA MARIO :::: Benvenuti!!!</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍕</text></svg>" />
   <style is:global>
+    /* Il display:none del browser per [hidden] perde contro qualsiasi regola d'autore
+       che imposti display: senza !important, badge e pannelli "nascosti" restano visibili. */
+    [hidden]{display:none !important}
     body{margin:0;background:#1d7d1d url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'><text y='30' font-size='28'>🍕</text></svg>") repeating;
       background-size:60px 60px;font-family:'Comic Sans MS','Comic Sans',cursive;color:#000080;text-align:center}
     .wrap{max-width:780px;margin:8px auto;background:#fffbe6;border:6px ridge #ffcc00;padding:6px}

@@ -163,6 +163,9 @@ import '@fontsource-variable/playfair-display';
   </a>
 
   <style is:global>
+    /* Il display:none del browser per [hidden] perde contro qualsiasi regola d'autore
+       che imposti display: senza !important, badge e pannelli "nascosti" restano visibili. */
+    [hidden]{display:none !important}
     :root{
       --ink:#14110d; --ink2:#1c1712; --cream:#f6efe4; --muted:#cabfae;
       --gold:#d8a657; --terra:#c4694b; --line:rgba(246,239,228,.14);

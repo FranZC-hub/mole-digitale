@@ -391,6 +391,9 @@ import '@fontsource-variable/space-grotesk';
   </footer>
 
   <style is:global>
+    /* Il display:none del browser per [hidden] perde contro qualsiasi regola d'autore
+       che imposti display: senza !important, badge e pannelli "nascosti" restano visibili. */
+    [hidden]{display:none !important}
     :root{
       --bg:#0c1015; --bg2:#11161d; --panel:#161c25; --panel2:#1b2330;
       --steel:#9fb3c8; --bronze:#c8a06a; --bronze-d:#a9824c;

@@ -112,22 +112,22 @@ import '@fontsource-variable/playfair-display';
   <section class="dsection team" id="team">
     <div class="head"><span class="kick r">Il team</span><h2 class="r">Le mani <span class="it">che ti curano</span></h2></div>
     <div class="team-grid">
-      <figure class="member r"><div class="m-img"><img width="600" height="760" src="/img/demo-salone/galleria-1.webp" alt="Giulia" /></div><figcaption><b>Giulia</b><span>Color specialist</span></figcaption></figure>
-      <figure class="member r"><div class="m-img"><img width="600" height="760" src="/img/demo-salone/galleria-3.webp" alt="Marta" /></div><figcaption><b>Marta</b><span>Hair stylist</span></figcaption></figure>
-      <figure class="member r"><div class="m-img"><img width="600" height="760" src="/img/demo-salone/interno.webp" alt="Sara" /></div><figcaption><b>Sara</b><span>Trattamenti</span></figcaption></figure>
+      <figure class="member r"><div class="m-img m-mono" aria-hidden="true"><span>G</span></div><figcaption><b>Giulia</b><span>Color specialist</span></figcaption></figure>
+      <figure class="member r"><div class="m-img m-mono" aria-hidden="true"><span>M</span></div><figcaption><b>Marta</b><span>Hair stylist</span></figcaption></figure>
+      <figure class="member r"><div class="m-img m-mono" aria-hidden="true"><span>S</span></div><figcaption><b>Sara</b><span>Trattamenti</span></figcaption></figure>
     </div>
   </section>
 
   <!-- GALLERIA -->
   <section class="dsection galleria" id="galleria">
-    <div class="head"><span class="kick r">Galleria</span><h2 class="r">I nostri <span class="it">lavori</span></h2></div>
+    <div class="head"><span class="kick r">Cartella colori</span><h2 class="r">I toni che <span class="it">portiamo in casa</span></h2></div>
     <div class="masonry">
-      <img width="700" height="880" class="r" src="/img/demo-salone/taglio-1.webp" alt="Caschetto castano realizzato al Salone Aurora" loading="lazy" />
-      <img width="700" height="880" class="r" src="/img/demo-salone/taglio-2.webp" alt="Ricci ramati luminosi" loading="lazy" />
-      <img width="700" height="880" class="r" src="/img/demo-salone/taglio-3.webp" alt="Onde morbide su capelli castani" loading="lazy" />
-      <img width="700" height="880" class="r" src="/img/demo-salone/taglio-4.webp" alt="Colore biondo luminoso" loading="lazy" />
-      <img width="700" height="880" class="r" src="/img/demo-salone/taglio-5.webp" alt="Capelli lunghi castani con piega" loading="lazy" />
-      <img width="700" height="880" class="r" src="/img/demo-salone/taglio-6.webp" alt="Ricci scuri definiti" loading="lazy" />
+      <img width="700" height="880" class="r" src="/img/demo-salone/taglio-1.webp" alt="Ciocca campione biondo cenere 9.1" loading="lazy" />
+      <img width="700" height="880" class="r" src="/img/demo-salone/taglio-2.webp" alt="Ciocca campione biondo miele 8.3" loading="lazy" />
+      <img width="700" height="880" class="r" src="/img/demo-salone/taglio-3.webp" alt="Ciocca campione rame veneziano 7.44" loading="lazy" />
+      <img width="700" height="880" class="r" src="/img/demo-salone/taglio-4.webp" alt="Ciocca campione castano freddo 5.1" loading="lazy" />
+      <img width="700" height="880" class="r" src="/img/demo-salone/taglio-5.webp" alt="Ciocca campione cioccolato 4.35" loading="lazy" />
+      <img width="700" height="880" class="r" src="/img/demo-salone/taglio-6.webp" alt="Ciocca campione nero seta 2.0" loading="lazy" />
     </div>
   </section>
 
@@ -143,6 +143,9 @@ import '@fontsource-variable/playfair-display';
   </a>
 
   <style is:global>
+    /* Il display:none del browser per [hidden] perde contro qualsiasi regola d'autore
+       che imposti display: senza !important, badge e pannelli "nascosti" restano visibili. */
+    [hidden]{display:none !important}
     :root{
       --bg:#fbf5f2;--panel:#ffffff;--ink:#2b2026;--muted:#6e6168;
       --rose:#c9728a;--rose-d:#a8516c;--rose-soft:#f6e2e8;--line:rgba(43,32,38,.12);
@@ -219,11 +222,15 @@ import '@fontsource-variable/playfair-display';
     .days,.slots{display:flex;gap:.6rem;flex-wrap:wrap}
     .days button,.slots button{padding:.7rem 1.1rem;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);font-weight:600;cursor:pointer;font-family:var(--sans);transition:.2s}
     .days button:hover,.slots button:hover{border-color:var(--rose)}
-    .days button.on,.slots button.on{background:var(--rose);color:#fff;border-color:var(--rose)}
+    .days button.on,.slots button.on{background:#a46073;color:#fff;border-color:#a46073} /* rosa più profondo: col --rose il bianco stava a 3,2:1 */
     .book-go{justify-content:center;margin-top:.5rem}
 
     .team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem}
     .member .m-img{border-radius:16px;overflow:hidden;aspect-ratio:3/4;margin-bottom:1rem}
+    /* Ritratti dello staff: nel sito vero ci vanno le foto delle ragazze.
+       Qui un monogramma, per non spacciare per dipendenti persone estranee. */
+    .member .m-mono{display:grid;place-items:center;background:linear-gradient(150deg,var(--rose-soft),#fff);border:1px solid rgba(43,32,38,.08)}
+    .member .m-mono span{font-family:var(--serif);font-size:clamp(3rem,7vw,4.4rem);color:var(--rose-d);opacity:.9;line-height:1}
     .member .m-img img{width:100%;height:100%;object-fit:cover;transition:transform .8s var(--e)}
     .member:hover .m-img img{transform:scale(1.05)}
     .member b{font-family:var(--serif);font-size:1.25rem;display:block}

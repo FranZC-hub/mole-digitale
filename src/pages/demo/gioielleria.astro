@@ -344,6 +344,9 @@ import '@fontsource-variable/space-grotesk';
   <div class="ltoast" id="toast" role="status" aria-live="polite"></div>
 
   <style is:global>
+    /* Il display:none del browser per [hidden] perde contro qualsiasi regola d'autore
+       che imposti display: senza !important, badge e pannelli "nascosti" restano visibili. */
+    [hidden]{display:none !important}
     :root{
       --bg:#faf7f2; --card:#fffdfa; --ink:#1b1916; --muted:#716a62; --line:#ece4d8;
       --emer:#0e6b57; --emer-d:#0a5546; --gold:#896723; --blush:#b9456a;

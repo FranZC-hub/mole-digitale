@@ -155,6 +155,9 @@ const prodotti = [
   </a>
 
   <style is:global>
+    /* Il display:none del browser per [hidden] perde contro qualsiasi regola d'autore
+       che imposti display: senza !important, badge e pannelli "nascosti" restano visibili. */
+    [hidden]{display:none !important}
     :root{
       --bg:#faf6ef; --card:#fffdf9; --ink:#1f1a16; --muted:#7a6f63; --line:#ece2d4;
       --terra:#b45028; --terra-d:#a3441f; --green:#3f5d4a;

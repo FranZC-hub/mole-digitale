@@ -345,6 +345,9 @@ const quote = [
   </footer>
 
   <style is:global>
+    /* Il display:none del browser per [hidden] perde contro qualsiasi regola d'autore
+       che imposti display: senza !important, badge e pannelli "nascosti" restano visibili. */
+    [hidden]{display:none !important}
     :root{
       --bg:#0e0b07; --bg2:#15110b; --panel:#1a140c;
       --gold:#e8c372; --gold-d:#c79a3f; --copper:#c98a4b;
