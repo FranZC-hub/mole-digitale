@@ -54,8 +54,12 @@ const reviews = [
 // Schede-campione delle finiture: disegnate da noi, così sono coerenti fra loro.
 // In un sito vero qui vanno le foto dei lavori del salone.
 const gallery = [
-  { f: 'n1', t: 'Rosa cipria' }, { f: 'n2', t: 'Nude latte' }, { f: 'n3', t: 'Glitter fucsia' },
-  { f: 'n4', t: 'Viola notte' }, { f: 'n5', t: 'Rosso ciliegia' }, { f: 'n6', t: 'Cromo specchio' },
+  { f: 'n1', t: 'Rosa cipria',    c: '#dc8fab' },
+  { f: 'n2', t: 'Nude latte',     c: '#d9b3a7' },
+  { f: 'n3', t: 'Glitter fucsia', c: 'linear-gradient(135deg,#f06bb0,#8e2a75)' },
+  { f: 'n4', t: 'Viola notte',    c: 'linear-gradient(135deg,#9b7bff,#412a8f)' },
+  { f: 'n5', t: 'Rosso ciliegia', c: 'linear-gradient(135deg,#e8566a,#7d1128)' },
+  { f: 'n6', t: 'Cromo specchio', c: 'linear-gradient(135deg,#fbdcf0,#c79ae7 35%,#7f61c8 65%,#5f42a8)' },
 ];
 function icon(n) {
   const w = (p) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
@@ -135,17 +139,18 @@ function icon(n) {
   <!-- GALLERY masonry -->
   <section class="nlgal-sec" id="gallery">
     <div class="nlhead nlhead-c r"><span class="nlkick">La gallery</span><h2>Le nostre <span class="nlmark">creazioni</span></h2><p>Una piccola parte di ciò che amiamo fare. La prossima potrebbe essere la tua.</p></div>
-    <div class="nlswatch r" id="nlSwatch" role="group" aria-label="Scegli il colore del sito">
-      <span class="nlswatch-l">✨ Scegli il tuo smalto — il sito si tinge:</span>
-      <button type="button" data-c1="#e0559b" data-c2="#7c4dff" class="on" style="background:linear-gradient(135deg,#e0559b,#7c4dff)" aria-label="Rosa e viola"></button>
-      <button type="button" data-c1="#e34d4d" data-c2="#b3266a" style="background:linear-gradient(135deg,#e34d4d,#b3266a)" aria-label="Rosso"></button>
-      <button type="button" data-c1="#2eb8a6" data-c2="#1479c9" style="background:linear-gradient(135deg,#2eb8a6,#1479c9)" aria-label="Tiffany"></button>
-      <button type="button" data-c1="#e8a33d" data-c2="#d96536" style="background:linear-gradient(135deg,#e8a33d,#d96536)" aria-label="Sunset"></button>
-      <button type="button" data-c1="#8b5cf6" data-c2="#4438ca" style="background:linear-gradient(135deg,#8b5cf6,#4438ca)" aria-label="Viola profondo"></button>
+    <div class="nlswatch r" id="nlSwatch" role="group" aria-label="Che colore hai in mente">
+      <span class="nlswatch-l">✨ Che colore hai in mente?</span>
+      {gallery.map((g) => (
+        <button type="button" class="nlsw-b" data-colore={g.t} style={`background:${g.c}`}
+                aria-pressed="false" aria-label={g.t}></button>
+      ))}
+      <span class="nlswatch-sel" id="nlSwSel" hidden></span>
     </div>
+
     <div class="nlmasonry r">
       {gallery.map((g) => (
-        <img src={`/img/demo-nails/${g.f}.webp`} alt={`Finitura ${g.t} da Lúnula`} loading="lazy" />
+        <img src={`/img/demo-nails/${g.f}.webp`} alt={`Finitura ${g.t} da Lúnula`} data-finitura={g.t} loading="lazy" />
       ))}
     </div>
   </section>
@@ -244,6 +249,7 @@ function icon(n) {
             <select id="pFascia"><option>Mattina</option><option>Primo pomeriggio</option><option>Tardo pomeriggio</option><option>Indifferente</option></select>
           </label>
         </div>
+        <p class="nlform-colore" id="pColore" hidden></p>
         <p class="nlform-durata" id="pDurata">Ti fermi circa <b>1 ora</b>: teniamo il posto solo per te.</p>
         <a class="nlbtn nlbtn-wa nlbtn-lg nlbtn-block" id="pWa" href="https://wa.me/390110000000" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.5-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c2.3 1 2.3.7 2.7.6a2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1z"/></svg>
@@ -355,6 +361,8 @@ function icon(n) {
     /* modulo di prenotazione */
     .nlform-riga{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
     .nlform-riga>*{min-width:0}
+    .nlform-colore{font-size:.88rem;color:var(--muted);background:var(--bg2);border-radius:12px;padding:.6rem .8rem}
+    .nlform-colore b{color:var(--ink)}
     .nlform-durata{font-size:.88rem;color:var(--muted);background:var(--bg2);border-radius:12px;padding:.6rem .8rem}
     .nlform-durata b{color:var(--ink)}
     .nlbtn-wa{background:#25d366;color:#0b3d1c}
@@ -404,9 +412,15 @@ function icon(n) {
     /* swatch smalto (tinge gli accenti della pagina) */
     .nlswatch{display:flex;align-items:center;justify-content:center;gap:.7rem;flex-wrap:wrap;margin:-1rem auto 2rem;max-width:1180px}
     .nlswatch-l{font-weight:700;font-size:.92rem;color:var(--muted)}
-    .nlswatch button{width:44px;height:44px;border-radius:50%;border:3px solid #fff;box-shadow:0 4px 14px -4px rgba(120,40,100,.5);cursor:pointer;transition:transform .2s var(--e)}
-    .nlswatch button:hover{transform:scale(1.12)}
-    .nlswatch button.on{outline:3px solid var(--pink);outline-offset:2px}
+    .nlswatch .nlsw-b{width:44px;height:44px;border-radius:50%;border:3px solid #fff;box-shadow:0 4px 14px -4px rgba(120,40,100,.5);cursor:pointer;transition:transform .2s var(--e)}
+    .nlswatch .nlsw-b:hover{transform:scale(1.12)}
+    .nlswatch .nlsw-b[aria-pressed=true]{outline:3px solid var(--pink-d);outline-offset:3px;transform:scale(1.1)}
+    .nlswatch-sel{font-size:.9rem;color:var(--ink);font-weight:700;background:var(--bg2);border-radius:999px;padding:.3rem .9rem}
+    .nlswatch-sel button{border:0;background:none;color:var(--pink-d);text-decoration:underline;cursor:pointer;font:inherit;font-weight:400;margin-left:.5rem}
+    /* scegliendo un colore la sua scheda si accende e le altre si spengono */
+    .nlmasonry img{transition:opacity .35s var(--e),filter .35s var(--e),box-shadow .35s var(--e),transform .4s var(--e)}
+    .nlmasonry img.spento{opacity:.3;filter:saturate(.45)}
+    .nlmasonry img.scelto{box-shadow:0 0 0 3px var(--pink-d),var(--soft)}
     /* cursore pallino smalto (solo desktop) */
     .nlcursor{position:fixed;top:0;left:0;width:14px;height:14px;border-radius:50%;background:var(--pink);pointer-events:none;z-index:999;transform:translate(-50%,-50%);opacity:0;transition:opacity .3s,background .3s;mix-blend-mode:multiply}
     @media (hover:hover) and (pointer:fine){.nlcursor{opacity:.75}}
@@ -500,6 +514,10 @@ function icon(n) {
       const min = +pServizio.value;
       const nome = pServizio.selectedOptions[0].dataset.nome;
       const nota = document.getElementById('pDurata');
+      // il colore scelto nella gallery si vede anche qui, non solo nel messaggio
+      const rigaColore = document.getElementById('pColore');
+      if (coloreScelto) { rigaColore.innerHTML = '💅 Colore scelto: <b>' + coloreScelto + '</b>'; rigaColore.hidden = false; }
+      else rigaColore.hidden = true;
       nota.innerHTML = min
         ? `Ti fermi circa <b>${durata(min)}</b>: teniamo il posto solo per te.`
         : 'Nessun problema: ti facciamo due domande in chat e scegliamo insieme.';
@@ -511,6 +529,7 @@ function icon(n) {
       righe.push('Servizio: ' + nome + (min ? ' (circa ' + durata(min) + ')' : ''));
       if (quando) righe.push('Quando: ' + quando);
       righe.push('Fascia: ' + document.getElementById('pFascia').value);
+      if (coloreScelto) righe.push('Colore che mi piace: ' + coloreScelto);
       if (chi) righe.push('A nome di: ' + chi);
       righe.push('', '(richiesta inviata dal sito)');
       const testo = righe.join(String.fromCharCode(10));
@@ -523,13 +542,34 @@ function icon(n) {
     });
     document.getElementById('prenForm').addEventListener('submit', (e) => e.preventDefault());
     aggiornaPrenotazione();
-    // Swatch smalto: cambia gli accenti di tutta la pagina
-    document.querySelectorAll('#nlSwatch button').forEach((b) => b.addEventListener('click', () => {
-      document.querySelectorAll('#nlSwatch button').forEach((o) => o.classList.toggle('on', o === b));
-      const rs = document.documentElement.style;
-      rs.setProperty('--pink', b.dataset.c1); rs.setProperty('--purple', b.dataset.c2);
-      rs.setProperty('--pink-d', b.dataset.c1); rs.setProperty('--purple-d', b.dataset.c2);
-    }));
+    // Le pastiglie scelgono il colore dell'appuntamento: accendono la scheda
+    // corrispondente nella gallery e la scelta finisce nella richiesta WhatsApp.
+    // (Prima ricoloravano tutto il sito: un effetto che non portava appuntamenti
+    //  e che su due tinte su cinque mandava i testi sotto la soglia di leggibilità.)
+    let coloreScelto = null;
+    const etichetta = document.getElementById('nlSwSel');
+    const pastiglie = [...document.querySelectorAll('.nlsw-b')];
+    const schede = [...document.querySelectorAll('.nlmasonry img')];
+
+    function scegliColore(nome) {
+      coloreScelto = nome;
+      pastiglie.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.colore === nome)));
+      schede.forEach((im) => {
+        im.classList.toggle('scelto', !!nome && im.dataset.finitura === nome);
+        im.classList.toggle('spento', !!nome && im.dataset.finitura !== nome);
+      });
+      if (nome) {
+        etichetta.innerHTML = 'Scelto: ' + nome + ' <button type="button" id="nlSwX">cambia idea</button>';
+        etichetta.hidden = false;
+        document.getElementById('nlSwX').addEventListener('click', () => scegliColore(null));
+      } else {
+        etichetta.hidden = true;
+      }
+      if (typeof aggiornaPrenotazione === 'function') aggiornaPrenotazione();
+    }
+    pastiglie.forEach((b) => b.addEventListener('click', () =>
+      scegliColore(b.getAttribute('aria-pressed') === 'true' ? null : b.dataset.colore)));
+
     // Cursore pallino smalto (desktop)
     if (matchMedia('(hover:hover) and (pointer:fine)').matches) {
       const dot = document.createElement('div'); dot.className = 'nlcursor';
