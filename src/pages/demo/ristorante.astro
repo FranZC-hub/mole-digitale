@@ -3,6 +3,10 @@
 // Non usa il Layout di Mole Digitale: è un sito a sé, come quello del cliente.
 import '@fontsource-variable/inter';
 import '@fontsource-variable/playfair-display';
+// Precarico i woff2: senza, il testo si disegna col ripiego e al cambio font
+// l'hero si riassesta — cioè spostamenti di layout (CLS) sul primo schermo.
+import interWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import playfairDisplayWoff2 from '@fontsource-variable/playfair-display/files/playfair-display-latin-wght-normal.woff2?url';
 ---
 <!DOCTYPE html>
 <html lang="it">
@@ -13,6 +17,10 @@ import '@fontsource-variable/playfair-display';
   <title>Trattoria del Sole — Cucina italiana a Torino</title>
   <meta name="description" content="Trattoria del Sole: cucina italiana di tradizione nel cuore di Torino. Prenota il tuo tavolo." />
   <meta name="theme-color" content="#14110d" />
+  <!-- lo sfondo dell'apertura è il primo pixel che conta: precaricarlo accorcia l'attesa -->
+  <link rel="preload" as="image" href="/img/demo/hero.webp" />
+  <link rel="preload" as="font" type="font/woff2" href={interWoff2} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href={playfairDisplayWoff2} crossorigin />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='6' fill='%23d8a657'/><g stroke='%23d8a657' stroke-width='1.6'><path d='M12 1v3M12 20v3M1 12h3M20 12h3M4 4l2 2M18 18l2 2M20 4l-2 2M6 18l-2 2'/></g></svg>" />
 </head>
 <body>

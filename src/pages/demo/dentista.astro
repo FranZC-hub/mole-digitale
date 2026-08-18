@@ -3,6 +3,10 @@
 // Responsive solo flusso (flex/grid/clamp), niente badge absolute. Sito a sé.
 import '@fontsource-variable/inter';
 import '@fontsource-variable/space-grotesk';
+// Precarico i woff2: senza, il testo si disegna col ripiego e al cambio font
+// l'hero si riassesta — cioè spostamenti di layout (CLS) sul primo schermo.
+import interWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import spaceGroteskWoff2 from '@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url';
 
 const tratt = [
   { ic: 'shield', t: 'Igiene e prevenzione', d: 'Pulizia professionale e controlli regolari per fermare i problemi prima che inizino.' },
@@ -51,6 +55,10 @@ function icon(n) {
   <title>Studio Sorriso — Dentista a Torino</title>
   <meta name="description" content="Studio Sorriso, studio dentistico a Torino: igiene, implantologia, ortodonzia invisibile e sbiancamento. Prima visita gratuita e pagamenti a rate." />
   <meta name="theme-color" content="#1488c4" />
+  <!-- l'immagine di apertura è l'elemento più grande del primo schermo: precaricarla accorcia l'attesa -->
+  <link rel="preload" as="image" href="/img/demo-dentista/hero.webp" />
+  <link rel="preload" as="font" type="font/woff2" href={interWoff2} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href={spaceGroteskWoff2} crossorigin />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M8 4c-2 0-3 1.5-3 4 0 3 1 4 1.5 6S7 18 8 18s1-1 1.5-2 1-2 2.5-2 2 1 2.5 2 .5 2 1.5 2 1.5-2 1.5-4 1.5-3 1.5-6c0-2.5-1-4-3-4-1.5 0-2.5 1-4 1s-2.5-1-4-1z' fill='%231488c4'/></svg>" />
 </head>
 <body>

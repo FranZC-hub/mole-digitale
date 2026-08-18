@@ -2,6 +2,9 @@
 // DEMO standalone — "Àsse", studio di osteopatia a Torino. Tema CHIARO clinico-caldo (slate + sabbia).
 // Responsive solo flusso (flex/grid/clamp), niente badge absolute. Sito a sé.
 import '@fontsource-variable/manrope';
+// Precarico i woff2: senza, il testo si disegna col ripiego e al cambio font
+// l'hero si riassesta — cioè spostamenti di layout (CLS) sul primo schermo.
+import manropeWoff2 from '@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2?url';
 
 const perchi = [
   { ic: 'spine',   t: 'Mal di schiena',        d: 'Lombalgia, sciatalgia e rigidità: alla ricerca della causa, non solo del sintomo.' },
@@ -49,6 +52,9 @@ function icon(n) {
   <title>Àsse — Studio di osteopatia a Torino</title>
   <meta name="description" content="Àsse, studio di osteopatia a Torino: mal di schiena, cervicale, dolori sportivi, gravidanza e bambini. Tecniche dolci, valutazione completa, osteopata D.O." />
   <meta name="theme-color" content="#34607a" />
+  <!-- l'immagine di apertura è l'elemento più grande del primo schermo: precaricarla accorcia l'attesa -->
+  <link rel="preload" as="image" href="/img/demo-osteopata/hero.webp" />
+  <link rel="preload" as="font" type="font/woff2" href={manropeWoff2} crossorigin />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 3v18M12 6h3M12 10h3M12 14h3' fill='none' stroke='%2334607a' stroke-width='2' stroke-linecap='round'/></svg>" />
 </head>
 <body>

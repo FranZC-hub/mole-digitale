@@ -3,6 +3,10 @@
 // Responsive solo flusso (flex/grid/clamp), niente badge absolute. Sito a sé.
 import '@fontsource-variable/inter';
 import '@fontsource-variable/fraunces';
+// Precarico i woff2: senza, il testo si disegna col ripiego e al cambio font
+// l'hero si riassesta — cioè spostamenti di layout (CLS) sul primo schermo.
+import interWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import frauncesWoff2 from '@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url';
 
 const mass = [
   { ic: 'lotus',  t: 'Rilassante',       d: 'Pressioni lente e avvolgenti per sciogliere lo stress accumulato.', dur: '50 min', p: '55€' },
@@ -45,6 +49,8 @@ function icon(n) {
   <title>Sàva — Centro massaggi & benessere a Torino</title>
   <meta name="description" content="Sàva, centro massaggi e benessere a Torino: rilassante, decontratturante, sportivo, hot stone e aromaterapia. Mani esperte, oli naturali, solo su appuntamento." />
   <meta name="theme-color" content="#f6f0e8" />
+  <link rel="preload" as="font" type="font/woff2" href={interWoff2} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href={frauncesWoff2} crossorigin />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 20c-2-2-3-4-3-6.5 0-2 1.2-4 3-5.5 1.8 1.5 3 3.5 3 5.5C15 16 14 18 12 20z' fill='%23b07d56'/></svg>" />
 </head>
 <body>
@@ -241,7 +247,9 @@ function icon(n) {
     .msnav-toggle{display:none;background:none;border:0;color:var(--ink);cursor:pointer;width:44px;height:44px;border-radius:12px;place-items:center;margin-left:auto}
 
     .msbtn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;font-weight:600;font-size:.95rem;padding:.7rem 1.3rem;border-radius:999px;cursor:pointer;border:1px solid transparent;transition:transform .2s var(--e),background .2s;white-space:nowrap}
-    .msbtn-solid{background:var(--clay);color:#fff;box-shadow:0 12px 26px -12px var(--clay)}.msbtn-solid:hover{background:var(--clay-d);transform:translateY(-3px)}
+    /* Fondo del pulsante scurito a #976c4a: col colore pieno del marchio il bianco
+   stava a 3,4:1, sotto la soglia AA. La tinta --clay resta invariata altrove. */
+    .msbtn-solid{background:#976c4a;color:#fff;box-shadow:0 12px 26px -12px var(--clay)}.msbtn-solid:hover{background:var(--clay-d);transform:translateY(-3px)}
     .msbtn-ghost{border-color:var(--line);color:var(--ink)}.msbtn-ghost:hover{border-color:var(--clay);color:var(--clay-d);transform:translateY(-3px)}
     .msbtn-ghost-l{border-color:rgba(255,255,255,.55);color:#fff}.msbtn-ghost-l:hover{background:rgba(255,255,255,.14)}
     .msbtn-lg{padding:.95rem 1.7rem;font-size:1.02rem}.msbtn-block{width:100%}

@@ -8,6 +8,10 @@
 // Seconda cosa che nessun sito d'albergo italiano fa bene: l'inglese. C'è il cambio lingua.
 import '@fontsource-variable/cormorant';
 import '@fontsource-variable/jost';
+// Precarico i woff2: senza, il testo si disegna col ripiego e al cambio font
+// l'hero si riassesta — cioè spostamenti di layout (CLS) sul primo schermo.
+import cormorantWoff2 from '@fontsource-variable/cormorant/files/cormorant-latin-wght-normal.woff2?url';
+import jostWoff2 from '@fontsource-variable/jost/files/jost-latin-wght-normal.woff2?url';
 
 const CAMERE = [
   { k: 'singola', n: 'Singola', en: 'Single', mq: 14, letti: '1 letto singolo', lettiEn: '1 single bed', max: 1, base: 79,
@@ -80,6 +84,8 @@ const MAPPA = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComp
   <title>Albergo del Teatro — Hotel in centro a Torino · Prenota diretto</title>
   <meta name="description" content="Albergo del Teatro: 18 camere in un palazzo dell’Ottocento a 200 metri dalla Mole. Colazione inclusa, cancellazione gratuita e il prezzo migliore prenotando direttamente." />
   <meta name="theme-color" content="#0f241d" />
+  <link rel="preload" as="font" type="font/woff2" href={cormorantWoff2} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href={jostWoff2} crossorigin />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='5' fill='%230f241d'/><path d='M7 17V8m0 4.5h5M12 17V8' stroke='%23d8bd7a' stroke-width='1.9' stroke-linecap='round' fill='none'/><circle cx='16.5' cy='9' r='1.3' fill='%23d8bd7a'/></svg>" />
 </head>
 <body>

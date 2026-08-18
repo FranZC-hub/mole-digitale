@@ -3,6 +3,10 @@
 // Sito a sé (non usa il Layout di Mole Digitale): carrello funzionante in vanilla JS.
 import '@fontsource-variable/inter';
 import '@fontsource-variable/space-grotesk';
+// Precarico i woff2: senza, il testo si disegna col ripiego e al cambio font
+// l'hero si riassesta — cioè spostamenti di layout (CLS) sul primo schermo.
+import interWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import spaceGroteskWoff2 from '@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url';
 
 const prodotti = [
   { id: 'pizzette',    nome: 'Pizzette Margherita · 4 pz',     cat: 'pizze', prezzo: 8,  img: '/img/demo/piatto-1.webp',  desc: 'Mini pizze pomodoro, mozzarella e basilico' },
@@ -22,6 +26,8 @@ const prodotti = [
   <title>Bottega Subalpina — Piatti freschi pronti, consegna a Torino</title>
   <meta name="description" content="Bottega Subalpina: pizze, primi e dolci preparati ogni giorno e consegnati a casa a Torino. Cucina fresca, pronta da gustare. Ordina online." />
   <meta name="theme-color" content="#faf6ef" />
+  <link rel="preload" as="font" type="font/woff2" href={interWoff2} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href={spaceGroteskWoff2} crossorigin />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6 7h12l-1 13H7L6 7zm3 0a3 3 0 0 1 6 0' fill='none' stroke='%23c0552b' stroke-width='2'/></svg>" />
 </head>
 <body>

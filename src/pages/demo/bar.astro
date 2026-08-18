@@ -8,6 +8,10 @@
 // Quindi il sito si riconfigura da solo in base all'ora: è la cosa che nessun bar ha.
 import '@fontsource-variable/inter';
 import '@fontsource-variable/fraunces';
+// Precarico i woff2: senza, il testo si disegna col ripiego e al cambio font
+// l'hero si riassesta — cioè spostamenti di layout (CLS) sul primo schermo.
+import interWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import frauncesWoff2 from '@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url';
 
 // Orari reali da bar: apertura molto presto, domenica solo mattina.
 const ORARI = [
@@ -104,6 +108,8 @@ const MAPPA = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComp
   <title>Caffè Portici — Bar a Torino · Colazione, pranzo e aperitivo</title>
   <meta name="description" content="Caffè Portici, bar in Via Po a Torino: colazione dalle 6:30, formula pranzo a 10 € con buoni pasto, aperitivo con tagliere e dehors sotto i portici. Ordina e ritira senza fare la coda." />
   <meta name="theme-color" content="#fbf4e9" />
+  <link rel="preload" as="font" type="font/woff2" href={interWoff2} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href={frauncesWoff2} crossorigin />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 9h12v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V9z' fill='%23a8481a'/><path d='M16 10h2a2 2 0 0 1 0 4h-2' fill='none' stroke='%23241a12' stroke-width='1.6'/><path d='M7 3v2M11 3v2' stroke='%23241a12' stroke-width='1.6' stroke-linecap='round'/></svg>" />
 </head>
 <body>

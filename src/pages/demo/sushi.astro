@@ -4,6 +4,10 @@
 // Responsive solo flusso (grid/flex/clamp), niente badge absolute decorativi. Sito a sé.
 import '@fontsource-variable/jost';
 import '@fontsource-variable/inter';
+// Precarico i woff2: senza, il testo si disegna col ripiego e al cambio font
+// l'hero si riassesta — cioè spostamenti di layout (CLS) sul primo schermo.
+import jostWoff2 from '@fontsource-variable/jost/files/jost-latin-wght-normal.woff2?url';
+import interWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 
 const menu = [
   { name: 'Nigiri', jp: '握り', items: [
@@ -44,6 +48,10 @@ const reviews = [
   <title>Hashi — Sushi restaurant a Torino</title>
   <meta name="description" content="Hashi, sushi restaurant a Torino: nigiri, uramaki, sashimi e special roll preparati al momento con pesce freschissimo. Omakase, asporto e delivery. Prenota un tavolo." />
   <meta name="theme-color" content="#141110" />
+  <!-- l'immagine di apertura è l'elemento più grande del primo schermo: precaricarla accorcia l'attesa -->
+  <link rel="preload" as="image" href="/img/demo-sushi/hero.webp" />
+  <link rel="preload" as="font" type="font/woff2" href={jostWoff2} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href={interWoff2} crossorigin />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='7' fill='%23d6452f'/></svg>" />
 </head>
 <body>

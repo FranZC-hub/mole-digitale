@@ -4,6 +4,10 @@
 // JS vanilla: menu mobile, reveal, configuratore "trova il percorso", FAQ, contatori.
 import '@fontsource-variable/inter';
 import '@fontsource-variable/space-grotesk';
+// Precarico i woff2: senza, il testo si disegna col ripiego e al cambio font
+// l'hero si riassesta — cioè spostamenti di layout (CLS) sul primo schermo.
+import interWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import spaceGroteskWoff2 from '@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url';
 
 const problemi = [
   { t: 'Tira al guinzaglio', d: 'Passeggiate impossibili? Gli insegniamo a camminare al tuo fianco, rilassato.' },
@@ -60,6 +64,10 @@ function icon(name) {
   <title>Coda Felice — Educatore cinofilo e addestratore a Torino</title>
   <meta name="description" content="Coda Felice, educatore cinofilo a Torino: educazione di base, problemi di comportamento, puppy class e sport cinofili con metodi gentili. Prima lezione di prova gratuita." />
   <meta name="theme-color" content="#2f7d4f" />
+  <!-- l'immagine di apertura è l'elemento più grande del primo schermo: precaricarla accorcia l'attesa -->
+  <link rel="preload" as="image" href="/img/demo-cani/hero.webp" />
+  <link rel="preload" as="font" type="font/woff2" href={interWoff2} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href={spaceGroteskWoff2} crossorigin />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='7' cy='9' r='2' fill='%232f7d4f'/><circle cx='12' cy='6.5' r='2' fill='%232f7d4f'/><circle cx='17' cy='9' r='2' fill='%232f7d4f'/><path d='M12 12c-3 0-5 2-5 4.2C7 18 9 19 12 19s5-1 5-2.8C17 14 15 12 12 12z' fill='%232f7d4f'/></svg>" />
 </head>
 <body>

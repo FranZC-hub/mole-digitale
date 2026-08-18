@@ -4,6 +4,10 @@
 // Responsive solo flusso (grid/flex/clamp), niente badge absolute decorativi. Sito a sé.
 import '@fontsource-variable/sora';
 import '@fontsource-variable/inter';
+// Precarico i woff2: senza, il testo si disegna col ripiego e al cambio font
+// l'hero si riassesta — cioè spostamenti di layout (CLS) sul primo schermo.
+import soraWoff2 from '@fontsource-variable/sora/files/sora-latin-wght-normal.woff2?url';
+import interWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 
 const servizi = [
   { ic: 'pulse',   t: 'Visite e check-up',     d: 'Controlli generali e medicina preventiva per cani, gatti e animali esotici.' },
@@ -46,6 +50,10 @@ function icon(n) {
   <title>Zampe Amiche — Ambulatorio veterinario a Torino</title>
   <meta name="description" content="Zampe Amiche, ambulatorio veterinario a Torino: visite, vaccinazioni, microchip, chirurgia, diagnostica e toelettatura. Urgenze 24/7, cure gentili per cani e gatti." />
   <meta name="theme-color" content="#0e9aa7" />
+  <!-- l'immagine di apertura è l'elemento più grande del primo schermo: precaricarla accorcia l'attesa -->
+  <link rel="preload" as="image" href="/img/demo-animali/hero.webp" />
+  <link rel="preload" as="font" type="font/woff2" href={soraWoff2} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href={interWoff2} crossorigin />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='6' cy='11' r='1.6' fill='%230e9aa7'/><circle cx='10' cy='7' r='1.6' fill='%230e9aa7'/><circle cx='14' cy='7' r='1.6' fill='%230e9aa7'/><circle cx='18' cy='11' r='1.6' fill='%230e9aa7'/><path d='M8 16c0-2.5 1.8-4 4-4s4 1.5 4 4-1.8 4-4 4-4-1.5-4-4z' fill='%23ff6b6b'/></svg>" />
 </head>
 <body>
@@ -211,7 +219,9 @@ function icon(n) {
     .annav-toggle{display:none;background:none;border:0;color:var(--ink);cursor:pointer;width:44px;height:44px;border-radius:12px;place-items:center;margin-left:auto}
 
     .anbtn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;font-weight:700;font-size:.92rem;padding:.7rem 1.3rem;border-radius:14px;cursor:pointer;border:1px solid transparent;transition:transform .2s var(--e),background .2s;white-space:nowrap;font-family:var(--sans)}
-    .anbtn-solid{background:var(--teal);color:#fff;box-shadow:0 12px 26px -12px var(--teal)}.anbtn-solid:hover{background:var(--teal-d);transform:translateY(-3px)}
+    /* Fondo del pulsante scurito a #0c818c: col colore pieno del marchio il bianco
+   stava a 3,4:1, sotto la soglia AA. La tinta --teal resta invariata altrove. */
+    .anbtn-solid{background:#0c818c;color:#fff;box-shadow:0 12px 26px -12px var(--teal)}.anbtn-solid:hover{background:var(--teal-d);transform:translateY(-3px)}
     .anbtn-ghost{border-color:var(--line);color:var(--ink);background:#fff}.anbtn-ghost:hover{border-color:var(--coral);color:var(--coral-d);transform:translateY(-3px)}
     .anbtn-light{background:#fff;color:var(--coral-d)}.anbtn-light:hover{transform:translateY(-3px)}
     .anbtn-lg{padding:.95rem 1.7rem;font-size:1rem}.anbtn-block{width:100%}

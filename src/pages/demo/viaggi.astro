@@ -4,6 +4,10 @@
 // Responsive solo flusso (grid/clamp/flex), niente badge absolute decorativi. Sito a sé.
 import '@fontsource-variable/space-grotesk';
 import '@fontsource-variable/inter';
+// Precarico i woff2: senza, il testo si disegna col ripiego e al cambio font
+// l'hero si riassesta — cioè spostamenti di layout (CLS) sul primo schermo.
+import spaceGroteskWoff2 from '@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url';
+import interWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 
 const dest = [
   { img: '/img/demo-viaggi/d1.webp', n: 'Maldive',  s: 'Atolli & overwater', p: 'da 1.290€', big: true },
@@ -53,6 +57,8 @@ function icon(n) {
   <title>Vàgo — Agenzia viaggi su misura a Torino</title>
   <meta name="description" content="Vàgo, agenzia viaggi a Torino: viaggi su misura, lune di miele, mare, città e avventura. Ti ascoltiamo, progettiamo l'itinerario e ti assistiamo prima e durante." />
   <meta name="theme-color" content="#0e7cc4" />
+  <link rel="preload" as="font" type="font/woff2" href={spaceGroteskWoff2} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href={interWoff2} crossorigin />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M10 16 4 14l1-2 5 1 4-6 2 1-2 6 4 2-1 2-5-1-2 3h-2z' fill='%23ff7a30'/></svg>" />
 </head>
 <body>

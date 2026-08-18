@@ -3,6 +3,10 @@
 // Sito a sé (non usa il Layout di Mole Digitale). GSAP + Lenis + calcolatore valutazione.
 import '@fontsource-variable/inter';
 import '@fontsource-variable/playfair-display';
+// Precarico i woff2: senza, il testo si disegna col ripiego e al cambio font
+// l'hero si riassesta — cioè spostamenti di layout (CLS) sul primo schermo.
+import interWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import playfairDisplayWoff2 from '@fontsource-variable/playfair-display/files/playfair-display-latin-wght-normal.woff2?url';
 
 // Quotazioni indicative (€/grammo) usate dal calcolatore e dal ticker.
 const quote = [
@@ -25,6 +29,8 @@ const quote = [
   <title>Aureo — Compro Oro a Torino · Valutazione gratuita e pagamento immediato</title>
   <meta name="description" content="Aureo, compro oro a Torino: valutazione gratuita e senza impegno, pagamento immediato in contanti, massima riservatezza. Calcola subito quanto vale il tuo oro." />
   <meta name="theme-color" content="#0e0b07" />
+  <link rel="preload" as="font" type="font/woff2" href={interWoff2} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href={playfairDisplayWoff2} crossorigin />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='3' y='9' width='18' height='8' rx='1.5' fill='%23e8c372'/><rect x='6' y='5' width='12' height='5' rx='1.2' fill='%23d4af37'/></svg>" />
 </head>
 <body>

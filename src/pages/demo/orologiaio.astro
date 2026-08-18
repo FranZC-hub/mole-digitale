@@ -3,6 +3,10 @@
 // Sito a sé (non usa il Layout di Mole Digitale). JS vanilla: orologio analogico LIVE + preventivo riparazione.
 import '@fontsource-variable/inter';
 import '@fontsource-variable/space-grotesk';
+// Precarico i woff2: senza, il testo si disegna col ripiego e al cambio font
+// l'hero si riassesta — cioè spostamenti di layout (CLS) sul primo schermo.
+import interWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import spaceGroteskWoff2 from '@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url';
 ---
 <!DOCTYPE html>
 <html lang="it">
@@ -13,6 +17,8 @@ import '@fontsource-variable/space-grotesk';
   <title>Cronos — Laboratorio orologiaio a Torino · Riparazioni, revisioni e restauro</title>
   <meta name="description" content="Cronos, laboratorio orologiaio a Torino: cambio batteria in 10 minuti, revisione completa del movimento, prova impermeabilità e restauro vintage. Preventivo gratuito." />
   <meta name="theme-color" content="#0c1015" />
+  <link rel="preload" as="font" type="font/woff2" href={interWoff2} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href={spaceGroteskWoff2} crossorigin />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='9' fill='none' stroke='%23c8a06a' stroke-width='2'/><path d='M12 7v5l3 2' fill='none' stroke='%239fb3c8' stroke-width='2' stroke-linecap='round'/></svg>" />
 </head>
 <body>

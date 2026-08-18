@@ -3,6 +3,10 @@
 // Responsive solo flusso (flex/grid/clamp), niente badge absolute. Sito a sé.
 import '@fontsource-variable/inter';
 import '@fontsource-variable/space-grotesk';
+// Precarico i woff2: senza, il testo si disegna col ripiego e al cambio font
+// l'hero si riassesta — cioè spostamenti di layout (CLS) sul primo schermo.
+import interWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import spaceGroteskWoff2 from '@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url';
 
 const servizi = [
   { ic: 'pill',  t: 'Farmaci e parafarmaci', d: 'Da banco e con ricetta (anche elettronica). Ti aiutiamo a trovare ciò che serve.' },
@@ -45,6 +49,10 @@ function icon(n) {
   <title>Farmacia Aurora — Farmacia di fiducia a Torino</title>
   <meta name="description" content="Farmacia Aurora a Torino: farmaci, autoanalisi del sangue, misurazione pressione, consegna a domicilio e consigli del farmacista. La tua salute, vicino casa." />
   <meta name="theme-color" content="#1a9d6e" />
+  <!-- l'immagine di apertura è l'elemento più grande del primo schermo: precaricarla accorcia l'attesa -->
+  <link rel="preload" as="image" href="/img/demo-farmacia/hero.webp" />
+  <link rel="preload" as="font" type="font/woff2" href={interWoff2} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href={spaceGroteskWoff2} crossorigin />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M9 3h6v6h6v6h-6v6H9v-6H3V9h6z' fill='%231a9d6e'/></svg>" />
 </head>
 <body>
@@ -208,7 +216,9 @@ function icon(n) {
     .fanav-toggle{display:none;background:none;border:0;color:var(--ink);cursor:pointer;width:44px;height:44px;border-radius:12px;place-items:center;margin-left:auto}
 
     .fabtn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;font-family:var(--head);font-weight:600;font-size:.95rem;padding:.7rem 1.3rem;border-radius:12px;cursor:pointer;border:2px solid transparent;transition:transform .2s var(--e),background .2s;white-space:nowrap}
-    .fabtn-solid{background:var(--green);color:#fff;box-shadow:0 12px 26px -12px var(--green)}.fabtn-solid:hover{background:var(--green-d);transform:translateY(-3px)}
+    /* Fondo del pulsante scurito a #16845c: col colore pieno del marchio il bianco
+   stava a 3,4:1, sotto la soglia AA. La tinta --green resta invariata altrove. */
+    .fabtn-solid{background:#16845c;color:#fff;box-shadow:0 12px 26px -12px var(--green)}.fabtn-solid:hover{background:var(--green-d);transform:translateY(-3px)}
     .fabtn-ghost{border-color:var(--line);color:var(--ink)}.fabtn-ghost:hover{border-color:var(--green);color:var(--green);transform:translateY(-3px)}
     .fabtn-ghost-l{border-color:rgba(255,255,255,.55);color:#fff}.fabtn-ghost-l:hover{background:rgba(255,255,255,.14)}
     .fabtn-lg{padding:.95rem 1.7rem;font-size:1.02rem}.fabtn-block{width:100%}
@@ -297,7 +307,7 @@ function icon(n) {
     .fabar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:180;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:.5rem .7rem calc(.5rem + env(safe-area-inset-bottom,0px));gap:.6rem}
     .fabar a{flex:1;display:flex;flex-direction:column;align-items:center;gap:.15rem;padding:.5rem .3rem;border-radius:12px;font-size:.78rem;font-weight:700;color:var(--ink)}
     .fabar a span{font-size:1.15rem}
-    .fabar .fabar-cta{background:var(--green);color:#fff}
+    .fabar .fabar-cta{background:#16845c;color:#fff} /* stesso verde scurito del pulsante principale: serve 4.5:1 col bianco */
     @media (max-width:760px){.fabar{display:flex}.wa-fab{bottom:84px}body{padding-bottom:70px}}
     .wa-fab{position:fixed;right:18px;bottom:18px;z-index:160;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 30px -10px rgba(37,211,102,.7);transition:transform .2s var(--e)}
     .wa-fab:hover{transform:scale(1.08)}

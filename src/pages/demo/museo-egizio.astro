@@ -3,6 +3,10 @@
 // Sito DIMOSTRATIVO non ufficiale: nessun dato legale reale (no P.IVA, no email ufficiali).
 import '@fontsource-variable/inter';
 import '@fontsource-variable/playfair-display';
+// Precarico i woff2: senza, il testo si disegna col ripiego e al cambio font
+// l'hero si riassesta — cioè spostamenti di layout (CLS) sul primo schermo.
+import interWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import playfairDisplayWoff2 from '@fontsource-variable/playfair-display/files/playfair-display-latin-wght-normal.woff2?url';
 
 const collezione = [
   { img: '/img/demo-egizio/galleria.webp',    nome: 'Galleria dei Re',        desc: 'Statue monumentali in una scenografia di luce indimenticabile.' },
@@ -33,6 +37,8 @@ const mostre = [
   <meta property="og:image" content="/img/demo-egizio/hero.webp" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preload" as="image" href="/img/demo-egizio/hero.webp" />
+  <link rel="preload" as="font" type="font/woff2" href={interWoff2} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href={playfairDisplayWoff2} crossorigin />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2l2 5 5 .4-3.8 3.3L16.5 16 12 13.3 7.5 16l1.3-5.3L5 7.4 10 7z' fill='%23c9a24a'/></svg>" />
 </head>
 <body>

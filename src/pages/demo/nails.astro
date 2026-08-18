@@ -4,6 +4,10 @@
 // Responsive solo flusso (grid/columns/clamp), niente badge absolute decorativi. Sito a sé.
 import '@fontsource-variable/outfit';
 import '@fontsource-variable/inter';
+// Precarico i woff2: senza, il testo si disegna col ripiego e al cambio font
+// l'hero si riassesta — cioè spostamenti di layout (CLS) sul primo schermo.
+import outfitWoff2 from '@fontsource-variable/outfit/files/outfit-latin-wght-normal.woff2?url';
+import interWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 
 // Prezzo E durata: chi prenota vuole sapere quanto tempo si ferma, non solo quanto spende.
 const listino = [
@@ -80,6 +84,8 @@ function icon(n) {
   <title>Lúnula — Nail studio a Torino</title>
   <meta name="description" content="Lúnula, nail studio a Torino: manicure, semipermanente, ricostruzione gel, nail art e pedicure. Prodotti vegan, igiene certificata, nail artist dedicate." />
   <meta name="theme-color" content="#e0559b" />
+  <link rel="preload" as="font" type="font/woff2" href={outfitWoff2} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href={interWoff2} crossorigin />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 3l1.6 5.4L19 10l-5.4 1.6L12 17l-1.6-5.4L5 10z' fill='%23e0559b'/></svg>" />
 </head>
 <body>
