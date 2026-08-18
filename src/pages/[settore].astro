@@ -193,6 +193,30 @@ const settori = {
     ],
     demoUrl: '/demo/sushi', demoName: 'Hashi', widget: 'il filtro menu crudo/cotto/veggie',
   },
+  'siti-web-hotel-torino': {
+    kicker: 'Per hotel, B&B e affittacamere',
+    h1a: 'Siti web per', h1b: 'hotel a Torino',
+    intro: "Ogni prenotazione che passa da un portale ti costa il 15-18% di commissione. Un sito che fa prenotare diretto si ripaga in poche notti — e i clienti stranieri lo leggono nella loro lingua.",
+    metaDesc: "Siti web per hotel e B&B a Torino: prenotazione diretta senza commissioni, camere e servizi anche in inglese, trovati su Google.",
+    points: [
+      { h: 'Prenotazione diretta', p: 'Date, prezzo e richiesta in tre tocchi: la commissione del portale resta a te.' },
+      { h: 'Anche in inglese', p: 'Camere, servizi e informazioni pratiche nella lingua di chi arriva da fuori.' },
+      { h: 'Trovato su Google', p: 'Chi cerca «hotel centro Torino» arriva da te, non su un portale.' },
+    ],
+    demoUrl: '/demo/hotel', demoName: 'Albergo del Teatro', widget: 'il preventivo per date, col confronto su quanto costerebbe la stessa camera su un portale',
+  },
+  'siti-web-gioiellerie-torino': {
+    kicker: 'Per gioiellerie e laboratori orafi',
+    h1a: 'Siti web per', h1b: 'gioiellerie a Torino',
+    intro: "Un gioiello si sceglie dal vivo, ma si cerca online. Il sito porta in negozio chi sta guardando: la vetrina, le riparazioni e le perizie, spiegate come le spieghi al banco.",
+    metaDesc: "Siti web per gioiellerie a Torino: vetrina delle collezioni, riparazioni e perizie in chiaro, e la fiducia che serve per farsi affidare un gioiello.",
+    points: [
+      { h: 'La vetrina, sempre aperta', p: 'Collezioni e pezzi unici da guardare con calma, e da venire a provare in negozio.' },
+      { h: 'Riparazioni e perizie', p: 'I servizi che portano il lavoro più redditizio, spiegati e prenotabili.' },
+      { h: 'Fiducia prima di tutto', p: 'Chi affida un gioiello vuole sapere chi sei: storia, laboratorio e garanzie in chiaro.' },
+    ],
+    demoUrl: '/demo/gioielleria', demoName: 'Lùmina', widget: 'la lista dei preferiti da portare in boutique e il configuratore della fede su misura',
+  },
   'siti-web-addestratori-cani-torino': {
     kicker: 'Per addestratori ed educatori cinofili',
     h1a: 'Siti web per', h1b: 'addestratori cani a Torino',
@@ -226,6 +250,8 @@ export function getStaticPaths() {
     'siti-web-lavanderie-torino',
     'siti-web-ristoranti-giapponesi-torino',
     'siti-web-addestratori-cani-torino',
+    'siti-web-hotel-torino',
+    'siti-web-gioiellerie-torino',
   ].map((settore) => ({ params: { settore } }));
 }
 

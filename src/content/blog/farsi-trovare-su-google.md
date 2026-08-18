@@ -2,6 +2,7 @@
 title: "Come farsi trovare su Google (senza spendere)"
 description: "Le 4 cose concrete che fanno comparire il tuo negozio, ristorante o salone su Google quando i clienti cercano «vicino a me» — senza pubblicità a pagamento."
 date: 2026-06-02
+og: "/og/blog-google.png"
 ---
 
 La maggior parte dei tuoi futuri clienti, prima di entrare da te, ti cerca sul telefono. Se non ti trovano, vanno dal concorrente. La buona notizia? Per farti trovare **non serve per forza spendere in pubblicità**. Servono 4 cose fatte bene.

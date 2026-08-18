@@ -84,7 +84,7 @@ const MAPPA = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComp
 </head>
 <body>
 
-  <a class="demo-flag" href="/">★ Demo realizzata da <b>Mole Digitale</b> · torna al sito ↩</a>
+  <a class="demo-flag" href="/siti-web-hotel-torino">★ Demo di <b>Mole Digitale</b> <span class="flag-lungo">· Vuoi un sito così per il tuo hotel?</span> · <b>Scopri di più →</b></a>
 
   <!-- NAV -->
   <header class="hnav" id="hnav">
@@ -325,6 +325,8 @@ const MAPPA = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComp
 
     .demo-flag{position:fixed;top:0;left:0;right:0;z-index:200;text-align:center;font-size:.8rem;line-height:1.4;
       padding:.4rem .6rem;background:rgba(9,20,16,.94);backdrop-filter:blur(8px);color:#cfdbd4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .flag-lungo{display:inline}
+    @media (max-width:640px){.flag-lungo{display:none}}
     .demo-flag b{color:var(--ottone-c)}
     .wa-fab{position:fixed;right:18px;bottom:18px;z-index:160;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 30px -10px rgba(37,211,102,.6);transition:transform .2s var(--e)}
     .wa-fab:hover{transform:scale(1.08)}

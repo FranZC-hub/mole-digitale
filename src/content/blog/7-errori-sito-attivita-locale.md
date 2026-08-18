@@ -2,6 +2,7 @@
 title: "7 errori che vediamo (quasi) su ogni sito di attività locali"
 description: "Menu in PDF, orari sbagliati, niente WhatsApp: i 7 errori più comuni sui siti di ristoranti, negozi e studi di Torino — e come si sistemano in una settimana."
 date: 2026-07-02
+og: "/og/blog-7-errori.png"
 ---
 
 Ogni settimana guardiamo decine di siti di attività torinesi. E quasi sempre troviamo gli stessi problemi. La buona notizia: sono tutti sistemabili, e nessuno richiede mesi. Eccoli, dal più frequente al più costoso.

@@ -2,6 +2,7 @@
 title: "Quanto costa un sito web per la tua attività a Torino?"
 description: "Prezzi reali, senza giri di parole: quanto costa davvero un sito per un ristorante, un parrucchiere o un negozio a Torino, e da cosa dipende."
 date: 2026-05-20
+og: "/og/blog-quanto-costa.png"
 ---
 
 “Quanto mi costa?” è la prima domanda che ci fanno tutti. Ed è giusto così. Il problema è che in giro trovi risposte che vanno da 50 € a 5.000 €, e capirci qualcosa è quasi impossibile. Mettiamo ordine.

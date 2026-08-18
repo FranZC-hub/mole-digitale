@@ -2,6 +2,7 @@
 title: "Il tuo sito può prendere appuntamenti mentre dormi"
 description: "Come funzionano le prenotazioni online per parrucchieri, dentisti, ristoranti e centri estetici — e perché il modulo giusto vale più di dieci telefonate."
 date: 2026-07-02
+og: "/og/blog-prenotazioni.png"
 ---
 
 C'è un momento preciso in cui le persone decidono di prenotare: **la sera, dopo cena, sul divano**. Il parrucchiere è chiuso. Lo studio dentistico è chiuso. Il ristorante sta servendo i tavoli e non risponde. E la decisione, se non trova uno sbocco, evapora.

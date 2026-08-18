@@ -21,7 +21,7 @@ const related = (await getCollection('blog'))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, 2);
 ---
-<Layout title={post.data.title} description={post.data.description} article={{ datePublished: post.data.date.toISOString() }}>
+<Layout title={post.data.title} description={post.data.description} image={post.data.og} article={{ datePublished: post.data.date.toISOString() }}>
   <article class="section blog-article" style="padding-top:8rem;">
     <a href="/blog" class="blog-back" data-reveal>← Tutti gli articoli</a>
     <time class="kicker" datetime={post.data.date.toISOString().slice(0, 10)} data-reveal>{fmt} · ⏱ {readMin} min di lettura</time>
