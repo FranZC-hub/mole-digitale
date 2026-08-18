@@ -126,7 +126,7 @@ import '@fontsource-variable/playfair-display';
       <span class="dkicker">Prenota</span>
       <h2>Ti aspettiamo<br/><span class="it">a tavola.</span></h2>
       <p>Prenota il tuo tavolo online in pochi secondi — oppure chiamaci.</p>
-      <form class="resv" onsubmit="return false">
+      <form class="resv">
         <label>Persone
           <select><option>2 persone</option><option>3 persone</option><option>4 persone</option><option>5+ persone</option></select>
         </label>
@@ -136,7 +136,7 @@ import '@fontsource-variable/playfair-display';
         <label>Ora
           <select><option>19:30</option><option>20:00</option><option>20:30</option><option>21:00</option></select>
         </label>
-        <a class="dbtn dbtn-solid dmag" href="#contatti">Prenota il tavolo</a>
+        <button type="submit" class="dbtn dbtn-solid dmag">Prenota il tavolo</button>
       </form>
       <p class="resv-or">oppure</p>
       <div class="dcta-actions">
@@ -319,6 +319,8 @@ import '@fontsource-variable/playfair-display';
   </style>
 
   <script>
+    import { demoForm } from '../../scripts/demo-common.js';
+    demoForm('.resv', { cosa: 'prenotazione', risposta: 'Ti confermiamo il tavolo per messaggio.' });
     import { gsap } from 'gsap';
     import { ScrollTrigger } from 'gsap/ScrollTrigger';
     import Lenis from 'lenis';

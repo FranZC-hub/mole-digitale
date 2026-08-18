@@ -209,7 +209,7 @@ function icon(n) {
         </div>
         <p class="escta-note">📍 Via Roma 1, Torino · Mar–Sab 9:00–19:00</p>
       </div>
-      <form class="esform" onsubmit="return false">
+      <form class="esform">
         <label>Il tuo nome<input type="text" placeholder="Mario Rossi" autocomplete="name" /></label>
         <label>Telefono<input type="tel" placeholder="333 000 0000" autocomplete="tel" /></label>
         <label>Trattamento d’interesse
@@ -389,9 +389,10 @@ function icon(n) {
   </style>
 
   <script>
-    import { demoNav, demoReveal, demoAccordion } from '../../scripts/demo-common.js';
+    import { demoNav, demoReveal, demoAccordion, demoForm } from '../../scripts/demo-common.js';
     demoNav('es');
     demoReveal(0.12);
+    demoForm('.esform', { cosa: 'richiesta', risposta: 'Ti ricontattiamo per fissare il trattamento.' });
     document.querySelectorAll('.esq').forEach((d) => d.addEventListener('toggle', () => { if (d.open) document.querySelectorAll('.esq').forEach((o) => { if (o !== d) o.open = false; }); }));
     // Quiz pelle: la risposta più frequente decide il trattamento
     const ESQ_RES = {

@@ -33,3 +33,51 @@ export function demoAccordion(sel) {
     if (d.open) items.forEach((o) => { if (o !== d) o.open = false; });
   }));
 }
+
+// Moduli delle demo: prima non facevano nulla (onsubmit="return false"), così chi
+// provava a prenotare pensava che il sito fosse rotto. Ora confermano la richiesta
+// dicendo chiaramente che è una dimostrazione.
+export function demoForm(sel, opz = {}) {
+  const form = document.querySelector(sel);
+  if (!form) return;
+  form.removeAttribute('onsubmit');
+
+  // stile neutro: eredita colore e tinta della demo, così sta bene su tutte
+  if (!document.getElementById('demo-esito-css')) {
+    const st = document.createElement('style');
+    st.id = 'demo-esito-css';
+    st.textContent = `.demo-esito{margin-top:.9rem;padding:.9rem 1.05rem;border-radius:12px;font-size:.93rem;
+      line-height:1.55;border:1px solid;border-color:color-mix(in srgb,currentColor 35%,transparent);
+      background:color-mix(in srgb,currentColor 8%,transparent)}
+      .demo-esito b{font-weight:700}`;
+    document.head.appendChild(st);
+  }
+
+  const esito = document.createElement('p');
+  esito.className = 'demo-esito';
+  esito.setAttribute('role', 'status');
+  esito.setAttribute('aria-live', 'polite');
+  esito.hidden = true;
+  const nota = form.querySelector('p:last-of-type');
+  form.insertBefore(esito, nota || null);
+
+  // il campo d'identità può essere un nome o un'email; certi moduli (newsletter,
+  // prenotazione a sole tendine) non ne hanno nessuno e vanno bene lo stesso
+  const campoId = form.querySelector('input[type=text]') || form.querySelector('input[type=email]');
+  if (campoId && !campoId.hasAttribute('required')) campoId.setAttribute('required', '');
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nome = (campoId?.value || '').trim();
+    if (campoId && !nome) { campoId.focus(); return; }
+    const scelta = form.querySelector('select')?.value?.trim();
+    const cosa = opz.cosa || 'richiesta';
+    esito.innerHTML = (nome ? `Grazie <b>${nome.replace(/[<>&]/g, '')}</b>, ` : '') + `${cosa} registrata`
+      + (scelta ? ` — <b>${scelta.replace(/[<>&]/g, '')}</b>` : '')
+      + `. ${opz.risposta || 'Ti ricontattiamo noi al più presto.'}`
+      + ' <i>(dimostrazione: nessun dato è stato inviato)</i>';
+    esito.hidden = false;
+    esito.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    form.querySelectorAll('input').forEach((i) => { i.value = ''; });
+  });
+}

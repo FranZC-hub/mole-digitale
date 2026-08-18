@@ -193,7 +193,7 @@ function icon(n) {
         </div>
         <p class="mscta-note">📍 Via Po 24, Torino · Lun–Sab 9:00–20:00</p>
       </div>
-      <form class="msform" onsubmit="return false">
+      <form class="msform">
         <label>Il tuo nome<input type="text" placeholder="Mario Rossi" autocomplete="name" /></label>
         <label>Telefono<input type="tel" placeholder="333 000 0000" autocomplete="tel" /></label>
         <label>Massaggio d’interesse
@@ -380,9 +380,10 @@ function icon(n) {
   </style>
 
   <script>
-    import { demoNav, demoReveal, demoAccordion } from '../../scripts/demo-common.js';
+    import { demoNav, demoReveal, demoAccordion, demoForm } from '../../scripts/demo-common.js';
     demoNav('ms');
     demoReveal(0.12);
+    demoForm('.msform', { cosa: 'richiesta', risposta: 'Ti ricontattiamo per fissare la seduta.' });
     document.querySelectorAll('.msq').forEach((d) => d.addEventListener('toggle', () => { if (d.open) document.querySelectorAll('.msq').forEach((o) => { if (o !== d) o.open = false; }); }));
     demoAccordion('.msitem');
     // Widget "come ti senti oggi"

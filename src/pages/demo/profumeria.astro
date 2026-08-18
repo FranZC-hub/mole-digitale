@@ -207,7 +207,7 @@ function icon(n) {
         </div>
         <p class="pfcta-note">📍 Via Lagrange 12, Torino · Mar–Sab 10:00–19:30</p>
       </div>
-      <form class="pfform" onsubmit="return false">
+      <form class="pfform">
         <label>Il tuo nome<input type="text" placeholder="Mario Rossi" autocomplete="name" /></label>
         <label>Telefono<input type="tel" placeholder="333 000 0000" autocomplete="tel" /></label>
         <label>Famiglia preferita
@@ -391,9 +391,10 @@ function icon(n) {
   </style>
 
   <script>
-    import { demoNav, demoReveal, demoAccordion } from '../../scripts/demo-common.js';
+    import { demoNav, demoReveal, demoAccordion, demoForm } from '../../scripts/demo-common.js';
     demoNav('pf');
     demoReveal(0.12);
+    demoForm('.pfform', { cosa: 'richiesta', risposta: 'Ti ricontattiamo per la consulenza olfattiva.' });
     document.querySelectorAll('.pfq').forEach((d) => d.addEventListener('toggle', () => { if (d.open) document.querySelectorAll('.pfq').forEach((o) => { if (o !== d) o.open = false; }); }));
     // Quiz olfattivo
     const PFQ_RES = {

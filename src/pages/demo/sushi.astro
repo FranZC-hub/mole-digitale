@@ -160,7 +160,7 @@ const reviews = [
         <p>Compila e confermiamo la tua prenotazione via messaggio. Per l’omakase, prenota con qualche giorno d’anticipo.</p>
         <p class="sucta-note">📍 Via Mazzini 14, Torino · Mar–Dom 12:00–14:30 / 19:00–23:30</p>
       </div>
-      <form class="suform" onsubmit="return false">
+      <form class="suform">
         <label>Il tuo nome<input type="text" placeholder="Mario Rossi" autocomplete="name" /></label>
         <div class="suform-row">
           <label>Data<input type="text" placeholder="Es. 18 set" /></label>
@@ -338,6 +338,8 @@ const reviews = [
   </style>
 
   <script>
+    import { demoForm } from '../../scripts/demo-common.js';
+    demoForm('.suform', { cosa: 'prenotazione', risposta: 'Ti confermiamo il tavolo per messaggio.' });
     const sunav = document.getElementById('sunav');
     const suNavUpd = () => {
       sunav.classList.toggle('solid', scrollY > 30);

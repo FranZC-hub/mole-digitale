@@ -119,7 +119,7 @@ const prodotti = [
   <section class="news" id="spedizioni">
     <h2>−10% sul primo ordine</h2>
     <p>Iscriviti e ricevi subito il codice sconto, più le novità della bottega.</p>
-    <form class="news-form" onsubmit="return false">
+    <form class="news-form">
       <input type="email" placeholder="La tua email" aria-label="La tua email" required />
       <button class="btn btn-solid">Iscriviti</button>
     </form>
@@ -326,6 +326,11 @@ const prodotti = [
     }
     @media (max-width:480px){ .trust{grid-template-columns:1fr} }
   </style>
+
+  <script>
+    import { demoForm } from '../../scripts/demo-common.js';
+    demoForm('.news-form', { cosa: 'iscrizione', risposta: 'Ti scriviamo quando arrivano le novità.' });
+  </script>
 
   <script is:inline>
     (() => {

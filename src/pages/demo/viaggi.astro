@@ -78,7 +78,7 @@ function icon(n) {
       <span class="vgeyebrow r">✈ Agenzia viaggi · Torino</span>
       <h1 class="r">Il mondo<br/>ti <span class="vgmark">aspetta</span>.</h1>
       <p class="vghero-sub r">Viaggi cuciti su di te: dalle Maldive al Giappone, niente pacchetti preconfezionati. Solo il tuo viaggio, come lo sogni.</p>
-      <form class="vgsearch r" onsubmit="return false" aria-label="Cerca un viaggio">
+      <form class="vgsearch r" aria-label="Cerca un viaggio">
         <label class="vgsearch-f"><span>Destinazione</span><input type="text" placeholder="Es. Giappone" /></label>
         <label class="vgsearch-f"><span>Quando</span><input type="text" placeholder="Es. Settembre" /></label>
         <label class="vgsearch-f"><span>Viaggiatori</span><input type="text" placeholder="2 adulti" /></label>
@@ -171,7 +171,7 @@ function icon(n) {
         </ul>
         <p class="vgcta-note">📍 Via Garibaldi 30, Torino · Lun–Sab 9:30–19:00</p>
       </div>
-      <form class="vgform" onsubmit="return false">
+      <form class="vgform">
         <label>Il tuo nome<input type="text" placeholder="Mario Rossi" autocomplete="name" /></label>
         <div class="vgform-row">
           <label>Destinazione<input type="text" placeholder="Es. Thailandia" /></label>
@@ -353,7 +353,7 @@ function icon(n) {
   </style>
 
   <script>
-    import { demoNav, demoReveal, demoAccordion } from '../../scripts/demo-common.js';
+    import { demoNav, demoReveal, demoAccordion, demoForm } from '../../scripts/demo-common.js';
     demoNav('vg');
     document.querySelectorAll('.vgpill').forEach((p) => p.addEventListener('click', () => { document.querySelectorAll('.vgpill').forEach((o) => o.removeAttribute('data-on')); p.setAttribute('data-on', '1'); }));
     // Filtro budget sulle destinazioni
@@ -370,6 +370,7 @@ function icon(n) {
       vgS.addEventListener('input', upd); upd();
     }
     demoReveal(0.1);
+    demoForm('.vgform', { cosa: 'richiesta', risposta: 'Un consulente ti risponde entro 24 ore.' });
 
     // Statistiche first-party (nessun cookie, niente IP): conta la visita alla demo
     try { if (!navigator.webdriver && !["localhost","127.0.0.1"].includes(location.hostname)) {

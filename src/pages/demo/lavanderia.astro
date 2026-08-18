@@ -175,7 +175,7 @@ function icon(n) {
         <p>Compila e ti contattiamo per concordare giorno e ora del ritiro a domicilio. Veloce e senza impegno.</p>
         <p class="lvcta-note">📍 Via Cernaia 22, Torino · Lun–Sab 8:00–19:30</p>
       </div>
-      <form class="lvform" onsubmit="return false">
+      <form class="lvform">
         <label>Il tuo nome<input type="text" placeholder="Mario Rossi" autocomplete="name" /></label>
         <label>Indirizzo di ritiro<input type="text" placeholder="Via, numero, Torino" /></label>
         <div class="lvform-row">
@@ -358,9 +358,10 @@ function icon(n) {
   </style>
 
   <script>
-    import { demoNav, demoReveal, demoAccordion } from '../../scripts/demo-common.js';
+    import { demoNav, demoReveal, demoAccordion, demoForm } from '../../scripts/demo-common.js';
     demoNav('lv');
     demoReveal(0.1);
+    demoForm('.lvform', { cosa: 'richiesta di ritiro', risposta: 'Ti confermiamo il passaggio del furgone.' });
     // Calcolatore bucato
     const lvCalc = document.getElementById('lvCalc');
     if (lvCalc) {

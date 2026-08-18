@@ -270,7 +270,7 @@ function icon(name) {
         </div>
         <p class="kcta-note">📍 Torino e prima cintura · Lun–Sab</p>
       </div>
-      <form class="kform" onsubmit="return false">
+      <form class="kform">
         <label>Il tuo nome<input type="text" placeholder="Mario Rossi" autocomplete="name" /></label>
         <label>Telefono<input type="tel" placeholder="333 000 0000" autocomplete="tel" /></label>
         <div class="kform-row">
@@ -518,6 +518,8 @@ function icon(name) {
   </style>
 
   <script>
+    import { demoForm } from '../../scripts/demo-common.js';
+    demoForm('.kform', { cosa: 'prova gratuita', risposta: 'Ti scriviamo per fissare il giorno.' });
     const fnGet = (id) => document.getElementById(id);
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 

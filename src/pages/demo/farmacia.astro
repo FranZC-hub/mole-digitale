@@ -153,7 +153,7 @@ function icon(n) {
         </div>
         <p class="facta-note">📍 Corso Francia 50, Torino</p>
       </div>
-      <form class="faform" onsubmit="return false">
+      <form class="faform">
         <label>Il tuo nome<input type="text" placeholder="Mario Rossi" autocomplete="name" /></label>
         <label>Telefono<input type="tel" placeholder="333 000 0000" autocomplete="tel" /></label>
         <label>Di cosa hai bisogno?
@@ -328,9 +328,10 @@ function icon(n) {
   </style>
 
   <script>
-    import { demoNav, demoReveal, demoAccordion } from '../../scripts/demo-common.js';
+    import { demoNav, demoReveal, demoAccordion, demoForm } from '../../scripts/demo-common.js';
     demoNav('fa');
     demoReveal(0.12);
+    demoForm('.faform', { cosa: 'richiesta', risposta: 'Ti rispondiamo appena possibile.' });
     document.querySelectorAll('.faq').forEach((d) => d.addEventListener('toggle', () => { if (d.open) document.querySelectorAll('.faq').forEach((o) => { if (o !== d) o.open = false; }); }));
 
     // Orari + "aperta ora" (Lun-Ven 8:30-19:30, Sab 9-13, Dom chiuso)

@@ -204,7 +204,7 @@ function icon(n) {
         </div>
         <p class="oscta-note">📍 Corso Vittorio 18, Torino · Lun–Ven 9:00–19:00</p>
       </div>
-      <form class="osform" onsubmit="return false">
+      <form class="osform">
         <label>Il tuo nome<input type="text" placeholder="Mario Rossi" autocomplete="name" /></label>
         <label>Telefono<input type="tel" placeholder="333 000 0000" autocomplete="tel" /></label>
         <label>Motivo della visita
@@ -384,9 +384,10 @@ function icon(n) {
   </style>
 
   <script>
-    import { demoNav, demoReveal, demoAccordion } from '../../scripts/demo-common.js';
+    import { demoNav, demoReveal, demoAccordion, demoForm } from '../../scripts/demo-common.js';
     demoNav('os');
     demoReveal(0.12);
+    demoForm('.osform', { cosa: 'richiesta', risposta: 'Ti richiamiamo per fissare la prima visita.' });
     document.querySelectorAll('.osq').forEach((d) => d.addEventListener('toggle', () => { if (d.open) document.querySelectorAll('.osq').forEach((o) => { if (o !== d) o.open = false; }); }));
     // Mappa del corpo interattiva
     const OSZ = {

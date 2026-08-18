@@ -159,7 +159,7 @@ function icon(n) {
         <p>Compila e ti ricontattiamo in giornata per confermare giorno e ora. Per le urgenze, chiama direttamente.</p>
         <p class="ancta-note">📍 Via Cibrario 40, Torino · Lun–Sab 9:00–19:30 · Urgenze 24/7</p>
       </div>
-      <form class="anform" onsubmit="return false">
+      <form class="anform">
         <label>Il tuo nome<input type="text" placeholder="Mario Rossi" autocomplete="name" /></label>
         <div class="anform-row">
           <label>Nome dell’animale<input type="text" placeholder="Es. Pepe" /></label>
@@ -332,9 +332,10 @@ function icon(n) {
   </style>
 
   <script>
-    import { demoNav, demoReveal, demoAccordion } from '../../scripts/demo-common.js';
+    import { demoNav, demoReveal, demoAccordion, demoForm } from '../../scripts/demo-common.js';
     demoNav('an');
     demoReveal(0.1);
+    demoForm('.anform', { cosa: 'richiesta di appuntamento', risposta: 'Ti richiamiamo in giornata.' });
     // Triage sintomi
     const ANT = {
       sangue:  { l: 'rosso', b: '🔴 Urgente — chiamaci ORA', d: 'Ferite e sanguinamenti vanno visti subito: non aspettare e non medicare col fai-da-te.', cta: 'tel' },
