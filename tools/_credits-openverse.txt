@@ -1,2 +1,11 @@
 img/demo-dentista/hero.webp: "Poise" — by 2.0 via flickr (Openverse) — https://live.staticflickr.com/2343/1572251373_f9df68a4bb_b.jpg
 img/demo-dentista/d2.webp: "DSC04282" — by 2.0 via flickr (Openverse) — https://live.staticflickr.com/4212/35653077752_da919d3e81_b.jpg
+img/demo-nails/h1.webp: "" — cc0 1.0 · rawpixel (via Openverse) — https://www.rawpixel.com/image/5912529/free-public-domain-cc0-photo
+img/demo-nails/h2.webp: "Woman wearing stone ring painted" — cc0 1.0 · rawpixel (via Openverse) — https://www.rawpixel.com/image/3292251/free-photo-image-manicure-cc0-creative-commons
+img/demo-nails/h3.webp: "People Woman" — cc0 1.0 · stocksnap (via Openverse) — https://stocksnap.io/photo/people-woman-DQOV2PB11G
+img/demo-nails/g1.webp: "Notebook Pen" — cc0 1.0 · stocksnap (via Openverse) — https://stocksnap.io/photo/notebook-pen-HNXFQDGG6O
+img/demo-nails/g2.webp: "" — cc0 1.0 · rawpixel (via Openverse) — https://www.rawpixel.com/image/5948727/free-public-domain-cc0-photo
+img/demo-nails/g3.webp: "Beauty Woman" — cc0 1.0 · stocksnap (via Openverse) — https://stocksnap.io/photo/beauty-woman-OCZSBORYR9
+img/demo-nails/g4.webp: "People Man" — cc0 1.0 · stocksnap (via Openverse) — https://stocksnap.io/photo/people-man-LB4G4RLNP6
+img/demo-nails/g5.webp: "People Hands" — cc0 1.0 · stocksnap (via Openverse) — https://stocksnap.io/photo/people-hands-XX356Q6EI4
+img/demo-nails/g6.webp: "" — cc0 1.0 · rawpixel (via Openverse) — https://www.rawpixel.com/image/5955422/free-public-domain-cc0-photo
