@@ -314,8 +314,14 @@ const schema = {
       transition:transform .25s var(--e),box-shadow .25s}
     .wa-flt:hover{transform:translateY(-3px);box-shadow:0 16px 32px -12px rgba(20,90,50,.75)}
 
-    /* comparsa allo scroll, lenta e discreta */
-    .a{opacity:0;transform:translateY(22px);transition:opacity 1s var(--e),transform 1s var(--e)}
+    /* Comparsa allo scroll, lenta e discreta.
+       Lo stato nascosto vale SOLO se il JavaScript c'è: senza, l'introduzione, i
+       quattro servizi e il testo dell'atelier restavano invisibili per sempre invece
+       di limitarsi a non animarsi — mezza pagina bianca. Tutte le altre demo hanno
+       già questo guard: qui era rimasto indietro. */
+    @media (scripting: enabled){
+      .a{opacity:0;transform:translateY(22px);transition:opacity 1s var(--e),transform 1s var(--e)}
+    }
     .a.vista{opacity:1;transform:none}
     @media (prefers-reduced-motion:reduce){.a{opacity:1;transform:none;transition:none}}
 

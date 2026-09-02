@@ -52,15 +52,30 @@ File `mail-config.php` (modello in `mail-config.example.php`):
 aggiungi il sito, copia il **token** e incollalo in `src/layouts/Layout.astro`
 (`const cfAnalyticsToken = '...'`). Vuoto = disattivato.
 
-## Da personalizzare prima del lancio (cerca `⚠️` nel codice)
-- Dominio reale in `astro.config.mjs`, `public/robots.txt`, `public/sitemap.xml`
+## Ancora da fare (cerca `⚠️` nel codice)
+Il dominio è registrato e il sito è online: quella voce è chiusa. La sitemap la genera
+`@astrojs/sitemap` (nessun `public/sitemap.xml` statico da aggiornare a mano).
 - (Quando ci sarà una P.IVA/ragione sociale reale, valuta di reintrodurre footer legale + informativa privacy GDPR)
 - Recensioni reali al posto degli esempi (sezione testimonianze in `index.astro`)
+- Coordinate geo della bozza Farmacia: approssimative, da confermare col cliente
+- Le due informative privacy nelle bozze cliente sono modelli, da far vedere a un consulente
 
 ## Note di manutenzione
-- **Astro 7** (aggiornato dalla 6): `npm audit` è pulito, 0 vulnerabilità.
-  Se in futuro l'audit segnala vite/esbuild, ricorda che sono **solo di sviluppo**
-  (build-time) e **non finiscono nel sito statico** pubblicato.
+- **Astro 7**: `npm audit` è pulito. Quando segnala qualcosa, prima di allarmarti
+  guarda **da dove arriva**: se la catena è `astro → vite → postcss` (o esbuild) è
+  roba di build-time che **non finisce nel sito pubblicato** — lo si verifica con
+  `Select-String -Path "dist\**\*.js" -Pattern nome-pacchetto`.
+  Nella maggior parte dei casi basta `npm update`: le correzioni arrivano dentro i
+  range `^` già presenti, senza toccare `package.json`. È successo con js-yaml
+  (4.3.0 → 4.3.2) e nanoid (3.3.16 → 3.3.18), che erano segnalate «high».
+- **PHPMailer è vendorizzato** in `public/phpmailer/src/` (solo 3 file: `PHPMailer.php`,
+  `SMTP.php`, `Exception.php`; non ne servono altri). Per aggiornarlo si scaricano
+  quei tre dal tag su GitHub. Restare sulla serie **6.x**: la 7 è un major.
+- **Analytics**: il Layout supporta sia Cloudflare Web Analytics (`cfAnalyticsToken`)
+  sia Microsoft Clarity (`clarityId`, con banner di consenso perché usa cookie).
+  Oggi entrambi sono **vuoti = spenti**, e la CSP in `.htaccess` è stretta di
+  conseguenza: se ne accendi uno, riapri gli host indicati nel commento della CSP,
+  altrimenti il browser blocca lo script e non conti niente.
 - Le demo (`/demo/...`, `/demoFarmaciaAusiliatrice/...`) sono `noindex`: non vanno su
   Google, servono per i clienti.
 - Dopo modifiche grosse, prima di pubblicare: `npm run build` **e** `node tools/check-links.mjs`

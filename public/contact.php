@@ -7,8 +7,13 @@ $raw    = file_get_contents('php://input');
 $jsonIn = json_decode($raw, true);
 $isJson = is_array($jsonIn); // richiesta AJAX (fetch con JSON) vs form classico
 
-// Risposta unica: JSON per l'AJAX, pagina HTML per il form senza JS.
-function finish($httpCode, $ok, $msg, $isJson) {
+// Messaggio di successo: serve in due punti (risposta anticipata e risposta normale),
+// quindi sta scritto una volta sola.
+const MSG_OK = 'Grazie! Abbiamo ricevuto la tua richiesta: ti rispondiamo entro 24 ore.';
+
+// Scrive la risposta ma NON esce: serve per chiuderla in anticipo e proseguire
+// in background con le cose che non riguardano chi ha compilato il modulo.
+function render($httpCode, $ok, $msg, $isJson) {
   http_response_code($httpCode);
   if ($isJson) {
     header('Content-Type: application/json; charset=utf-8');
@@ -33,6 +38,11 @@ function finish($httpCode, $ok, $msg, $isJson) {
        . '<div class="ic">' . $icon . '</div><h1>' . $title . '</h1><p>' . $safe . '</p>'
        . '<a href="/#contatti">← Torna al sito</a></div></body></html>';
   }
+}
+
+// Risposta + fine: la variante usata in tutti i casi di uscita immediata.
+function finish($httpCode, $ok, $msg, $isJson) {
+  render($httpCode, $ok, $msg, $isJson);
   exit;
 }
 
@@ -146,6 +156,18 @@ try {
 
   $mail->send();
 
+  // Da qui in poi il lead è già al sicuro: mail principale partita e riga scritta su
+  // leads.csv. Quello che resta (conferma al cliente, notifica Telegram) serve a noi,
+  // non a chi ha compilato: se l'SMTP o Telegram sono lenti, chi ha premuto "invia"
+  // resta a guardare la rotella per venti secondi e pensa che il sito non funzioni.
+  // Con FastCGI chiudiamo subito la risposta e finiamo il lavoro in background.
+  $rispostaGiaInviata = false;
+  if (function_exists('fastcgi_finish_request')) {
+    render(200, true, MSG_OK, $isJson);
+    @fastcgi_finish_request();
+    $rispostaGiaInviata = true;
+  }
+
   // Email di conferma automatica al cliente (se ha lasciato un'email)
   if (filter_var($telefono, FILTER_VALIDATE_EMAIL)) {
     try {
@@ -182,12 +204,20 @@ try {
       curl_exec($ch);
       curl_close($ch);
     } else {
-      // Fallback se cURL non è disponibile (richiede allow_url_fopen)
-      @file_get_contents($tgUrl . '?' . http_build_query($tgData));
+      // Fallback se cURL non è disponibile (richiede allow_url_fopen).
+      // Il timeout è esplicito: il ramo cURL ne ha uno di 8 secondi, questo senza
+      // restava appeso al default di PHP (60s e oltre) se Telegram non rispondeva.
+      $ctx = stream_context_create(['http' => ['timeout' => 8, 'ignore_errors' => true]]);
+      @file_get_contents($tgUrl . '?' . http_build_query($tgData), false, $ctx);
     }
   }
 
-  finish(200, true, 'Grazie! Abbiamo ricevuto la tua richiesta: ti rispondiamo entro 24 ore.', $isJson);
+  // Se la risposta è già partita (FastCGI) qui non resta nulla da dire.
+  if (!$rispostaGiaInviata) { finish(200, true, MSG_OK, $isJson); }
+  exit;
 } catch (Exception $e) {
+  // Se la risposta è già partita, il lead è comunque salvo: l'errore riguarda solo
+  // la conferma o la notifica, e stampare adesso sporcherebbe una pagina già chiusa.
+  if (!empty($rispostaGiaInviata)) { exit; }
   finish(500, false, 'Invio non riuscito, riprova più tardi.', $isJson);
 }

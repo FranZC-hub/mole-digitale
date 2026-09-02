@@ -8,7 +8,20 @@
   Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
   # Forza HTTPS per un anno anche sui sottodomini (attivare solo con SSL attivo)
   Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
-  Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data: https://*.clarity.ms https://c.bing.com; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://www.clarity.ms; connect-src 'self' https://cloudflareinsights.com https://*.clarity.ms https://c.bing.com; form-action 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
+  # Tenuta stretta su quello che il sito usa DAVVERO oggi: in Layout.astro sia
+  # cfAnalyticsToken sia clarityId sono vuoti, quindi né Cloudflare Insights né
+  # Microsoft Clarity vengono caricati. Autorizzarli comunque regalava superficie
+  # d'attacco a servizi spenti.
+  # ⚠️ Se un giorno accendi uno dei due, rimetti gli host corrispondenti:
+  #   Cloudflare Insights → script-src https://static.cloudflareinsights.com
+  #                         connect-src https://cloudflareinsights.com
+  #   Microsoft Clarity   → script-src https://www.clarity.ms
+  #                         connect-src https://*.clarity.ms https://c.bing.com
+  #                         img-src     https://*.clarity.ms https://c.bing.com
+  # frame-src: senza, ricadeva su default-src 'self' e la mappa Google incorporata
+  # in /demoFarmaciaAusiliatrice/dove-siamo/ veniva BLOCCATA — riquadro vuoto in una
+  # bozza mostrata a un cliente. È l'unico iframe di tutto il sito.
+  Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self' 'unsafe-inline'; connect-src 'self'; frame-src https://www.google.com; form-action 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
 </IfModule>
 
 # --- Forza HTTPS ---
@@ -27,6 +40,21 @@ ErrorDocument 404 /404.html
 <FilesMatch "^(mail-config.*\.php|leads\.csv|stats.*\.csv)$">
   Require all denied
 </FilesMatch>
+
+# --- La libreria PHPMailer non va servita dal web ---
+# contact.php la carica dal disco con require: dall'esterno non deve essere
+# raggiungibile. Prima /phpmailer/src/PHPMailer.php rispondeva 200 (pagina vuota,
+# perché il file dichiara solo classi) — inoffensivo finché PHP funziona, ma se
+# l'handler PHP salta durante una migrazione dell'hosting il sorgente diventa
+# leggibile e regala la versione esatta della libreria a chi cerca bersagli.
+<IfModule mod_alias.c>
+  RedirectMatch 404 ^/phpmailer/
+</IfModule>
+<IfModule !mod_alias.c>
+  <FilesMatch "^(PHPMailer|SMTP|Exception|POP3|OAuth.*|DSNConfigurator)\.php$">
+    Require all denied
+  </FilesMatch>
+</IfModule>
 
 # --- Compressione (riduce di ~70% HTML/CSS/JS in trasferimento) ---
 <IfModule mod_deflate.c>

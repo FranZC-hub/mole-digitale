@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
 
-# ⚠️ Aggiorna il dominio quando lo registri
+# Il dominio è registrato e attivo: l'indice è generato da @astrojs/sitemap
+# (non esiste un sitemap.xml statico in public/).
 Sitemap: https://www.moledigitale.it/sitemap-index.xml

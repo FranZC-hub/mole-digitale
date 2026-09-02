@@ -82,8 +82,14 @@ if (@is_file($rl) && (time() - @filemtime($rl)) < 2) { exit; }
 @touch($rl);
 
 // Il file non deve crescere all'infinito: oltre 2 MB (~40k visite) archivio e riparto.
+// Il nome dell'archivio è mensile, ma un mese molto trafficato può superare i 2 MB
+// più di una volta: rename() sovrascrive senza chiedere, e il primo archivio sparirebbe.
+// Se il nome è già occupato aggiungo un progressivo finché ne trovo uno libero.
 if (@is_file($FILE) && @filesize($FILE) > 2 * 1024 * 1024) {
-  @rename($FILE, dirname($FILE) . '/stats-' . date('Y-m') . '.csv');
+  $base = dirname($FILE) . '/stats-' . date('Y-m');
+  $dest = $base . '.csv';
+  for ($n = 2; @file_exists($dest) && $n < 100; $n++) { $dest = $base . '-' . $n . '.csv'; }
+  if (!@file_exists($dest)) { @rename($FILE, $dest); }
 }
 
 // pulizia anti-injection CSV

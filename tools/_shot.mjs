@@ -42,4 +42,10 @@ async function shot(url, out) {
 }
 
 for (const [url, out] of jobs) { try { await shot(url, out); } catch (e) { console.log('FAIL', out, e.message); } }
-process.exit(0);
+
+// Niente process.exit(0) secco: su Windows, uscire mentre un handle WebSocket sta
+// ancora chiudendo fa scattare un'assertion di libuv ("!(handle->flags &
+// UV_HANDLE_CLOSING)") e lo script muore con codice 9 anche quando gli screenshot
+// sono usciti bene — nella build passerebbe per un errore. Lascio che il ciclo degli
+// eventi si svuoti da solo; unref sul timer evita di restare appesi se qualcosa resta.
+setTimeout(() => process.exit(0), 250).unref();

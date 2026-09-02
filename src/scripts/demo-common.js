@@ -26,6 +26,22 @@ export function demoReveal(threshold = 0.1) {
   document.querySelectorAll('.r').forEach((el) => io.observe(el));
 }
 
+// Conteggio first-party della visita: niente cookie, niente IP, nessun servizio esterno.
+// Registra solo "questa pagina è stata aperta, arrivando da questo host".
+// Lo stesso blocco era copiato alla lettera in 23 demo: cambiarlo voleva dire toccarle
+// tutte. Qui sta scritto una volta. Le demo che NON importano questo modulo restano
+// autonome per scelta (si copiano e si adattano da sole) e tengono la loro copia.
+export function tracciaVisita() {
+  try {
+    if (navigator.webdriver) return;                                   // niente bot di collaudo
+    if (['localhost', '127.0.0.1'].includes(location.hostname)) return; // niente sviluppo
+    let sref = '';
+    try { const u = new URL(document.referrer); if (u.host !== location.host) sref = u.host; } catch (_) {}
+    fetch('/stats.php?p=' + encodeURIComponent(location.pathname) + '&r=' + encodeURIComponent(sref),
+          { keepalive: true }).catch(() => {});
+  } catch (_) {}
+}
+
 // Accordion "uno aperto alla volta" su un selettore di <details>
 export function demoAccordion(sel) {
   const items = document.querySelectorAll(sel);
@@ -78,6 +94,13 @@ export function demoForm(sel, opz = {}) {
       + ' <i>(dimostrazione: nessun dato è stato inviato)</i>';
     esito.hidden = false;
     esito.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    form.querySelectorAll('input').forEach((i) => { i.value = ''; });
+    // Svuotare con value='' va bene sui campi di testo, ma su checkbox e radio non
+    // toglie la spunta: cambia il valore che verrebbe inviato, lasciandoli selezionati
+    // e ormai vuoti. Nessuno dei moduli attuali ne ha, ma il prossimo che li aggiunge
+    // troverebbe un difetto silenzioso. Ogni tipo va azzerato come si deve.
+    form.querySelectorAll('input').forEach((i) => {
+      if (i.type === 'checkbox' || i.type === 'radio') i.checked = false;
+      else if (i.type !== 'hidden' && i.type !== 'submit' && i.type !== 'button') i.value = '';
+    });
   });
 }
