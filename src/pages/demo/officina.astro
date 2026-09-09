@@ -400,7 +400,7 @@ import spaceGroteskWoff2 from '@fontsource-variable/space-grotesk/files/space-gr
       .r{opacity:0;transform:translateX(36px)}.hl{opacity:0}[data-clip]{clip-path:inset(0 0 100% 0)}
       .r.in{opacity:1;transform:none;transition:opacity .7s var(--e),transform .7s var(--e)}
       .hl.in{opacity:1;transition:opacity .8s var(--e)}
-      [data-clip].in{clip-path:inset(0 0 0% 0);transition:clip-path 1s var(--e)}
+      .r.in [data-clip],[data-clip].in{clip-path:inset(0 0 0% 0);transition:clip-path 1s var(--e)}
     }
     .dnav-toggle{display:none;background:none;border:0;color:var(--cream);cursor:pointer;width:44px;height:44px;border-radius:10px;place-items:center;margin-left:auto}
     .dnav-toggle:hover{background:rgba(238,241,243,.08)}
@@ -504,7 +504,11 @@ import spaceGroteskWoff2 from '@fontsource-variable/space-grotesk/files/space-gr
         e.target.querySelectorAll('[data-count]').forEach(conta);
         io.unobserve(e.target);
       }), { threshold: 0.12, rootMargin: '0px 0px -40px' });
-      document.querySelectorAll('.r,[data-clip],.statstrip').forEach((el) => io.observe(el));
+      // Un elemento con clip-path: inset(0 0 100% 0) ha area visibile zero, quindi
+      // l'IntersectionObserver non lo vede mai intersecare e il clip non si apre piu'.
+      // Si osserva il contenitore .r e il clip si apre di conseguenza (regola CSS sopra).
+      document.querySelectorAll('.r,.statstrip').forEach((el) => io.observe(el));
+      document.querySelectorAll('[data-clip]').forEach((el) => { if (!el.closest('.r')) el.classList.add('in'); });
       if (fine) document.querySelectorAll('.dmag').forEach((b) => {
         b.addEventListener('mousemove', (e) => { const r = b.getBoundingClientRect();
           b.style.transform = 'translate(' + ((e.clientX - r.left - r.width / 2) * .25) + 'px,' + ((e.clientY - r.top - r.height / 2) * .35) + 'px)'; });
