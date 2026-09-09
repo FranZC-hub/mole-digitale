@@ -115,9 +115,18 @@ import spaceGroteskWoff2 from '@fontsource-variable/space-grotesk/files/space-gr
   <section class="dsection officina" id="officina">
     <div class="head"><span class="kick r">Dentro l'officina</span><h2 class="r">DOVE NASCE <span class="amber">IL LAVORO</span></h2></div>
     <div class="ostrip">
-      <figure class="r" data-clip><img width="820" height="1000" src="/img/demo-officina/galleria-1.webp" alt="Auto sul ponte sollevatore: tagliandi e revisioni" /></figure>
-      <figure class="r" data-clip><img width="820" height="1000" src="/img/demo-officina/interno.webp" alt="Ruota e chiave a croce: gomme, equilibratura e convergenza" /></figure>
-      <figure class="r" data-clip><img width="820" height="1000" src="/img/demo-officina/galleria-3.webp" alt="Motore e strumento di diagnosi: centralina e motore" /></figure>
+      <figure class="r">
+        <div class="ost-img" data-clip><img width="820" height="1025" src="/img/demo-officina/galleria-1.webp" alt="Auto sul ponte sollevatore" /></div>
+        <figcaption><b>Sul ponte</b><span>Tagliandi, revisioni e freni: l'auto sale e si controlla tutto quello che da terra non si vede.</span></figcaption>
+      </figure>
+      <figure class="r">
+        <div class="ost-img" data-clip><img width="820" height="1025" src="/img/demo-officina/interno.webp" alt="Ruota e chiave a croce" /></div>
+        <figcaption><b>Gomme</b><span>Cambio stagionale, equilibratura e convergenza. Le tue le teniamo noi in deposito.</span></figcaption>
+      </figure>
+      <figure class="r">
+        <div class="ost-img" data-clip><img width="820" height="1025" src="/img/demo-officina/galleria-3.webp" alt="Motore e strumento di diagnosi" /></div>
+        <figcaption><b>Diagnosi</b><span>Centralina alla mano: la spia si spegne solo dopo aver capito perché si era accesa.</span></figcaption>
+      </figure>
     </div>
   </section>
 
@@ -260,9 +269,16 @@ import spaceGroteskWoff2 from '@fontsource-variable/space-grotesk/files/space-gr
 
     /* OFFICINA strip */
     .ostrip{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
-    .ostrip figure{border-radius:12px;overflow:hidden;aspect-ratio:4/5}
+    /* la didascalia sta FUORI dal riquadro ritagliato: dentro verrebbe tagliata,
+       e come testo vero resta selezionabile e traducibile */
+    /* bordo esplicito: il fondo scuro della lastra si confonde con quello della
+       pagina, e senza un contorno non si capisce dove finisce il riquadro */
+    .ostrip .ost-img{border-radius:12px;overflow:hidden;aspect-ratio:4/5;border:1px solid rgba(238,241,243,.09);background:#0d1013}
     .ostrip img{width:100%;height:100%;object-fit:cover;filter:contrast(1.05);transition:transform .8s var(--e)}
     .ostrip figure:hover img{transform:scale(1.06)}
+    .ostrip figcaption{padding:.95rem .2rem 0}
+    .ostrip figcaption b{display:block;font-family:var(--head);font-size:1.05rem;letter-spacing:.06em;text-transform:uppercase;color:var(--cream)}
+    .ostrip figcaption span{display:block;margin-top:.3rem;font-size:.9rem;line-height:1.5;color:var(--muted)}
 
     /* PRENOTA */
     .prenota{background:linear-gradient(100deg,var(--amber),#e0712a)}
