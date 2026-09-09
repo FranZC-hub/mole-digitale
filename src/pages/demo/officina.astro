@@ -27,9 +27,10 @@ import spaceGroteskWoff2 from '@fontsource-variable/space-grotesk/files/space-gr
 
   <header class="dnav" id="dnav">
     <a href="#top" class="dbrand"><span class="gear" aria-hidden="true"></span>GARAGE <em>ROSSI</em></a>
-    <span class="dstatus" aria-hidden="true"><span class="sdot"></span>Officina aperta · Lun–Ven 8–18</span>
+    <span class="dstatus" role="status"><span class="sdot"></span><span data-stato>Officina aperta</span></span>
     <nav class="dlinks">
       <a href="#servizi">Servizi</a>
+      <a href="#preventivo">Preventivo</a>
       <a href="#perche">Perché noi</a>
       <a href="#officina">Officina</a>
       <a href="#prenota">Contatti</a>
@@ -55,10 +56,10 @@ import spaceGroteskWoff2 from '@fontsource-variable/space-grotesk/files/space-gr
       </div>
     </div>
     <div class="statstrip">
-      <div><b data-count="30">0</b><span>anni di officina</span></div>
-      <div><b data-count="9000" data-suffix="+">0</b><span>auto riparate</span></div>
-      <div><b data-count="48" data-suffix="h">0</b><span>tempi medi</span></div>
-      <div><b data-count="100" data-suffix="%">0</b><span>preventivo chiaro</span></div>
+      <div><b data-count="30">0</b><span>anni in Corso Francia</span></div>
+      <div><b data-count="9000" data-suffix="+">0</b><span>auto passate di qui</span></div>
+      <div><b data-count="127">0</b><span>recensioni su Google</span></div>
+      <div><b data-count="0">0</b><span>sorprese in fattura</span></div>
     </div>
   </section>
 
@@ -86,6 +87,12 @@ import spaceGroteskWoff2 from '@fontsource-variable/space-grotesk/files/space-gr
         <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M7 21h10M12 17v4M7 11l2.5 2.5L12 9l2 4 3-3"/></svg></span>
         <div class="stx"><h3>Diagnosi elettronica</h3><p>Spia accesa? Colleghiamo la centralina e troviamo il problema, subito.</p></div>
         <b class="price">da 40€</b>
+      </article>
+      <article class="srow r">
+        <span class="num">04</span>
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7.5 3v5.5c0 4.3-3.1 7.6-7.5 9-4.4-1.4-7.5-4.7-7.5-9V6z"/><path d="M9 12.2l2.1 2.1L15.5 10"/></svg></span>
+        <div class="stx"><h3>Revisione ministeriale</h3><p>La prenotiamo noi al centro autorizzato e ti riportiamo l’auto pronta. Tu non fai code.</p></div>
+        <b class="price">79€</b>
       </article>
     </div>
   </section>
@@ -130,6 +137,79 @@ import spaceGroteskWoff2 from '@fontsource-variable/space-grotesk/files/space-gr
     </div>
   </section>
 
+  <!-- PREVENTIVO: era la cosa promessa dalla pagina settore e non c'era -->
+  <section class="dsection prevsec" id="preventivo">
+    <div class="head">
+      <span class="kick r">Preventivo</span>
+      <h2 class="r">QUANTO COSTA?<br/><span class="amber">TE LO DICIAMO PRIMA.</span></h2>
+    </div>
+
+    <div class="prevbox r">
+      <form class="prevform" id="prev-form">
+        <label>Di cosa hai bisogno
+          <select id="p-servizio">
+            <option>Tagliando</option>
+            <option>Gomme</option>
+            <option>Diagnosi elettronica</option>
+            <option>Revisione</option>
+            <option>Freni</option>
+            <option>Non lo so, c’è un rumore strano</option>
+          </select>
+        </label>
+
+        <div class="gomme" id="blocco-gomme" hidden>
+          <p class="gomme-t">Che gomme monti?</p>
+          <div class="gomme-campi">
+            <label>Pollici
+              <select id="g-pollici"><option>15</option><option selected>16</option><option>17</option><option>18</option><option>19</option></select>
+            </label>
+            <label>Quante
+              <select id="g-quante"><option>2</option><option selected>4</option></select>
+            </label>
+            <label>Stagione
+              <select id="g-stagione"><option>Estive</option><option>Invernali</option><option>Quattro stagioni</option></select>
+            </label>
+          </div>
+          <div class="gomme-esito" id="gomme-esito" hidden>
+            <div class="gomme-riga"><span id="g-riga"></span><b id="g-tot"></b></div>
+            <p id="g-dettaglio"></p>
+          </div>
+        </div>
+
+        <div class="prevriga">
+          <label>Auto <small>(marca, modello, anno)</small><input type="text" id="p-auto" placeholder="Fiat Panda 2016" /></label>
+          <label>Quando ti farebbe comodo<input type="text" id="p-quando" placeholder="Questa settimana, di mattina" /></label>
+        </div>
+        <label>Raccontaci il problema <small>(facoltativo)</small>
+          <textarea id="p-nota" rows="3" maxlength="400" placeholder="Es. da qualche giorno frena male e fischia in curva"></textarea>
+        </label>
+        <label>Il tuo nome<input type="text" id="p-nome" placeholder="Marco Rossi" autocomplete="name" /></label>
+
+        <a class="dbtn dbtn-wa big" id="p-wa" href="https://wa.me/390110000000" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.5-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c2.3 1 2.3.7 2.7.6a2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1z"/></svg>
+          Mandaci la richiesta
+        </a>
+        <p class="prevnota">Si apre WhatsApp con la richiesta già scritta. Ti rispondiamo col preventivo, poi decidi tu.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- BUONO A SAPERSI -->
+  <section class="dsection sapere" id="sapere">
+    <div class="head">
+      <span class="kick r">Buono a sapersi</span>
+      <h2 class="r">QUELLO CHE<br/><span class="amber">CI CHIEDETE SEMPRE.</span></h2>
+    </div>
+    <div class="sgrid">
+      <div class="scard r"><b>Auto di cortesia</b><span>Gratuita per gli interventi oltre la giornata. Sono due: chiedila quando prenoti, non il giorno stesso.</span></div>
+      <div class="scard r"><b>Lasciarla la sera prima</b><span>C’è la cassetta delle chiavi accanto alla saracinesca. Ci trovi l’auto pronta la mattina dopo.</span></div>
+      <div class="scard r"><b>Dove si parcheggia</b><span>Cortile interno su Corso Francia 120: entra pure, il cancello resta aperto negli orari di apertura.</span></div>
+      <div class="scard r"><b>Pagamenti</b><span>Contanti, bancomat e carte. Per gli interventi sopra i 500 € si può dividere in tre volte.</span></div>
+      <div class="scard r"><b>Quanto ci vuole</b><span>Tagliando in giornata, gomme in un’ora, diagnosi mentre aspetti. Se serve di più te lo diciamo prima.</span></div>
+      <div class="scard r"><b>Ricambi</b><span>Originali o equivalenti certificati: ti diciamo quali usiamo e quanto costano entrambi, scegli tu.</span></div>
+    </div>
+  </section>
+
   <!-- SCHEDA GOOGLE (la feature della didascalia) -->
   <section class="dsection gbox" id="google">
     <div class="head"><span class="kick r">Ci trovi su Google</span><h2 class="r">RECENSIONI <span class="amber">VERE</span></h2></div>
@@ -155,11 +235,11 @@ import spaceGroteskWoff2 from '@fontsource-variable/space-grotesk/files/space-gr
       <div>
         <span class="kick">Prenota</span>
         <h2>PORTA L'AUTO <span class="amber">IN BUONE MANI.</span></h2>
-        <p>Lun–Ven 8:00–18:00 · Corso Francia 120, Torino. Un preventivo non costa nulla.</p>
+        <p>Lun–Ven 8:00–18:00, sabato 8:00–12:30 · Corso Francia 120, Torino. <a href="#preventivo">Chiedi un preventivo</a>: non costa nulla.</p>
       </div>
       <div class="prenota-act">
         <a href="tel:+390110000000" class="dbtn dbtn-solid dmag big">📞 011 000 0000</a>
-        <a href="#prenota" class="dbtn dbtn-ghost">WhatsApp</a>
+        <a href="https://wa.me/390110000000" target="_blank" rel="noopener" class="dbtn dbtn-ghost">WhatsApp</a>
       </div>
     </div>
   </section>
@@ -210,7 +290,11 @@ import spaceGroteskWoff2 from '@fontsource-variable/space-grotesk/files/space-gr
     .dstatus .sdot{width:7px;height:7px;border-radius:50%;background:#3fcf5b;flex:none;box-shadow:0 0 0 0 rgba(63,207,91,.6);animation:spulse 2.2s infinite}
     @keyframes spulse{0%{box-shadow:0 0 0 0 rgba(63,207,91,.5)}70%{box-shadow:0 0 0 7px rgba(63,207,91,0)}100%{box-shadow:0 0 0 0 rgba(63,207,91,0)}}
     /* il chip di stato appare solo dove c'è spazio: nasconde su tablet per non affollare la nav */
-    @media (max-width:1140px){.dstatus{display:none}}
+    .dstatus.chiusa .sdot{background:#e0553f;box-shadow:none;animation:none}
+    /* il badge dice se e' aperta ORA: e' un'informazione utile soprattutto
+       da telefono, dove prima spariva del tutto */
+    @media (max-width:1140px){.dstatus{order:3;flex-basis:100%;justify-content:center;margin-top:.5rem}}
+    @media (max-width:560px){.dstatus{font-size:.62rem;padding:.3rem .5rem}}
 
     .dbtn{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.6rem;border-radius:6px;font-weight:700;font-size:.9rem;font-family:var(--head);text-transform:uppercase;letter-spacing:.03em;cursor:pointer;transition:transform .25s var(--e),background .25s;white-space:nowrap}
     .dbtn-solid{background:var(--amber);color:#1a1206;box-shadow:0 12px 30px -10px rgba(245,147,49,.6)}
@@ -313,7 +397,10 @@ import spaceGroteskWoff2 from '@fontsource-variable/space-grotesk/files/space-gr
     /* Lo stato nascosto vale solo se il JavaScript c'è: senza, il contenuto
        resterebbe invisibile per sempre invece di limitarsi a non animarsi. */
     @media (scripting: enabled){
-      .r{opacity:0;transform:translateY(30px)}.hl{opacity:0}[data-clip]{clip-path:inset(0 0 100% 0)}
+      .r{opacity:0;transform:translateX(36px)}.hl{opacity:0}[data-clip]{clip-path:inset(0 0 100% 0)}
+      .r.in{opacity:1;transform:none;transition:opacity .7s var(--e),transform .7s var(--e)}
+      .hl.in{opacity:1;transition:opacity .8s var(--e)}
+      [data-clip].in{clip-path:inset(0 0 0% 0);transition:clip-path 1s var(--e)}
     }
     .dnav-toggle{display:none;background:none;border:0;color:var(--cream);cursor:pointer;width:44px;height:44px;border-radius:10px;place-items:center;margin-left:auto}
     .dnav-toggle:hover{background:rgba(238,241,243,.08)}
@@ -327,45 +414,190 @@ import spaceGroteskWoff2 from '@fontsource-variable/space-grotesk/files/space-gr
       .dnav-toggle{display:grid}
       .dnav.dopen .dlinks{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:1.1rem;background:rgba(16,19,22,.97);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:1.2rem clamp(1.2rem,5vw,3rem) 1.5rem}
     }
+    /* PREVENTIVO */
+    .prevbox{max-width:760px;margin:0 auto;background:var(--ink2);border:1px solid var(--line);border-radius:16px;padding:clamp(1.4rem,3vw,2.2rem)}
+    .prevform{display:grid;gap:1rem}
+    .prevform label{display:grid;gap:.4rem;font-family:var(--head);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+    .prevform small{letter-spacing:0;text-transform:none;opacity:.8}
+    .prevform input,.prevform select,.prevform textarea{width:100%;padding:.75rem .85rem;border-radius:10px;border:1px solid var(--line);
+      background:var(--ink);color:var(--cream);font-family:var(--sans);font-size:.95rem;letter-spacing:0;text-transform:none}
+    .prevform textarea{resize:vertical}
+    .prevriga{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .prevriga>*{min-width:0}
+    .prevnota{font-size:.82rem;color:var(--muted);text-align:center;font-family:var(--sans)}
+    .dbtn-wa{background:#25d366;color:#0b3d1c;justify-content:center}
+    .dbtn-wa:hover{background:#20bd5b}
+
+    .gomme{border:1px solid var(--line);border-radius:12px;padding:1rem;background:var(--ink)}
+    .gomme-t{font-family:var(--head);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);margin-bottom:.7rem}
+    .gomme-campi{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem}
+    .gomme-campi>*{min-width:0}
+    .gomme-esito{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--line)}
+    .gomme-riga{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;font-family:var(--sans);color:var(--cream)}
+    .gomme-riga b{font-family:var(--head);font-size:1.5rem;color:var(--amber);white-space:nowrap}
+    .gomme-esito p{margin-top:.4rem;font-size:.85rem;color:var(--muted);font-family:var(--sans)}
+
+    /* BUONO A SAPERSI */
+    .sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:0 clamp(1.5rem,4vw,3rem)}
+    .sgrid>*{min-width:0}
+    .scard{padding:1.15rem 0;border-bottom:1px solid var(--line)}
+    .scard:nth-child(-n+3){border-top:1px solid var(--line)}
+    .scard b{display:block;font-family:var(--head);font-size:1.02rem;letter-spacing:.04em;text-transform:uppercase;color:var(--cream)}
+    .scard span{display:block;margin-top:.3rem;font-size:.9rem;line-height:1.55;color:var(--muted)}
+
+    @media (max-width:900px){
+      .prevriga{grid-template-columns:1fr}
+      .gomme-campi{grid-template-columns:1fr 1fr}
+      .sgrid{grid-template-columns:1fr 1fr}
+      .scard:nth-child(-n+3){border-top:0}
+      .scard:nth-child(-n+2){border-top:1px solid var(--line)}
+    }
+    @media (max-width:560px){
+      .sgrid{grid-template-columns:1fr}
+      .scard:nth-child(-n+2){border-top:0}
+      .scard:first-child{border-top:1px solid var(--line)}
+      .gomme-campi{grid-template-columns:1fr}
+    }
+
     @media (prefers-reduced-motion:reduce){.r,.hl{opacity:1!important;transform:none!important}[data-clip]{clip-path:none!important}.brands-track{animation:none}.dstatus .sdot{animation:none}}
   </style>
 
   <script>
-    import { gsap } from 'gsap';
-    import { ScrollTrigger } from 'gsap/ScrollTrigger';
-    import Lenis from 'lenis';
-    import 'lenis/dist/lenis.css';
-    gsap.registerPlugin(ScrollTrigger);
+    // Niente GSAP ne' Lenis: le animazioni le fa un IntersectionObserver, come nelle
+    // altre demo. Erano circa 50 KB di JavaScript per far comparire dei riquadri.
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
-    const dnav = document.getElementById('dnav');
-    const onScroll = (y) => dnav.classList.toggle('solid', y > 40);
 
-    // menu mobile (hamburger)
-    const dtoggle = document.querySelector('.dnav-toggle');
+    const dnav = document.getElementById('dnav');
+    addEventListener('scroll', () => dnav.classList.toggle('solid', scrollY > 40), { passive: true });
+
+    const dtoggle = document.getElementById('dtoggle');
     if (dtoggle) {
+      const chiudi = () => { dnav.classList.remove('dopen'); dtoggle.setAttribute('aria-expanded', 'false'); };
       dtoggle.addEventListener('click', () => { const o = dnav.classList.toggle('dopen'); dtoggle.setAttribute('aria-expanded', String(o)); });
-      document.querySelectorAll('.dlinks a').forEach((a) => a.addEventListener('click', () => dnav.classList.remove('dopen')));
-      document.addEventListener('click', (e) => { if (dnav.classList.contains('dopen') && !dnav.contains(e.target)) { dnav.classList.remove('dopen'); dtoggle.setAttribute('aria-expanded', 'false'); } });
-      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && dnav.classList.contains('dopen')) { dnav.classList.remove('dopen'); dtoggle.setAttribute('aria-expanded', 'false'); } });
+      document.querySelectorAll('.dlinks a').forEach((a) => a.addEventListener('click', chiudi));
+      document.addEventListener('click', (e) => { if (dnav.classList.contains('dopen') && !dnav.contains(e.target)) chiudi(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') chiudi(); });
     }
-    if (!reduced) {
-      const lenis = new Lenis({ lerp: 0.1 });
-      const raf = (t) => { lenis.raf(t); requestAnimationFrame(raf); };
-      requestAnimationFrame(raf);
-      lenis.on('scroll', ({ scroll }) => { onScroll(scroll); ScrollTrigger.update(); });
-      document.querySelectorAll('a[href^="#"]').forEach((a) => { const h = a.getAttribute('href'); if (!h || h === '#') return; const t = document.querySelector(h); if (t) a.addEventListener('click', (e) => { e.preventDefault(); lenis.scrollTo(t, { offset: -70 }); }); });
-      gsap.set('.hl', { y: 18 });
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-      tl.from('.htitle .dw', { yPercent: 120, opacity: 0, stagger: 0.08, duration: 1 }, 0.15)
-        .to('.hl', { opacity: 1, y: 0, stagger: 0.12, duration: 0.9 }, 0.5)
-        .from('.hero-bg img', { scale: 1.2, duration: 1.8 }, 0);
-      document.querySelectorAll('[data-parallax]').forEach((el) => gsap.to(el.querySelector('img'), { yPercent: 12, ease: 'none', scrollTrigger: { trigger: el.closest('section'), start: 'top top', end: 'bottom top', scrub: true } }));
-      gsap.utils.toArray('.r').forEach((el) => gsap.fromTo(el, { opacity: 0, x: 36 }, { opacity: 1, x: 0, duration: 0.9, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%' } }));
-      gsap.utils.toArray('[data-clip]').forEach((el) => gsap.to(el, { clipPath: 'inset(0 0 0% 0)', duration: 1.1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 85%' } }));
-      document.querySelectorAll('[data-count]').forEach((el) => { const target = +el.dataset.count, suf = el.dataset.suffix || ''; ScrollTrigger.create({ trigger: el, start: 'top 92%', once: true, onEnter: () => gsap.to({ v: 0 }, { v: target, duration: 1.6, ease: 'power2.out', onUpdate() { el.textContent = Math.round(this.targets()[0].v) + suf; } }) }); });
-      if (fine) document.querySelectorAll('.dmag').forEach((b) => { b.addEventListener('mousemove', (e) => { const r = b.getBoundingClientRect(); b.style.transform = `translate(${(e.clientX-r.left-r.width/2)*.3}px,${(e.clientY-r.top-r.height/2)*.4}px)`; }); b.addEventListener('mouseleave', () => { b.style.transform = ''; }); });
-    } else { window.addEventListener('scroll', () => onScroll(window.scrollY), { passive: true }); document.querySelectorAll('[data-count]').forEach((el) => el.textContent = el.dataset.count + (el.dataset.suffix || '')); }
+
+    const conta = (el) => {
+      const meta = +el.dataset.count, suf = el.dataset.suffix || '';
+      if (reduced) { el.textContent = meta + suf; return; }
+      const t0 = performance.now(), dur = 1400;
+      const passo = (t) => {
+        const k = Math.min(1, (t - t0) / dur);
+        el.textContent = Math.round(meta * (1 - Math.pow(1 - k, 3))) + suf;
+        if (k < 1) requestAnimationFrame(passo);
+      };
+      requestAnimationFrame(passo);
+    };
+
+    if (reduced) {
+      document.querySelectorAll('.r,.hl').forEach((el) => el.classList.add('in'));
+      document.querySelectorAll('[data-count]').forEach(conta);
+    } else {
+      document.querySelectorAll('.hl').forEach((el) => el.classList.add('in'));
+      const io = new IntersectionObserver((es) => es.forEach((e) => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('in');
+        if (e.target.dataset && e.target.dataset.count) conta(e.target);
+        e.target.querySelectorAll('[data-count]').forEach(conta);
+        io.unobserve(e.target);
+      }), { threshold: 0.12, rootMargin: '0px 0px -40px' });
+      document.querySelectorAll('.r,[data-clip],.statstrip').forEach((el) => io.observe(el));
+      if (fine) document.querySelectorAll('.dmag').forEach((b) => {
+        b.addEventListener('mousemove', (e) => { const r = b.getBoundingClientRect();
+          b.style.transform = 'translate(' + ((e.clientX - r.left - r.width / 2) * .25) + 'px,' + ((e.clientY - r.top - r.height / 2) * .35) + 'px)'; });
+        b.addEventListener('mouseleave', () => { b.style.transform = ''; });
+      });
+    }
+
+    // Orari veri. Il badge diceva "Officina aperta" scritto a mano, col pallino
+    // verde sempre acceso: lo diceva anche alle 3 di domenica.
+    const ORARI = { 1: [8, 18], 2: [8, 18], 3: [8, 18], 4: [8, 18], 5: [8, 18], 6: [8, 12.5], 0: null };
+    const GIORNI = ['domenica', 'lunedi', 'martedi', 'mercoledi', 'giovedi', 'venerdi', 'sabato'];
+    const ora = (n) => Math.floor(n) + ':' + String(Math.round((n % 1) * 60)).padStart(2, '0');
+    function statoOfficina() {
+      const d = new Date(), g = d.getDay(), t = d.getHours() + d.getMinutes() / 60;
+      const oggi = ORARI[g];
+      if (oggi && t >= oggi[0] && t < oggi[1]) {
+        return { aperta: true, testo: oggi[1] - t <= 1 ? 'Aperta, chiudiamo alle ' + ora(oggi[1]) : 'Officina aperta · fino alle ' + ora(oggi[1]) };
+      }
+      for (let i = 0; i < 8; i++) {
+        const gg = (g + i) % 7, o = ORARI[gg];
+        if (!o) continue;
+        if (i === 0 && t >= o[0]) continue;
+        const quando = i === 0 ? 'oggi' : i === 1 ? 'domani' : GIORNI[gg];
+        return { aperta: false, testo: 'Chiusa · riapriamo ' + quando + ' alle ' + ora(o[0]) };
+      }
+      return { aperta: false, testo: 'Chiusa' };
+    }
+    function aggiornaStato() {
+      const s = statoOfficina();
+      document.querySelectorAll('[data-stato]').forEach((el) => {
+        el.textContent = s.testo;
+        const box = el.closest('.dstatus');
+        if (box) box.classList.toggle('chiusa', !s.aperta);
+      });
+    }
+    aggiornaStato();
+    setInterval(aggiornaStato, 60000);
+
+    // Preventivo: prezzo indicativo delle gomme e richiesta gia' scritta su WhatsApp
+    const GOMME = { '15': 55, '16': 68, '17': 82, '18': 104, '19': 128 };
+    const eur = (n) => Math.round(n) + ' €';
+
+    function aggiornaGomme() {
+      const box = document.getElementById('gomme-esito');
+      if (!box) return;
+      const pollici = document.getElementById('g-pollici').value;
+      const quante = +document.getElementById('g-quante').value;
+      const stagione = document.getElementById('g-stagione').value;
+      const cad = GOMME[pollici] * (stagione === 'Quattro stagioni' ? 1.15 : 1);
+      const montaggio = 12 * quante;
+      document.getElementById('g-riga').textContent = quante + ' pneumatici ' + stagione.toLowerCase() + ' da ' + pollici + '"';
+      document.getElementById('g-tot').textContent = eur(cad * quante + montaggio);
+      document.getElementById('g-dettaglio').textContent =
+        eur(cad) + ' a gomma più ' + eur(montaggio) + ' di montaggio ed equilibratura. Prezzo indicativo: la misura esatta la leggiamo sul fianco della gomma.';
+      box.hidden = false;
+      aggiornaRichiesta();
+    }
+
+    function aggiornaRichiesta() {
+      const v = (id) => { const e = document.getElementById(id); return e ? e.value.trim() : ''; };
+      const righe = ['Buongiorno Garage Rossi, vorrei un preventivo.', ''];
+      righe.push('Intervento: ' + v('p-servizio'));
+      if (v('p-auto')) righe.push('Auto: ' + v('p-auto'));
+      if (v('p-quando')) righe.push('Quando mi farebbe comodo: ' + v('p-quando'));
+      if (v('p-nota')) righe.push('Problema: ' + v('p-nota'));
+      const gEs = document.getElementById('gomme-esito');
+      if (v('p-servizio') === 'Gomme' && gEs && !gEs.hidden) {
+        righe.push('Gomme: ' + document.getElementById('g-riga').textContent + ' — stima ' + document.getElementById('g-tot').textContent);
+      }
+      if (v('p-nome')) righe.push('A nome di: ' + v('p-nome'));
+      righe.push('', '(richiesta inviata dal sito)');
+      const a = document.getElementById('p-wa');
+      if (a) a.href = 'https://wa.me/390110000000?text=' + encodeURIComponent(righe.join(String.fromCharCode(10)));
+    }
+
+    const servizio = document.getElementById('p-servizio');
+    if (servizio) {
+      const mostraGomme = () => {
+        const g = document.getElementById('blocco-gomme');
+        g.hidden = servizio.value !== 'Gomme';
+        if (!g.hidden) aggiornaGomme(); else aggiornaRichiesta();
+      };
+      servizio.addEventListener('change', mostraGomme);
+      ['g-pollici', 'g-quante', 'g-stagione'].forEach((id) => {
+        const e = document.getElementById(id); if (e) e.addEventListener('change', aggiornaGomme);
+      });
+      ['p-auto', 'p-quando', 'p-nota', 'p-nome'].forEach((id) => {
+        const e = document.getElementById(id); if (e) e.addEventListener('input', aggiornaRichiesta);
+      });
+      const form = document.getElementById('prev-form');
+      if (form) form.addEventListener('submit', (e) => e.preventDefault());
+      mostraGomme();
+    }
 
     // Statistiche first-party (nessun cookie, niente IP): conta la visita alla demo
     try { if (!navigator.webdriver && !["localhost","127.0.0.1"].includes(location.hostname)) {
