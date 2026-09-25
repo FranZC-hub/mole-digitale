@@ -35,7 +35,7 @@ const M = MENU_GIORNO_BASE;
         {CARTA.map((p) => (
           <li class={'voce' + (p.img ? ' con-foto' : '')} id={p.id}>
             {p.img && <img src={p.img320} width="320" height="240" alt={p.alt} loading="lazy" />}
-            <div><h3>{p.nome}</h3><p>{p.it}</p></div>
+            <div><h3 lang="es">{p.nome}</h3><p>{p.it}</p></div>
           </li>
         ))}
       </ul>

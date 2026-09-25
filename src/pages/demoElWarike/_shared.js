@@ -29,6 +29,22 @@ export const ORARI = {
 export const GIORNI = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
 export const fmt = (h) => `${Math.floor(h)}:${String(Math.round((h - Math.floor(h)) * 60)).padStart(2, '0')}`;
 
+// Per il piede: giorni consecutivi con lo stesso orario raggruppati
+// ("Mercoledì–venerdì 12–16 · 18–22"), dal lunedì alla domenica.
+export function orariCompatti() {
+  const h = (x) => (Number.isInteger(x) ? String(x) : fmt(x));
+  const sett = [1, 2, 3, 4, 5, 6, 0].map((i) => ({ i, lab: ORARI[i] ? ORARI[i].map(([a, b]) => `${h(a)}–${h(b)}`).join(' · ') : 'chiuso' }));
+  const gruppi = [];
+  sett.forEach((g) => {
+    const u = gruppi[gruppi.length - 1];
+    if (u && u.lab === g.lab) u.fine = g.i; else gruppi.push({ inizio: g.i, fine: g.i, lab: g.lab });
+  });
+  return gruppi.map((g) => ({
+    giorni: g.inizio === g.fine ? GIORNI[g.inizio] : `${GIORNI[g.inizio]}–${GIORNI[g.fine].toLowerCase()}`,
+    orario: g.lab,
+  }));
+}
+
 export function orariSettimana() {
   return [1, 2, 3, 4, 5, 6, 0].map((i) => ({
     i, giorno: GIORNI[i],
@@ -73,7 +89,7 @@ export const dataEstesa = (ymd) => new Date(ymd + 'T12:00:00').toLocaleDateStrin
 // Solo piatti citati dalle fonti pubbliche. Niente prezzi inventati: li mette Gisela.
 // Ogni foto ha anche le versioni da 640 e 320 px: da telefono non si scarica l'originale.
 export const CARTA = [
-  { id: 'ceviche', nome: 'Ceviche', it: 'Pesce crudo marinato nel lime, cipolla rossa e peperoncino, con choclo (il mais gigante) e camote, la patata dolce.', img: '/img/elwarike/ceviche.webp', img640: '/img/elwarike/ceviche-640.webp', img320: '/img/elwarike/ceviche-320.webp', alt: 'Ceviche di pesce con choclo, salse e cancha' },
+  { id: 'ceviche', nome: 'Ceviche', it: 'Pesce crudo marinato nel lime con cipolla rossa e peperoncino, servito con choclo (il mais gigante) e camote (la patata dolce).', img: '/img/elwarike/ceviche.webp', img640: '/img/elwarike/ceviche-640.webp', img320: '/img/elwarike/ceviche-320.webp', alt: 'Ceviche di pesce con choclo, salse e cancha' },
   { id: 'pollo', nome: 'Pollo a la brasa', it: 'Marinato e cotto alla brace: croccante fuori, tenero dentro. Con patate e insalata di avocado.', img: '/img/elwarike/pollo-a-la-brasa.webp', img640: '/img/elwarike/pollo-a-la-brasa-640.webp', img320: '/img/elwarike/pollo-a-la-brasa-320.webp', alt: 'Pollo intero cotto alla brace' },
   { id: 'lomo', nome: 'Lomo saltado', it: 'Manzo saltato a fuoco vivo con cipolla e pomodoro, con riso bianco e patate fritte.', img: '/img/elwarike/lomo-saltado.webp', img640: '/img/elwarike/lomo-saltado-640.webp', img320: '/img/elwarike/lomo-saltado-320.webp', alt: 'Lomo saltado con riso bianco' },
   { id: 'papa', nome: 'Papa rellena', it: 'Patata ripiena di ragù, impanata e fritta.', img: '/img/elwarike/papa-rellena.webp', img640: '/img/elwarike/papa-rellena-640.webp', img320: '/img/elwarike/papa-rellena-320.webp', alt: 'Papa rellena con insalata di avocado' },

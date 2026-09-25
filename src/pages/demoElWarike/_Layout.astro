@@ -12,7 +12,7 @@ import frauncesWoff2 from '@fontsource-variable/fraunces/files/fraunces-latin-wg
 // il corsivo sta nel titolo d'apertura: lo precarico anche lui, altrimenti il titolo "salta"
 import frauncesItWoff2 from '@fontsource-variable/fraunces/files/fraunces-latin-wght-italic.woff2?url';
 import manropeWoff2 from '@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2?url';
-import { INFO, ORARI } from './_shared.js';
+import { INFO, ORARI, orariCompatti } from './_shared.js';
 
 interface Props { title: string; desc?: string; active?: string }
 const {
@@ -65,7 +65,10 @@ const schema = {
   <meta property="og:description" content={desc} />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="it_IT" />
-  <meta property="og:image" content="https://www.moledigitale.it/img/elwarike/ceviche.webp" />
+  <meta property="og:image" content="https://www.moledigitale.it/img/elwarike/anteprima.jpg" />
+  <meta property="og:image:width" content="1024" />
+  <meta property="og:image:height" content="538" />
+  <meta property="og:image:alt" content="Pollo a la brasa cotto alla brace" />
   <meta name="twitter:card" content="summary_large_image" />
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 </head>
@@ -77,7 +80,7 @@ const schema = {
     <div class="testata-in">
       <a href={BASE} class="marchio">
         <span class="marchio-nome">El Warike</span>
-        <span class="marchio-sotto">cocina peruana</span>
+        <span class="marchio-sotto" lang="es">cocina peruana</span>
       </a>
       <nav class="menu" id="menu" aria-label="Menu principale">
         {NAV.map(([href, label]) => (
@@ -111,6 +114,10 @@ const schema = {
         <p class="piede-sp"><a href={INFO.maps} target="_blank" rel="noopener">Apri in Google Maps</a></p>
       </div>
       <div>
+        <h2>Orari</h2>
+        {orariCompatti().map((o) => <p><span class="piede-g">{o.giorni}</span> {o.orario}</p>)}
+      </div>
+      <div>
         <h2>Contatti</h2>
         <p><a href={'tel:' + INFO.telHref}>{INFO.tel}</a></p>
         <p><a href={WA} target="_blank" rel="noopener">WhatsApp</a></p>
@@ -128,10 +135,11 @@ const schema = {
     <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3zM12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/></svg>
   </a>
 
-  <!-- da telefono: le due azioni che contano, sempre a portata di pollice -->
+  <!-- da telefono: le azioni che contano, sempre a portata di pollice -->
   <nav class="barra-mobile" aria-label="Azioni rapide">
     <a href={'tel:' + INFO.telHref}>Chiama</a>
-    <a href={BASE + 'prenota/'} class="barra-prenota">Prenota un tavolo</a>
+    <a href={WA} target="_blank" rel="noopener" class="barra-wa">WhatsApp</a>
+    <a href={BASE + 'prenota/'} class="barra-prenota">Prenota</a>
   </nav>
 
   <style is:global>
@@ -226,12 +234,13 @@ const schema = {
     .stato.chiuso .pt{background:#c0392b;box-shadow:0 0 0 4px rgba(192,57,43,.15)}
 
     .piede{background:var(--scuro);color:#cdbfae;margin-top:0}
-    .piede-in{max-width:1240px;margin:0 auto;padding:clamp(3rem,6vw,4.5rem) clamp(1.1rem,4vw,2.4rem) 2rem;display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:2.5rem}
+    .piede-in{max-width:1240px;margin:0 auto;padding:clamp(3rem,6vw,4.5rem) clamp(1.1rem,4vw,2.4rem) 2rem;display:grid;grid-template-columns:1.2fr 1fr 1.3fr 1fr;gap:2.5rem}
     .piede h2{font-family:var(--sans);font-size:.72rem;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--aji);margin-bottom:.9rem}
     .piede a:hover{color:#fff}
     .piede-nome{font-family:var(--disp);font-style:italic;font-weight:700;font-size:2rem;color:var(--crema)}
     .piede-claim{margin-top:.6rem;color:#b5a592}
     .piede-sp{margin-top:.8rem}
+    .piede-g{color:#e9dccb;font-weight:600}
     .piede-legale{max-width:1240px;margin:0 auto;padding:1.2rem clamp(1.1rem,4vw,2.4rem) 2rem;border-top:1px solid rgba(255,255,255,.1);display:flex;flex-wrap:wrap;gap:.6rem 2rem;font-size:.78rem;color:#9c8c7a}
     .piede-legale a{text-decoration:underline;text-underline-offset:3px}
 
@@ -249,10 +258,12 @@ const schema = {
     }
     @media (max-width:640px){
       .testata-dx .btn{display:none}
-      .barra-mobile{display:grid;grid-template-columns:1fr 2fr;position:fixed;left:0;right:0;bottom:0;z-index:160;background:var(--carta);border-top:1px solid var(--filo);padding:.6rem .8rem calc(.6rem + env(safe-area-inset-bottom))}
+      .barra-mobile{display:grid;grid-template-columns:auto auto 1fr;gap:.4rem;position:fixed;left:0;right:0;bottom:0;z-index:160;background:var(--carta);border-top:1px solid var(--filo);padding:.6rem .8rem calc(.6rem + env(safe-area-inset-bottom))}
       .barra-mobile a{display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:999px;font-weight:800}
-      .barra-prenota{background:var(--rosso);color:#fff;margin-left:.6rem}
-      .wa-flt{bottom:88px;width:50px;height:50px}
+      .barra-mobile a{padding:0 .9rem;white-space:nowrap}
+      .barra-wa{color:#15693a}
+      .barra-prenota{background:var(--rosso);color:#fff}
+      .wa-flt{display:none}
       body{padding-bottom:76px}
     }
   </style>

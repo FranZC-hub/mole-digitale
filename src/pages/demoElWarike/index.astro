@@ -56,7 +56,7 @@ const M = MENU_GIORNO_BASE;
         {piatti.map((p) => (
           <article class="piatto">
             <div class="piatto-foto"><img src={p.img640} srcset={`${p.img320} 320w, ${p.img640} 640w, ${p.img} 1024w`} sizes="(max-width:980px) 46vw, 290px" width="640" height="480" alt={p.alt} loading="lazy" /></div>
-            <h3>{p.nome}</h3>
+            <h3 lang="es">{p.nome}</h3>
             <p>{p.it}</p>
           </article>
         ))}
@@ -71,7 +71,7 @@ const M = MENU_GIORNO_BASE;
       <div>
         <span class="occhiello">Il locale</span>
         <h2 class="sez-h2">Un warike<br/><em class="giallo">in Via Fréjus.</em></h2>
-        <p class="locale-p">In Perù un <i>warike</i> è il posto piccolo, curato e un po’ nascosto dove si mangia come a casa. Quello che si passa parola.</p>
+        <p class="locale-p">In Perù un <i lang="es">warike</i> è il posto piccolo, curato e un po’ nascosto dove si mangia come a casa. Quello di cui si passa parola.</p>
         <p class="locale-p">{INFO.titolare} lo ha aperto accanto al suo negozio di prodotti sudamericani, che in Via Fréjus è un punto di riferimento da anni. La cucina è quella di famiglia: onesta, abbondante, fatta ogni giorno.</p>
         <ul class="locale-punti">
           <li>Pranzo e cena, sei giorni su sette</li>
@@ -96,7 +96,7 @@ const M = MENU_GIORNO_BASE;
       <div>
         <span class="occhiello">Orari e dove</span>
         <h2 class="sez-h2">{INFO.via},<br/><em>{INFO.citta}</em></h2>
-        <p class="sez-p">Siamo al numero 52b. Per i gruppi e le occasioni speciali chiamateci: vi teniamo il tavolo pronto.</p>
+        <p class="sez-p">Ci trovate accanto al negozio di prodotti sudamericani di {INFO.titolare}. Per i gruppi e le occasioni speciali chiamateci: vi teniamo il tavolo pronto.</p>
         <div class="dove-azioni">
           <a href={INFO.maps} target="_blank" rel="noopener" class="btn btn-bordo">Indicazioni stradali</a>
           <a href={'tel:' + INFO.telHref} class="btn btn-bordo">Chiama il {INFO.tel}</a>
@@ -195,7 +195,10 @@ const M = MENU_GIORNO_BASE;
     }
     @media (max-width:560px){
       .pranzo-lista{grid-template-columns:1fr}
-      .apertura-foto img{box-shadow:10px 10px 0 var(--aji)}
+      .apertura-foto{order:-1}
+      .apertura-foto img{aspect-ratio:16/10;border-radius:22px 22px 22px 70px;box-shadow:8px 8px 0 var(--aji)}
+      .apertura-in{gap:1.6rem}
+      .apertura h1{font-size:2.5rem}
     }
   </style>
 
