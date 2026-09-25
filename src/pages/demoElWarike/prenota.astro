@@ -1,0 +1,185 @@
+---
+import Layout from './_Layout.astro';
+import { INFO } from './_shared.js';
+// Prenotazione in tre tocchi: quanti siete, che giorno, che ora. Si propongono solo
+// giorni e orari in cui il locale e' davvero aperto (niente martedi', niente giorni
+// chiusi da Gisela, niente orari gia' passati). La richiesta arriva su WhatsApp e,
+// in questa bozza, anche nel pannello di gestione.
+---
+<Layout title="Prenota un tavolo" active="Prenota" desc={`Prenota un tavolo da ${INFO.nome}, cucina peruana in ${INFO.via} a Torino. Pranzo e cena, martedì chiuso.`}>
+
+  <section class="primo banda-p">
+    <div class="misura pren-in">
+      <div class="pren-testa">
+        <span class="occhiello">Prenota</span>
+        <h1>Vi teniamo<br/><em>un tavolo.</em></h1>
+        <p class="sez-p">Tre scelte e un nome. Vi confermiamo su WhatsApp, di solito entro poco.</p>
+        <ul class="pren-info">
+          <li><b>Pranzo</b> 12:00 – 16:00 <small>(sab e dom fino alle 17)</small></li>
+          <li><b>Cena</b> 18:00 – 22:00</li>
+          <li><b>Martedì</b> chiuso</li>
+        </ul>
+        <p class="nota">Preferite parlare con qualcuno? <a href={'tel:' + INFO.telHref} class="link-s">{INFO.tel}</a></p>
+      </div>
+
+      <div class="pren-card">
+        <noscript><p class="errore">Per prenotare online serve JavaScript. Chiamateci al {INFO.tel}.</p></noscript>
+        <form class="modulo" id="prenForm" novalidate>
+          <fieldset class="scelta">
+            <legend>1 · Quanti siete?</legend>
+            <div class="chips" id="persone">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+                <label class="chip"><input type="radio" name="persone" value={n} checked={n === 2} /><span>{n}</span></label>
+              ))}
+              <label class="chip"><input type="radio" name="persone" value="9+" /><span>9+</span></label>
+            </div>
+            <p class="avviso-gruppo" id="gruppo" hidden>Per i gruppi da 9 in su organizziamo la sala: <a href={'tel:' + INFO.telHref} class="link-s">chiamateci al {INFO.tel}</a>, oppure mandate la richiesta e vi richiamiamo noi.</p>
+          </fieldset>
+
+          <fieldset class="scelta">
+            <legend>2 · Che giorno?</legend>
+            <div class="chips giorni" id="giorni"></div>
+          </fieldset>
+
+          <fieldset class="scelta">
+            <legend>3 · A che ora?</legend>
+            <div id="orari" class="orari-scelta"></div>
+            <p class="nota" id="orariVuoto" hidden>Per oggi non ci sono più orari prenotabili: scegliete un altro giorno.</p>
+          </fieldset>
+
+          <div class="due">
+            <label>Nome<input type="text" id="nome" autocomplete="name" required maxlength="60" /></label>
+            <label>Telefono <small>(per la conferma)</small><input type="tel" id="tel" autocomplete="tel" inputmode="tel" required maxlength="20" /></label>
+          </div>
+          <label>Note <small>(facoltative: allergie, seggiolone, un compleanno…)</small><textarea id="note" rows="2" maxlength="300"></textarea></label>
+
+          <p class="errore" id="errore" role="alert" hidden></p>
+          <button type="submit" class="btn btn-rosso btn-pieno">Invia la richiesta</button>
+          <p class="nota centro">I vostri dati servono solo per questa prenotazione. <a href="/demoElWarike/privacy/" class="link-s">Privacy</a></p>
+        </form>
+
+        <!-- conferma -->
+        <div class="fatto" id="fatto" hidden tabindex="-1">
+          <p class="fatto-ic" aria-hidden="true">✓</p>
+          <h2>Ci siamo quasi</h2>
+          <p class="fatto-rie" id="riepilogo"></p>
+          <p>Toccate qui sotto per mandarci la richiesta su WhatsApp: vi rispondiamo con la conferma.</p>
+          <a class="btn btn-wa btn-pieno" id="waInvia" href="#" target="_blank" rel="noopener">Invia su WhatsApp</a>
+          <button type="button" class="link-s fatto-ancora" id="ancora">Modifica la prenotazione</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .banda-p{padding-bottom:clamp(4rem,8vw,6rem)}
+    .pren-in{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(2rem,5vw,4.5rem);align-items:start}
+    .pren-in>*{min-width:0}
+    .pren-testa h1{font-size:clamp(2.6rem,5.6vw,4.2rem);margin-top:.7rem}
+    .pren-testa h1 em{font-style:italic;color:var(--rosso)}
+    .pren-info{list-style:none;margin:1.8rem 0 1.4rem;border-top:1px solid var(--filo)}
+    .pren-info li{padding:.7rem 0;border-bottom:1px solid var(--filo)}
+    .pren-info b{display:inline-block;min-width:5.5rem;color:var(--scuro)}
+    .pren-info small{color:var(--muto)}
+    .link-s{color:var(--rosso);font-weight:700;text-decoration:underline;text-underline-offset:3px;background:none;border:0;font:inherit;cursor:pointer}
+
+    .pren-card{background:var(--carta);border:1px solid var(--filo);border-radius:26px;padding:clamp(1.4rem,3.4vw,2.4rem);box-shadow:0 24px 60px -34px rgba(35,26,21,.4)}
+    .scelta{border:0;display:grid;gap:.7rem}
+    .scelta legend{font-family:var(--disp);font-weight:600;font-size:1.3rem;color:var(--scuro);margin-bottom:.7rem}
+    /* :global — giorni e orari sono creati via JS e non ricevono lo scope di Astro */
+    :global(.chips){display:flex;flex-wrap:wrap;gap:.5rem}
+    :global(.chip){position:relative;display:block !important;cursor:pointer}
+    :global(.chip input){position:absolute;opacity:0;width:1px;height:1px}
+    :global(.chip span){display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:48px;min-height:48px;padding:.45rem .8rem;border:1.5px solid var(--filo);border-radius:14px;background:#fff;font-weight:700;color:var(--scuro);line-height:1.15;transition:background .15s,border-color .15s,color .15s}
+    :global(.chip span small){font-weight:600;font-size:.72rem;color:var(--muto)}
+    :global(.chip:hover span){border-color:var(--terra)}
+    :global(.chip input:checked+span){background:var(--rosso);border-color:var(--rosso);color:#fff}
+    :global(.chip input:checked+span small){color:#fbd9d3}
+    :global(.chip input:focus-visible+span){outline:2px solid var(--rosso);outline-offset:3px}
+    :global(.chip input:disabled+span){opacity:.4;cursor:not-allowed;text-decoration:line-through;background:transparent}
+    :global(.giorni .chip span){min-width:64px}
+    :global(.orari-scelta){display:grid;gap:.9rem}
+    :global(.turno-t){font-size:.72rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--terra)}
+    .avviso-gruppo{background:rgba(233,167,35,.14);border-radius:12px;padding:.8rem 1rem;font-size:.9rem}
+    .due{display:grid;grid-template-columns:1fr 1fr;gap:1rem;align-items:end}
+    .due>*{min-width:0}
+    .centro{text-align:center}
+
+    .fatto{text-align:center;display:grid;gap:1rem;justify-items:center}
+    .fatto:focus{outline:0}
+    .fatto-ic{width:64px;height:64px;border-radius:50%;background:#1f9d55;color:#fff;display:grid;place-items:center;font-size:2rem;font-weight:800}
+    .fatto h2{font-size:2rem}
+    .fatto-rie{font-family:var(--disp);font-size:1.25rem;color:var(--scuro);background:rgba(233,167,35,.14);padding:1rem 1.2rem;border-radius:14px;width:100%}
+    .fatto-ancora{font-size:.9rem}
+
+    @media (max-width:900px){.pren-in{grid-template-columns:1fr}}
+    @media (max-width:520px){.due{grid-template-columns:1fr}}
+  </style>
+
+  <script>
+    import { INFO, orariPrenotabili, isoLocale, dataEstesa, leggiChiusure, leggiPrenotazioni, scriviPrenotazioni, waLink, ORARI } from './_shared.js';
+    const $ = (s) => document.querySelector(s);
+    const chiuse = new Set(leggiChiusure());
+    const breve = (d) => d.toLocaleDateString('it-IT', { weekday: 'short' }).replace('.', '');
+
+    // ---- giorni: le prossime due settimane ----
+    const oggi = new Date();
+    let primoLibero = null;
+    $('#giorni').innerHTML = Array.from({ length: 14 }, (_, i) => {
+      const d = new Date(oggi.getFullYear(), oggi.getMonth(), oggi.getDate() + i);
+      const ymd = isoLocale(d);
+      const chiuso = !ORARI[d.getDay()] || chiuse.has(ymd) || orariPrenotabili(ymd).length === 0;
+      if (!chiuso && !primoLibero) primoLibero = ymd;
+      const nome = i === 0 ? 'Oggi' : i === 1 ? 'Domani' : breve(d);
+      const motivo = !ORARI[d.getDay()] ? 'giorno di chiusura' : chiuse.has(ymd) ? 'chiuso' : 'orari terminati';
+      return `<label class="chip"><input type="radio" name="giorno" value="${ymd}" ${chiuso ? 'disabled' : ''} aria-label="${dataEstesa(ymd)}${chiuso ? ' — ' + motivo : ''}" /><span>${nome}<small>${d.getDate()}/${d.getMonth() + 1}</small></span></label>`;
+    }).join('');
+
+    const giornoScelto = () => document.querySelector('input[name=giorno]:checked')?.value;
+    const oraScelta = () => document.querySelector('input[name=ora]:checked')?.value;
+    const personeScelte = () => document.querySelector('input[name=persone]:checked')?.value;
+
+    const disegnaOrari = () => {
+      const ymd = giornoScelto();
+      const lista = ymd ? orariPrenotabili(ymd) : [];
+      const turni = ['Pranzo', 'Cena'].map((t) => [t, lista.filter((o) => o.turno === t)]).filter(([, l]) => l.length);
+      $('#orari').innerHTML = turni.map(([t, l]) => `<div><p class="turno-t">${t}</p><div class="chips">${l.map((o) =>
+        `<label class="chip"><input type="radio" name="ora" value="${o.label}" /><span>${o.label}</span></label>`).join('')}</div></div>`).join('');
+      $('#orariVuoto').hidden = !ymd || lista.length > 0;
+    };
+    document.getElementById('giorni').addEventListener('change', disegnaOrari);
+    document.getElementById('persone').addEventListener('change', () => { $('#gruppo').hidden = personeScelte() !== '9+'; });
+    if (primoLibero) document.querySelector(`input[name=giorno][value="${primoLibero}"]`).checked = true;
+    disegnaOrari();
+
+    // ---- invio ----
+    const errore = (msg, campo) => {
+      $('#errore').textContent = msg; $('#errore').hidden = !msg;
+      document.querySelectorAll('[aria-invalid]').forEach((el) => el.removeAttribute('aria-invalid'));
+      if (campo) { campo.setAttribute('aria-invalid', 'true'); campo.focus(); }
+    };
+    let ultima = null;
+    $('#prenForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const ymd = giornoScelto(), ora = oraScelta(), persone = personeScelte();
+      const nome = $('#nome').value.trim(), tel = $('#tel').value.trim(), note = $('#note').value.trim();
+      if (!ymd) return errore('Scegliete il giorno.');
+      if (!ora) return errore('Scegliete l’orario.');
+      if (!nome) return errore('Scrivete il vostro nome.', $('#nome'));
+      if (tel.replace(/\D/g, '').length < 8) return errore('Serve un numero di telefono valido per la conferma.', $('#tel'));
+      errore('');
+
+      const quando = `${dataEstesa(ymd)} alle ${ora}`;
+      const chi = persone === '9+' ? '9 o più persone' : `${persone} ${persone === '1' ? 'persona' : 'persone'}`;
+      // se la sta correggendo, sostituisce la richiesta appena fatta invece di duplicarla
+      const pren = { id: ultima || 'p' + Date.now(), data: ymd, ora, persone, nome, tel, note, stato: 'da confermare', creata: new Date().toISOString() };
+      ultima = pren.id;
+      scriviPrenotazioni([...leggiPrenotazioni().filter((p) => p.id !== pren.id), pren]);   // nella versione definitiva: salvata sul sito
+
+      $('#riepilogo').textContent = `${chi} · ${quando}`;
+      $('#waInvia').href = waLink(INFO.wa, `Ciao ${INFO.nome}! Vorrei prenotare un tavolo:\n\n• ${chi}\n• ${quando.charAt(0).toUpperCase() + quando.slice(1)}\n• Nome: ${nome}\n• Telefono: ${tel}${note ? `\n• Note: ${note}` : ''}\n\nGrazie!`);
+      $('#prenForm').hidden = true; $('#fatto').hidden = false; $('#fatto').focus();
+    });
+    $('#ancora').addEventListener('click', () => { $('#fatto').hidden = true; $('#prenForm').hidden = false; });
+  </script>
+</Layout>

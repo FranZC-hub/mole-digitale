@@ -1,0 +1,258 @@
+---
+// BOZZA CLIENTE — El Warike, ristorante peruviano (Via Fréjus 52b, Torino)
+// Anteprima non ufficiale realizzata da Mole Digitale su dati pubblici.
+//
+// IMPIANTO VISIVO: il "warike" e' il posto piccolo e di casa dove si mangia bene.
+// Fondo crema caldo, rosso peruviano, giallo ají come accento, una fascia a motivi
+// andini come filo conduttore. Fraunces per i titoli, Manrope per il testo.
+import '@fontsource-variable/fraunces';
+import '@fontsource-variable/manrope';
+import frauncesWoff2 from '@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url';
+import manropeWoff2 from '@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2?url';
+import { INFO, ORARI } from './_shared.js';
+
+interface Props { title: string; desc?: string; active?: string }
+const {
+  title,
+  desc = `${INFO.nome}, cucina peruana di casa a Torino: ceviche, pollo a la brasa, lomo saltado. ${INFO.via}. Prenota il tuo tavolo.`,
+  active = '',
+} = Astro.props;
+
+const BASE = '/demoElWarike/';
+const NAV = [['', 'Home'], ['menu/', 'Menù'], ['#locale', 'Il locale'], ['#dove', 'Orari e dove']];
+const WA = `https://wa.me/${INFO.wa}`;
+
+const giorniEn = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Restaurant',
+  name: INFO.nome,
+  servesCuisine: 'Peruviana',
+  priceRange: '€',
+  address: { '@type': 'PostalAddress', streetAddress: INFO.via, addressLocality: INFO.citta, postalCode: INFO.cap, addressRegion: 'TO', addressCountry: 'IT' },
+  telephone: INFO.telHref,
+  acceptsReservations: true,
+  openingHoursSpecification: Object.entries(ORARI).flatMap(([d, f]) => (f || []).map(([a, b]) => ({
+    '@type': 'OpeningHoursSpecification', dayOfWeek: giorniEn[+d],
+    opens: `${String(Math.floor(a)).padStart(2, '0')}:00`, closes: `${String(Math.floor(b)).padStart(2, '0')}:00`,
+  }))),
+};
+---
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>{title} — {INFO.nome} · Cucina peruana a Torino</title>
+  <meta name="description" content={desc} />
+  <meta name="theme-color" content="#f6efe4" />
+  <link rel="preload" as="font" type="font/woff2" href={frauncesWoff2} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href={manropeWoff2} crossorigin />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23a3261c'/><text x='16' y='23' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-size='19' fill='%23f6efe4'>W</text></svg>" />
+  <meta property="og:title" content={title + ' — ' + INFO.nome} />
+  <meta property="og:description" content={desc} />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="it_IT" />
+  <meta property="og:image" content="https://www.moledigitale.it/img/elwarike/ceviche.webp" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+</head>
+<body>
+  <a class="salta" href="#main">Salta al contenuto</a>
+  <a class="demo-flag" href="/dypa">Anteprima realizzata da <b>Mole Digitale</b><span class="flag-piu"> — bozza di proposta per {INFO.nome}</span></a>
+
+  <header class="testata" id="testata">
+    <div class="testata-in">
+      <a href={BASE} class="marchio" aria-label={INFO.nome + ' — home'}>
+        <span class="marchio-nome">El Warike</span>
+        <span class="marchio-sotto">cocina peruana</span>
+      </a>
+      <nav class="menu" id="menu" aria-label="Menu principale">
+        {NAV.map(([href, label]) => (
+          <a href={BASE + href} class={active === label ? 'on' : undefined} aria-current={active === label ? 'page' : undefined}>{label}</a>
+        ))}
+      </nav>
+      <div class="testata-dx">
+        <a href={'tel:' + INFO.telHref} class="testata-tel">{INFO.tel}</a>
+        <a href={BASE + 'prenota/'} class={'btn btn-rosso' + (active === 'Prenota' ? ' on' : '')}>Prenota</a>
+        <button class="menu-btn" id="menuBtn" aria-label="Apri il menu" aria-expanded="false" aria-controls="menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+    <div class="tessuto" aria-hidden="true"></div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <slot />
+  </main>
+
+  <footer class="piede">
+    <div class="tessuto" aria-hidden="true"></div>
+    <div class="piede-in">
+      <div>
+        <p class="piede-nome">El Warike</p>
+        <p class="piede-claim">Cucina peruana di casa,<br/>in {INFO.via}.</p>
+      </div>
+      <div>
+        <h2>Dove</h2>
+        <p>{INFO.via}</p>
+        <p>{INFO.cap} {INFO.citta}</p>
+        <p class="piede-sp"><a href={INFO.maps} target="_blank" rel="noopener">Apri in Google Maps</a></p>
+      </div>
+      <div>
+        <h2>Contatti</h2>
+        <p><a href={'tel:' + INFO.telHref}>{INFO.tel}</a></p>
+        <p><a href={WA} target="_blank" rel="noopener">WhatsApp</a></p>
+        <p class="piede-sp"><a href={BASE + 'prenota/'}>Prenota un tavolo</a></p>
+      </div>
+    </div>
+    <p class="piede-legale">
+      <span>Bozza dimostrativa · <a href="/">Mole Digitale</a></span>
+      <span><a href={BASE + 'privacy/'}>Privacy e crediti foto</a></span>
+      <span><a href={BASE + 'gestione/'}>Area riservata</a></span>
+    </p>
+  </footer>
+
+  <a class="wa-flt" href={WA} target="_blank" rel="noopener" aria-label="Scrivici su WhatsApp">
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3zM12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/></svg>
+  </a>
+
+  <!-- da telefono: le due azioni che contano, sempre a portata di pollice -->
+  <nav class="barra-mobile" aria-label="Azioni rapide">
+    <a href={'tel:' + INFO.telHref}>Chiama</a>
+    <a href={BASE + 'prenota/'} class="barra-prenota">Prenota un tavolo</a>
+  </nav>
+
+  <style is:global>
+    :root{
+      --crema:#f6efe4; --crema-2:#efe4d3; --carta:#fffaf2;
+      --rosso:#a3261c; --rosso-scuro:#7e1c14; --aji:#e9a723; --terra:#b8672e;
+      --scuro:#231a15; --testo:#3b2f28; --muto:#6e5f55; --filo:#e0d3c1;
+      --disp:'Fraunces Variable',Georgia,serif; --sans:'Manrope Variable',system-ui,sans-serif;
+      --e:cubic-bezier(.2,.7,.2,1); --testata:92px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    [hidden]{display:none !important}
+    html{scroll-behavior:smooth;scroll-padding-top:calc(var(--testata) + 40px)}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none !important;animation:none !important}}
+    body{background:var(--crema);color:var(--testo);font-family:var(--sans);font-size:1rem;line-height:1.65;-webkit-font-smoothing:antialiased}
+    img{display:block;max-width:100%;height:auto}
+    a{color:inherit;text-decoration:none}
+    h1,h2,h3,h4{font-family:var(--disp);font-weight:600;color:var(--scuro);line-height:1.1;letter-spacing:-.01em}
+    a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--rosso);outline-offset:3px}
+    .salta{position:absolute;left:-999px;top:0;background:var(--scuro);color:#fff;padding:.6rem 1rem;z-index:999}
+    .salta:focus{left:8px;top:8px}
+    .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+    .demo-flag{position:fixed;top:0;left:0;right:0;z-index:300;height:28px;display:flex;align-items:center;justify-content:center;background:var(--scuro);color:#e9dccb;font-size:.74rem;letter-spacing:.02em}
+    .demo-flag b{color:#fff;margin:0 .25em}
+    @media (max-width:640px){.flag-piu{display:none}}
+
+    /* fascia a motivi andini: rombi e gradini in rosso, giallo e terra */
+    .tessuto{height:10px;background:
+      linear-gradient(135deg,var(--rosso) 25%,transparent 25%) 0 0/20px 20px,
+      linear-gradient(225deg,var(--rosso) 25%,transparent 25%) 0 0/20px 20px,
+      linear-gradient(315deg,var(--aji) 25%,transparent 25%) 10px 0/20px 20px,
+      linear-gradient(45deg,var(--aji) 25%,transparent 25%) 10px 0/20px 20px,
+      var(--terra)}
+
+    .testata{position:fixed;top:28px;left:0;right:0;z-index:200;background:rgba(246,239,228,.95);backdrop-filter:blur(10px)}
+    .testata-in{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:1.5rem;padding:.8rem clamp(1rem,4vw,2.4rem)}
+    .marchio{display:flex;flex-direction:column;line-height:1}
+    .marchio-nome{font-family:var(--disp);font-style:italic;font-weight:700;font-size:1.75rem;color:var(--rosso);letter-spacing:-.02em}
+    .marchio-sotto{font-size:.62rem;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--terra);margin-top:.25rem}
+    .menu{display:flex;gap:clamp(1rem,2.4vw,2rem);margin-left:auto}
+    .menu a{font-weight:600;font-size:.92rem;color:var(--testo);padding:.3rem 0;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+    .menu a:hover{color:var(--rosso)}
+    .menu a.on{color:var(--rosso);border-color:var(--aji)}
+    .testata-dx{display:flex;align-items:center;gap:1rem}
+    .testata-tel{font-weight:700;font-size:.9rem;color:var(--scuro)}
+    .menu-btn{display:none;width:42px;height:42px;background:none;border:0;cursor:pointer;flex-direction:column;justify-content:center;align-items:center;gap:5px}
+    .menu-btn span{display:block;width:22px;height:2px;background:var(--scuro);transition:transform .3s var(--e),opacity .2s}
+    .menu-btn[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+    .menu-btn[aria-expanded="true"] span:nth-child(2){opacity:0}
+    .menu-btn[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.8rem 1.4rem;border-radius:999px;border:2px solid transparent;font-family:var(--sans);font-weight:700;font-size:.95rem;cursor:pointer;transition:background .2s,color .2s,border-color .2s,transform .2s var(--e);text-align:center}
+    .btn:active{transform:scale(.98)}
+    .btn-rosso{background:var(--rosso);color:#fff}
+    .btn-rosso:hover{background:var(--rosso-scuro)}
+    .btn-bordo{border-color:var(--scuro);color:var(--scuro);background:transparent}
+    .btn-bordo:hover{background:var(--scuro);color:var(--crema)}
+    .btn-chiaro{background:var(--crema);color:var(--scuro)}
+    .btn-chiaro:hover{background:var(--aji)}
+    .btn-wa{background:#1f9d55;color:#fff}
+    .btn-wa:hover{background:#17804a}
+    .btn-pieno{width:100%}
+
+    /* la prima sezione di ogni pagina passa sotto la fascia demo e la testata fisse */
+    .primo{padding-top:calc(28px + var(--testata) + clamp(2rem,5vw,3.5rem))}
+    .misura{max-width:1240px;margin:0 auto;padding:0 clamp(1.1rem,4vw,2.4rem)}
+    .stretta{max-width:780px}
+    .banda{padding:clamp(4rem,9vw,7rem) 0}
+    .occhiello{display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:var(--rosso)}
+    .sez-h2{font-size:clamp(2.1rem,4.6vw,3.4rem);margin-top:.7rem}
+    .sez-h2 em{font-style:italic;color:var(--rosso)}
+    .sez-p{color:var(--muto);max-width:56ch;margin-top:1rem;font-size:1.05rem}
+    .nota{font-size:.82rem;color:var(--muto)}
+    .promemoria{max-width:820px;margin:3rem auto 0;padding:1rem 1.2rem;border:1px dashed var(--terra);border-radius:14px;background:rgba(233,167,35,.08);color:var(--muto);font-size:.86rem;line-height:1.6}
+    .promemoria b{color:var(--scuro)}
+    .scuro{background:var(--scuro);color:#e9dccb}
+    .scuro h2,.scuro h3{color:var(--crema)}
+    .scuro .occhiello{color:var(--aji)}
+
+    /* moduli */
+    .modulo{display:grid;gap:1.1rem}
+    .modulo label{display:grid;gap:.4rem;font-size:.84rem;font-weight:700;color:var(--scuro)}
+    .modulo small{font-weight:500;color:var(--muto)}
+    .modulo input,.modulo select,.modulo textarea{width:100%;min-width:0;padding:.8rem .9rem;border:1.5px solid var(--filo);border-radius:12px;background:var(--carta);font:inherit;font-weight:500;font-size:1rem;color:var(--scuro)}
+    .modulo input:focus,.modulo select:focus,.modulo textarea:focus{outline:0;border-color:var(--rosso);box-shadow:0 0 0 3px rgba(163,38,28,.12)}
+    .modulo [aria-invalid="true"]{border-color:#b3261e;background:#fff5f4}
+    .errore{color:#9b1c14;font-size:.86rem;font-weight:600}
+
+    .stato{display:inline-flex;align-items:center;gap:.5rem;font-weight:700;font-size:.85rem}
+    .stato .pt{width:9px;height:9px;border-radius:50%;background:#2e9e5b;box-shadow:0 0 0 4px rgba(46,158,91,.18)}
+    .stato.chiuso .pt{background:#c0392b;box-shadow:0 0 0 4px rgba(192,57,43,.15)}
+
+    .piede{background:var(--scuro);color:#cdbfae;margin-top:0}
+    .piede-in{max-width:1240px;margin:0 auto;padding:clamp(3rem,6vw,4.5rem) clamp(1.1rem,4vw,2.4rem) 2rem;display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:2.5rem}
+    .piede h2{font-family:var(--sans);font-size:.72rem;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--aji);margin-bottom:.9rem}
+    .piede a:hover{color:#fff}
+    .piede-nome{font-family:var(--disp);font-style:italic;font-weight:700;font-size:2rem;color:var(--crema)}
+    .piede-claim{margin-top:.6rem;color:#b5a592}
+    .piede-sp{margin-top:.8rem}
+    .piede-legale{max-width:1240px;margin:0 auto;padding:1.2rem clamp(1.1rem,4vw,2.4rem) 2rem;border-top:1px solid rgba(255,255,255,.1);display:flex;flex-wrap:wrap;gap:.6rem 2rem;font-size:.78rem;color:#9c8c7a}
+    .piede-legale a{text-decoration:underline;text-underline-offset:3px}
+
+    .wa-flt{position:fixed;right:20px;bottom:20px;z-index:150;width:56px;height:56px;border-radius:50%;background:#1f9d55;color:#fff;display:grid;place-items:center;box-shadow:0 8px 24px rgba(0,0,0,.2);transition:transform .2s var(--e)}
+    .wa-flt:hover{transform:scale(1.07)}
+    .barra-mobile{display:none}
+
+    @media (max-width:980px){
+      .menu{position:fixed;top:calc(28px + 76px);left:0;right:0;flex-direction:column;align-items:center;gap:1.2rem;padding:1.6rem 1rem 2rem;background:var(--crema);border-bottom:1px solid var(--filo);margin:0;display:none}
+      .testata.aperta .menu{display:flex}
+      .testata-tel{display:none}
+      .testata-dx{margin-left:auto}
+      .menu-btn{display:flex}
+      .piede-in{grid-template-columns:1fr;gap:2rem}
+    }
+    @media (max-width:640px){
+      .testata-dx .btn{display:none}
+      .barra-mobile{display:grid;grid-template-columns:1fr 2fr;position:fixed;left:0;right:0;bottom:0;z-index:160;background:var(--carta);border-top:1px solid var(--filo);padding:.6rem .8rem calc(.6rem + env(safe-area-inset-bottom))}
+      .barra-mobile a{display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:999px;font-weight:800}
+      .barra-prenota{background:var(--rosso);color:#fff;margin-left:.6rem}
+      .wa-flt{bottom:88px;width:50px;height:50px}
+      body{padding-bottom:76px}
+    }
+  </style>
+
+  <script>
+    const t = document.getElementById('testata');
+    const b = document.getElementById('menuBtn');
+    const chiudi = () => { t.classList.remove('aperta'); b.setAttribute('aria-expanded', 'false'); };
+    b.addEventListener('click', () => { const o = t.classList.toggle('aperta'); b.setAttribute('aria-expanded', String(o)); });
+    document.querySelectorAll('#menu a').forEach((a) => a.addEventListener('click', chiudi));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') chiudi(); });
+  </script>
+</body>
+</html>

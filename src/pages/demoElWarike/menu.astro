@@ -1,0 +1,99 @@
+---
+import Layout from './_Layout.astro';
+import { INFO, CARTA, MENU_GIORNO_BASE } from './_shared.js';
+const M = MENU_GIORNO_BASE;
+---
+<Layout title="Menù" active="Menù" desc={`Il menù di ${INFO.nome}: menù del giorno a pranzo e i piatti della cucina peruana — ceviche, pollo a la brasa, lomo saltado, papa rellena.`}>
+
+  <section class="primo">
+    <div class="misura stretta testa">
+      <span class="occhiello">Il menù</span>
+      <h1>Cucina peruana,<br/><em>come a casa.</em></h1>
+      <p class="sez-p">I piatti cambiano con il mercato e con la stagione: a pranzo c’è sempre il menù del giorno.</p>
+    </div>
+  </section>
+
+  <section class="banda giorno-banda">
+    <div class="misura">
+      <div class="giorno">
+        <div>
+          <span class="occhiello">A pranzo</span>
+          <h2 class="sez-h2">Menù del giorno</h2>
+          <p class="giorno-prezzo"><b id="mgPrezzo">{M.prezzo} €</b> <span id="mgFormula">{M.formula}</span></p>
+          <p class="nota" id="mgNota">{M.nota}</p>
+        </div>
+        <ul class="giorno-lista" id="mgPiatti">{M.piatti.map((p) => <li>{p}</li>)}</ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="banda carta-banda">
+    <div class="misura">
+      <span class="occhiello">Alla carta</span>
+      <h2 class="sez-h2">I nostri piatti</h2>
+      <ul class="carta">
+        {CARTA.map((p) => (
+          <li class={'voce' + (p.img ? ' con-foto' : '')} id={p.id}>
+            {p.img && <img src={p.img} width="640" height="480" alt={p.alt} loading="lazy" />}
+            <div><h3>{p.nome}</h3><p>{p.it}</p></div>
+          </li>
+        ))}
+      </ul>
+      <p class="carta-allergeni"><b>Allergie o intolleranze?</b> Ditecelo quando prenotate o appena arrivate: vi diciamo cosa c’è in ogni piatto.</p>
+      <p class="promemoria">💡 <b>Per Gisela:</b> qui mettiamo il vostro menù completo, con i prezzi e gli allergeni (la legge chiede di indicarli). Il menù del pranzo invece lo cambiate voi, ogni giorno, dal pannello.</p>
+    </div>
+  </section>
+
+  <section class="prenota-mini">
+    <div class="misura prenota-mini-in">
+      <p>Vi è venuta fame?</p>
+      <a href="/demoElWarike/prenota/" class="btn btn-rosso">Prenota un tavolo</a>
+      <a href={'tel:' + INFO.telHref} class="btn btn-bordo">Ordina da asporto: {INFO.tel}</a>
+    </div>
+  </section>
+
+  <style>
+    .testa h1{font-size:clamp(2.6rem,6vw,4.4rem);margin-top:.7rem}
+    .testa h1 em{font-style:italic;color:var(--rosso)}
+    .giorno-banda{padding-top:clamp(2rem,4vw,3rem)}
+    .giorno{background:var(--scuro);color:#e9dccb;border-radius:26px;padding:clamp(1.8rem,4vw,3rem);display:grid;grid-template-columns:.9fr 1.1fr;gap:1.5rem 3rem;align-items:center}
+    .giorno>*{min-width:0}
+    .giorno .occhiello{color:var(--aji)}
+    .giorno .sez-h2{color:var(--crema)}
+    .giorno-prezzo{margin:1rem 0 .6rem;font-weight:600}
+    .giorno-prezzo b{display:inline-block;background:var(--aji);color:var(--scuro);font-weight:800;font-size:1.3rem;padding:.15rem .8rem;border-radius:999px;margin-right:.4rem}
+    .giorno .nota{color:#b5a592}
+    .giorno-lista{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:0 1.5rem}
+    .giorno-lista :global(li){padding:.7rem 0;border-bottom:1px dashed rgba(255,255,255,.18);font-weight:600;color:var(--crema)}
+    .carta-banda{padding-top:0}
+    .carta{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:1.2rem 3rem;margin-top:2.2rem}
+    .carta>*{min-width:0}
+    .voce{display:grid;grid-template-columns:1fr;padding:1.2rem 0;border-bottom:1px solid var(--filo)}
+    .voce.con-foto{grid-template-columns:120px 1fr;gap:1.2rem;align-items:center}
+    .voce img{width:120px;aspect-ratio:1;object-fit:cover;border-radius:16px}
+    .voce h3{font-size:1.5rem}
+    .voce p{color:var(--muto);margin-top:.3rem;font-size:.95rem}
+    .carta-allergeni{margin-top:2rem;color:var(--muto)}
+    .carta-allergeni b{color:var(--scuro)}
+    .prenota-mini{padding:0 0 clamp(4rem,8vw,6rem)}
+    .prenota-mini-in{display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap;text-align:center}
+    .prenota-mini-in p{font-family:var(--disp);font-style:italic;font-size:1.6rem;color:var(--scuro);width:100%}
+    @media (max-width:900px){
+      .giorno,.carta{grid-template-columns:1fr}
+    }
+    @media (max-width:520px){
+      .giorno-lista{grid-template-columns:1fr}
+      .voce.con-foto{grid-template-columns:88px 1fr}
+      .voce img{width:88px}
+    }
+  </style>
+
+  <script>
+    import { leggiMenuGiorno, esc } from './_shared.js';
+    const m = leggiMenuGiorno();
+    document.getElementById('mgPrezzo').textContent = m.prezzo + ' €';
+    document.getElementById('mgFormula').textContent = m.formula;
+    document.getElementById('mgNota').textContent = m.nota;
+    document.getElementById('mgPiatti').innerHTML = m.piatti.map((p) => `<li>${esc(p)}</li>`).join('');
+  </script>
+</Layout>

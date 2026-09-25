@@ -1,0 +1,213 @@
+---
+import Layout from './_Layout.astro';
+import { INFO, CARTA, MENU_GIORNO_BASE, orariSettimana } from './_shared.js';
+const ORARI = orariSettimana();      // reso lato server: leggibile anche senza JavaScript
+const piatti = CARTA.filter((p) => p.img);
+const M = MENU_GIORNO_BASE;
+---
+<Layout title="Cucina peruana di casa" active="Home">
+
+  <!-- APERTURA -->
+  <section class="apertura primo">
+    <div class="misura apertura-in">
+      <div class="apertura-testo">
+        <p class="stato" id="stato"><span class="pt"></span><span id="statoTxt">Pranzo e cena, martedì chiuso</span></p>
+        <h1>Il sapore del Perù,<br/><em>a due passi da casa.</em></h1>
+        <p class="apertura-p">Ceviche, pollo a la brasa, lomo saltado: la cucina di casa di {INFO.titolare}, in {INFO.via}. A pranzo c’è il menù del giorno.</p>
+        <div class="apertura-azioni">
+          <a href="/demoElWarike/prenota/" class="btn btn-rosso">Prenota un tavolo</a>
+          <a href="/demoElWarike/menu/" class="btn btn-bordo">Guarda il menù</a>
+        </div>
+        <p class="apertura-voto"><b>★ {INFO.stelle}</b> su Google · {INFO.recensioni} recensioni</p>
+      </div>
+      <div class="apertura-foto">
+        <img src="/img/elwarike/ceviche.webp" width="690" height="690" alt="Ceviche di pesce con choclo e cancha" fetchpriority="high" />
+        <span class="apertura-etichetta">Ceviche</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- MENÙ DEL PRANZO: lo aggiorna Gisela dal pannello -->
+  <section class="pranzo">
+    <div class="misura">
+      <div class="pranzo-scheda">
+        <div class="pranzo-testa">
+          <span class="occhiello">Oggi a pranzo</span>
+          <h2 class="pranzo-h2">Menù del giorno <span class="pranzo-prezzo" id="mgPrezzo">{M.prezzo} €</span></h2>
+          <p class="pranzo-formula" id="mgFormula">{M.formula}</p>
+        </div>
+        <ul class="pranzo-lista" id="mgPiatti">
+          {M.piatti.map((p) => <li>{p}</li>)}
+        </ul>
+        <p class="nota pranzo-nota"><span id="mgNota">{M.nota}</span> <span id="mgAgg"></span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- I PIATTI -->
+  <section class="banda">
+    <div class="misura">
+      <span class="occhiello">La cucina</span>
+      <h2 class="sez-h2">I piatti che<br/><em>ci fanno tornare.</em></h2>
+      <div class="piatti">
+        {piatti.map((p) => (
+          <article class="piatto">
+            <div class="piatto-foto"><img src={p.img} width="640" height="480" alt={p.alt} loading="lazy" /></div>
+            <h3>{p.nome}</h3>
+            <p>{p.it}</p>
+          </article>
+        ))}
+      </div>
+      <p class="piatti-link"><a href="/demoElWarike/menu/" class="link">Tutto il menù →</a></p>
+    </div>
+  </section>
+
+  <!-- IL LOCALE -->
+  <section class="scuro banda" id="locale">
+    <div class="misura locale-in">
+      <div>
+        <span class="occhiello">Il locale</span>
+        <h2 class="sez-h2">Un warike<br/><em class="giallo">in Via Fréjus.</em></h2>
+        <p class="locale-p">In Perù un <i>warike</i> è il posto piccolo, curato e un po’ nascosto dove si mangia come a casa. Quello che si passa parola.</p>
+        <p class="locale-p">{INFO.titolare} lo ha aperto accanto al suo negozio di prodotti sudamericani, che in Via Fréjus è un punto di riferimento da anni. La cucina è quella di famiglia: onesta, abbondante, fatta ogni giorno.</p>
+        <ul class="locale-punti">
+          <li>Pranzo e cena, sei giorni su sette</li>
+          <li>Anche da asporto: chiamate o scrivete</li>
+          <li>Accessibile in sedia a rotelle</li>
+        </ul>
+      </div>
+      <div class="locale-foto">
+        <figure class="slot slot-grande"><span>La sala</span></figure>
+        <figure class="slot"><span>{INFO.titolare} in cucina</span></figure>
+        <figure class="slot"><span>L’ingresso</span></figure>
+      </div>
+    </div>
+    <div class="misura">
+      <p class="promemoria promemoria-scuro">💡 <b>Per Gisela:</b> qui vanno le foto vere del locale — la sala, la cucina, l’insegna. Le scattiamo noi in una mattina, oppure bastano quelle del vostro telefono. Le foto dei piatti in questa bozza sono prese da archivi a licenza libera: vanno sostituite con i vostri piatti.</p>
+    </div>
+  </section>
+
+  <!-- ORARI E DOVE -->
+  <section class="banda" id="dove">
+    <div class="misura dove-in">
+      <div>
+        <span class="occhiello">Orari e dove</span>
+        <h2 class="sez-h2">{INFO.via},<br/><em>{INFO.citta}</em></h2>
+        <p class="sez-p">Siamo al numero 52b. Per i gruppi e le occasioni speciali chiamateci: vi teniamo il tavolo pronto.</p>
+        <div class="dove-azioni">
+          <a href={INFO.maps} target="_blank" rel="noopener" class="btn btn-bordo">Indicazioni stradali</a>
+          <a href={'tel:' + INFO.telHref} class="btn btn-bordo">Chiama il {INFO.tel}</a>
+        </div>
+      </div>
+      <div>
+        <h3 class="orari-h3">Orari di apertura</h3>
+        <ul class="orari" id="orari">
+          {ORARI.map((o) => <li data-g={o.i}><span>{o.giorno}</span><b>{o.label}</b></li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRENOTA -->
+  <section class="prenota-banda">
+    <div class="misura prenota-in">
+      <h2>Vi teniamo un tavolo?</h2>
+      <p>Scegliete giorno, ora e quanti siete: vi confermiamo su WhatsApp.</p>
+      <a href="/demoElWarike/prenota/" class="btn btn-chiaro">Prenota ora</a>
+    </div>
+  </section>
+
+  <style>
+    .apertura{padding-bottom:clamp(3rem,6vw,5rem)}
+    .apertura-in{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(2rem,5vw,4.5rem);align-items:center}
+    .apertura-in>*{min-width:0}
+    .apertura h1{font-size:clamp(2.7rem,6.4vw,5rem);margin-top:1.1rem}
+    .apertura h1 em{font-style:italic;color:var(--rosso)}
+    .apertura-p{font-size:1.12rem;color:var(--muto);max-width:48ch;margin-top:1.3rem}
+    .apertura-azioni{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:2rem}
+    .apertura-voto{margin-top:1.4rem;font-size:.9rem;color:var(--muto)}
+    .apertura-voto b{color:var(--terra)}
+    .apertura-foto{position:relative}
+    .apertura-foto img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:28px 28px 28px 120px;box-shadow:18px 18px 0 var(--aji)}
+    .apertura-etichetta{position:absolute;left:1.2rem;bottom:1.2rem;background:var(--carta);color:var(--scuro);font-family:var(--disp);font-style:italic;font-weight:600;padding:.35rem .9rem;border-radius:999px;font-size:1rem}
+
+    .pranzo{padding-bottom:clamp(1rem,3vw,2rem)}
+    .pranzo-scheda{background:var(--carta);border:1px solid var(--filo);border-radius:24px;padding:clamp(1.6rem,4vw,2.6rem);display:grid;grid-template-columns:.9fr 1.1fr;gap:1rem 3rem;align-items:start;box-shadow:0 20px 50px -30px rgba(35,26,21,.35)}
+    .pranzo-scheda>*{min-width:0}
+    .pranzo-h2{font-size:clamp(1.8rem,3.6vw,2.5rem);margin-top:.5rem}
+    .pranzo-prezzo{display:inline-block;background:var(--aji);color:var(--scuro);font-family:var(--sans);font-weight:800;font-size:.55em;padding:.2em .6em;border-radius:999px;vertical-align:middle;margin-left:.3rem}
+    .pranzo-formula{color:var(--muto);margin-top:.5rem;font-weight:600}
+    .pranzo-lista{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:0 1.5rem}
+    .pranzo-lista :global(li){padding:.65rem 0;border-bottom:1px dashed var(--filo);font-weight:600;color:var(--scuro)}
+    .pranzo-nota{grid-column:1 / -1}
+
+    .piatti{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(1rem,2.4vw,1.8rem);margin-top:clamp(2rem,4vw,3rem)}
+    .piatti>*{min-width:0}
+    .piatto-foto{overflow:hidden;border-radius:20px}
+    .piatto-foto img{width:100%;aspect-ratio:4/5;object-fit:cover;transition:transform .8s var(--e)}
+    .piatto:hover .piatto-foto img{transform:scale(1.04)}
+    .piatto h3{font-size:1.45rem;margin-top:1rem}
+    .piatto p{color:var(--muto);font-size:.93rem;margin-top:.35rem}
+    .piatti-link{margin-top:2rem}
+    .link{font-weight:800;color:var(--rosso);border-bottom:2px solid var(--aji);padding-bottom:.15rem}
+
+    .locale-in{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4.5rem);align-items:center}
+    .locale-in>*{min-width:0}
+    .giallo{color:var(--aji) !important}
+    .locale-p{margin-top:1.1rem;max-width:52ch;color:#d9cab7}
+    .locale-punti{list-style:none;margin-top:1.6rem;display:grid;gap:.5rem}
+    .locale-punti li{padding-left:1.6rem;position:relative}
+    .locale-punti li::before{content:'';position:absolute;left:0;top:.55em;width:10px;height:10px;background:var(--aji);transform:rotate(45deg)}
+    /* posti per le foto vere del locale: dichiarati, non finti */
+    .locale-foto{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .slot{aspect-ratio:4/3;border-radius:18px;border:2px dashed rgba(233,167,35,.45);display:grid;place-items:center;text-align:center;padding:1rem;
+      background:repeating-linear-gradient(45deg,rgba(233,167,35,.05) 0 12px,transparent 12px 24px)}
+    .slot span{font-family:var(--disp);font-style:italic;color:#d9cab7}
+    .slot span::before{content:'📷';display:block;font-style:normal;font-size:1.4rem;margin-bottom:.3rem}
+    .slot-grande{grid-column:1 / -1;aspect-ratio:16/8}
+    .promemoria-scuro{background:rgba(233,167,35,.08);color:#cdbfae;border-color:rgba(233,167,35,.5)}
+    .promemoria-scuro b{color:var(--crema)}
+
+    .dove-in{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(2rem,5vw,4.5rem);align-items:start}
+    .dove-in>*{min-width:0}
+    .dove-azioni{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1.8rem}
+    .orari-h3{font-family:var(--sans);font-size:.72rem;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--rosso);margin-bottom:.8rem}
+    .orari{list-style:none}
+    .orari li{display:flex;justify-content:space-between;gap:1rem;padding:.75rem .2rem;border-bottom:1px solid var(--filo)}
+    .orari li b{font-weight:700;color:var(--scuro);text-align:right}
+    .orari li.oggi{background:rgba(233,167,35,.15);border-radius:10px;padding-inline:.8rem;border-bottom-color:transparent}
+    .orari li.oggi span::after{content:' · oggi';color:var(--rosso);font-weight:700}
+
+    .prenota-banda{background:var(--rosso);color:#fbe9e2;padding:clamp(3rem,7vw,4.5rem) 0}
+    .prenota-in{text-align:center}
+    .prenota-in h2{color:#fff;font-size:clamp(2rem,4.4vw,3rem)}
+    .prenota-in p{margin:.8rem auto 1.8rem;max-width:44ch}
+
+    @media (max-width:980px){
+      .apertura-in,.locale-in,.dove-in,.pranzo-scheda{grid-template-columns:1fr}
+      .piatti{grid-template-columns:1fr 1fr}
+      .apertura-foto{max-width:520px}
+    }
+    @media (max-width:560px){
+      .pranzo-lista{grid-template-columns:1fr}
+      .apertura-foto img{box-shadow:10px 10px 0 var(--aji)}
+    }
+  </style>
+
+  <script>
+    import { statoOra, leggiMenuGiorno, esc } from './_shared.js';
+    const s = statoOra();
+    document.getElementById('statoTxt').textContent = s.testo;
+    document.getElementById('stato').classList.toggle('chiuso', !s.aperto);
+    const oggi = new Date().getDay();
+    document.querySelectorAll('#orari li').forEach((li) => li.classList.toggle('oggi', +li.dataset.g === oggi));
+
+    // il menù del giorno scritto da Gisela nel pannello sostituisce quello d'esempio
+    const m = leggiMenuGiorno();
+    document.getElementById('mgPrezzo').textContent = m.prezzo + ' €';
+    document.getElementById('mgFormula').textContent = m.formula;
+    document.getElementById('mgPiatti').innerHTML = m.piatti.map((p) => `<li>${esc(p)}</li>`).join('');
+    document.getElementById('mgNota').textContent = m.nota;
+    if (m.agg) document.getElementById('mgAgg').textContent = '· Aggiornato ' + new Date(m.agg).toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' }) + '.';
+  </script>
+</Layout>

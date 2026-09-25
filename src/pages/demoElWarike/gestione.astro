@@ -1,0 +1,246 @@
+---
+import Layout from './_Layout.astro';
+import { INFO } from './_shared.js';
+// Pannello di Gisela: le tre cose che cambiano davvero in un ristorante piccolo.
+// 1) le prenotazioni arrivate  2) il menù del pranzo  3) i giorni di chiusura.
+// Nella versione reale l'accesso e i dati stanno sul server; qui e' una dimostrazione.
+---
+<Layout title="Area riservata" active="Gestione" desc="Area riservata del locale: prenotazioni, menù del giorno, giorni di chiusura.">
+
+  <section class="primo banda-g" id="accesso">
+    <div class="misura accesso">
+      <span class="occhiello">Area riservata</span>
+      <h1>Il pannello<br/><em>del locale</em></h1>
+      <form class="modulo" id="login">
+        <label>Nome utente<input type="text" id="u" autocomplete="username" required /></label>
+        <label>Password<input type="password" id="pw" autocomplete="current-password" required /></label>
+        <p class="errore" id="lErr" hidden>Credenziali non corrette.</p>
+        <button type="submit" class="btn btn-rosso btn-pieno">Entra</button>
+        <!-- ⚠ Solo per la bozza: da RIMUOVERE nella versione definitiva -->
+        <button type="button" class="prova" id="prova"><b>Credenziali di prova</b><span>warike · frejus52</span><small>toccate per compilare — spariranno nella versione definitiva</small></button>
+      </form>
+    </div>
+  </section>
+
+  <section class="primo banda-g" id="pannello" hidden>
+    <div class="misura">
+      <div class="pann-testa">
+        <div>
+          <span class="occhiello">Area riservata</span>
+          <h1>Ciao {INFO.titolare}</h1>
+        </div>
+        <button type="button" class="link-s" id="esci">Esci</button>
+      </div>
+
+      <div class="schede" role="tablist" aria-label="Sezioni del pannello">
+        <button role="tab" aria-selected="true" aria-controls="t-pren" id="b-pren">Prenotazioni <span class="conto" id="conto"></span></button>
+        <button role="tab" aria-selected="false" aria-controls="t-menu" id="b-menu" tabindex="-1">Menù del giorno</button>
+        <button role="tab" aria-selected="false" aria-controls="t-chiu" id="b-chiu" tabindex="-1">Giorni di chiusura</button>
+      </div>
+
+      <!-- PRENOTAZIONI -->
+      <div class="tab" role="tabpanel" id="t-pren" aria-labelledby="b-pren">
+        <p class="tab-d">Le richieste arrivate dal sito. Confermando si apre WhatsApp con il messaggio per il cliente già scritto.</p>
+        <div id="listaPren"></div>
+      </div>
+
+      <!-- MENÙ DEL GIORNO -->
+      <div class="tab" role="tabpanel" id="t-menu" aria-labelledby="b-menu" hidden>
+        <p class="tab-d">Quello che scrivete qui compare subito in home e nella pagina Menù.</p>
+        <form class="modulo menu-form" id="menuForm">
+          <div class="due">
+            <label>Prezzo (€)<input type="text" id="m-prezzo" inputmode="decimal" required maxlength="6" /></label>
+            <label>Formula<input type="text" id="m-formula" required maxlength="60" placeholder="Es. Due piatti a scelta" /></label>
+          </div>
+          <label>I piatti di oggi <small>(uno per riga)</small><textarea id="m-piatti" rows="8" required></textarea></label>
+          <label>Nota <small>(facoltativa)</small><input type="text" id="m-nota" maxlength="120" placeholder="Es. Bibita e caffè inclusi" /></label>
+          <div class="azioni">
+            <button type="submit" class="btn btn-rosso">Pubblica il menù</button>
+            <a href="/demoElWarike/" class="btn btn-bordo">Guarda la home</a>
+            <span class="salvato" id="mSalvato" role="status"></span>
+          </div>
+        </form>
+      </div>
+
+      <!-- GIORNI DI CHIUSURA -->
+      <div class="tab" role="tabpanel" id="t-chiu" aria-labelledby="b-chiu" hidden>
+        <p class="tab-d">Ferie, festività, una serata privata: in quei giorni il sito non accetta prenotazioni. Il martedì è già chiuso.</p>
+        <form class="modulo chiu-form" id="chiuForm">
+          <label>Giorno<input type="date" id="c-data" required /></label>
+          <button type="submit" class="btn btn-rosso">Segna come chiuso</button>
+        </form>
+        <ul class="chiusure" id="listaChiu"></ul>
+      </div>
+
+      <p class="promemoria">💡 <b>Per Gisela:</b> in questa bozza i dati restano su questo dispositivo. Nella versione definitiva stanno sul sito: le prenotazioni vi arrivano anche per notifica, e il pannello si usa comodamente dal telefono.</p>
+    </div>
+  </section>
+
+  <style>
+    .banda-g{padding-bottom:clamp(4rem,8vw,6rem)}
+    .accesso{max-width:440px}
+    .accesso h1,.pann-testa h1{font-size:clamp(2.3rem,5vw,3.4rem);margin:.6rem 0 1.8rem}
+    .accesso h1 em{font-style:italic;color:var(--rosso)}
+    .prova{display:grid;gap:.2rem;text-align:center;padding:1rem;border:1.5px dashed var(--terra);border-radius:14px;background:rgba(233,167,35,.08);cursor:pointer;font:inherit;color:var(--scuro)}
+    .prova b{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--terra)}
+    .prova span{font-family:var(--disp);font-size:1.3rem}
+    .prova small{color:var(--muto);font-size:.78rem}
+    .link-s{color:var(--rosso);font-weight:700;text-decoration:underline;text-underline-offset:3px;background:none;border:0;font:inherit;cursor:pointer}
+
+    .pann-testa{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
+    .pann-testa h1{margin-bottom:1.2rem}
+    .schede{display:flex;gap:.4rem;flex-wrap:wrap;border-bottom:2px solid var(--filo);margin-bottom:1.6rem}
+    .schede button{background:none;border:0;padding:.8rem 1rem;font:inherit;font-weight:700;color:var(--muto);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+    .schede button[aria-selected="true"]{color:var(--rosso);border-color:var(--rosso)}
+    .conto{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:var(--aji);color:var(--scuro);font-size:.75rem;margin-left:.3rem}
+    .conto:empty{display:none}
+    .tab-d{color:var(--muto);margin-bottom:1.4rem;max-width:62ch}
+
+    :global(.giorno-g){margin-bottom:1.6rem}
+    :global(.giorno-g h3){font-family:var(--sans);font-size:.78rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--terra);margin-bottom:.6rem}
+    :global(.pren){display:grid;grid-template-columns:auto 1fr auto;gap:.3rem 1.2rem;align-items:center;background:var(--carta);border:1px solid var(--filo);border-radius:16px;padding:1rem 1.2rem;margin-bottom:.6rem}
+    :global(.pren-ora){font-family:var(--disp);font-size:1.6rem;font-weight:600;color:var(--scuro)}
+    :global(.pren-chi b){display:block;color:var(--scuro);font-size:1.05rem}
+    :global(.pren-chi span){color:var(--muto);font-size:.9rem}
+    :global(.pren-chi i){display:block;color:var(--terra);font-style:normal;font-size:.88rem;margin-top:.2rem}
+    :global(.pren-az){display:flex;gap:.4rem;flex-wrap:wrap;justify-content:flex-end}
+    :global(.pren-az .btn){padding:.55rem .9rem;font-size:.85rem}
+    :global(.badge){display:inline-block;font-size:.72rem;font-weight:800;padding:.15rem .55rem;border-radius:999px;margin-left:.4rem;vertical-align:middle}
+    :global(.badge.attesa){background:rgba(233,167,35,.25);color:#7a5200}
+    :global(.badge.ok){background:rgba(31,157,85,.15);color:#15693a}
+    :global(.vuoto-g){padding:2.5rem 1rem;text-align:center;color:var(--muto);font-family:var(--disp);font-style:italic;font-size:1.25rem;border:1.5px dashed var(--filo);border-radius:16px}
+
+    .menu-form{max-width:720px}
+    .due{display:grid;grid-template-columns:.5fr 1fr;gap:1rem;align-items:end}
+    .due>*{min-width:0}
+    .azioni{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap}
+    .salvato{color:#15693a;font-weight:700}
+    .chiu-form{display:flex;align-items:flex-end;gap:1rem;flex-wrap:wrap;max-width:520px}
+    .chiu-form label{flex:1;min-width:180px}
+    .chiusure{list-style:none;margin-top:1.4rem;max-width:520px}
+    :global(.chiusure li){display:flex;justify-content:space-between;align-items:center;padding:.8rem 0;border-bottom:1px solid var(--filo);font-weight:600;color:var(--scuro)}
+    :global(.chiusure button){background:none;border:1px solid var(--filo);border-radius:10px;padding:.35rem .7rem;cursor:pointer;font:inherit;font-size:.85rem;color:var(--muto)}
+    :global(.chiusure button:hover){border-color:var(--rosso);color:var(--rosso)}
+
+    @media (max-width:640px){
+      :global(.pren){grid-template-columns:auto 1fr}
+      :global(.pren-az){grid-column:1 / -1;justify-content:flex-start}
+      .due{grid-template-columns:1fr}
+    }
+  </style>
+
+  <script>
+    import { leggiPrenotazioni, scriviPrenotazioni, leggiMenuGiorno, scriviMenuGiorno, MENU_GIORNO_BASE,
+      leggiChiusure, scriviChiusure, isoLocale, dataEstesa, esc, waLink, INFO } from './_shared.js';
+    const $ = (s) => document.querySelector(s);
+
+    /* ---- accesso (nella versione reale: sul server) ---- */
+    const USER = 'warike', PASS = 'frejus52';
+    const dentro = () => { try { return sessionStorage.getItem('ew-auth') === 'ok'; } catch { return false; } };
+    const gate = () => { $('#accesso').hidden = dentro(); $('#pannello').hidden = !dentro(); if (dentro()) disegnaTutto(); };
+    $('#login').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if ($('#u').value.trim().toLowerCase() === USER && $('#pw').value === PASS) {
+        try { sessionStorage.setItem('ew-auth', 'ok'); } catch {}
+        $('#lErr').hidden = true; gate();
+        if (!dentro()) { $('#accesso').hidden = true; $('#pannello').hidden = false; disegnaTutto(); } // storage bloccato
+      } else $('#lErr').hidden = false;
+    });
+    $('#prova').addEventListener('click', () => { $('#u').value = USER; $('#pw').value = PASS; $('#pw').focus(); });
+    $('#esci').addEventListener('click', () => { try { sessionStorage.removeItem('ew-auth'); } catch {} gate(); scrollTo(0, 0); });
+
+    /* ---- schede ---- */
+    const tabs = ['pren', 'menu', 'chiu'];
+    const apri = (k) => tabs.forEach((t) => {
+      const on = t === k;
+      $('#b-' + t).setAttribute('aria-selected', String(on));
+      $('#b-' + t).tabIndex = on ? 0 : -1;
+      $('#t-' + t).hidden = !on;
+    });
+    tabs.forEach((t, i) => {
+      $('#b-' + t).addEventListener('click', () => apri(t));
+      $('#b-' + t).addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+        apri(n); $('#b-' + n).focus();
+      });
+    });
+
+    /* ---- prenotazioni ---- */
+    // numero per WhatsApp: 00 iniziale tolto, prefisso 39 solo sui numeri nazionali (max 10 cifre)
+    const numeroWa = (t) => { let d = String(t).replace(/\D/g, ''); if (d.startsWith('00')) d = d.slice(2); return d.length <= 10 ? '39' + d : d; };
+    function disegnaPren() {
+      const oggi = isoLocale(new Date());
+      const tutte = leggiPrenotazioni().filter((p) => p.data >= oggi)
+        .sort((a, b) => (a.data + a.ora.padStart(5, '0')).localeCompare(b.data + b.ora.padStart(5, '0')));
+      const attesa = tutte.filter((p) => p.stato !== 'confermata').length;
+      $('#conto').textContent = attesa ? String(attesa) : '';
+      if (!tutte.length) {
+        $('#listaPren').innerHTML = '<p class="vuoto-g">Nessuna prenotazione in arrivo.<br/>Provate a farne una dalla pagina «Prenota».</p>';
+        return;
+      }
+      const perGiorno = {};
+      tutte.forEach((p) => { (perGiorno[p.data] ||= []).push(p); });
+      $('#listaPren').innerHTML = Object.entries(perGiorno).map(([d, l]) => {
+        const coperti = l.reduce((s, p) => s + (p.persone === '9+' ? 9 : +p.persone), 0);
+        return `<div class="giorno-g"><h3>${d === oggi ? 'Oggi · ' : ''}${esc(dataEstesa(d))} — ${coperti} coperti</h3>${l.map((p) => `
+          <div class="pren">
+            <span class="pren-ora">${esc(p.ora)}</span>
+            <div class="pren-chi"><b>${esc(p.nome)} <span class="badge ${p.stato === 'confermata' ? 'ok' : 'attesa'}">${p.stato === 'confermata' ? 'confermata' : 'da confermare'}</span></b>
+              <span>${esc(p.persone === '9+' ? '9 o più persone' : p.persone + (p.persone === '1' ? ' persona' : ' persone'))} · ${esc(p.tel)}</span>
+              ${p.note ? `<i>${esc(p.note)}</i>` : ''}</div>
+            <div class="pren-az">
+              ${p.stato === 'confermata' ? '' : `<a class="btn btn-wa" data-conf="${esc(p.id)}" target="_blank" rel="noopener" href="${esc(waLink(numeroWa(p.tel), `Ciao ${p.nome}, è ${INFO.nome}! Confermiamo il tavolo per ${p.persone === '9+' ? 'il vostro gruppo' : p.persone} ${dataEstesa(p.data)} alle ${p.ora}. A presto!`))}">Conferma</a>`}
+              <button type="button" class="btn btn-bordo" data-via="${esc(p.id)}">Elimina</button>
+            </div>
+          </div>`).join('')}</div>`;
+      }).join('');
+      document.querySelectorAll('[data-conf]').forEach((a) => a.addEventListener('click', () => {
+        scriviPrenotazioni(leggiPrenotazioni().map((p) => (p.id === a.dataset.conf ? { ...p, stato: 'confermata' } : p)));
+        setTimeout(disegnaPren, 50);
+      }));
+      document.querySelectorAll('[data-via]').forEach((b) => b.addEventListener('click', () => {
+        scriviPrenotazioni(leggiPrenotazioni().filter((p) => p.id !== b.dataset.via)); disegnaPren();
+      }));
+    }
+
+    /* ---- menù del giorno ---- */
+    function disegnaMenu() {
+      const m = leggiMenuGiorno();
+      $('#m-prezzo').value = m.prezzo; $('#m-formula').value = m.formula;
+      $('#m-piatti').value = m.piatti.join('\n'); $('#m-nota').value = m.nota;
+    }
+    $('#menuForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const piatti = $('#m-piatti').value.split('\n').map((x) => x.trim()).filter(Boolean);
+      if (!piatti.length) { $('#mSalvato').textContent = 'Scrivete almeno un piatto.'; return; }
+      const ok = scriviMenuGiorno({
+        prezzo: $('#m-prezzo').value.trim().replace('€', '') || MENU_GIORNO_BASE.prezzo,
+        formula: $('#m-formula').value.trim(), piatti, nota: $('#m-nota').value.trim(), agg: new Date().toISOString(),
+      });
+      $('#mSalvato').textContent = ok ? '✓ Pubblicato' : 'Non riesco a salvare su questo dispositivo.';
+    });
+
+    /* ---- chiusure ---- */
+    $('#c-data').min = isoLocale(new Date());
+    function disegnaChiu() {
+      const oggi = isoLocale(new Date());
+      const l = leggiChiusure().filter((d) => d >= oggi);
+      $('#listaChiu').innerHTML = l.length
+        ? l.map((d) => `<li>${esc(dataEstesa(d))}<button type="button" data-riapri="${d}">Riapri</button></li>`).join('')
+        : '<li>Nessun giorno di chiusura straordinaria.</li>';
+      document.querySelectorAll('[data-riapri]').forEach((b) => b.addEventListener('click', () => {
+        scriviChiusure(leggiChiusure().filter((d) => d !== b.dataset.riapri)); disegnaChiu();
+      }));
+    }
+    $('#chiuForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const d = $('#c-data').value;
+      if (!d) return;
+      scriviChiusure([...new Set([...leggiChiusure(), d])]); $('#c-data').value = ''; disegnaChiu();
+    });
+
+    function disegnaTutto() { disegnaPren(); disegnaMenu(); disegnaChiu(); }
+    gate();
+  </script>
+</Layout>

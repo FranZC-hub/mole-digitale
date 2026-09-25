@@ -1,0 +1,49 @@
+---
+import Layout from './_Layout.astro';
+import { INFO } from './_shared.js';
+// Le foto dei piatti della bozza sono a licenza libera: CC BY e CC BY-SA chiedono
+// autore, licenza, fonte e l'indicazione delle modifiche. Via quando arrivano quelle vere.
+const foto = [
+  { piatto: 'Ceviche', autore: 'T.78UopXx', lic: 'CC BY-SA 2.0', licUrl: 'https://creativecommons.org/licenses/by-sa/2.0/', fonte: 'https://www.flickr.com/photos/95786359@N05/8770488190', mod: 'ritagliata' },
+  { piatto: 'Lomo saltado', autore: 'Go!Pymes Fotos', lic: 'CC BY-SA 2.0', licUrl: 'https://creativecommons.org/licenses/by-sa/2.0/', fonte: 'https://www.flickr.com/photos/53867581@N04/5019606684', mod: '' },
+  { piatto: 'Pollo a la brasa', autore: 'goodiesfirst', lic: 'CC BY 2.0', licUrl: 'https://creativecommons.org/licenses/by/2.0/', fonte: 'https://www.flickr.com/photos/49215102@N00/8761648762', mod: '' },
+  { piatto: 'Papa rellena', autore: 'Chasqui (Luis Tamayo)', lic: 'CC BY-SA 2.0', licUrl: 'https://creativecommons.org/licenses/by-sa/2.0/', fonte: 'https://www.flickr.com/photos/77887212@N00/476138596', mod: '' },
+];
+---
+<Layout title="Privacy e crediti" desc={`Privacy e crediti fotografici del sito di ${INFO.nome}.`}>
+  <section class="primo banda-t">
+    <div class="misura stretta testo">
+      <span class="occhiello">Privacy</span>
+      <h1>Privacy e crediti</h1>
+
+      <h2>Le prenotazioni</h2>
+      <p>Quando prenotate ci lasciate nome, telefono ed eventuali note: li usiamo solo per gestire la vostra prenotazione e per confermarvela. Non li cediamo a nessuno e non vi mandiamo pubblicità.</p>
+      <p>La richiesta ci arriva su WhatsApp: da quel momento vale anche l’informativa di WhatsApp.</p>
+
+      <h2>Cookie</h2>
+      <p>Il sito non usa cookie di profilazione né strumenti di tracciamento pubblicitario.</p>
+
+      <h2>Titolare</h2>
+      <p>{INFO.nome} — {INFO.via}, {INFO.cap} {INFO.citta} · {INFO.tel}</p>
+      <p class="promemoria">💡 <b>Da completare:</b> ragione sociale, partita IVA ed email del locale.</p>
+
+      <h2>Crediti fotografici</h2>
+      <p>Le foto dei piatti di questa bozza sono prese da archivi a licenza libera e verranno sostituite con quelle del locale.</p>
+      <ul class="crediti">
+        {foto.map((f) => (
+          <li><b>{f.piatto}</b> — foto di {f.autore}, <a href={f.fonte} target="_blank" rel="noopener">Flickr</a>, licenza <a href={f.licUrl} target="_blank" rel="noopener">{f.lic}</a>{f.mod && `, ${f.mod}`}.</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+  <style>
+    .banda-t{padding-bottom:clamp(4rem,8vw,6rem)}
+    .testo h1{font-size:clamp(2.4rem,5vw,3.4rem);margin:.6rem 0 1rem}
+    .testo h2{font-size:1.5rem;margin:2.2rem 0 .6rem}
+    .testo p{color:var(--muto);margin-top:.6rem}
+    .testo .promemoria{margin:1rem 0 0}
+    .crediti{margin:1rem 0 0 1.2rem;color:var(--muto);display:grid;gap:.5rem}
+    .crediti a{color:var(--rosso);text-decoration:underline;text-underline-offset:3px}
+    .crediti b{color:var(--scuro)}
+  </style>
+</Layout>
