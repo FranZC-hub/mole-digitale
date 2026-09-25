@@ -25,8 +25,8 @@ const {
 
 const BASE = '/demoMasGioielli/';
 const NAV = [
-  ['', 'Maison'], ['vetrina/', 'Collezione'], ['laboratorio/', 'Atelier'],
-  ['perizie/', 'Perizie'], ['contatti/', 'Contatti'],
+  ['', 'Maison'], ['vetrina/', 'Selezione'], ['laboratorio/', 'Atelier'],
+  ['compro-oro/', 'Compro oro'], ['perizie/', 'Perizie'], ['contatti/', 'Contatti'],
 ];
 const WA = `https://wa.me/${INFO.wa}`;
 
@@ -61,7 +61,8 @@ const schema = {
   <meta name="theme-color" content="#f7f3ec" />
   <link rel="preload" as="font" type="font/woff2" href={cormorantWoff2} crossorigin />
   <link rel="preload" as="font" type="font/woff2" href={interWoff2} crossorigin />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%231c1916'/><path d='M16 5l7 7-7 15-7-15z' fill='none' stroke='%23c3a163' stroke-width='2' stroke-linejoin='round'/><path d='M9 12h14M16 5l-3.2 7M16 5l3.2 7' fill='none' stroke='%23c3a163' stroke-width='2' stroke-linejoin='round'/></svg>" />
+  <link rel="icon" type="image/png" href="/img/masgioielli/icona-64.png" />
+  <link rel="apple-touch-icon" href="/img/masgioielli/icona-180.png" />
   <meta property="og:title" content={title + ' — ' + INFO.nome} />
   <meta property="og:description" content={desc} />
   <meta property="og:type" content="website" />
@@ -83,8 +84,11 @@ const schema = {
         <span></span><span></span>
       </button>
       <a href={BASE} class="marchio" aria-label={INFO.nome + ' — home'}>
-        <span class="marchio-nome">MasGioielli</span>
-        <span class="marchio-sotto" aria-hidden="true">Gioielleria · Torino · dal {INFO.fondata}</span>
+        <!-- logo del negozio, preso dal sito attuale (351x75): per la versione
+             definitiva serve il file vettoriale -->
+        <img class="marchio-logo" src="/img/masgioielli/logo.webp" srcset="/img/masgioielli/logo.webp 1x, /img/masgioielli/logo@2x.webp 2x"
+             width="351" height="75" alt="" fetchpriority="high" />
+        <span class="marchio-sotto" aria-hidden="true">Torino · dal {INFO.fondata}</span>
       </a>
       <div class="testata-dx">
         <a href={'tel:' + INFO.telHref} class="testata-tel">{INFO.tel}</a>
@@ -112,7 +116,7 @@ const schema = {
   <footer class="chiusura">
     <div class="chiusura-in">
       <div class="chiusura-marchio">
-        <p class="chiusura-nome">MasGioielli</p>
+        <p class="chiusura-nome"><img src="/img/masgioielli/logo@2x.webp" width="351" height="75" alt={INFO.nome} loading="lazy" /></p>
         <span class="chiusura-filo" aria-hidden="true"></span>
         <p class="chiusura-claim">Preziosi di qualità<br/>dal {INFO.fondata}</p>
       </div>
@@ -134,6 +138,7 @@ const schema = {
     </div>
     <p class="chiusura-legale">
       <span>P.IVA {INFO.piva}</span>
+      <span>Fotografie del negozio: Elisa Miglietti</span>
       <span>Bozza dimostrativa · <a href="/">Mole Digitale</a></span>
       <span><a href={BASE + 'privacy/'}>Privacy e cookie</a></span>
     </p>
@@ -192,6 +197,8 @@ const schema = {
     .testata{position:fixed;top:27px;left:0;right:0;z-index:200;background:rgba(247,243,236,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--filo);transition:padding .3s var(--e)}
     .testata-alto{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:1rem;padding:1.15rem clamp(1rem,4vw,2.4rem) .55rem;transition:padding .3s var(--e)}
     .marchio{grid-column:2;display:inline-flex;flex-direction:column;align-items:center;gap:.42rem;color:var(--inchiostro);text-align:center}
+    .marchio-logo{display:block;width:210px;height:auto;transition:width .35s var(--e)}
+    .testata.compatta .marchio-logo{width:150px}
     .marchio-nome{font-family:var(--disp);font-size:1.95rem;font-weight:500;letter-spacing:.2em;text-indent:.2em;text-transform:uppercase;line-height:1;transition:font-size .35s var(--e),letter-spacing .35s var(--e)}
     .marchio-sotto{font-size:.56rem;font-weight:500;letter-spacing:.34em;text-indent:.34em;text-transform:uppercase;color:var(--oro);line-height:1;transition:opacity .3s,max-height .35s var(--e);max-height:1.2em;overflow:hidden}
     .testata-dx{grid-column:3;justify-self:end;display:inline-flex;align-items:center;gap:1.1rem}
@@ -299,6 +306,7 @@ const schema = {
     .chiusura h2{font-family:var(--sans);font-size:.66rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--oro-c);margin-bottom:1rem}
     .chiusura p{margin-bottom:.2rem}
     .chiusura a:hover{color:var(--avorio)}
+    .chiusura-nome img{display:block;width:200px;height:auto;filter:brightness(0) invert(1);opacity:.88}
     .chiusura-nome{font-family:var(--disp);font-size:1.72rem;font-weight:500;letter-spacing:.2em;text-indent:.2em;text-transform:uppercase;color:var(--avorio);margin-bottom:1rem !important}
     .chiusura-filo{display:block;width:44px;height:1px;background:var(--oro-c);opacity:.7;margin-bottom:1rem}
     .chiusura-claim{font-family:var(--disp);font-size:1.12rem;font-style:italic;color:#9d9387}
@@ -350,6 +358,8 @@ const schema = {
       .testata-alto{grid-template-columns:auto 1fr auto;padding-bottom:.9rem}
       .menu-btn{display:flex}
       .marchio{align-items:center}
+      .marchio-logo{width:165px}
+      .testata.compatta .marchio-logo{width:130px}
       .testata-tel{display:none}
       .testata-riservata span{display:none}
       .testata-riservata{padding:.5rem;gap:0}

@@ -5,6 +5,9 @@ export const INFO = {
   nome: 'MasGioielli',
   fondata: 1996,
   fondatore: 'Massimo Mussa',
+  inaugurazione: '16 marzo 1996',
+  // Registro degli operatori compro oro (OAM): numero da farsi dare dal negozio
+  oam: '',
   via: 'Corso Trapani 146/b',
   citta: 'Torino',
   cap: '10141',
@@ -88,6 +91,41 @@ export const CATEGORIE = ['Anelli', 'Collane', 'Orecchini', 'Orologi'];
 
 // Etichetta del prezzo: i pezzi unici o da restaurare non hanno una cifra fissa.
 export const prezzoLabel = (p) => (/^[\d.,]+$/.test(String(p)) ? `€ ${p}` : String(p).charAt(0).toUpperCase() + String(p).slice(1));
+
+// ---------------------------------------------------------------- selezione del momento
+// Il negozio non vende online: la vetrina e' una SELEZIONE di pezzi che il titolare
+// cambia quando vuole dall'area riservata (foto, nome, prezzo). `null` = mai
+// toccata: si mostrano gli esempi resi lato server.
+const LS_SEL = 'mas-selezione';
+export const leggiSelezione = () => {
+  try {
+    const raw = localStorage.getItem(LS_SEL);
+    if (raw === null) return null;
+    const o = JSON.parse(raw);
+    return { pezzi: (o.pezzi || []).filter((x) => x && x.id && x.nome && x.img), agg: o.agg || '' };
+  } catch { return null; }
+};
+export const scriviSelezione = (sel) => salva(LS_SEL, JSON.stringify(sel));
+export const selezioneDaMostrare = () => leggiSelezione()?.pezzi ?? PEZZI;
+export const dataEstesa = (d) => new Date(d).toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
+
+// Stesso markup del render statico di vetrina e home: quando la selezione arriva
+// dall'area riservata non si notano stacchi.
+export function pezzoHTML(x) {
+  const e = esc;
+  return `<article class="pezzo" id="${e(x.id)}" data-id="${e(x.id)}" data-nome="${e(x.nome)}" data-cat="${e(x.cat)}" data-img="${e(x.img)}" data-alt="${e(x.alt || x.nome)}" data-prezzo="${e(x.prezzo)}" data-materiale="${e(x.materiale || '')}" data-desc="${e(x.desc || '')}">
+    <div class="pezzo-foto"><img src="${e(x.img)}" width="640" height="480" alt="${e(x.alt || x.nome)}" loading="lazy" />
+      <button type="button" class="segna" aria-label="Segna ${e(x.nome)} nella tua lista"><span class="segna-ic" aria-hidden="true">♡</span></button></div>
+    <p class="pezzo-cat">${e(x.cat)}</p>
+    <h3><button type="button" class="pezzo-apri" aria-haspopup="dialog">${e(x.nome)}</button></h3>
+    <p class="pezzo-mat">${e(x.materiale || '')}</p>
+    <p class="pezzo-prezzo">${e(prezzoLabel(x.prezzo))}</p>
+  </article>`;
+}
+export function railHTML(x) {
+  const e = esc;
+  return `<a class="rail-el" href="/demoMasGioielli/vetrina/#${e(x.id)}"><div class="rail-foto"><img src="${e(x.img)}" width="640" height="480" alt="${e(x.alt || x.nome)}" loading="lazy" /></div><p class="rail-cat">${e(x.cat)}</p><p class="rail-nome">${e(x.nome)}</p><p class="rail-prezzo">${e(prezzoLabel(x.prezzo))}</p></a>`;
+}
 
 // ---------------------------------------------------------------- marchi trattati
 // Nomi DIMOSTRATIVI: non sono marchi reali, servono solo a far vedere come appare

@@ -4,11 +4,19 @@ import { INFO, PEZZI, orariSettimana, prezzoLabel, BRAND_BASE } from './_shared.
 const ORARI = orariSettimana();          // reso lato server: leggibile anche senza JavaScript
 const rail = PEZZI.slice(0, 6);
 const WA = `https://wa.me/${INFO.wa}`;
+const WA_LAB = `https://wa.me/${INFO.wa}?text=${encodeURIComponent(`Buongiorno ${INFO.nome}! Vorrei un parere su un lavoro in laboratorio: vi mando una foto del pezzo.`)}`;
 const mestieri = [
   { n: '01', t: 'Gioielleria', d: 'Oro, argento e pietre scelti uno a uno. Il classico che dura e il pezzo che non si vede altrove.', href: 'vetrina/' },
   { n: '02', t: 'Orologeria', d: 'Vendita, revisione e restauro: dal solo tempo al cronografo, fino alla pendoleria d’epoca.', href: 'vetrina/?cat=Orologi' },
   { n: '03', t: 'Atelier', d: 'Creazioni su misura, trasformazioni e riparazioni. Il banco è dietro il negozio, non altrove.', href: 'laboratorio/' },
   { n: '04', t: 'Perizie', d: 'Valutazioni per successioni, divisioni ereditarie e cassette di sicurezza. Con discrezione.', href: 'perizie/' },
+  { n: '05', t: 'Compro oro', d: 'Il vostro oro usato, pesato e valutato davanti a voi sulla quotazione del giorno.', href: 'compro-oro/' },
+];
+// fotografie del negozio vero (dal sito attuale, di Elisa Miglietti)
+const negozio = [
+  { src: '/img/masgioielli/vetrina.webp', w: 627, h: 419, alt: 'Una vetrina interna del negozio con collane e anelli esposti', t: 'Le vetrine' },
+  { src: '/img/masgioielli/insegna.webp', w: 627, h: 419, alt: 'Il logo MAS inciso sul vetro all’ingresso del negozio', t: 'L’ingresso' },
+  { src: '/img/masgioielli/lab-banco.webp', w: 800, h: 534, alt: 'Il banco del laboratorio con gli attrezzi da orologiaio', t: 'Il laboratorio' },
 ];
 ---
 <Layout title="Preziosi di qualità dal 1996" active="Maison">
@@ -20,7 +28,7 @@ const mestieri = [
       <h1>Un gioiello<br/>non si compra.<br/><span class="it oro">Si sceglie.</span></h1>
       <p>Dal {INFO.fondata}, in Corso Trapani, lavoriamo l’oro come si faceva una volta: a mano, un pezzo alla volta. Vendiamo, creiamo, ripariamo e valutiamo — sempre guardandoci negli occhi.</p>
       <div class="apertura-azioni">
-        <a href="/demoMasGioielli/vetrina/" class="btn">Vedi la collezione</a>
+        <a href="/demoMasGioielli/vetrina/" class="btn">In vetrina ora</a>
         <a href={WA} target="_blank" rel="noopener" class="link-filo">Scrivici su WhatsApp</a>
       </div>
     </div>
@@ -38,7 +46,7 @@ const mestieri = [
     <div class="misura fiducia-in">
       <p><b>★ {INFO.stelle}</b> su {INFO.recensioni} recensioni Google</p>
       <p>Laboratorio artigianale interno</p>
-      <p>Perizie e valutazioni</p>
+      <p>Perizie · Compro oro</p>
       <p class="fiducia-ora"><span class="stato" id="stato"><span class="pt"></span><span id="statoTxt">Orari del negozio</span></span></p>
     </div>
   </section>
@@ -48,7 +56,7 @@ const mestieri = [
     <div class="misura">
       <div class="intro a">
         <span class="occhiello">Cosa facciamo</span>
-        <h2>Quattro mestieri,<br/>un solo banco.</h2>
+        <h2>Cinque servizi,<br/>un solo banco.</h2>
       </div>
       <h3 class="sr-only">I nostri mestieri</h3>
       <ul class="mestieri">
@@ -66,21 +74,57 @@ const mestieri = [
     </div>
   </section>
 
-  <!-- COLLEZIONE: rail orizzontale, immagini con didascalia sotto -->
+  <!-- IL NEGOZIO E LE PERSONE: richiesta del negozio, con le loro fotografie -->
+  <section class="banda negozio" id="negozio">
+    <div class="misura">
+      <div class="intro a">
+        <span class="occhiello">Il negozio</span>
+        <h2>Dal {INFO.inaugurazione},<br/><span class="it oro">in Corso Trapani.</span></h2>
+      </div>
+      <div class="neg-in">
+        <figure class="neg-grande a">
+          <img src="/img/masgioielli/sala.webp" width="419" height="627" alt="L’interno del negozio MasGioielli, con le vetrine illuminate lungo la parete" loading="lazy" />
+        </figure>
+        <div class="neg-testo a">
+          <p class="neg-lead">{INFO.fondatore} si appassiona presto all’orologeria: nel 1986, a sedici anni, si diploma alla Scuola Orologiai di Torino.</p>
+          <p>Dopo gli anni nei laboratori e una lunga collaborazione con uno storico negozio torinese, il {INFO.inaugurazione} apre MasGioielli al {INFO.via.replace('Corso Trapani ', '')} di Corso Trapani. Da allora, con il suo staff, è il punto di riferimento del quartiere per gioielli, orologi e lavori di laboratorio.</p>
+          <h3 class="neg-h3">Le persone</h3>
+          <ul class="persone">
+            <li class="persona">
+              <img src="/img/masgioielli/titolare.webp" width="800" height="534" alt={INFO.fondatore + ' nel negozio di Corso Trapani'} loading="lazy" />
+              <p><b>{INFO.fondatore}</b><span>Fondatore · orologiaio</span></p>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="neg-riga">
+        {negozio.map((f) => (
+          <figure class="a">
+            <img src={f.src} width={f.w} height={f.h} alt={f.alt} loading="lazy" />
+            <figcaption>{f.t}</figcaption>
+          </figure>
+        ))}
+      </div>
+      <p class="promemoria">💡 <b>Per il titolare:</b> qui vanno anche le persone dello staff — nome, ruolo e una foto (va bene anche scattata in negozio). Le fotografie sono quelle del vostro sito attuale: se avete gli originali ad alta risoluzione, rendono molto meglio.</p>
+    </div>
+  </section>
+
+  <!-- SELEZIONE DEL MOMENTO: rail orizzontale, la cambia il titolare dall'area riservata -->
   <section class="banda collezione">
     <div class="misura">
       <div class="coll-testa a">
         <div class="intro">
-          <span class="occhiello">La collezione</span>
-          <h2>Qualche pezzo<br/>che ci piace.</h2>
+          <span class="occhiello">La selezione del momento</span>
+          <h2>Scelti da noi,<br/><span class="it oro">in vetrina ora.</span></h2>
+          <p class="coll-agg" id="collAgg" hidden></p>
         </div>
         <div class="coll-azioni">
           <span class="coll-scorri" aria-hidden="true">Scorri<span class="coll-fr">→</span></span>
-          <a href="/demoMasGioielli/vetrina/" class="link-filo coll-tutti">Vedi tutto</a>
+          <a href="/demoMasGioielli/vetrina/" class="link-filo coll-tutti">Tutta la selezione</a>
         </div>
       </div>
     </div>
-    <h3 class="sr-only">Pezzi in evidenza</h3>
+    <h3 class="sr-only">Pezzi in vetrina</h3>
     <div class="rail" id="rail" tabindex="0" role="region" aria-label="Pezzi in evidenza, scorrevole orizzontalmente">
       {rail.map((p) => (
         <a class="rail-el" href={'/demoMasGioielli/vetrina/#' + p.id}>
@@ -125,8 +169,8 @@ const mestieri = [
           <li>Orologeria e pendoleria, anche d’epoca</li>
         </ul>
         <div class="atelier-azioni">
-          <a href="/demoMasGioielli/laboratorio/" class="btn btn-chiaro">Preventivo in 30 secondi</a>
-          <a href="/demoMasGioielli/laboratorio/#misura" class="link-filo atelier-link">Che misura porti?</a>
+          <a href="/demoMasGioielli/laboratorio/" class="btn btn-chiaro">Scopri l’atelier</a>
+          <a href={WA_LAB} target="_blank" rel="noopener" class="link-filo atelier-link">Mandateci una foto</a>
         </div>
       </div>
     </div>
@@ -140,6 +184,20 @@ const mestieri = [
       <h2>Sapere quanto vale,<br/><span class="it oro">con discrezione.</span></h2>
       <p>Successioni, divisioni tra eredi, apertura di cassette di sicurezza. La prima stima verbale è sempre gratuita, e quello che ci portate resta tra noi.</p>
       <a href="/demoMasGioielli/perizie/" class="btn btn-vuoto">Richiedi una perizia</a>
+    </div>
+  </section>
+
+  <!-- COMPRO ORO -->
+  <section class="banda oro-banda">
+    <div class="misura oro-in a">
+      <div>
+        <span class="occhiello">Compro oro</span>
+        <h2>Il vostro oro usato,<br/><span class="it oro">pesato davanti a voi.</span></h2>
+      </div>
+      <div>
+        <p>Catenine, fedi, orecchini spaiati, anche rotti: li valutiamo in negozio sulla quotazione del giorno, con una proposta chiara e senza impegno. E se un pezzo merita di essere riparato invece che venduto, ve lo diciamo.</p>
+        <a href="/demoMasGioielli/compro-oro/" class="link-filo">Come funziona</a>
+      </div>
     </div>
   </section>
 
@@ -216,6 +274,32 @@ const mestieri = [
     .mest-d{color:var(--grafite);font-size:.96rem;max-width:52ch}
     .mest-fr{color:var(--oro);font-size:1.1rem;opacity:0;transition:opacity .3s var(--e)}
     .mestieri a:hover .mest-fr{opacity:1}
+
+    /* ---------- negozio e persone ---------- */
+    .negozio{border-top:1px solid var(--filo)}
+    .neg-in{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(2rem,5vw,4.5rem);align-items:start;margin-top:clamp(2.2rem,4vw,3.2rem)}
+    .neg-in>*{min-width:0}
+    .neg-grande img{width:100%;height:auto;aspect-ratio:2/3;object-fit:cover}
+    .neg-testo>p{color:var(--grafite);max-width:54ch;margin-top:1rem}
+    .neg-testo>p.neg-lead{font-family:var(--disp);font-size:clamp(1.4rem,2.5vw,1.85rem);line-height:1.3;color:var(--inchiostro);margin-top:0}
+    .neg-h3{font-family:var(--sans);font-size:.66rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--oro);margin:clamp(2rem,4vw,2.8rem) 0 1rem}
+    .persone{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,210px));gap:1.4rem}
+    .persona img{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;object-position:78% 30%}
+    .persona p{margin-top:.8rem}
+    .persona b{display:block;font-family:var(--disp);font-weight:400;font-size:1.35rem;line-height:1.2}
+    .persona span{font-size:.8rem;color:var(--grigio)}
+    .neg-riga{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1rem,2.4vw,2rem);margin-top:clamp(2.5rem,5vw,4rem)}
+    .neg-riga>*{min-width:0}
+    .neg-riga img{width:100%;height:auto;aspect-ratio:3/2;object-fit:cover}
+    .neg-riga figcaption{margin-top:.7rem;font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--oro)}
+    .coll-agg{margin-top:1rem;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--grigio)}
+
+    /* ---------- compro oro ---------- */
+    .oro-banda{padding-top:0}
+    .oro-in{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4.5rem);align-items:end;border-top:1px solid var(--filo);padding-top:clamp(2.5rem,5vw,4rem)}
+    .oro-in>*{min-width:0}
+    .oro-in h2{font-size:clamp(2rem,4.2vw,3rem);margin-top:1.3rem}
+    .oro-in p{color:var(--grafite);margin-bottom:1.6rem;max-width:50ch}
 
     /* ---------- collezione: rail orizzontale ---------- */
     .collezione{padding-bottom:clamp(3.5rem,7vw,6rem)}
@@ -304,17 +388,26 @@ const mestieri = [
       .mestieri a{grid-template-columns:auto 1fr;row-gap:.5rem}
       .mest-d{grid-column:2}
       .mest-fr{display:none}
-      .atelier-in,.visita-in{grid-template-columns:1fr}
+      .atelier-in,.visita-in,.neg-in,.oro-in{grid-template-columns:1fr}
+      .neg-grande img{aspect-ratio:4/3}
+      .neg-riga{grid-template-columns:1fr 1fr}
+      .neg-riga figure:last-child{grid-column:1 / -1}
       .fiducia-ora{margin-left:0}
     }
   </style>
 
   <script>
-    import { renderOrari, leggiBrand, brandVoce } from './_shared.js';
+    import { renderOrari, leggiBrand, brandVoce, leggiSelezione, railHTML, dataEstesa } from './_shared.js';
     renderOrari(document.getElementById('listaOrari'), document.getElementById('statoTxt'));
 
     // I marchi caricati dal titolare sostituiscono gli esempi resi lato server.
     // Se ne ha tolti tutti, al posto della fascia compare una frase generica.
+    const sel = leggiSelezione();
+    if (sel && sel.pezzi.length) {
+      document.getElementById('rail').innerHTML = sel.pezzi.slice(0, 6).map(railHTML).join('');
+      if (sel.agg) { const a = document.getElementById('collAgg'); a.textContent = 'Aggiornata il ' + dataEstesa(sel.agg); a.hidden = false; }
+    }
+
     const suoi = leggiBrand();
     if (suoi) {
       const ul = document.getElementById('marchi');

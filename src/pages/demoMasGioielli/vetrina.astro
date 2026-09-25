@@ -1,17 +1,20 @@
 ---
 import Layout from './_Layout.astro';
 import { INFO, PEZZI, CATEGORIE, prezzoLabel } from './_shared.js';
-// Collezione: galleria editoriale (foto verticali, didascalia sotto, nessun riquadro),
+// Selezione del momento (prima "Collezione", cambiata su richiesta del negozio):
+// pochi pezzi scelti dal titolare e aggiornati da lui dall'area riservata.
+// Galleria editoriale (foto verticali, didascalia sotto, nessun riquadro),
 // filtro a filetto, scheda di dettaglio e lista desideri da mandare in negozio
 // su WhatsApp prima di passare.
 ---
-<Layout title="Collezione" active="Collezione" desc={`I gioielli e gli orologi di ${INFO.nome} a Torino: anelli, collane, orecchini e orologi. Segnate quelli che vi interessano e passate a vederli in negozio.`}>
+<Layout title="La selezione del momento" active="Selezione" desc={`La selezione di gioielli e orologi in vetrina da ${INFO.nome} a Torino, aggiornata di frequente. Segnate quelli che vi interessano e passate a vederli in negozio.`}>
 
   <section class="testa-pagina">
     <div class="misura stretta intro centro a">
-      <span class="occhiello centro">La collezione</span>
-      <h1>Scegli con <span class="it oro">calma</span></h1>
-      <p>Segnate i pezzi che vi interessano: ve li prepariamo sul banco per quando passate. Nessun acquisto online, nessun impegno.</p>
+      <span class="occhiello centro">La selezione del momento</span>
+      <h1>In vetrina, <span class="it oro">ora</span></h1>
+      <p>Una scelta di gioielli e orologi che rinnoviamo spesso: in negozio c’è molto altro. Segnate i pezzi che vi interessano e ve li prepariamo sul banco per quando passate.</p>
+      <p class="agg" id="agg" hidden></p>
     </div>
   </section>
 
@@ -32,7 +35,7 @@ import { INFO, PEZZI, CATEGORIE, prezzoLabel } from './_shared.js';
   <section class="banda galleria-banda">
     <div class="misura">
       <p class="conteggio" id="conteggio" hidden aria-live="polite"></p>
-      <h2 class="sr-only">Pezzi della collezione</h2>
+      <h2 class="sr-only">Pezzi della selezione</h2>
       <div class="galleria" id="galleria">
         {PEZZI.map((p) => (
           <article class="pezzo a" id={p.id}
@@ -53,7 +56,7 @@ import { INFO, PEZZI, CATEGORIE, prezzoLabel } from './_shared.js';
       </div>
       <p class="vuoto" id="vuoto" hidden>Nessun pezzo con questo nome. In negozio c’è molto altro: chiedeteci pure.</p>
 
-      <p class="promemoria">💡 <b>Per il titolare:</b> la collezione si aggiorna dal gestionale — foto, prezzo e descrizione una volta sola. Le richieste dei clienti arrivano su WhatsApp già scritte.</p>
+      <p class="promemoria">💡 <b>Per il titolare:</b> la selezione la cambiate voi, quando volete, dall’<a href="/demoMasGioielli/riservata/">area riservata</a>: una foto dal telefono, nome e prezzo, e il pezzo compare qui e in home. Le richieste dei clienti arrivano su WhatsApp già scritte.</p>
     </div>
   </section>
 
@@ -110,6 +113,7 @@ import { INFO, PEZZI, CATEGORIE, prezzoLabel } from './_shared.js';
     .cerca input{width:clamp(140px,18vw,220px);padding:.4rem 0;border:0;border-bottom:1px solid var(--filo);background:transparent;font-family:var(--sans);font-size:.9rem;color:var(--inchiostro)}
     .cerca input:focus{outline:0;border-bottom-color:var(--oro)}
 
+    .agg{margin-top:1.1rem !important;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--oro)}
     .galleria-banda{padding-top:clamp(2.5rem,5vw,4rem)}
     .conteggio{font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;color:var(--grigio);margin-bottom:2rem}
     .galleria{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1.6rem,3.4vw,3.2rem) clamp(1.2rem,2.6vw,2.4rem)}
@@ -174,9 +178,16 @@ import { INFO, PEZZI, CATEGORIE, prezzoLabel } from './_shared.js';
   </style>
 
   <script>
-    import { INFO, esc, leggiLista, scriviLista, initModal, prezzoLabel, traccia } from './_shared.js';
+    import { INFO, esc, leggiLista, scriviLista, initModal, prezzoLabel, traccia, leggiSelezione, pezzoHTML, dataEstesa } from './_shared.js';
     const $ = (s) => document.querySelector(s);
     const griglia = $('#galleria');
+    // Se il titolare ha curato la selezione dall'area riservata, quella sostituisce gli esempi.
+    const sel = leggiSelezione();
+    if (sel) {
+      griglia.innerHTML = sel.pezzi.map(pezzoHTML).join('');
+      if (sel.agg) { $('#agg').textContent = 'Aggiornata il ' + dataEstesa(sel.agg); $('#agg').hidden = false; }
+      if (!sel.pezzi.length) { $('#vuoto').textContent = 'Stiamo rinnovando la selezione: passate a trovarci in negozio.'; $('#vuoto').hidden = false; }
+    }
     const pezzi = [...griglia.querySelectorAll('.pezzo')];
     const btnLista = $('#listaBtn'), conta = $('#conta'), avvisoEl = $('#avviso');
     let lista = leggiLista();
