@@ -6,19 +6,25 @@
 // Fondo crema caldo, rosso peruviano, giallo ají come accento, una fascia a motivi
 // andini come filo conduttore. Fraunces per i titoli, Manrope per il testo.
 import '@fontsource-variable/fraunces';
+import '@fontsource-variable/fraunces/wght-italic.css';
 import '@fontsource-variable/manrope';
 import frauncesWoff2 from '@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url';
+// il corsivo sta nel titolo d'apertura: lo precarico anche lui, altrimenti il titolo "salta"
+import frauncesItWoff2 from '@fontsource-variable/fraunces/files/fraunces-latin-wght-italic.woff2?url';
 import manropeWoff2 from '@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2?url';
 import { INFO, ORARI } from './_shared.js';
 
 interface Props { title: string; desc?: string; active?: string }
 const {
   title,
-  desc = `${INFO.nome}, cucina peruana di casa a Torino: ceviche, pollo a la brasa, lomo saltado. ${INFO.via}. Prenota il tuo tavolo.`,
+  desc = `${INFO.nome}, ristorante peruviano a Torino in ${INFO.via}: ceviche, pollo a la brasa, lomo saltado e menù del giorno a pranzo. Prenota il tuo tavolo.`,
   active = '',
 } = Astro.props;
 
 const BASE = '/demoElWarike/';
+const pieno = active === 'Home'
+  ? `${INFO.nome} — Ristorante peruviano a Torino, ${INFO.via}`
+  : `${title} · ${INFO.nome}, ristorante peruviano a Torino`;
 const NAV = [['', 'Home'], ['menu/', 'Menù'], ['#locale', 'Il locale'], ['#dove', 'Orari e dove']];
 const WA = `https://wa.me/${INFO.wa}`;
 
@@ -32,6 +38,10 @@ const schema = {
   address: { '@type': 'PostalAddress', streetAddress: INFO.via, addressLocality: INFO.citta, postalCode: INFO.cap, addressRegion: 'TO', addressCountry: 'IT' },
   telephone: INFO.telHref,
   acceptsReservations: true,
+  url: 'https://www.moledigitale.it/demoElWarike/',
+  menu: 'https://www.moledigitale.it/demoElWarike/menu/',
+  hasMap: INFO.maps,
+  image: ['ceviche', 'pollo-a-la-brasa', 'lomo-saltado'].map((f) => `https://www.moledigitale.it/img/elwarike/${f}.webp`),
   openingHoursSpecification: Object.entries(ORARI).flatMap(([d, f]) => (f || []).map(([a, b]) => ({
     '@type': 'OpeningHoursSpecification', dayOfWeek: giorniEn[+d],
     opens: `${String(Math.floor(a)).padStart(2, '0')}:00`, closes: `${String(Math.floor(b)).padStart(2, '0')}:00`,
@@ -44,13 +54,14 @@ const schema = {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>{title} — {INFO.nome} · Cucina peruana a Torino</title>
+  <title>{pieno}</title>
   <meta name="description" content={desc} />
   <meta name="theme-color" content="#f6efe4" />
   <link rel="preload" as="font" type="font/woff2" href={frauncesWoff2} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href={frauncesItWoff2} crossorigin />
   <link rel="preload" as="font" type="font/woff2" href={manropeWoff2} crossorigin />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23a3261c'/><text x='16' y='23' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-size='19' fill='%23f6efe4'>W</text></svg>" />
-  <meta property="og:title" content={title + ' — ' + INFO.nome} />
+  <meta property="og:title" content={pieno} />
   <meta property="og:description" content={desc} />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="it_IT" />
@@ -64,7 +75,7 @@ const schema = {
 
   <header class="testata" id="testata">
     <div class="testata-in">
-      <a href={BASE} class="marchio" aria-label={INFO.nome + ' — home'}>
+      <a href={BASE} class="marchio">
         <span class="marchio-nome">El Warike</span>
         <span class="marchio-sotto">cocina peruana</span>
       </a>
@@ -126,7 +137,7 @@ const schema = {
   <style is:global>
     :root{
       --crema:#f6efe4; --crema-2:#efe4d3; --carta:#fffaf2;
-      --rosso:#a3261c; --rosso-scuro:#7e1c14; --aji:#e9a723; --terra:#b8672e;
+      --rosso:#a3261c; --rosso-scuro:#7e1c14; --aji:#e9a723; --terra:#b8672e; --terra-testo:#8c4a1d;
       --scuro:#231a15; --testo:#3b2f28; --muto:#6e5f55; --filo:#e0d3c1;
       --disp:'Fraunces Variable',Georgia,serif; --sans:'Manrope Variable',system-ui,sans-serif;
       --e:cubic-bezier(.2,.7,.2,1); --testata:92px;
@@ -138,7 +149,7 @@ const schema = {
     body{background:var(--crema);color:var(--testo);font-family:var(--sans);font-size:1rem;line-height:1.65;-webkit-font-smoothing:antialiased}
     img{display:block;max-width:100%;height:auto}
     a{color:inherit;text-decoration:none}
-    h1,h2,h3,h4{font-family:var(--disp);font-weight:600;color:var(--scuro);line-height:1.1;letter-spacing:-.01em}
+    h1,h2,h3,h4{font-family:var(--disp);font-weight:600;color:var(--scuro);line-height:1.1;letter-spacing:-.01em;text-wrap:balance}
     a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--rosso);outline-offset:3px}
     .salta{position:absolute;left:-999px;top:0;background:var(--scuro);color:#fff;padding:.6rem 1rem;z-index:999}
     .salta:focus{left:8px;top:8px}
@@ -160,7 +171,7 @@ const schema = {
     .testata-in{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:1.5rem;padding:.8rem clamp(1rem,4vw,2.4rem)}
     .marchio{display:flex;flex-direction:column;line-height:1}
     .marchio-nome{font-family:var(--disp);font-style:italic;font-weight:700;font-size:1.75rem;color:var(--rosso);letter-spacing:-.02em}
-    .marchio-sotto{font-size:.62rem;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--terra);margin-top:.25rem}
+    .marchio-sotto{font-size:.62rem;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--terra-testo);margin-top:.25rem}
     .menu{display:flex;gap:clamp(1rem,2.4vw,2rem);margin-left:auto}
     .menu a{font-weight:600;font-size:.92rem;color:var(--testo);padding:.3rem 0;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
     .menu a:hover{color:var(--rosso)}

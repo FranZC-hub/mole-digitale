@@ -13,7 +13,7 @@ import { INFO } from './_shared.js';
       <div class="pren-testa">
         <span class="occhiello">Prenota</span>
         <h1>Vi teniamo<br/><em>un tavolo.</em></h1>
-        <p class="sez-p">Tre scelte e un nome. Vi confermiamo su WhatsApp, di solito entro poco.</p>
+        <p class="sez-p">Tre scelte e un nome: la richiesta ci arriva su WhatsApp e vi rispondiamo con la conferma.</p>
         <ul class="pren-info">
           <li><b>Pranzo</b> 12:00 – 16:00 <small>(sab e dom fino alle 17)</small></li>
           <li><b>Cena</b> 18:00 – 22:00</li>
@@ -63,8 +63,9 @@ import { INFO } from './_shared.js';
           <p class="fatto-ic" aria-hidden="true">✓</p>
           <h2>Ci siamo quasi</h2>
           <p class="fatto-rie" id="riepilogo"></p>
-          <p>Toccate qui sotto per mandarci la richiesta su WhatsApp: vi rispondiamo con la conferma.</p>
+          <p><b>La richiesta non è ancora partita:</b> toccate il pulsante qui sotto e poi «Invia» su WhatsApp. Vi rispondiamo con la conferma.</p>
           <a class="btn btn-wa btn-pieno" id="waInvia" href="#" target="_blank" rel="noopener">Invia su WhatsApp</a>
+          <p class="nota">Non usate WhatsApp? Chiamateci al <a href={'tel:' + INFO.telHref} class="link-s">{INFO.tel}</a>.</p>
           <button type="button" class="link-s fatto-ancora" id="ancora">Modifica la prenotazione</button>
         </div>
       </div>
@@ -99,7 +100,7 @@ import { INFO } from './_shared.js';
     :global(.chip input:disabled+span){opacity:.4;cursor:not-allowed;text-decoration:line-through;background:transparent}
     :global(.giorni .chip span){min-width:64px}
     :global(.orari-scelta){display:grid;gap:.9rem}
-    :global(.turno-t){font-size:.72rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--terra)}
+    :global(.turno-t){font-size:.72rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--terra-testo)}
     .avviso-gruppo{background:rgba(233,167,35,.14);border-radius:12px;padding:.8rem 1rem;font-size:.9rem}
     .due{display:grid;grid-template-columns:1fr 1fr;gap:1rem;align-items:end}
     .due>*{min-width:0}
