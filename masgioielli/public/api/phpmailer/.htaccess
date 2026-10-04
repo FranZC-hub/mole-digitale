@@ -1,0 +1,2 @@
+# libreria per le email: si include dagli endpoint, non si apre dal browser
+Require all denied

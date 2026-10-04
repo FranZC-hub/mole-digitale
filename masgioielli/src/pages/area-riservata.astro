@@ -1,0 +1,839 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { REPARTI, CATEGORIE, GIORNI, SETTIMANA } from '../lib/sito.js';
+// Area riservata del negozio: vetrina (selezione del momento), orari con chiusure
+// straordinarie, marchi trattati, messaggi arrivati dai moduli.
+// I dati stanno nel database (api/*.php): l'accesso e' una sessione sul server, ogni
+// modifica porta il token CSRF. Questa pagina non e' indicizzata e non e' nel menu.
+---
+<Layout title="Area riservata" active="Riservata" noindex desc="Area riservata del negozio.">
+
+  <!-- ACCESSO -->
+  <section class="testa-pagina" id="accesso" hidden>
+    <div class="misura accesso-in">
+      <div class="intro centro">
+        <span class="occhiello centro">Area riservata</span>
+        <h1>Il pannello <span class="it oro">del negozio</span></h1>
+      </div>
+      <form class="modulo accesso-form" id="loginForm">
+        <label>Nome utente<input type="text" id="l-user" autocomplete="username" required maxlength="60" /></label>
+        <label>Password<input type="password" id="l-pass" autocomplete="current-password" required /></label>
+        <p class="errore" id="lErr" role="alert" hidden></p>
+        <button type="submit" class="btn btn-pieno" id="lEntra">Entra</button>
+      </form>
+    </div>
+  </section>
+
+  <p class="caricamento" id="caricamento">Un momento…</p>
+
+  <!-- PANNELLO -->
+  <section class="testa-pagina adm" id="pannello" hidden>
+    <div class="misura">
+      <header class="adm-testa">
+        <div>
+          <span class="occhiello">Area riservata</span>
+          <h1>Il pannello <span class="it oro">del negozio</span></h1>
+        </div>
+        <div class="adm-testa-dx">
+          <a href="/" class="adm-link" target="_blank" rel="noopener">Apri il sito <span aria-hidden="true">↗</span></a>
+          <button type="button" id="esci" class="adm-link">Esci</button>
+        </div>
+      </header>
+
+      <div class="schede" role="tablist" aria-label="Sezioni del pannello">
+        <button type="button" role="tab" id="t-vetrina" aria-controls="p-vetrina" aria-selected="true"><span class="s-t">Vetrina</span><span class="s-d" id="sVetrina">&nbsp;</span></button>
+        <button type="button" role="tab" id="t-orari" aria-controls="p-orari" aria-selected="false" tabindex="-1"><span class="s-t">Orari</span><span class="s-d" id="sOrari">&nbsp;</span></button>
+        <button type="button" role="tab" id="t-marchi" aria-controls="p-marchi" aria-selected="false" tabindex="-1"><span class="s-t">Marchi</span><span class="s-d" id="sMarchi">&nbsp;</span></button>
+        <button type="button" role="tab" id="t-messaggi" aria-controls="p-messaggi" aria-selected="false" tabindex="-1"><span class="s-t">Messaggi</span><span class="s-d" id="sMessaggi">&nbsp;</span></button>
+      </div>
+
+      <!-- ================= VETRINA ================= -->
+      <div class="sez" role="tabpanel" id="p-vetrina" aria-labelledby="t-vetrina" tabindex="-1">
+        <div class="sez-testa">
+          <div>
+            <h2 class="sez-t">In vetrina adesso</h2>
+            <p class="sez-d">I pezzi della pagina «Selezione» e della home, in quest’ordine: il primo è il primo che si vede.</p>
+          </div>
+          <button type="button" class="btn" id="nuovoPezzo"><span aria-hidden="true">＋</span> Aggiungi un pezzo</button>
+        </div>
+
+        <form class="modulo scheda-mod" id="pezzoForm" hidden novalidate>
+          <h3 class="form-t" id="pezzoTitolo">Nuovo pezzo</h3>
+          <div class="pezzo-griglia">
+            <div class="foto-campo">
+              <div class="foto-vuota" id="fotoVuota" aria-hidden="true">Nessuna foto</div>
+              <img id="zAnteprima" class="z-anteprima" alt="Anteprima della foto" hidden />
+              <label class="foto-scegli">
+                <span id="fotoEtichetta">Scegli una foto</span>
+                <input type="file" id="z-foto" accept="image/jpeg,image/png,image/webp" />
+              </label>
+              <small class="foto-nota">Dal telefono si può scattare al momento. Il riquadro mostra il taglio che vedranno i clienti.</small>
+            </div>
+            <div class="campi">
+              <label>Nome<input type="text" id="z-nome" required maxlength="80" placeholder="Es. Anello trilogy" /></label>
+              <label>Categoria
+                <select id="z-cat">{CATEGORIE.map((c) => <option>{c}</option>)}</select>
+              </label>
+              <label>Materiale <small>(facoltativo)</small><input type="text" id="z-mat" maxlength="120" placeholder="Es. Oro bianco 18kt · diamanti" /></label>
+              <label>Due righe di descrizione <small>(facoltative)</small><textarea id="z-desc" rows="3" maxlength="600"></textarea></label>
+            </div>
+          </div>
+          <p class="errore" id="zErr" role="alert" hidden></p>
+          <div class="form-azioni">
+            <button type="submit" class="btn" id="pezzoSalva">Metti in vetrina</button>
+            <button type="button" class="btn btn-vuoto" id="pezzoAnnulla">Annulla</button>
+          </div>
+        </form>
+
+        <ul class="elenco" id="elencoPezzi"></ul>
+      </div>
+
+      <!-- ================= ORARI ================= -->
+      <div class="sez" role="tabpanel" id="p-orari" aria-labelledby="t-orari" tabindex="-1" hidden>
+        <div class="sez-testa">
+          <div>
+            <h2 class="sez-t">Orari della settimana</h2>
+            <p class="sez-d">Si aggiornano in home, in Contatti, nel piede di ogni pagina e nell’indicatore «aperto ora». Per l’orario continuato lasciate vuoto il pomeriggio.</p>
+          </div>
+        </div>
+        <form class="orari-form" id="orariForm" novalidate>
+          <table class="orari-tab">
+            <thead><tr><th scope="col">Giorno</th><th scope="col">Aperto</th><th scope="col">Mattina</th><th scope="col">Pomeriggio</th></tr></thead>
+            <tbody>
+              {SETTIMANA.map((i) => (
+                <tr data-g={i}>
+                  <th scope="row">{GIORNI[i]}</th>
+                  <td><label class="o-ap"><input type="checkbox" class="o-aperto" /><span>Aperto</span></label></td>
+                  <td><span class="o-fascia"><input type="time" class="o-a1" step="900" aria-label={GIORNI[i] + ', mattina: apre alle'} /><span aria-hidden="true">–</span><input type="time" class="o-b1" step="900" aria-label={GIORNI[i] + ', mattina: chiude alle'} /></span></td>
+                  <td><span class="o-fascia"><input type="time" class="o-a2" step="900" aria-label={GIORNI[i] + ', pomeriggio: apre alle'} /><span aria-hidden="true">–</span><input type="time" class="o-b2" step="900" aria-label={GIORNI[i] + ', pomeriggio: chiude alle'} /></span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p class="errore" id="oErr" role="alert" hidden></p>
+          <div class="form-azioni">
+            <button type="submit" class="btn" id="orariSalva">Salva gli orari</button>
+            <button type="button" class="btn btn-vuoto" id="orariCopia">Stesso orario per tutti i giorni aperti</button>
+            <span class="o-stato" id="oStato" role="status"></span>
+          </div>
+        </form>
+
+        <div class="sez-testa sez-seconda" id="chiusure">
+          <div>
+            <h2 class="sez-t">Chiusure straordinarie</h2>
+            <p class="sez-d">Ferie, ponti, un giorno di inventario. In quei giorni il sito dice che siete chiusi e quando riaprite, e lo annuncia già un mese prima; poi torna da solo all’orario di sempre.</p>
+          </div>
+        </div>
+        <form class="modulo chiu-form" id="chiuForm" novalidate>
+          <label>Dal<input type="date" id="c-dal" required /></label>
+          <label>Al <small>(compreso)</small><input type="date" id="c-al" /></label>
+          <label class="chiu-motivo">Motivo <small>(facoltativo)</small><input type="text" id="c-motivo" maxlength="60" placeholder="Es. ferie" /></label>
+          <button type="submit" class="btn">Aggiungi</button>
+        </form>
+        <p class="errore" id="cErr" role="alert" hidden></p>
+        <ul class="elenco" id="elencoChiusure"></ul>
+      </div>
+
+      <!-- ================= MARCHI ================= -->
+      <div class="sez" role="tabpanel" id="p-marchi" aria-labelledby="t-marchi" tabindex="-1" hidden>
+        <div class="sez-testa">
+          <div>
+            <h2 class="sez-t">I marchi che trattate</h2>
+            <p class="sez-d">Compaiono nella fascia in home. Se non ce n’è nessuno, la fascia non compare.</p>
+          </div>
+          <button type="button" class="btn" id="nuovoMarchio"><span aria-hidden="true">＋</span> Aggiungi un marchio</button>
+        </div>
+        <form class="modulo scheda-mod" id="brandForm" hidden novalidate>
+          <h3 id="formTitolo" class="form-t">Nuovo marchio</h3>
+          <div class="marchio-campi">
+            <label>Nome del marchio<input type="text" id="b-nome" required maxlength="60" placeholder="Es. Salvatore Arzani" /></label>
+            <label>Reparto
+              <select id="b-reparto">{REPARTI.map((r) => <option>{r}</option>)}</select>
+            </label>
+            <label class="marchio-nota">Nota interna <small>(non compare sul sito)</small>
+              <input type="text" id="b-nota" maxlength="120" placeholder="Es. rivenditore autorizzato dal 2018" />
+            </label>
+          </div>
+          <p class="errore" id="bErr" role="alert" hidden></p>
+          <div class="form-azioni">
+            <button type="submit" class="btn" id="salva">Aggiungi il marchio</button>
+            <button type="button" class="btn btn-vuoto" id="annulla">Annulla</button>
+          </div>
+        </form>
+        <ul class="elenco" id="elenco"></ul>
+      </div>
+
+      <!-- ================= MESSAGGI ================= -->
+      <div class="sez" role="tabpanel" id="p-messaggi" aria-labelledby="t-messaggi" tabindex="-1" hidden>
+        <div class="sez-testa">
+          <div>
+            <h2 class="sez-t">Messaggi dal sito</h2>
+            <p class="sez-d">Le richieste arrivate dai moduli Contatti e Perizie. Arrivano anche per email: qui restano come copia di sicurezza.</p>
+          </div>
+        </div>
+        <ul class="elenco" id="elencoMessaggi"></ul>
+      </div>
+
+      <details class="password" id="password">
+        <summary>Cambia la password</summary>
+        <form class="modulo pw-form" id="pwForm" novalidate>
+          <label>Password attuale<input type="password" id="pw-attuale" autocomplete="current-password" required /></label>
+          <label>Nuova password <small>(almeno 10 caratteri)</small><input type="password" id="pw-nuova" autocomplete="new-password" minlength="10" required /></label>
+          <label>Ripetete la nuova password<input type="password" id="pw-ripeti" autocomplete="new-password" required /></label>
+          <p class="errore" id="pwErr" role="alert" hidden></p>
+          <button type="submit" class="btn">Cambia la password</button>
+        </form>
+      </details>
+    </div>
+
+    <div class="avviso-adm" id="avviso" role="status" aria-live="polite">
+      <span id="avvisoTxt"></span>
+      <button type="button" id="avvisoAnnulla" hidden>Annulla</button>
+    </div>
+  </section>
+
+
+  <style>
+    .testa-pagina{padding-top:calc(var(--tastata) + clamp(2.5rem,6vw,4.5rem));padding-bottom:clamp(2.5rem,5vw,4rem)}
+
+    /* accesso */
+    .accesso-in{max-width:420px;margin-inline:auto}
+    .accesso-form{margin-top:2.5rem}
+    .errore{color:#a4442c;font-size:.88rem}
+
+    /* il pannello: strumento di lavoro, piu' leggibile della vetrina */
+    :global(.wa-flt){display:none !important}
+    .adm-testa{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+    .adm-testa h1{font-size:clamp(2rem,4vw,2.9rem);margin-top:.6rem}
+    .adm-testa-dx{display:flex;gap:1.4rem;align-items:center}
+    .adm-link{background:none;border:0;padding:.4rem 0;font:inherit;font-size:.92rem;color:var(--inchiostro);border-bottom:1px solid var(--oro);cursor:pointer}
+    .adm-link:hover{color:var(--oro)}
+
+    .schede{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin:clamp(1.6rem,3vw,2.2rem) 0 clamp(1.8rem,3.4vw,2.6rem)}
+    .schede button{display:flex;flex-direction:column;align-items:flex-start;gap:.25rem;text-align:left;padding:1rem 1.15rem;min-height:76px;background:transparent;border:1px solid var(--filo);font:inherit;cursor:pointer;transition:border-color .2s,background .2s;position:relative}
+    .schede button:hover{border-color:var(--oro)}
+    .schede button[aria-selected="true"]{background:var(--carta);border-color:var(--oro);box-shadow:inset 0 -3px 0 var(--oro)}
+    .s-t{font-family:var(--disp);font-size:1.45rem;line-height:1.1;color:var(--inchiostro)}
+    .s-d{font-size:.84rem;color:var(--grafite)}
+    .schede button.ha-nuovi .s-d{color:#8a4f0f;font-weight:600}
+
+    .sez:focus{outline:0}
+    .sez-testa{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem 2rem;flex-wrap:wrap;margin-bottom:1.4rem}
+    .sez-seconda{margin-top:clamp(2.8rem,5vw,3.6rem);padding-top:clamp(2rem,4vw,2.6rem);border-top:1px solid var(--filo)}
+    .sez-t{font-size:clamp(1.6rem,3vw,2.1rem)}
+    .sez-d{color:var(--grafite);margin-top:.35rem;max-width:64ch;font-size:.95rem}
+    .adm .btn{padding:.9rem 1.4rem}
+
+    /* moduli: etichette leggibili e campi con il bordo, non a filetto */
+    .adm .modulo{gap:1.1rem}
+    .adm .modulo label{font-size:.88rem;font-weight:500;letter-spacing:0;text-transform:none;color:var(--inchiostro);gap:.4rem}
+    .adm .modulo small{font-weight:400;color:var(--grigio)}
+    .adm .modulo input:not([type=file]),.adm .modulo select,.adm .modulo textarea{border:1px solid var(--filo);background:#fffdf9;padding:.75rem .85rem;font-size:1rem}
+    .adm .modulo input:focus,.adm .modulo select:focus,.adm .modulo textarea:focus{border-color:var(--oro)}
+    .scheda-mod{background:var(--carta);border:1px solid var(--filo);padding:clamp(1.2rem,3vw,1.8rem);margin-bottom:1.8rem}
+    .form-t{font-size:clamp(1.4rem,2.6vw,1.8rem)}
+    .form-azioni{display:flex;align-items:center;gap:.8rem 1rem;flex-wrap:wrap}
+
+    .pezzo-griglia{display:grid;grid-template-columns:200px 1fr;gap:1.6rem;align-items:start}
+    .pezzo-griglia>*{min-width:0}
+    .campi{display:grid;gap:1.1rem}
+    .foto-campo{display:grid;gap:.6rem}
+    .foto-vuota,.z-anteprima{width:100%;aspect-ratio:4/5;object-fit:cover;border:1px solid var(--filo);background:var(--avorio-2)}
+    .foto-vuota{display:grid;place-items:center;color:var(--grigio);font-size:.85rem}
+    .foto-scegli{position:relative;display:flex !important;align-items:center;justify-content:center;min-height:46px;border:1px solid var(--inchiostro);cursor:pointer;font-size:.74rem !important;letter-spacing:.16em !important;text-transform:uppercase !important}
+    .foto-scegli:hover{background:var(--inchiostro);color:var(--avorio) !important}
+    .foto-scegli input{position:absolute;inset:0;opacity:0;cursor:pointer}
+    .foto-scegli:focus-within{outline:1px solid var(--oro);outline-offset:3px}
+    .foto-nota{font-size:.78rem;color:var(--grigio);line-height:1.45}
+
+    /* elenchi (righe create via JS: :global) */
+    .elenco{list-style:none;border-top:1px solid var(--filo)}
+    :global(.adm .el-riga){display:grid;grid-template-columns:1fr auto;align-items:center;gap:.8rem 1rem;padding:.8rem 0;border-bottom:1px solid var(--filo)}
+    :global(.adm .el-riga.con-foto){grid-template-columns:64px 1fr auto}
+    :global(.adm .el-riga img){width:64px;height:80px;object-fit:cover}
+    :global(.adm .el-tx){min-width:0}
+    :global(.adm .el-tx span){display:block;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--oro)}
+    :global(.adm .el-tx b){display:block;font-family:var(--disp);font-weight:400;font-size:1.35rem;line-height:1.2;color:var(--inchiostro)}
+    :global(.adm .el-tx i){display:block;font-style:normal;font-size:.86rem;color:var(--grafite)}
+    :global(.adm .el-az){display:flex;gap:.35rem}
+    :global(.adm .el-az button){min-width:44px;height:44px;padding:0 .7rem;background:none;border:1px solid var(--filo);cursor:pointer;font:inherit;font-size:.95rem;color:var(--grafite);transition:border-color .2s,color .2s}
+    :global(.adm .el-az button:hover){border-color:var(--oro);color:var(--oro)}
+    :global(.adm .el-az .az-testo){font-size:.84rem}
+    :global(.adm .el-az .el-del:hover){border-color:#a4442c;color:#a4442c}
+    :global(.adm .el-az button:disabled){opacity:.3;cursor:default;border-color:var(--filo);color:var(--grafite)}
+    :global(.adm .el-riga.in-modifica){background:var(--carta);box-shadow:-12px 0 0 var(--carta),12px 0 0 var(--carta)}
+    :global(.adm .el-vuoto){padding:2rem 0;color:var(--grigio);font-family:var(--disp);font-style:italic;font-size:1.25rem;text-align:center;border-bottom:1px solid var(--filo)}
+
+    /* orari */
+    .orari-tab{width:100%;border-collapse:collapse;margin-bottom:1.2rem}
+    .orari-tab th,.orari-tab td{text-align:left;padding:.7rem .8rem .7rem 0;border-bottom:1px solid var(--filo);vertical-align:middle}
+    .orari-tab thead th{font-size:.72rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--grafite)}
+    .orari-tab tbody th{font-family:var(--disp);font-weight:400;font-size:1.3rem;color:var(--inchiostro);white-space:nowrap}
+    .o-ap{display:inline-flex;align-items:center;gap:.55rem;cursor:pointer;font-size:.92rem;color:var(--grafite);min-height:44px}
+    .o-ap input{width:20px;height:20px;accent-color:var(--oro)}
+    .o-fascia{display:inline-flex;align-items:center;gap:.5rem}
+    .o-fascia input{padding:.55rem .55rem;border:1px solid var(--filo);background:#fffdf9;font:inherit;font-size:1rem;color:var(--inchiostro);min-width:0;min-height:44px}
+    .o-fascia input:disabled{opacity:.35}
+    .o-fascia input[aria-invalid="true"]{border-color:#a4442c;background:#fbf0ec}
+    tr.chiuso .o-fascia{opacity:.45}
+    .o-stato{font-size:.9rem;color:#3c6e47}
+    .o-stato.sporco{color:#9a5b12}
+
+    .chiu-form{display:grid;grid-template-columns:1fr 1fr 1.4fr auto;align-items:end;gap:1rem;margin-bottom:1rem}
+    .chiu-form>*{min-width:0}
+
+    .marchio-campi{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem}
+    .marchio-campi>*{min-width:0}
+    .marchio-nota{grid-column:1 / -1}
+
+
+    .avviso-adm{position:fixed;left:50%;bottom:22px;z-index:180;transform:translate(-50%,12px);display:flex;align-items:center;gap:1.2rem;
+      background:var(--inchiostro);color:var(--avorio);padding:.85rem 1.2rem;font-size:.9rem;max-width:calc(100vw - 32px);
+      opacity:0;pointer-events:none;transition:opacity .25s var(--e),transform .25s var(--e)}
+    .avviso-adm.ko{background:#7d2f1d}
+    .avviso-adm.mostra{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+    .avviso-adm button{background:none;border:0;color:var(--oro-c);font:inherit;font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.78rem;cursor:pointer;padding:.5rem 0;min-height:44px}
+
+    /* in attesa della risposta del server */
+    /* stessa altezza dell'accesso: quando compare il modulo la pagina non salta (CLS) */
+    #accesso,.caricamento{min-height:calc(100vh - 120px)}
+    .caricamento{padding:calc(var(--tastata) + 4rem) 0 8rem;text-align:center;color:var(--grigio);font-family:var(--disp);font-style:italic;font-size:1.3rem}
+    .adm .btn:disabled,.adm .el-az button:disabled{opacity:.45;cursor:wait}
+
+    /* messaggi (righe create via JS: :global) */
+    :global(.adm .msg){padding:1.1rem 0;border-bottom:1px solid var(--filo)}
+    :global(.adm .msg.nuovo){background:var(--carta);box-shadow:-12px 0 0 var(--carta),12px 0 0 var(--carta)}
+    :global(.adm .msg-testa){display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem 1rem}
+    :global(.adm .msg-testa b){font-family:var(--disp);font-weight:400;font-size:1.4rem;color:var(--inchiostro)}
+    :global(.adm .msg-testa time){margin-left:auto;font-size:.82rem;color:var(--grigio)}
+    :global(.adm .msg-tipo){font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--oro)}
+    :global(.adm .msg.nuovo .msg-tipo::after){content:' · nuovo';color:#8a4f0f}
+    :global(.adm .msg-rec){margin:.3rem 0 .6rem;font-size:.95rem}
+    :global(.adm .msg-rec a){border-bottom:1px solid var(--oro)}
+    :global(.adm .msg-dati){display:grid;grid-template-columns:auto 1fr;gap:.25rem 1rem;font-size:.92rem;margin-bottom:.7rem}
+    :global(.adm .msg-dati dt){color:var(--grigio)}
+    :global(.adm .msg-dati dd){white-space:pre-line;color:var(--inchiostro)}
+
+    /* cambio password */
+    .password{margin-top:clamp(3rem,6vw,4.5rem);border-top:1px solid var(--filo);padding-top:1.4rem}
+    .password summary{cursor:pointer;font-size:.92rem;color:var(--grafite);width:max-content;border-bottom:1px solid var(--filo)}
+    .pw-form{max-width:420px;margin-top:1.2rem}
+
+    @media (max-width:900px){
+      .chiu-form{grid-template-columns:1fr 1fr}
+      .chiu-motivo{grid-column:1 / -1}
+    }
+    @media (max-width:700px){
+      .schede{gap:.4rem;grid-template-columns:repeat(2,1fr)}
+      .schede button{padding:.75rem .7rem;min-height:66px}
+      .s-t{font-size:1.15rem}
+      .s-d{font-size:.74rem}
+      .sez-testa .btn{width:100%}
+      .pezzo-griglia{grid-template-columns:1fr}
+      .foto-campo{grid-template-columns:110px 1fr;align-items:start}
+      .foto-vuota,.z-anteprima{grid-row:1 / span 2}
+      .foto-nota{grid-column:2}
+      .marchio-campi{grid-template-columns:1fr}
+      :global(.adm .el-riga.con-foto){grid-template-columns:56px 1fr}
+      :global(.adm .el-riga img){width:56px;height:70px}
+      :global(.adm .el-riga.con-foto .el-az){grid-column:1 / -1;justify-content:flex-end}
+      /* da telefono: giorno e "Aperto" sulla stessa riga, etichette accanto agli orari,
+         e nei giorni chiusi le caselle vuote spariscono */
+      .orari-tab thead{display:none}
+      .orari-tab,.orari-tab tbody{display:block;width:100%}
+      .orari-tab tr{display:grid;grid-template-columns:1fr auto;align-items:center;gap:.35rem 1rem;padding:.6rem 0;border-bottom:1px solid var(--filo)}
+      .orari-tab th,.orari-tab td{display:block;border:0;padding:0}
+      .orari-tab td:nth-child(3),.orari-tab td:nth-child(4){grid-column:1 / -1;display:flex;align-items:center;gap:.6rem}
+      .orari-tab td:nth-child(3)::before,.orari-tab td:nth-child(4)::before{flex:0 0 6.2rem;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grafite)}
+      .orari-tab td:nth-child(3)::before{content:'Mattina'}
+      .orari-tab td:nth-child(4)::before{content:'Pomeriggio'}
+      .orari-tab tr.chiuso td:nth-child(3),.orari-tab tr.chiuso td:nth-child(4){display:none}
+      .o-fascia input{width:6.4rem}
+      .form-azioni .btn{flex:1 1 100%}
+    }
+  </style>
+
+
+  <script>
+    import { esc, GIORNI, periodo, isoGiorno, renderOrari, CATEGORIE } from '../lib/sito.js';
+    const $ = (s) => document.querySelector(s);
+
+    /* ---------------- chiamate all'API ---------------- */
+    let CSRF = '';
+    async function api(percorso, { json, form, metodo } = {}) {
+      const opz = { method: metodo || (json || form ? 'POST' : 'GET'), headers: { Accept: 'application/json' }, credentials: 'same-origin' };
+      if (json) { opz.headers['Content-Type'] = 'application/json'; opz.body = JSON.stringify(json); }
+      if (form) opz.body = form;
+      if (opz.method !== 'GET') opz.headers['X-CSRF-Token'] = CSRF;
+      let r;
+      try { r = await fetch('/api/' + percorso, opz); } catch { throw new Error('Connessione assente: riprovate fra poco.'); }
+      const d = await r.json().catch(() => ({}));
+      if (r.status === 401 && percorso !== 'accesso.php') { mostraAccesso('La sessione è scaduta: rientrate.'); throw new Error(d.errore || 'Accesso scaduto'); }
+      if (!r.ok) throw new Error(d.errore || 'Qualcosa non ha funzionato: riprovate.');
+      return d;
+    }
+    // durante una richiesta il pulsante non si puo' ripremere
+    async function occupato(bottone, fn) {
+      if (bottone) bottone.disabled = true;
+      try { return await fn(); } finally { if (bottone) bottone.disabled = false; }
+    }
+
+    /* ---------------- conferme, con "Annulla" dopo le eliminazioni ---------------- */
+    let tAvviso, annullaFn = null;
+    const avviso = (msg, annulla, errore = false) => {
+      $('#avvisoTxt').textContent = msg;
+      annullaFn = annulla || null;
+      $('#avvisoAnnulla').hidden = !annulla;
+      $('#avviso').classList.toggle('ko', errore);
+      $('#avviso').classList.add('mostra');
+      clearTimeout(tAvviso);
+      tAvviso = setTimeout(() => { $('#avviso').classList.remove('mostra'); annullaFn = null; }, annulla ? 7000 : errore ? 5000 : 2800);
+    };
+    const sbaglio = (e) => avviso(e.message, null, true);
+    $('#avvisoAnnulla').addEventListener('click', () => {
+      const f = annullaFn; annullaFn = null;
+      $('#avviso').classList.remove('mostra');
+      if (f) f().catch(sbaglio);
+    });
+
+    /* ---------------- accesso ---------------- */
+    function mostraAccesso(msg = '') {
+      $('#caricamento').hidden = true;
+      $('#pannello').hidden = true;
+      $('#accesso').hidden = false;
+      $('#lErr').textContent = msg; $('#lErr').hidden = !msg;
+      $('#l-user').focus();
+    }
+    $('#loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      occupato($('#lEntra'), async () => {
+        try {
+          const d = await api('accesso.php', { json: { utente: $('#l-user').value.trim(), password: $('#l-pass').value } });
+          CSRF = d.csrf;
+          $('#l-pass').value = '';
+          await avvia();
+        } catch (err) { $('#lErr').textContent = err.message; $('#lErr').hidden = false; }
+      });
+    });
+    $('#esci').addEventListener('click', async () => {
+      if (sporco && !confirm('Ci sono modifiche agli orari non salvate. Uscire lo stesso?')) return;
+      sporco = false;
+      try { await api('accesso.php', { metodo: 'DELETE' }); } catch { /* si esce comunque */ }
+      CSRF = '';
+      mostraAccesso();
+      window.scrollTo({ top: 0 });
+    });
+
+    /* ---------------- schede ---------------- */
+    const SCHEDE = ['vetrina', 'orari', 'marchi', 'messaggi'];
+    const apriScheda = (k, fuoco) => {
+      SCHEDE.forEach((s) => {
+        const on = s === k;
+        $('#t-' + s).setAttribute('aria-selected', String(on));
+        $('#t-' + s).tabIndex = on ? 0 : -1;
+        $('#p-' + s).hidden = !on;
+      });
+      try { sessionStorage.setItem('mas-scheda', k); } catch { /* niente */ }
+      history.replaceState(null, '', '#' + k);
+      if (fuoco) $('#t-' + k).focus();
+    };
+    SCHEDE.forEach((s, i) => {
+      $('#t-' + s).addEventListener('click', () => apriScheda(s));
+      $('#t-' + s).addEventListener('keydown', (e) => {
+        const n = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: SCHEDE.length - 1 }[e.key];
+        if (n === undefined) return;
+        e.preventDefault();
+        apriScheda(SCHEDE[(n + SCHEDE.length) % SCHEDE.length], true);
+      });
+    });
+
+    /* ---------------- stato caricato dal server ---------------- */
+    let pezzi = [], orari = null, chiusure = [], marchi = [], messaggi = [];
+    const riepilogo = () => {
+      $('#sVetrina').textContent = `${pezzi.length} ${pezzi.length === 1 ? 'pezzo' : 'pezzi'} in vetrina`;
+      const s = document.createElement('span'); document.createElement('span').append(s);
+      renderOrari(null, s, { orari, chiusure });
+      $('#sOrari').textContent = s.textContent;
+      $('#sMarchi').textContent = `${marchi.length} ${marchi.length === 1 ? 'marchio' : 'marchi'} in home`;
+      const nuovi = messaggi.filter((m) => !m.letto).length;
+      $('#sMessaggi').textContent = nuovi ? `${nuovi} da leggere` : `${messaggi.length} in archivio`;
+      $('#t-messaggi').classList.toggle('ha-nuovi', nuovi > 0);
+    };
+
+    /* ================= VETRINA ================= */
+    let pezzoInModifica = null, fotoBlob = null, fotoAnteprima = '';
+    const zErr = $('#zErr');
+    const erroreZ = (m) => { zErr.textContent = m; zErr.hidden = !m; };
+    const renderPezzi = (fuoco) => {
+      $('#elencoPezzi').innerHTML = pezzi.length
+        ? pezzi.map((x, i) => `<li class="el-riga con-foto${x.id === pezzoInModifica ? ' in-modifica' : ''}">
+            <img src="${esc(x.img)}" alt="" width="64" height="80" />
+            <div class="el-tx"><span>${esc(x.cat)}</span><b>${esc(x.nome)}</b>${x.materiale ? `<i>${esc(x.materiale)}</i>` : ''}</div>
+            <div class="el-az">
+              <button type="button" class="az-testo" data-mod="${x.id}">Modifica</button>
+              <button type="button" data-su="${i}" aria-label="Sposta su ${esc(x.nome)}"${i === 0 ? ' disabled' : ''}>↑</button>
+              <button type="button" data-giu="${i}" aria-label="Sposta giù ${esc(x.nome)}"${i === pezzi.length - 1 ? ' disabled' : ''}>↓</button>
+              <button type="button" class="el-del" data-via="${i}" aria-label="Togli ${esc(x.nome)} dalla vetrina">✕</button>
+            </div>
+          </li>`).join('')
+        : '<li class="el-vuoto">La vetrina è vuota.<br/>Sul sito la sezione «Selezione» lo dice, e in home non compare.</li>';
+      for (const sel of [].concat(fuoco || [])) { const el = document.querySelector(sel + ':not(:disabled)'); if (el) { el.focus(); break; } }
+      riepilogo();
+    };
+    const ordina = (ids) => api('pezzi.php', { json: { azione: 'ordina', ordine: ids } }).then((d) => { pezzi = d.pezzi; });
+    const sposta = async (da, a) => {
+      if (a < 0 || a >= pezzi.length) return;
+      const ids = pezzi.map((x) => x.id);
+      const [x] = ids.splice(da, 1); ids.splice(a, 0, x);
+      await ordina(ids);
+      // arrivato in cima "su" e' spento: allora va su "giu" (e viceversa in fondo)
+      const [primo, altro] = a < da ? ['su', 'giu'] : ['giu', 'su'];
+      renderPezzi([`[data-${primo}="${a}"]`, `[data-${altro}="${a}"]`]);
+    };
+    $('#elencoPezzi').addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      if (b.dataset.su !== undefined) occupato(b, () => sposta(+b.dataset.su, +b.dataset.su - 1)).catch(sbaglio);
+      else if (b.dataset.giu !== undefined) occupato(b, () => sposta(+b.dataset.giu, +b.dataset.giu + 1)).catch(sbaglio);
+      else if (b.dataset.mod !== undefined) apriPezzo(pezzi.find((x) => x.id === +b.dataset.mod));
+      else if (b.dataset.via !== undefined) occupato(b, async () => {
+        const i = +b.dataset.via, tolto = pezzi[i];
+        const d = await api('pezzi.php', { json: { azione: 'elimina', id: tolto.id } });
+        pezzi = d.pezzi;
+        if (tolto.id === pezzoInModifica) chiudiPezzo();
+        renderPezzi();
+        avviso(`«${tolto.nome}» tolto dalla vetrina`, async () => {
+          // si ricrea con la stessa foto e si rimette al suo posto
+          const f = new FormData();
+          Object.entries({ azione: 'crea', nome: tolto.nome, categoria: tolto.cat, materiale: tolto.materiale || '', descrizione: tolto.desc || '', immagine: tolto.img }).forEach(([k, v]) => f.append(k, v));
+          const c = await api('pezzi.php', { form: f });
+          const nuovo = c.pezzi.find((x) => !pezzi.some((y) => y.id === x.id));
+          const ids = c.pezzi.map((x) => x.id).filter((id) => id !== nuovo.id);
+          ids.splice(i, 0, nuovo.id);
+          await ordina(ids);
+          renderPezzi();
+          avviso('Rimesso in vetrina');
+        });
+      }).catch(sbaglio);
+    });
+
+    // La foto del telefono pesa diversi MB: la riduco a 1600 px sul lato lungo.
+    // Il canvas toglie anche i dati nascosti (EXIF, posizione GPS); il server la ricodifica comunque.
+    const riduci = (file) => new Promise((ok, ko) => {
+      const img = new Image();
+      img.onload = () => {
+        const k = Math.min(1, 1600 / Math.max(img.width, img.height));
+        const c = document.createElement('canvas');
+        c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(img.src);
+        c.toBlob((b) => (b ? ok(b) : ko(new Error('foto'))), 'image/jpeg', 0.86);
+      };
+      img.onerror = () => ko(new Error('foto'));
+      img.src = URL.createObjectURL(file);
+    });
+    const mostraFoto = (src) => {
+      $('#zAnteprima').hidden = !src; $('#fotoVuota').hidden = !!src;
+      if (src) $('#zAnteprima').src = src; else $('#zAnteprima').removeAttribute('src');
+      $('#fotoEtichetta').textContent = src ? 'Cambia foto' : 'Scegli una foto';
+    };
+    $('#z-foto').addEventListener('change', async (e) => {
+      const f = e.target.files && e.target.files[0];
+      if (!f) return;
+      try {
+        fotoBlob = await riduci(f);
+        if (fotoAnteprima.startsWith('blob:')) URL.revokeObjectURL(fotoAnteprima);
+        fotoAnteprima = URL.createObjectURL(fotoBlob);
+        mostraFoto(fotoAnteprima); erroreZ('');
+      } catch { erroreZ('Questa foto non si riesce ad aprire: provate con un’altra (JPEG, PNG o WebP).'); }
+    });
+    const apriPezzo = (x) => {
+      const form = $('#pezzoForm');
+      form.reset(); erroreZ('');
+      pezzoInModifica = x ? x.id : null;
+      fotoBlob = null;
+      fotoAnteprima = x ? x.img : '';
+      mostraFoto(fotoAnteprima);
+      $('#pezzoTitolo').textContent = x ? `Modifica «${x.nome}»` : 'Nuovo pezzo';
+      $('#pezzoSalva').textContent = x ? 'Salva le modifiche' : 'Metti in vetrina';
+      if (x) {
+        $('#z-nome').value = x.nome;
+        $('#z-cat').value = CATEGORIE.includes(x.cat) ? x.cat : 'Altro';
+        $('#z-mat').value = x.materiale || ''; $('#z-desc').value = x.desc || '';
+      }
+      form.hidden = false;
+      renderPezzi();
+      scrollTo({ top: form.getBoundingClientRect().top + scrollY - 150 });
+      (x ? $('#z-nome') : $('#z-foto')).focus();
+    };
+    const chiudiPezzo = () => { $('#pezzoForm').hidden = true; pezzoInModifica = null; fotoBlob = null; renderPezzi(); };
+    $('#nuovoPezzo').addEventListener('click', () => apriPezzo(null));
+    $('#pezzoAnnulla').addEventListener('click', () => { chiudiPezzo(); $('#nuovoPezzo').focus(); });
+    $('#pezzoForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nome = $('#z-nome').value.trim();
+      if (!pezzoInModifica && !fotoBlob) { erroreZ('Scegliete prima una fotografia.'); $('#z-foto').focus(); return; }
+      if (!nome) { erroreZ('Scrivete il nome del pezzo.'); $('#z-nome').focus(); return; }
+      const f = new FormData();
+      f.append('azione', pezzoInModifica ? 'modifica' : 'crea');
+      if (pezzoInModifica) f.append('id', pezzoInModifica);
+      f.append('nome', nome); f.append('categoria', $('#z-cat').value);
+      f.append('materiale', $('#z-mat').value.trim()); f.append('descrizione', $('#z-desc').value.trim());
+      if (fotoBlob) f.append('foto', fotoBlob, 'foto.jpg');
+      const nuovo = !pezzoInModifica;
+      occupato($('#pezzoSalva'), async () => {
+        try {
+          const d = await api('pezzi.php', { form: f });
+          pezzi = d.pezzi;
+          chiudiPezzo();
+          avviso(nuovo ? `«${nome}» è in vetrina` : 'Modifiche salvate: il sito è già aggiornato');
+        } catch (err) { erroreZ(err.message); }
+      });
+    });
+
+    /* ================= ORARI ================= */
+    const ore = (v) => { const [h, m] = v.split(':').map(Number); return h + m / 60; };
+    const hhmm = (x) => `${String(Math.floor(x)).padStart(2, '0')}:${String(Math.round((x % 1) * 60)).padStart(2, '0')}`;
+    const righe = [...document.querySelectorAll('#orariForm tbody tr')];
+    const campi = (tr) => ['.o-a1', '.o-b1', '.o-a2', '.o-b2'].map((s) => tr.querySelector(s));
+    let sporco = false;
+    const segnaSporco = (v) => {
+      sporco = v;
+      $('#oStato').textContent = v ? 'Modifiche non salvate' : '';
+      $('#oStato').classList.toggle('sporco', v);
+    };
+    const statoRiga = (tr) => {
+      const aperto = tr.querySelector('.o-aperto').checked;
+      tr.classList.toggle('chiuso', !aperto);
+      campi(tr).forEach((i) => { i.disabled = !aperto; });
+    };
+    const riempiOrari = () => {
+      righe.forEach((tr) => {
+        const f = orari ? orari[tr.dataset.g] : null;
+        tr.querySelector('.o-aperto').checked = !!f;
+        const [a1, b1, a2, b2] = campi(tr);
+        a1.value = f ? hhmm(f[0][0]) : ''; b1.value = f ? hhmm(f[0][1]) : '';
+        a2.value = f && f[1] ? hhmm(f[1][0]) : ''; b2.value = f && f[1] ? hhmm(f[1][1]) : '';
+        statoRiga(tr);
+      });
+      segnaSporco(false);
+    };
+    const modello = () => righe.find((tr) => tr.querySelector('.o-aperto').checked && campi(tr)[0].value && campi(tr)[1].value);
+    righe.forEach((tr) => tr.querySelector('.o-aperto').addEventListener('change', () => {
+      statoRiga(tr);
+      if (tr.querySelector('.o-aperto').checked && !campi(tr)[0].value) {
+        const m = modello();
+        const valori = m && m !== tr ? campi(m).map((i) => i.value) : ['09:30', '12:30', '15:30', '19:30'];
+        campi(tr).forEach((i, k) => { i.value = valori[k]; });
+      }
+    }));
+    $('#orariForm').addEventListener('input', () => { segnaSporco(true); $('#oErr').hidden = true; });
+    $('#orariForm').addEventListener('change', () => segnaSporco(true));
+    $('#orariCopia').addEventListener('click', () => {
+      const m = modello();
+      if (!m) { $('#oErr').textContent = 'Aprite almeno un giorno e scrivetene l’orario: verrà copiato sugli altri.'; $('#oErr').hidden = false; return; }
+      const valori = campi(m).map((i) => i.value);
+      righe.filter((tr) => tr !== m && tr.querySelector('.o-aperto').checked).forEach((tr) => campi(tr).forEach((i, k) => { i.value = valori[k]; }));
+      segnaSporco(true);
+      avviso(`Orario di ${GIORNI[+m.dataset.g].toLowerCase()} copiato sugli altri giorni aperti: ricordate di salvare`);
+    });
+    $('#orariForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.querySelectorAll('#orariForm [aria-invalid]').forEach((i) => i.removeAttribute('aria-invalid'));
+      const oErr = $('#oErr');
+      const nuovi = {};
+      for (const tr of righe) {
+        const g = +tr.dataset.g, nome = GIORNI[g];
+        if (!tr.querySelector('.o-aperto').checked) { nuovi[g] = null; continue; }
+        const [a1, b1, a2, b2] = campi(tr);
+        const sbaglia = (campo, msg) => { campo.setAttribute('aria-invalid', 'true'); campo.focus(); oErr.textContent = msg; oErr.hidden = false; };
+        if (!a1.value || !b1.value) return sbaglia(a1.value ? b1 : a1, `${nome}: scrivete a che ora aprite e chiudete la mattina.`);
+        if (ore(a1.value) >= ore(b1.value)) return sbaglia(b1, `${nome}: la chiusura della mattina viene prima dell’apertura.`);
+        const fasce = [[ore(a1.value), ore(b1.value)]];
+        if (a2.value || b2.value) {
+          if (!a2.value || !b2.value) return sbaglia(a2.value ? b2 : a2, `${nome}: il pomeriggio va completato, oppure lasciato tutto vuoto per l’orario continuato.`);
+          if (ore(a2.value) >= ore(b2.value)) return sbaglia(b2, `${nome}: la chiusura del pomeriggio viene prima dell’apertura.`);
+          if (ore(a2.value) < ore(b1.value)) return sbaglia(a2, `${nome}: il pomeriggio comincia prima che finisca la mattina.`);
+          fasce.push([ore(a2.value), ore(b2.value)]);
+        }
+        nuovi[g] = fasce;
+      }
+      oErr.hidden = true;
+      occupato($('#orariSalva'), async () => {
+        try {
+          const d = await api('orari.php', { json: { azione: 'settimana', orari: nuovi } });
+          orari = d.orari; chiusure = d.chiusure;
+          segnaSporco(false); riepilogo();
+          $('#oStato').textContent = '✓ Salvati';
+          avviso('Orari salvati: il sito è già aggiornato');
+        } catch (err) { oErr.textContent = err.message; oErr.hidden = false; }
+      });
+    });
+    addEventListener('beforeunload', (e) => { if (sporco) { e.preventDefault(); e.returnValue = ''; } });
+
+    /* ---- chiusure straordinarie ---- */
+    const cErr = $('#cErr');
+    const renderChiusure = () => {
+      const oggi = isoGiorno(new Date());
+      $('#elencoChiusure').innerHTML = chiusure.length
+        ? chiusure.map((c) => `<li class="el-riga">
+            <div class="el-tx"><span>${c.dal <= oggi ? 'In corso' : 'In programma'}</span><b>Chiuso${c.motivo ? ' per ' + esc(c.motivo) : ''}</b><i>${esc(periodo(c))}</i></div>
+            <div class="el-az"><button type="button" class="el-del" data-chiu="${c.id}" aria-label="Togli la chiusura ${esc(periodo(c))}">✕</button></div>
+          </li>`).join('')
+        : '<li class="el-vuoto">Nessuna chiusura in programma.</li>';
+      riepilogo();
+    };
+    $('#c-dal').min = isoGiorno(new Date());
+    $('#c-dal').addEventListener('change', () => {
+      $('#c-al').min = $('#c-dal').value;
+      if (!$('#c-al').value || $('#c-al').value < $('#c-dal').value) $('#c-al').value = $('#c-dal').value;
+    });
+    $('#chiuForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const dal = $('#c-dal').value, al = $('#c-al').value || dal, motivo = $('#c-motivo').value.trim();
+      const errore = (m) => { cErr.textContent = m; cErr.hidden = false; };
+      if (!dal) return errore('Scegliete il primo giorno di chiusura.');
+      if (al < dal) return errore('Il giorno di riapertura viene prima della chiusura.');
+      cErr.hidden = true;
+      occupato(e.target.querySelector('button'), async () => {
+        try {
+          const d = await api('orari.php', { json: { azione: 'chiusura', dal, al, motivo } });
+          chiusure = d.chiusure; renderChiusure();
+          e.target.reset();
+          avviso(`Chiusura aggiunta: ${periodo({ dal, al })}`);
+        } catch (err) { errore(err.message); }
+      });
+    });
+    $('#elencoChiusure').addEventListener('click', (e) => {
+      const b = e.target.closest('[data-chiu]'); if (!b) return;
+      const tolta = chiusure.find((c) => c.id === +b.dataset.chiu);
+      occupato(b, async () => {
+        const d = await api('orari.php', { json: { azione: 'elimina-chiusura', id: tolta.id } });
+        chiusure = d.chiusure; renderChiusure();
+        avviso(`Chiusura ${periodo(tolta)} tolta`, async () => {
+          const r = await api('orari.php', { json: { azione: 'chiusura', dal: tolta.dal, al: tolta.al, motivo: tolta.motivo } });
+          chiusure = r.chiusure; renderChiusure(); avviso('Chiusura rimessa');
+        });
+      }).catch(sbaglio);
+    });
+
+    /* ================= MARCHI ================= */
+    let marchioInModifica = null;
+    const renderMarchi = () => {
+      $('#elenco').innerHTML = marchi.length
+        ? marchi.map((b) => `<li class="el-riga${b.id === marchioInModifica ? ' in-modifica' : ''}">
+            <div class="el-tx"><span>${esc(b.reparto || '')}</span><b>${esc(b.nome)}</b>${b.nota ? `<i>${esc(b.nota)}</i>` : ''}</div>
+            <div class="el-az">
+              <button type="button" class="az-testo" data-bmod="${b.id}">Modifica</button>
+              <button type="button" class="el-del" data-bvia="${b.id}" aria-label="Elimina ${esc(b.nome)}">✕</button>
+            </div>
+          </li>`).join('')
+        : '<li class="el-vuoto">Nessun marchio in elenco: in home la fascia dei marchi non compare.</li>';
+      riepilogo();
+    };
+    const apriMarchio = (b) => {
+      const form = $('#brandForm');
+      form.reset(); $('#bErr').hidden = true;
+      marchioInModifica = b ? b.id : null;
+      $('#formTitolo').textContent = b ? `Modifica «${b.nome}»` : 'Nuovo marchio';
+      $('#salva').textContent = b ? 'Salva le modifiche' : 'Aggiungi il marchio';
+      if (b) { $('#b-nome').value = b.nome; $('#b-reparto').value = b.reparto || 'Gioielleria'; $('#b-nota').value = b.nota || ''; }
+      form.hidden = false; renderMarchi();
+      scrollTo({ top: form.getBoundingClientRect().top + scrollY - 150 });
+      $('#b-nome').focus();
+    };
+    const chiudiMarchio = () => { $('#brandForm').hidden = true; marchioInModifica = null; renderMarchi(); };
+    $('#nuovoMarchio').addEventListener('click', () => apriMarchio(null));
+    $('#annulla').addEventListener('click', () => { chiudiMarchio(); $('#nuovoMarchio').focus(); });
+    $('#elenco').addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      if (b.dataset.bmod) apriMarchio(marchi.find((m) => m.id === +b.dataset.bmod));
+      if (b.dataset.bvia) occupato(b, async () => {
+        const i = marchi.findIndex((m) => m.id === +b.dataset.bvia), tolto = marchi[i];
+        const d = await api('marchi.php', { json: { azione: 'elimina', id: tolto.id } });
+        marchi = d.marchi;
+        if (tolto.id === marchioInModifica) chiudiMarchio();
+        renderMarchi();
+        avviso(`«${tolto.nome}» tolto dalla home`, async () => {
+          const r = await api('marchi.php', { json: { azione: 'ripristina', nome: tolto.nome, reparto: tolto.reparto, nota: tolto.nota || '', posizione: i } });
+          marchi = r.marchi; renderMarchi(); avviso('Marchio rimesso');
+        });
+      }).catch(sbaglio);
+    });
+    $('#brandForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nome = $('#b-nome').value.trim();
+      if (!nome) { $('#b-nome').focus(); return; }
+      const dati = { nome, reparto: $('#b-reparto').value, nota: $('#b-nota').value.trim() };
+      const nuovo = !marchioInModifica;
+      occupato($('#salva'), async () => {
+        try {
+          const d = await api('marchi.php', { json: nuovo ? { azione: 'crea', ...dati } : { azione: 'modifica', id: marchioInModifica, ...dati } });
+          marchi = d.marchi; chiudiMarchio();
+          avviso(nuovo ? `«${nome}» aggiunto alla home` : 'Modifiche salvate');
+        } catch (err) { $('#bErr').textContent = err.message; $('#bErr').hidden = false; }
+      });
+    });
+
+    /* ================= MESSAGGI ================= */
+    const quando = (iso) => new Date(iso).toLocaleString('it-IT', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+    const renderMessaggi = () => {
+      $('#elencoMessaggi').innerHTML = messaggi.length
+        ? messaggi.map((m) => `<li class="msg${m.letto ? '' : ' nuovo'}">
+            <div class="msg-testa">
+              <span class="msg-tipo">${m.tipo === 'perizia' ? 'Perizia' : 'Contatti'}</span>
+              <b>${esc(m.nome)}</b>
+              <time datetime="${esc(m.creato)}">${esc(quando(m.creato))}</time>
+            </div>
+            <p class="msg-rec">${m.telefono ? `<a href="tel:${esc(m.telefono.replace(/[^\d+]/g, ''))}">${esc(m.telefono)}</a>` : ''}${m.telefono && m.email ? ' · ' : ''}${m.email ? `<a href="mailto:${esc(m.email)}">${esc(m.email)}</a>` : ''}</p>
+            <dl class="msg-dati">${Object.entries(m.dati || {}).filter(([, v]) => v).map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
+            <div class="el-az">
+              ${m.letto ? '' : `<button type="button" class="az-testo" data-letto="${m.id}">Segna come letto</button>`}
+              <button type="button" class="el-del" data-mvia="${m.id}" aria-label="Elimina il messaggio di ${esc(m.nome)}">✕</button>
+            </div>
+          </li>`).join('')
+        : '<li class="el-vuoto">Nessun messaggio, per ora.</li>';
+      riepilogo();
+    };
+    $('#elencoMessaggi').addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      if (b.dataset.letto) occupato(b, async () => { messaggi = (await api('messaggi.php', { json: { azione: 'letto', id: +b.dataset.letto } })).messaggi; renderMessaggi(); }).catch(sbaglio);
+      if (b.dataset.mvia) {
+        if (!confirm('Eliminare questo messaggio? Non si potrà recuperare.')) return;
+        occupato(b, async () => { messaggi = (await api('messaggi.php', { json: { azione: 'elimina', id: +b.dataset.mvia } })).messaggi; renderMessaggi(); avviso('Messaggio eliminato'); }).catch(sbaglio);
+      }
+    });
+
+    /* ================= PASSWORD ================= */
+    $('#pwForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const err = $('#pwErr');
+      const nuova = $('#pw-nuova').value;
+      if (nuova.length < 10) { err.textContent = 'La nuova password deve avere almeno 10 caratteri.'; err.hidden = false; return; }
+      if (nuova !== $('#pw-ripeti').value) { err.textContent = 'Le due password nuove non coincidono.'; err.hidden = false; return; }
+      occupato(e.target.querySelector('button'), async () => {
+        try {
+          await api('accesso.php', { json: { azione: 'password', attuale: $('#pw-attuale').value, nuova } });
+          e.target.reset(); err.hidden = true; $('#password').open = false;
+          avviso('Password cambiata');
+        } catch (x) { err.textContent = x.message; err.hidden = false; }
+      });
+    });
+
+    /* ---------------- avvio ---------------- */
+    async function avvia() {
+      const [p, o, m, g] = await Promise.all([api('pezzi.php'), api('orari.php'), api('marchi.php'), api('messaggi.php')]);
+      pezzi = p.pezzi; orari = o.orari; chiusure = o.chiusure; marchi = m.marchi; messaggi = g.messaggi;
+      $('#caricamento').hidden = true; $('#accesso').hidden = true; $('#pannello').hidden = false;
+      renderPezzi(); riempiOrari(); renderChiusure(); renderMarchi(); renderMessaggi();
+      let k = location.hash.slice(1);
+      if (!SCHEDE.includes(k)) { try { k = sessionStorage.getItem('mas-scheda'); } catch { k = null; } }
+      apriScheda(SCHEDE.includes(k) ? k : 'vetrina');
+    }
+    (async () => {
+      try {
+        const s = await api('accesso.php');
+        if (s.collegato) { CSRF = s.csrf; await avvia(); } else mostraAccesso();
+      } catch (err) { mostraAccesso(err.message); }
+    })();
+  </script>
+</Layout>

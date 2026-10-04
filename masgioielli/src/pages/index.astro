@@ -1,0 +1,399 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { INFO, orariSettimana } from '../lib/sito.js';
+const ORARI = orariSettimana();          // reso lato server: leggibile anche senza JavaScript
+const WA = `https://wa.me/${INFO.wa}`;
+const WA_LAB = `https://wa.me/${INFO.wa}?text=${encodeURIComponent(`Buongiorno ${INFO.nome}! Vorrei un parere su un lavoro in laboratorio: vi mando una foto del pezzo.`)}`;
+const mestieri = [
+  { n: '01', t: 'Gioielleria', d: 'Oro, argento e pietre scelti uno a uno. Il classico che dura e il pezzo che non si vede altrove.', href: 'selezione/' },
+  { n: '02', t: 'Orologeria', d: 'Vendita, revisione e restauro: dal solo tempo al cronografo, fino alla pendoleria d’epoca.', href: 'selezione/?cat=Orologi' },
+  { n: '03', t: 'Atelier', d: 'Creazioni su misura, trasformazioni e riparazioni. Il banco è dietro il negozio, non altrove.', href: 'atelier/' },
+  { n: '04', t: 'Perizie', d: 'Valutazioni per successioni, divisioni ereditarie e cassette di sicurezza. Con discrezione.', href: 'perizie/' },
+  { n: '05', t: 'Compro oro', d: 'Il vostro oro usato, pesato e valutato davanti a voi sulla quotazione del giorno.', href: 'compro-oro/' },
+];
+// fotografie del negozio vero (dal sito attuale, di Elisa Miglietti)
+const negozio = [
+  { src: '/img/vetrina.webp', w: 627, h: 419, alt: 'Una vetrina interna del negozio con collane e anelli esposti', t: 'Le vetrine' },
+  { src: '/img/insegna.webp', w: 627, h: 419, alt: 'Il logo MAS inciso sul vetro all’ingresso del negozio', t: 'L’ingresso' },
+  { src: '/img/lab-banco.webp', w: 800, h: 534, alt: 'Il banco del laboratorio con gli attrezzi da orologiaio', t: 'Il laboratorio' },
+];
+---
+<Layout title="Preziosi di qualità dal 1996" active="Maison">
+
+  <!-- APERTURA: tipografia grande a sinistra, fotografia a vivo a destra -->
+  <section class="apertura">
+    <div class="apertura-testo">
+      <span class="occhiello">Torino · dal {INFO.fondata}</span>
+      <h1>Un gioiello<br/>non si compra.<br/><span class="it oro">Si sceglie.</span></h1>
+      <p>Dal {INFO.fondata}, in Corso Trapani, lavoriamo l’oro come si faceva una volta: a mano, un pezzo alla volta. Vendiamo, creiamo, ripariamo e valutiamo — sempre guardandoci negli occhi.</p>
+      <div class="apertura-azioni">
+        <a href="/selezione/" class="btn">In vetrina ora</a>
+        <a href={WA} target="_blank" rel="noopener" class="link-filo">Scrivici su WhatsApp</a>
+      </div>
+    </div>
+    <div class="apertura-foto">
+      <span class="apertura-cornice" aria-hidden="true"></span>
+      <!-- FOTO PROVVISORIA (archivio): da sostituire con una foto del negozio prima della pubblicazione -->
+      <img src="/img/apertura-provvisoria.webp" width="660" height="660"
+           alt="Anello con diamante a taglio principessa, dettaglio ravvicinato" fetchpriority="high" />
+    </div>
+  </section>
+
+  <!-- RIGA DI FIDUCIA -->
+  <section class="fiducia">
+    <div class="misura fiducia-in">
+      <p><a href={INFO.recensioniUrl} target="_blank" rel="noopener"><b>★ {INFO.stelle}</b> su {INFO.recensioni} recensioni Google</a></p>
+      <p>Laboratorio artigianale interno</p>
+      <p>Perizie · Compro oro</p>
+      <p class="fiducia-ora"><span class="stato" id="stato"><span class="pt"></span><span id="statoTxt">Orari del negozio</span></span></p>
+    </div>
+  </section>
+
+  <!-- I MESTIERI: elenco editoriale numerato, niente riquadri -->
+  <section class="banda">
+    <div class="misura">
+      <div class="intro a">
+        <span class="occhiello">Cosa facciamo</span>
+        <h2>Cinque servizi,<br/>un solo banco.</h2>
+      </div>
+      <h3 class="sr-only">I nostri mestieri</h3>
+      <ul class="mestieri">
+        {mestieri.map((m) => (
+          <li class="a">
+            <a href={'/' + m.href}>
+              <span class="mest-n">{m.n}</span>
+              <span class="mest-t">{m.t}</span>
+              <span class="mest-d">{m.d}</span>
+              <span class="mest-fr" aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- IL NEGOZIO E LE PERSONE: richiesta del negozio, con le loro fotografie -->
+  <section class="banda negozio" id="negozio">
+    <div class="misura">
+      <div class="intro a">
+        <span class="occhiello">Il negozio</span>
+        <h2>Dal {INFO.inaugurazione},<br/><span class="it oro">in Corso Trapani.</span></h2>
+      </div>
+      <div class="neg-in">
+        <figure class="neg-grande a">
+          <img src="/img/sala.webp" width="419" height="627" alt="L’interno del negozio MasGioielli, con le vetrine illuminate lungo la parete" loading="lazy" />
+        </figure>
+        <div class="neg-testo a">
+          <p class="neg-lead">{INFO.fondatore} si appassiona presto all’orologeria: nel 1986, a sedici anni, si diploma alla Scuola Orologiai di Torino.</p>
+          <p>Dopo gli anni nei laboratori e una lunga collaborazione con uno storico negozio torinese, il {INFO.inaugurazione} apre MasGioielli al {INFO.via.replace('Corso Trapani ', '')} di Corso Trapani. Da allora, con il suo staff, è il punto di riferimento del quartiere per gioielli, orologi e lavori di laboratorio.</p>
+          <h3 class="neg-h3">Le persone</h3>
+          <ul class="persone">
+            <li class="persona">
+              <img src="/img/titolare.webp" width="800" height="534" alt={INFO.fondatore + ' nel negozio di Corso Trapani'} loading="lazy" />
+              <p><b>{INFO.fondatore}</b><span>Fondatore · orologiaio</span></p>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="neg-riga">
+        {negozio.map((f) => (
+          <figure class="a">
+            <img src={f.src} width={f.w} height={f.h} alt={f.alt} loading="lazy" />
+            <figcaption>{f.t}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- SELEZIONE DEL MOMENTO: rail orizzontale, la cambia il titolare dall'area riservata -->
+  <section class="banda collezione" id="selezioneHome" hidden>
+    <div class="misura">
+      <div class="coll-testa a">
+        <div class="intro">
+          <span class="occhiello">La selezione del momento</span>
+          <h2>Scelti da noi,<br/><span class="it oro">in vetrina ora.</span></h2>
+          <p class="coll-agg" id="collAgg" hidden></p>
+        </div>
+        <div class="coll-azioni">
+          <span class="coll-scorri" aria-hidden="true">Scorri<span class="coll-fr">→</span></span>
+          <a href="/selezione/" class="link-filo coll-tutti">Tutta la selezione</a>
+        </div>
+      </div>
+    </div>
+    <h3 class="sr-only">Pezzi in vetrina</h3>
+    <div class="rail" id="rail" tabindex="0" role="region" aria-label="Pezzi in evidenza, scorrevole orizzontalmente"></div>
+  </section>
+
+  <!-- MARCHI TRATTATI: fascia sobria, alimentata dall'area riservata -->
+  <section class="banda marchi-banda" id="marchiBanda" hidden>
+    <div class="misura">
+      <p class="marchi-occ occhiello centro">Le marche che trattiamo</p>
+      <h2 class="sr-only">Marchi trattati</h2>
+      <ul class="marchi" id="marchi"></ul>
+    </div>
+  </section>
+
+  <!-- ATELIER: banda scura, citazione grande -->
+  <section class="scuro atelier">
+    <div class="misura atelier-in">
+      <div class="a">
+        <span class="occhiello">L’atelier</span>
+        <blockquote class="atelier-q">
+          «Quello che gli altri<br/>mandano via,<br/><span class="it atelier-oro">noi lo facciamo qui.»</span>
+        </blockquote>
+      </div>
+      <div class="atelier-testo a">
+        <p>Una maglia che si è spezzata, un anello da stringere, l’orologio del nonno fermo da vent’anni. Il banco è dietro il negozio: guardiamo il pezzo insieme e vi diciamo subito cosa si può fare, e quanto costa.</p>
+        <ul class="atelier-lista">
+          <li>Creazioni su misura, dal disegno al pezzo finito</li>
+          <li>Riparazioni, saldature, misure e rimonta di pietre</li>
+          <li>Orologeria e pendoleria, anche d’epoca</li>
+        </ul>
+        <div class="atelier-azioni">
+          <a href="/atelier/" class="btn btn-chiaro">Scopri l’atelier</a>
+          <a href={WA_LAB} target="_blank" rel="noopener" class="link-filo atelier-link">Mandateci una foto</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PERIZIE: molta aria, centrato -->
+  <section class="banda perizie">
+    <div class="misura stretta perizie-in a">
+      <p class="fregio perizie-fregio" aria-hidden="true"><span></span></p>
+      <span class="occhiello centro">Perizie e valutazioni</span>
+      <h2>Sapere quanto vale,<br/><span class="it oro">con discrezione.</span></h2>
+      <p>Successioni, divisioni tra eredi, apertura di cassette di sicurezza. La prima stima verbale è sempre gratuita, e quello che ci portate resta tra noi.</p>
+      <a href="/perizie/" class="btn btn-vuoto">Richiedi una perizia</a>
+    </div>
+  </section>
+
+  <!-- COMPRO ORO -->
+  <section class="banda oro-banda">
+    <div class="misura oro-in a">
+      <div>
+        <span class="occhiello">Compro oro</span>
+        <h2>Il vostro oro usato,<br/><span class="it oro">pesato davanti a voi.</span></h2>
+      </div>
+      <div>
+        <p>Catenine, fedi, orecchini spaiati, anche rotti: li valutiamo in negozio sulla quotazione del giorno, con una proposta chiara e senza impegno. E se un pezzo merita di essere riparato invece che venduto, ve lo diciamo.</p>
+        <a href="/compro-oro/" class="link-filo">Come funziona</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECENSIONI: il voto e il link a quelle vere su Google (nessuna citazione inventata) -->
+  <section class="banda voce">
+    <div class="misura stretta a">
+      <div class="voce-q">
+        <p class="voce-st" aria-hidden="true">★★★★★</p>
+        <p class="voce-voto">{INFO.stelle} su Google, {INFO.recensioni} recensioni</p>
+        <a href={INFO.recensioniUrl} target="_blank" rel="noopener" class="link-filo">Leggete cosa dicono di noi</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEPARE': un respiro tra la parte emotiva e quella pratica (prima era una foto d'esempio) -->
+  <div class="separe misura" aria-hidden="true"><p class="fregio"><span></span></p></div>
+
+  <!-- VISITA: indirizzo e orari, a filo -->
+  <section class="banda visita">
+    <div class="misura visita-in">
+      <div class="a">
+        <span class="occhiello">Vieni a trovarci</span>
+        <h2>{INFO.via}<br/><span class="it oro">{INFO.citta}</span></h2>
+        <p class="visita-p">Zona San Paolo, si parcheggia davanti. Per le perizie e le creazioni su misura vi consigliamo di avvisarci: vi dedichiamo il tempo che serve.</p>
+        <div class="visita-azioni">
+          <a href={'tel:' + INFO.telHref} class="btn">{INFO.tel}</a>
+          <a href="/contatti/" class="link-filo">Come arrivare</a>
+        </div>
+      </div>
+      <div class="a">
+        <h3 class="visita-h3">Orari di apertura</h3>
+        <ul class="orari" id="listaOrari">
+          {ORARI.map((o) => <li><span>{o.giorno}</span><b>{o.label}</b></li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    /* ---------- apertura ---------- */
+    .apertura{display:grid;grid-template-columns:1fr 42vw;align-items:center;gap:clamp(2rem,5vw,4rem);
+      padding-top:calc(var(--tastata) + clamp(2.5rem,7vw,5.5rem));padding-bottom:clamp(3rem,7vw,5.5rem)}
+    .apertura>*{min-width:0}
+    .apertura-testo{padding-left:clamp(1.2rem,5vw,3.2rem);max-width:44rem;justify-self:end;width:100%}
+    .apertura h1{font-size:clamp(2.9rem,7vw,5.6rem);margin:1.6rem 0 0}
+    .apertura-testo>p{color:var(--grafite);font-size:1.05rem;max-width:46ch;margin-top:1.7rem}
+    .apertura-azioni{display:flex;align-items:center;gap:2rem;flex-wrap:wrap;margin-top:2.4rem}
+    .apertura-foto{position:relative}
+    .apertura-foto img{position:relative;z-index:1;width:100%;height:clamp(380px,68vh,680px);object-fit:cover;object-position:center 42%}
+    /* cornice sfalsata: da' profondita' alla fotografia senza aggiungere immagini */
+    .apertura-cornice{position:absolute;z-index:0;top:-14px;left:-14px;width:180px;height:180px;
+      border-top:1px solid var(--oro);border-left:1px solid var(--oro);opacity:.55}
+    @media (max-width:980px){.apertura-cornice{display:none}}
+
+    /* ---------- riga di fiducia ---------- */
+    .fiducia{border-block:1px solid var(--filo)}
+    .fiducia-in{display:flex;justify-content:space-between;align-items:center;gap:.6rem 2rem;flex-wrap:wrap;padding-block:1.15rem;font-size:.82rem;letter-spacing:.04em;color:var(--grafite)}
+    /* separatori a filetto tra le voci: prima erano tre frasi allineate senza gerarchia */
+    .fiducia-in p+p{padding-left:2rem;border-left:1px solid var(--filo)}
+    @media (max-width:820px){.fiducia-in p+p{padding-left:0;border-left:0}}
+    .fiducia-in b{color:var(--oro);font-weight:500}
+    .fiducia-ora{margin-left:auto}
+
+    /* ---------- mestieri ---------- */
+    .mestieri{list-style:none;margin-top:clamp(2.5rem,5vw,4rem);border-top:1px solid var(--filo)}
+    .mestieri a{display:grid;grid-template-columns:auto minmax(11rem,18%) 1fr auto;align-items:baseline;gap:clamp(1rem,3vw,2.5rem);
+      padding:clamp(1.5rem,3vw,2.2rem) 0;border-bottom:1px solid var(--filo);transition:padding-left .4s var(--e)}
+    .mestieri a:hover{padding-left:1rem}
+    .mest-n{font-family:var(--disp);font-size:1rem;color:var(--oro)}
+    .mest-t{font-family:var(--disp);font-size:clamp(1.7rem,3.2vw,2.5rem);line-height:1.1}
+    .mest-d{color:var(--grafite);font-size:.96rem;max-width:52ch}
+    .mest-fr{color:var(--oro);font-size:1.1rem;opacity:0;transition:opacity .3s var(--e)}
+    .mestieri a:hover .mest-fr{opacity:1}
+
+    /* ---------- negozio e persone ---------- */
+    .negozio{border-top:1px solid var(--filo)}
+    .neg-in{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(2rem,5vw,4.5rem);align-items:start;margin-top:clamp(2.2rem,4vw,3.2rem)}
+    .neg-in>*{min-width:0}
+    .neg-grande img{width:100%;height:auto;aspect-ratio:2/3;object-fit:cover}
+    .neg-testo>p{color:var(--grafite);max-width:54ch;margin-top:1rem}
+    .neg-testo>p.neg-lead{font-family:var(--disp);font-size:clamp(1.4rem,2.5vw,1.85rem);line-height:1.3;color:var(--inchiostro);margin-top:0}
+    .neg-h3{font-family:var(--sans);font-size:.66rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--oro);margin:clamp(2rem,4vw,2.8rem) 0 1rem}
+    .persone{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,210px));gap:1.4rem}
+    .persona img{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;object-position:78% 30%}
+    .persona p{margin-top:.8rem}
+    .persona b{display:block;font-family:var(--disp);font-weight:400;font-size:1.35rem;line-height:1.2}
+    .persona span{font-size:.8rem;color:var(--grigio)}
+    .neg-riga{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1rem,2.4vw,2rem);margin-top:clamp(2.5rem,5vw,4rem)}
+    .neg-riga>*{min-width:0}
+    .neg-riga img{width:100%;height:auto;aspect-ratio:3/2;object-fit:cover}
+    .neg-riga figcaption{margin-top:.7rem;font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--oro)}
+    .coll-agg{margin-top:1rem;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--grigio)}
+
+    /* ---------- compro oro ---------- */
+    .oro-banda{padding-top:0}
+    .oro-in{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4.5rem);align-items:end;border-top:1px solid var(--filo);padding-top:clamp(2.5rem,5vw,4rem)}
+    .oro-in>*{min-width:0}
+    .oro-in h2{font-size:clamp(2rem,4.2vw,3rem);margin-top:1.3rem}
+    .oro-in p{color:var(--grafite);margin-bottom:1.6rem;max-width:50ch}
+
+    /* ---------- collezione: rail orizzontale ---------- */
+    .collezione{padding-bottom:clamp(3.5rem,7vw,6rem)}
+    .coll-testa{display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap}
+    .coll-tutti{white-space:nowrap}
+    .rail{display:flex;gap:clamp(1rem,2.5vw,2rem);overflow-x:auto;scroll-snap-type:x mandatory;
+      padding:clamp(2.2rem,4vw,3.2rem) clamp(1.2rem,5vw,3.2rem) .8rem;scrollbar-width:thin}
+    .rail::-webkit-scrollbar{height:2px}
+    .rail::-webkit-scrollbar-thumb{background:var(--filo)}
+    .rail{align-items:flex-start}
+    /* passo sfalsato: da' ritmo editoriale invece di una fila piatta */
+    .coll-azioni{display:flex;align-items:center;gap:2rem}
+    .coll-scorri{display:inline-flex;align-items:center;gap:.5rem;font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--grigio)}
+    .coll-fr{display:inline-block;animation:scorri 2.6s var(--e) infinite}
+    @keyframes scorri{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
+    @media (prefers-reduced-motion:reduce){.coll-fr{animation:none}}
+    /* sfumatura sul bordo destro: fa capire che il nastro continua */
+    .collezione{position:relative}
+    .collezione::after{content:'';position:absolute;right:0;bottom:0;width:clamp(2rem,6vw,5rem);height:calc(100% - 1px);
+      background:linear-gradient(90deg,rgba(247,243,236,0),var(--avorio));pointer-events:none}
+
+    /* nastro e marchi: gli elementi arrivano da JavaScript (dati dall'API), quindi
+       gli stili "scoped" di Astro non li raggiungerebbero: :global, con nomi di classe
+       che esistono solo in questa pagina */
+    :global(.rail-el){flex:0 0 clamp(230px,26vw,330px);scroll-snap-align:start}
+    :global(.rail-el:nth-child(even)){margin-top:clamp(1.4rem,3vw,2.8rem)}
+    :global(.rail-foto){overflow:hidden;background:var(--avorio-2)}
+    :global(.rail-foto img){width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;transition:transform 1.1s var(--e)}
+    :global(.rail-el:hover .rail-foto img){transform:scale(1.04)}
+    :global(.rail-cat){font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--oro);margin-top:1.1rem}
+    :global(.rail-nome){font-family:var(--disp);font-size:1.5rem;line-height:1.2;margin-top:.3rem}
+    :global(.marca){text-align:center}
+    :global(.marca-nome){display:block;font-family:var(--disp);font-size:clamp(1.5rem,2.8vw,2.1rem);line-height:1.1;letter-spacing:.04em}
+    :global(.marca-rep){display:block;font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;color:var(--oro);margin-top:.35rem}
+
+    /* ---------- marchi ---------- */
+    .marchi-banda{padding-block:clamp(3rem,6vw,4.5rem);border-top:1px solid var(--filo)}
+    .marchi-occ{display:flex;justify-content:center;margin-bottom:clamp(2rem,4vw,3rem)}
+    /* griglia auto-fit: i nomi si distribuiscono in righe piene qualunque sia il
+       loro numero (con flex l'ultimo restava spesso solo, a capo) */
+    .marchi{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+      column-gap:clamp(1.4rem,3vw,2.6rem);row-gap:clamp(1.8rem,3vw,2.6rem);max-width:1080px;margin-inline:auto}
+
+    /* ---------- striscia macro ---------- */
+    .separe .fregio::before,.separe .fregio::after{max-width:260px}
+
+    /* ---------- atelier ---------- */
+    /* fotografia sotto una velatura fitta: la banda non e' piu' un rettangolo nero piatto */
+    .atelier{padding:clamp(4.5rem,10vw,8rem) 0;position:relative;isolation:isolate;
+      background-image:linear-gradient(rgba(21,18,14,.93),rgba(21,18,14,.95)),url('/img/fondo-atelier.webp');
+      background-size:cover;background-position:center;background-repeat:no-repeat}
+    .atelier-in{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(2.5rem,6vw,5rem);align-items:start}
+    .atelier-in>*{min-width:0}
+    .atelier-q{font-family:var(--disp);font-size:clamp(2.2rem,4.6vw,3.6rem);line-height:1.14;color:var(--avorio);margin-top:1.5rem;letter-spacing:-.018em}
+    .atelier-oro{color:var(--oro-c)}
+    .atelier-link{color:var(--avorio);border-color:var(--oro-c)}
+    .atelier-lista{list-style:none;margin:1.8rem 0;display:grid;gap:0}
+    .atelier-lista li{padding:.85rem 0;border-bottom:1px solid var(--filo-c);font-size:.95rem;color:#b7ada0}
+    .atelier-lista li:first-child{border-top:1px solid var(--filo-c)}
+    .atelier-azioni{display:flex;align-items:center;gap:2rem;flex-wrap:wrap;margin-top:2rem}
+
+    /* ---------- perizie ---------- */
+    .perizie-in{text-align:center}
+    .perizie-fregio{margin-bottom:2.2rem}
+    .perizie-in h2{font-size:clamp(2.2rem,5vw,3.6rem);margin:1.5rem 0 0}
+    .perizie-in>p{color:var(--grafite);margin:1.5rem auto 2.3rem;max-width:52ch}
+
+    /* ---------- voce ---------- */
+    .voce{padding-top:0}
+    .voce-q{text-align:center;border-top:1px solid var(--filo);border-bottom:1px solid var(--filo);padding:clamp(2.5rem,6vw,4rem) 0}
+    .voce-voto{font-family:var(--disp);font-style:italic;font-size:clamp(1.6rem,3.6vw,2.5rem);line-height:1.3;color:var(--inchiostro);margin:.6rem 0 1.6rem}
+    .voce-st{color:var(--oro);letter-spacing:4px;font-size:1.1rem}
+
+    /* ---------- visita ---------- */
+    .visita-in{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(2.5rem,6vw,5rem);align-items:start}
+    .visita-in>*{min-width:0}
+    .visita-in h2{font-size:clamp(2rem,4.4vw,3.2rem);margin:1.4rem 0 0}
+    .visita-p{color:var(--grafite);margin:1.4rem 0 2.2rem;max-width:48ch}
+    .visita-azioni{display:flex;align-items:center;gap:2rem;flex-wrap:wrap}
+    .visita-h3{font-family:var(--sans);font-size:.66rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--oro);margin-bottom:1rem}
+
+    @media (max-width:980px){
+      .apertura{grid-template-columns:1fr;gap:2.5rem;padding-top:calc(var(--tastata) + 2rem)}
+      .apertura-testo{padding-inline:clamp(1.2rem,5vw,3.2rem);justify-self:stretch;max-width:none}
+      .apertura-foto img{height:clamp(300px,52vh,460px)}
+      .mestieri a{grid-template-columns:auto 1fr;row-gap:.5rem}
+      .mest-d{grid-column:2}
+      .mest-fr{display:none}
+      .atelier-in,.visita-in,.neg-in,.oro-in{grid-template-columns:1fr}
+      .neg-grande img{aspect-ratio:4/3}
+      .neg-riga{grid-template-columns:1fr 1fr}
+      .neg-riga figure:last-child{grid-column:1 / -1}
+      .fiducia-ora{margin-left:0}
+    }
+  </style>
+
+  <script>
+    import { caricaDati, renderOrari, pezziAttivi, marchiAttivi, railHTML, marcaHTML, dataEstesa } from '../lib/sito.js';
+    // l'orario di partenza intanto (resta se l'API non risponde)
+    renderOrari(document.getElementById('listaOrari'), document.getElementById('statoTxt'), null);
+    caricaDati().then((d) => {
+      if (!d) return;
+      renderOrari(document.getElementById('listaOrari'), document.getElementById('statoTxt'), d);
+      // selezione: i primi sei pezzi; senza pezzi la sezione resta nascosta
+      const pezzi = pezziAttivi(d);
+      if (pezzi.length) {
+        document.getElementById('rail').innerHTML = pezzi.slice(0, 6).map(railHTML).join('');
+        if (d.aggiornato) { const a = document.getElementById('collAgg'); a.textContent = 'Aggiornata il ' + dataEstesa(d.aggiornato); a.hidden = false; }
+        document.getElementById('selezioneHome').hidden = false;
+      }
+      const marchi = marchiAttivi(d);
+      if (marchi.length) {
+        document.getElementById('marchi').innerHTML = marchi.map(marcaHTML).join('');
+        document.getElementById('marchiBanda').hidden = false;
+      }
+    });
+  </script>
+</Layout>
