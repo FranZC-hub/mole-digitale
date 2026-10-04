@@ -194,8 +194,8 @@ const schema = {
     .testata{position:fixed;top:27px;left:0;right:0;z-index:200;background:rgba(247,243,236,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--filo);transition:padding .3s var(--e)}
     .testata-alto{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:1rem;padding:1.15rem clamp(1rem,4vw,2.4rem) .55rem;transition:padding .3s var(--e)}
     .marchio{grid-column:2;display:inline-flex;flex-direction:column;align-items:center;gap:.42rem;color:var(--inchiostro);text-align:center}
-    .marchio-logo{display:block;width:174px;height:auto;transition:width .35s var(--e)}
-    .testata.compatta .marchio-logo{width:126px}
+    .marchio-logo{display:block;width:190px;height:auto;transition:width .35s var(--e)}
+    .testata.compatta .marchio-logo{width:136px}
     .marchio-nome{font-family:var(--disp);font-size:1.95rem;font-weight:500;letter-spacing:.2em;text-indent:.2em;text-transform:uppercase;line-height:1;transition:font-size .35s var(--e),letter-spacing .35s var(--e)}
     .marchio-sotto{font-size:.56rem;font-weight:500;letter-spacing:.34em;text-indent:.34em;text-transform:uppercase;color:var(--oro);line-height:1;transition:opacity .3s,max-height .35s var(--e);max-height:1.2em;overflow:hidden}
     .testata-dx{grid-column:3;justify-self:end;display:inline-flex;align-items:center;gap:1.1rem}
@@ -280,6 +280,8 @@ const schema = {
     .orari li{display:flex;justify-content:space-between;align-items:baseline;gap:1.5rem;padding:.62rem 0;border-bottom:1px solid var(--filo);color:var(--grafite)}
     .orari li b{font-weight:500;color:var(--inchiostro);font-variant-numeric:tabular-nums}
     .orari li.oggi,.orari li.oggi b{color:var(--oro)}
+    /* chiusura straordinaria annunciata sotto gli orari */
+    .orari li.chiusura-avviso,.orari li.chiusura-avviso b{color:#9a3f28}
 
     /* nota "per il titolare": marginale, non invadente */
     .promemoria{max-width:820px;margin:4rem auto 0;padding:1.1rem 0 0;border-top:1px solid var(--filo);color:var(--grigio);font-size:.84rem;line-height:1.7;text-align:center}
@@ -355,8 +357,8 @@ const schema = {
       .testata-alto{grid-template-columns:auto 1fr auto;padding-bottom:.9rem}
       .menu-btn{display:flex}
       .marchio{align-items:center}
-      .marchio-logo{width:138px}
-      .testata.compatta .marchio-logo{width:112px}
+      .marchio-logo{width:152px}
+      .testata.compatta .marchio-logo{width:120px}
       .testata-tel{display:none}
       .testata-riservata span{display:none}
       .testata-riservata{padding:.5rem;gap:0}

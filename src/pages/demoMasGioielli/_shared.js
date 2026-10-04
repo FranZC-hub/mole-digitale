@@ -96,32 +96,57 @@ export function piedeHTML(o = ORARI) {
   return p.aperti.map((x) => `<p class="chiusura-sp">${x.giorni}</p><p>${x.orario}</p>`).join('') + (p.chiusi ? `<p class="chiusura-muto">${p.chiusi}</p>` : '');
 }
 
+// ---- chiusure straordinarie: giorni interi, "dal" e "al" compresi
+const LS_CHIUSURE = 'mas-chiusure';
+export const isoGiorno = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const dataOk = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s);
+export const leggiChiusure = () => {
+  try {
+    const a = JSON.parse(localStorage.getItem(LS_CHIUSURE) || '[]');
+    return a.filter((c) => c && dataOk(c.dal) && dataOk(c.al) && c.dal <= c.al).sort((x, y) => x.dal.localeCompare(y.dal));
+  } catch { return []; }
+};
+export const scriviChiusure = (a) => salva(LS_CHIUSURE, JSON.stringify(a));
+export const chiusuraDel = (giorno, ch = leggiChiusure()) => ch.find((c) => giorno >= c.dal && giorno <= c.al) || null;
+const giornoMese = (s) => new Date(s + 'T12:00:00').toLocaleDateString('it-IT', { day: 'numeric', month: 'long' });
+export const periodo = (c) => (c.dal === c.al ? `il ${giornoMese(c.dal)}` : `dal ${giornoMese(c.dal)} al ${giornoMese(c.al)}`);
+// le fasce di un giorno preciso: l'orario della settimana, salvo chiusure straordinarie
+const fasceDel = (data, O, ch) => (chiusuraDel(isoGiorno(data), ch) ? null : O[data.getDay()]);
+
 export function renderOrari(listEl, statoEl) {
-  const O = orariAttivi();
+  const O = orariAttivi(), ch = leggiChiusure();
   const now = new Date(), d = now.getDay(), t = now.getHours() + now.getMinutes() / 60;
-  const fasce = O[d];
+  const chiusaOggi = chiusuraDel(isoGiorno(now), ch);
+  const fasce = fasceDel(now, O, ch);
   const aperto = !!fasce && fasce.some(([a, b]) => t >= a && t < b);
   if (statoEl) {
     if (aperto) {
       statoEl.textContent = `Aperto ora · fino alle ${fmt(fasce.find(([a, b]) => t >= a && t < b)[1])}`;
     } else {
-      // prossima apertura utile (oggi più tardi, altrimenti il primo giorno aperto)
+      // prossima apertura utile: oggi piu' tardi, altrimenti il primo giorno aperto
+      // nelle prossime otto settimane, saltando ferie e chiusure
       const dopo = fasce?.find(([a]) => t < a);
       if (dopo) statoEl.textContent = `Chiuso ora · riapre alle ${fmt(dopo[0])}`;
       else {
-        let k = 1;
-        while (k <= 7 && !O[(d + k) % 7]) k++;
-        // con gli orari modificabili puo' capitare una settimana tutta chiusa (ferie)
-        if (k > 7) statoEl.textContent = 'Chiuso';
-        else statoEl.textContent = `Chiuso ora · riapre ${k === 1 ? 'domani' : GIORNI[(d + k) % 7].toLowerCase()} alle ${fmt(O[(d + k) % 7][0][0])}`;
+        let k = 1, g = null;
+        for (; k <= 56; k++) { g = new Date(now.getFullYear(), now.getMonth(), now.getDate() + k); if (fasceDel(g, O, ch)) break; }
+        const prefisso = chiusaOggi ? `Chiuso${chiusaOggi.motivo ? ' per ' + chiusaOggi.motivo : ''}` : 'Chiuso ora';
+        if (k > 56) statoEl.textContent = 'Chiuso';
+        else {
+          const quando = k === 1 ? 'domani' : k < 7 ? GIORNI[g.getDay()].toLowerCase() : `${GIORNI[g.getDay()].toLowerCase()} ${giornoMese(isoGiorno(g))}`;
+          statoEl.textContent = `${prefisso} · riapre ${quando} alle ${fmt(fasceDel(g, O, ch)[0][0])}`;
+        }
       }
     }
-    statoEl.parentElement.classList.toggle('is-closed', !aperto);
+    statoEl.parentElement?.classList.toggle('is-closed', !aperto);
   }
   if (listEl) {
+    // chiusure in corso o entro 30 giorni: annunciate sotto gli orari
+    const oggi = isoGiorno(now), fra30 = isoGiorno(new Date(now.getFullYear(), now.getMonth(), now.getDate() + 30));
+    const avvisi = ch.filter((c) => c.al >= oggi && c.dal <= fra30);
     listEl.innerHTML = orariSettimana(O)
-      .map(({ i, giorno, label }) => `<li class="${i === d ? 'oggi' : ''}"><span>${giorno}</span><b>${label}</b></li>`)
-      .join('');
+      .map(({ i, giorno, label }) => `<li class="${i === d && !chiusaOggi ? 'oggi' : ''}"><span>${giorno}</span><b>${label}</b></li>`)
+      .join('') + avvisi.map((c) => `<li class="chiusura-avviso"><span>Chiuso${c.motivo ? ' per ' + esc(c.motivo) : ''}</span><b>${periodo(c)}</b></li>`).join('');
   }
 }
 

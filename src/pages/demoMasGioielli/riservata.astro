@@ -1,21 +1,24 @@
 ---
 import Layout from './_Layout.astro';
-import { INFO, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_shared.js';
-// Area riservata al titolare: la selezione del momento (vetrina e home), gli orari
-// di apertura e i marchi trattati.
-// Nella versione reale l'accesso è protetto sul server; qui è una dimostrazione.
+import { REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_shared.js';
+// Area riservata al titolare: vetrina (selezione del momento), orari con chiusure
+// straordinarie, marchi trattati.
+// E' uno strumento di lavoro, non una pagina del sito: tre schede invece di una pagina
+// lunga nove schermate, l'elenco prima del modulo, pulsanti grandi per il dito,
+// "Annulla" dopo ogni eliminazione.
+// Nella versione reale l'accesso e i dati stanno sul server; qui e' una dimostrazione.
 ---
-<Layout title="Area riservata" active="Riservata" desc="Area riservata al titolare: selezione del momento, orari e marchi trattati.">
+<Layout title="Area riservata" active="Riservata" desc="Area riservata al titolare: vetrina, orari e marchi trattati.">
 
   <!-- ACCESSO -->
   <section class="testa-pagina" id="accesso">
     <div class="misura accesso-in">
-      <div class="intro centro a">
+      <div class="intro centro">
         <span class="occhiello centro">Area riservata</span>
         <h1>Il pannello <span class="it oro">del negozio</span></h1>
         <p>Accesso al pannello del negozio.</p>
       </div>
-      <form class="modulo accesso-form a" id="loginForm">
+      <form class="modulo accesso-form" id="loginForm">
         <label>Nome utente<input type="text" id="l-user" autocomplete="username" required /></label>
         <label>Password<input type="password" id="l-pass" autocomplete="current-password" required /></label>
         <p class="errore" id="lErr" hidden>Credenziali non corrette. Riprovate.</p>
@@ -32,288 +35,425 @@ import { INFO, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_shared.js';
   </section>
 
   <!-- PANNELLO -->
-  <section class="testa-pagina" id="pannello" hidden>
+  <section class="testa-pagina adm" id="pannello" hidden>
     <div class="misura">
-      <div class="intro a">
-        <span class="occhiello">Area riservata</span>
-        <h1>Il pannello <span class="it oro">del negozio</span></h1>
-        <p>Quello che cambiate qui compare subito sul sito. <button type="button" id="esci" class="esci">Esci dall’area riservata</button></p>
-      </div>
-    </div>
+      <header class="adm-testa">
+        <div>
+          <span class="occhiello">Area riservata</span>
+          <h1>Il pannello <span class="it oro">del negozio</span></h1>
+        </div>
+        <div class="adm-testa-dx">
+          <a href="/demoMasGioielli/" class="adm-link" target="_blank" rel="noopener">Apri il sito <span aria-hidden="true">↗</span></a>
+          <button type="button" id="esci" class="adm-link">Esci</button>
+        </div>
+      </header>
 
-    <!-- SELEZIONE DEL MOMENTO -->
-    <div class="misura blocco">
-      <h2 class="blocco-t">La selezione del momento</h2>
-      <p class="blocco-d">I pezzi che compaiono nella pagina «Selezione» e in home. Aggiungete una foto dal telefono, togliete quello che avete venduto: il primo in elenco è il primo che si vede.</p>
-    </div>
-    <div class="misura pann-in">
-      <form class="modulo" id="pezzoForm">
-        <h3 class="form-t">Nuovo pezzo</h3>
-        <label>Fotografia<input type="file" id="z-foto" accept="image/*" /></label>
-        <img id="zAnteprima" class="z-anteprima" alt="Anteprima della foto scelta" hidden />
-        <label>Nome<input type="text" id="z-nome" required maxlength="50" placeholder="Es. Anello trilogy" /></label>
-        <label>Categoria
-          <select id="z-cat">{CATEGORIE.map((c) => <option>{c}</option>)}</select>
-        </label>
-        <label>Materiale <small>(facoltativo)</small><input type="text" id="z-mat" maxlength="80" placeholder="Es. Oro bianco 18kt · diamanti" /></label>
-        <label>Due righe di descrizione <small>(facoltative)</small><textarea id="z-desc" rows="3" maxlength="300"></textarea></label>
-        <p class="errore" id="zErr" role="alert" hidden></p>
-        <button type="submit" class="btn btn-pieno">Metti in vetrina</button>
-      </form>
-      <div>
-        <h3 class="form-t">In vetrina adesso</h3>
+      <!-- le schede dicono gia' com'e' il sito adesso -->
+      <div class="schede" role="tablist" aria-label="Sezioni del pannello">
+        <button type="button" role="tab" id="t-vetrina" aria-controls="p-vetrina" aria-selected="true"><span class="s-t">Vetrina</span><span class="s-d" id="sVetrina">&nbsp;</span></button>
+        <button type="button" role="tab" id="t-orari" aria-controls="p-orari" aria-selected="false" tabindex="-1"><span class="s-t">Orari</span><span class="s-d" id="sOrari">&nbsp;</span></button>
+        <button type="button" role="tab" id="t-marchi" aria-controls="p-marchi" aria-selected="false" tabindex="-1"><span class="s-t">Marchi</span><span class="s-d" id="sMarchi">&nbsp;</span></button>
+      </div>
+
+      <!-- ================= VETRINA ================= -->
+      <div class="sez" role="tabpanel" id="p-vetrina" aria-labelledby="t-vetrina" tabindex="-1">
+        <div class="sez-testa">
+          <div>
+            <h2 class="sez-t">In vetrina adesso</h2>
+            <p class="sez-d">I pezzi della pagina «Selezione» e della home, in quest’ordine: il primo è il primo che si vede.</p>
+          </div>
+          <button type="button" class="btn" id="nuovoPezzo"><span aria-hidden="true">＋</span> Aggiungi un pezzo</button>
+        </div>
+
+        <form class="modulo scheda-mod" id="pezzoForm" hidden novalidate>
+          <h3 class="form-t" id="pezzoTitolo">Nuovo pezzo</h3>
+          <div class="pezzo-griglia">
+            <div class="foto-campo">
+              <div class="foto-vuota" id="fotoVuota" aria-hidden="true">Nessuna foto</div>
+              <img id="zAnteprima" class="z-anteprima" alt="Anteprima della foto" hidden />
+              <label class="foto-scegli">
+                <span id="fotoEtichetta">Scegli una foto</span>
+                <input type="file" id="z-foto" accept="image/*" />
+              </label>
+              <small class="foto-nota">Dal telefono si può scattare al momento. Il riquadro mostra il taglio che vedranno i clienti.</small>
+            </div>
+            <div class="campi">
+              <label>Nome<input type="text" id="z-nome" required maxlength="50" placeholder="Es. Anello trilogy" /></label>
+              <label>Categoria
+                <select id="z-cat">{CATEGORIE.map((c) => <option>{c}</option>)}</select>
+              </label>
+              <label>Materiale <small>(facoltativo)</small><input type="text" id="z-mat" maxlength="80" placeholder="Es. Oro bianco 18kt · diamanti" /></label>
+              <label>Due righe di descrizione <small>(facoltative)</small><textarea id="z-desc" rows="3" maxlength="300"></textarea></label>
+            </div>
+          </div>
+          <p class="errore" id="zErr" role="alert" hidden></p>
+          <div class="form-azioni">
+            <button type="submit" class="btn" id="pezzoSalva">Metti in vetrina</button>
+            <button type="button" class="btn btn-vuoto" id="pezzoAnnulla">Annulla</button>
+          </div>
+        </form>
+
         <ul class="elenco" id="elencoPezzi"></ul>
-        <div class="pann-azioni">
-          <a href="/demoMasGioielli/vetrina/" class="btn btn-vuoto">Guarda la selezione</a>
-          <button type="button" class="ripristina" id="ripristinaPezzi">Ripristina gli esempi</button>
-        </div>
       </div>
-    </div>
 
-    <!-- ORARI -->
-    <div class="misura blocco" id="orari">
-      <h2 class="blocco-t">Orari di apertura</h2>
-      <p class="blocco-d">Si aggiornano da soli in home, nella pagina Contatti, nel piede di ogni pagina e nell’indicatore «aperto ora». Per l’orario continuato lasciate vuoto il pomeriggio.</p>
-    </div>
-    <div class="misura">
-      <form class="orari-form" id="orariForm" novalidate>
-        <table class="orari-tab">
-          <thead><tr><th scope="col">Giorno</th><th scope="col">Aperto</th><th scope="col">Mattina</th><th scope="col">Pomeriggio</th></tr></thead>
-          <tbody>
-            {SETTIMANA.map((i) => (
-              <tr data-g={i}>
-                <th scope="row">{GIORNI[i]}</th>
-                <td><label class="o-ap"><input type="checkbox" class="o-aperto" /><span>Aperto</span></label></td>
-                <td><span class="o-fascia"><input type="time" class="o-a1" step="900" aria-label={GIORNI[i] + ', mattina: apre alle'} /><span aria-hidden="true">–</span><input type="time" class="o-b1" step="900" aria-label={GIORNI[i] + ', mattina: chiude alle'} /></span></td>
-                <td><span class="o-fascia"><input type="time" class="o-a2" step="900" aria-label={GIORNI[i] + ', pomeriggio: apre alle'} /><span aria-hidden="true">–</span><input type="time" class="o-b2" step="900" aria-label={GIORNI[i] + ', pomeriggio: chiude alle'} /></span></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <p class="errore" id="oErr" role="alert" hidden></p>
-        <div class="pann-azioni">
-          <button type="submit" class="btn">Salva gli orari</button>
-          <a href="/demoMasGioielli/contatti/" class="btn btn-vuoto">Guarda come appaiono</a>
-          <button type="button" class="ripristina" id="ripristinaOrari">Ripristina gli orari di sempre</button>
-          <span class="o-ok" id="oOk" role="status"></span>
+      <!-- ================= ORARI ================= -->
+      <div class="sez" role="tabpanel" id="p-orari" aria-labelledby="t-orari" tabindex="-1" hidden>
+        <div class="sez-testa">
+          <div>
+            <h2 class="sez-t">Orari della settimana</h2>
+            <p class="sez-d">Si aggiornano in home, in Contatti, nel piede di ogni pagina e nell’indicatore «aperto ora». Per l’orario continuato lasciate vuoto il pomeriggio.</p>
+          </div>
         </div>
-      </form>
-    </div>
+        <form class="orari-form" id="orariForm" novalidate>
+          <table class="orari-tab">
+            <thead><tr><th scope="col">Giorno</th><th scope="col">Aperto</th><th scope="col">Mattina</th><th scope="col">Pomeriggio</th></tr></thead>
+            <tbody>
+              {SETTIMANA.map((i) => (
+                <tr data-g={i}>
+                  <th scope="row">{GIORNI[i]}</th>
+                  <td><label class="o-ap"><input type="checkbox" class="o-aperto" /><span>Aperto</span></label></td>
+                  <td><span class="o-fascia"><input type="time" class="o-a1" step="900" aria-label={GIORNI[i] + ', mattina: apre alle'} /><span aria-hidden="true">–</span><input type="time" class="o-b1" step="900" aria-label={GIORNI[i] + ', mattina: chiude alle'} /></span></td>
+                  <td><span class="o-fascia"><input type="time" class="o-a2" step="900" aria-label={GIORNI[i] + ', pomeriggio: apre alle'} /><span aria-hidden="true">–</span><input type="time" class="o-b2" step="900" aria-label={GIORNI[i] + ', pomeriggio: chiude alle'} /></span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p class="errore" id="oErr" role="alert" hidden></p>
+          <div class="form-azioni">
+            <button type="submit" class="btn" id="orariSalva">Salva gli orari</button>
+            <button type="button" class="btn btn-vuoto" id="orariCopia">Stesso orario per tutti i giorni aperti</button>
+            <span class="o-stato" id="oStato" role="status"></span>
+          </div>
+        </form>
 
-    <!-- MARCHI -->
-    <div class="misura blocco">
-      <h2 class="blocco-t">I marchi che trattate</h2>
-      <p class="blocco-d">Compaiono nella fascia in home page.</p>
-    </div>
+        <div class="sez-testa sez-seconda" id="chiusure">
+          <div>
+            <h2 class="sez-t">Chiusure straordinarie</h2>
+            <p class="sez-d">Ferie, ponti, un giorno di inventario. In quei giorni il sito dice che siete chiusi e quando riaprite, e lo annuncia già un mese prima; poi torna da solo all’orario di sempre.</p>
+          </div>
+        </div>
+        <form class="modulo chiu-form" id="chiuForm" novalidate>
+          <label>Dal<input type="date" id="c-dal" required /></label>
+          <label>Al <small>(compreso)</small><input type="date" id="c-al" /></label>
+          <label class="chiu-motivo">Motivo <small>(facoltativo)</small><input type="text" id="c-motivo" maxlength="40" placeholder="Es. ferie" /></label>
+          <button type="submit" class="btn">Aggiungi</button>
+        </form>
+        <p class="errore" id="cErr" role="alert" hidden></p>
+        <ul class="elenco" id="elencoChiusure"></ul>
+      </div>
 
-    <div class="misura pann-in">
-      <form class="modulo a" id="brandForm">
-        <h3 id="formTitolo" class="form-t">Nuovo marchio</h3>
-        <label>Nome del marchio<input type="text" id="b-nome" required maxlength="40" placeholder="Es. Orsini 1912" /></label>
-        <label>Reparto
-          <select id="b-reparto">
-            {REPARTI.map((r) => <option>{r}</option>)}
-          </select>
-        </label>
-        <label>Nota interna <small>(facoltativa, non compare sul sito)</small>
-          <input type="text" id="b-nota" maxlength="80" placeholder="Es. rivenditore autorizzato dal 2018" />
-        </label>
-        <button type="submit" class="btn btn-pieno" id="salva">Aggiungi il marchio</button>
-        <button type="button" class="annulla" id="annulla" hidden>Annulla la modifica</button>
-        <p class="nota">Dimostrazione: i marchi restano su questo dispositivo. Nella versione reale sono salvati sul sito e visibili a tutti.</p>
-      </form>
-
-      <div class="a">
-        <h3 class="form-t">Marchi in elenco</h3>
+      <!-- ================= MARCHI ================= -->
+      <div class="sez" role="tabpanel" id="p-marchi" aria-labelledby="t-marchi" tabindex="-1" hidden>
+        <div class="sez-testa">
+          <div>
+            <h2 class="sez-t">I marchi che trattate</h2>
+            <p class="sez-d">Compaiono nella fascia in home. Se li togliete tutti, al posto della fascia compare una frase generica.</p>
+          </div>
+          <button type="button" class="btn" id="nuovoMarchio"><span aria-hidden="true">＋</span> Aggiungi un marchio</button>
+        </div>
+        <form class="modulo scheda-mod" id="brandForm" hidden novalidate>
+          <h3 id="formTitolo" class="form-t">Nuovo marchio</h3>
+          <div class="marchio-campi">
+            <label>Nome del marchio<input type="text" id="b-nome" required maxlength="40" placeholder="Es. Orsini 1912" /></label>
+            <label>Reparto
+              <select id="b-reparto">{REPARTI.map((r) => <option>{r}</option>)}</select>
+            </label>
+            <label class="marchio-nota">Nota interna <small>(non compare sul sito)</small>
+              <input type="text" id="b-nota" maxlength="80" placeholder="Es. rivenditore autorizzato dal 2018" />
+            </label>
+          </div>
+          <div class="form-azioni">
+            <button type="submit" class="btn" id="salva">Aggiungi il marchio</button>
+            <button type="button" class="btn btn-vuoto" id="annulla">Annulla</button>
+          </div>
+        </form>
         <ul class="elenco" id="elenco"></ul>
-        <div class="pann-azioni">
-          <a href="/demoMasGioielli/" class="btn btn-vuoto">Guarda come appaiono in home</a>
-          <button type="button" class="ripristina" id="ripristina">Ripristina gli esempi</button>
-        </div>
+      </div>
+
+      <div class="bozza">
+        <p class="promemoria">💡 <b>Per il titolare:</b> in questa bozza quello che inserite resta su questo dispositivo. Nella versione definitiva è salvato sul sito e lo vedono tutti: si carica una volta e il sito si aggiorna da solo, anche dal telefono.</p>
+        <p class="bozza-reset"><button type="button" class="adm-link" id="ripristinaTutto">Riporta la bozza agli esempi</button></p>
       </div>
     </div>
 
-    <div class="misura">
-      <p class="promemoria">💡 <b>Per il titolare:</b> in questa bozza selezione e marchi restano su questo dispositivo. Nella versione definitiva sono salvati sul sito e li vedono tutti: si carica una volta e il sito si aggiorna da solo.</p>
+    <!-- conferme e "Annulla" dopo ogni eliminazione -->
+    <div class="avviso-adm" id="avviso" role="status" aria-live="polite">
+      <span id="avvisoTxt"></span>
+      <button type="button" id="avvisoAnnulla" hidden>Annulla</button>
     </div>
   </section>
 
   <style>
     .testa-pagina{padding-top:calc(var(--tastata) + clamp(2.5rem,6vw,4.5rem));padding-bottom:clamp(2.5rem,5vw,4rem)}
-    /* qui si lavora: il titolo non deve occupare mezzo schermo come in vetrina */
-    #pannello .intro h1{font-size:clamp(2.2rem,4.2vw,3.2rem)}
-    #pannello .intro p{margin-top:1rem}
 
     /* accesso */
     .accesso-in{max-width:420px;margin-inline:auto}
     .accesso-form{margin-top:2.5rem}
-    .errore{color:#a4442c;font-size:.85rem}
+    .errore{color:#a4442c;font-size:.88rem}
     .prova{display:grid;gap:.3rem;text-align:center;background:var(--carta);border:1px dashed var(--oro);padding:1rem;cursor:pointer;font-family:inherit;transition:background .25s}
     .prova:hover{background:var(--avorio-2)}
     .prova-t{font-size:.64rem;letter-spacing:.24em;text-transform:uppercase;color:var(--oro)}
     .prova-v{font-family:var(--disp);font-size:1.25rem;color:var(--inchiostro)}
     .prova-d{font-size:.74rem;color:var(--grigio)}
 
-    /* pannello */
-    .esci{background:none;border:0;padding:0;font:inherit;font-size:.9rem;color:var(--oro);cursor:pointer;border-bottom:1px solid var(--oro)}
-    .pann-in{display:grid;grid-template-columns:.95fr 1.05fr;gap:clamp(2.5rem,6vw,5rem);align-items:start;margin-top:clamp(2rem,4vw,3rem)}
-    .pann-in>*{min-width:0}
-    .form-t{font-size:clamp(1.5rem,2.8vw,2rem);margin-bottom:.4rem}
-    .modulo small{letter-spacing:0;text-transform:none;font-weight:400;color:var(--grigio)}
-    .annulla{background:none;border:0;color:var(--grigio);font-size:.8rem;text-decoration:underline;cursor:pointer;font-family:inherit}
-    .annulla:hover{color:#a4442c}
+    /* il pannello: strumento di lavoro, piu' leggibile della vetrina */
+    :global(.wa-flt){display:none !important}
+    .adm-testa{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+    .adm-testa h1{font-size:clamp(2rem,4vw,2.9rem);margin-top:.6rem}
+    .adm-testa-dx{display:flex;gap:1.4rem;align-items:center}
+    .adm-link{background:none;border:0;padding:.4rem 0;font:inherit;font-size:.92rem;color:var(--inchiostro);border-bottom:1px solid var(--oro);cursor:pointer}
+    .adm-link:hover{color:var(--oro)}
 
-    .elenco{list-style:none;margin-top:1.4rem;border-top:1px solid var(--filo)}
-    /* :global — le righe sono iniettate via JS e non ricevono lo scope di Astro */
-    :global(.el-riga){display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--filo)}
-    :global(.el-riga.in-modifica){background:var(--carta);box-shadow:-12px 0 0 var(--carta),12px 0 0 var(--carta)}
-    :global(.el-tx b){display:block;font-family:var(--disp);font-weight:400;font-size:1.35rem;line-height:1.2}
-    :global(.el-tx span){font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--oro)}
-    :global(.el-tx i){display:block;font-size:.82rem;color:var(--grigio);font-style:normal}
-    :global(.el-riga button){background:none;border:1px solid var(--filo);width:34px;height:34px;cursor:pointer;color:var(--grafite);font-size:.85rem;transition:border-color .25s,color .25s}
-    :global(.el-riga button:hover){border-color:var(--oro);color:var(--oro)}
-    :global(.el-riga .el-del:hover){border-color:#a4442c;color:#a4442c}
-    :global(.el-vuoto){padding:2.2rem 0;color:var(--grigio);font-family:var(--disp);font-style:italic;font-size:1.25rem;text-align:center;border-bottom:1px solid var(--filo)}
-    .pann-azioni{display:flex;align-items:center;gap:2rem;flex-wrap:wrap;margin-top:2rem}
-    .ripristina{background:none;border:0;color:var(--grigio);font-size:.8rem;text-decoration:underline;cursor:pointer;font-family:inherit}
-    .ripristina:hover{color:var(--oro)}
+    .schede{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin:clamp(1.6rem,3vw,2.2rem) 0 clamp(1.8rem,3.4vw,2.6rem)}
+    .schede button{display:flex;flex-direction:column;align-items:flex-start;gap:.25rem;text-align:left;padding:1rem 1.15rem;min-height:76px;background:transparent;border:1px solid var(--filo);font:inherit;cursor:pointer;transition:border-color .2s,background .2s;position:relative}
+    .schede button:hover{border-color:var(--oro)}
+    .schede button[aria-selected="true"]{background:var(--carta);border-color:var(--oro);box-shadow:inset 0 -3px 0 var(--oro)}
+    .s-t{font-family:var(--disp);font-size:1.45rem;line-height:1.1;color:var(--inchiostro)}
+    .s-d{font-size:.84rem;color:var(--grafite)}
 
-    .blocco{margin-top:clamp(3rem,6vw,4.5rem);padding-top:clamp(2rem,4vw,2.8rem);border-top:1px solid var(--filo)}
-    .blocco-t{font-size:clamp(1.9rem,3.6vw,2.7rem)}
-    .blocco-d{color:var(--grafite);margin-top:.5rem;max-width:62ch}
-    .z-anteprima{width:120px;aspect-ratio:4/5;object-fit:cover;border:1px solid var(--filo)}
-    :global(.el-riga.con-foto){grid-template-columns:56px 1fr auto auto}
-    :global(.el-riga.con-foto img){width:56px;height:70px;object-fit:cover}
-    :global(.el-riga button:disabled){opacity:.3;cursor:default}
+    .sez:focus{outline:0}
+    .sez-testa{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem 2rem;flex-wrap:wrap;margin-bottom:1.4rem}
+    .sez-seconda{margin-top:clamp(2.8rem,5vw,3.6rem);padding-top:clamp(2rem,4vw,2.6rem);border-top:1px solid var(--filo)}
+    .sez-t{font-size:clamp(1.6rem,3vw,2.1rem)}
+    .sez-d{color:var(--grafite);margin-top:.35rem;max-width:64ch;font-size:.95rem}
+    .adm .btn{padding:.9rem 1.4rem}
+
+    /* moduli: etichette leggibili e campi con il bordo, non a filetto */
+    .adm .modulo{gap:1.1rem}
+    .adm .modulo label{font-size:.88rem;font-weight:500;letter-spacing:0;text-transform:none;color:var(--inchiostro);gap:.4rem}
+    .adm .modulo small{font-weight:400;color:var(--grigio)}
+    .adm .modulo input:not([type=file]),.adm .modulo select,.adm .modulo textarea{border:1px solid var(--filo);background:#fffdf9;padding:.75rem .85rem;font-size:1rem}
+    .adm .modulo input:focus,.adm .modulo select:focus,.adm .modulo textarea:focus{border-color:var(--oro)}
+    .scheda-mod{background:var(--carta);border:1px solid var(--filo);padding:clamp(1.2rem,3vw,1.8rem);margin-bottom:1.8rem}
+    .form-t{font-size:clamp(1.4rem,2.6vw,1.8rem)}
+    .form-azioni{display:flex;align-items:center;gap:.8rem 1rem;flex-wrap:wrap}
+
+    .pezzo-griglia{display:grid;grid-template-columns:200px 1fr;gap:1.6rem;align-items:start}
+    .pezzo-griglia>*{min-width:0}
+    .campi{display:grid;gap:1.1rem}
+    .foto-campo{display:grid;gap:.6rem}
+    .foto-vuota,.z-anteprima{width:100%;aspect-ratio:4/5;object-fit:cover;border:1px solid var(--filo);background:var(--avorio-2)}
+    .foto-vuota{display:grid;place-items:center;color:var(--grigio);font-size:.85rem}
+    .foto-scegli{position:relative;display:flex !important;align-items:center;justify-content:center;min-height:46px;border:1px solid var(--inchiostro);cursor:pointer;font-size:.74rem !important;letter-spacing:.16em !important;text-transform:uppercase !important}
+    .foto-scegli:hover{background:var(--inchiostro);color:var(--avorio) !important}
+    .foto-scegli input{position:absolute;inset:0;opacity:0;cursor:pointer}
+    .foto-scegli:focus-within{outline:1px solid var(--oro);outline-offset:3px}
+    .foto-nota{font-size:.78rem;color:var(--grigio);line-height:1.45}
+
+    /* elenchi (righe create via JS: :global) */
+    .elenco{list-style:none;border-top:1px solid var(--filo)}
+    :global(.adm .el-riga){display:grid;grid-template-columns:1fr auto;align-items:center;gap:.8rem 1rem;padding:.8rem 0;border-bottom:1px solid var(--filo)}
+    :global(.adm .el-riga.con-foto){grid-template-columns:64px 1fr auto}
+    :global(.adm .el-riga img){width:64px;height:80px;object-fit:cover}
+    :global(.adm .el-tx){min-width:0}
+    :global(.adm .el-tx span){display:block;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--oro)}
+    :global(.adm .el-tx b){display:block;font-family:var(--disp);font-weight:400;font-size:1.35rem;line-height:1.2;color:var(--inchiostro)}
+    :global(.adm .el-tx i){display:block;font-style:normal;font-size:.86rem;color:var(--grafite)}
+    :global(.adm .el-az){display:flex;gap:.35rem}
+    :global(.adm .el-az button){min-width:44px;height:44px;padding:0 .7rem;background:none;border:1px solid var(--filo);cursor:pointer;font:inherit;font-size:.95rem;color:var(--grafite);transition:border-color .2s,color .2s}
+    :global(.adm .el-az button:hover){border-color:var(--oro);color:var(--oro)}
+    :global(.adm .el-az .az-testo){font-size:.84rem}
+    :global(.adm .el-az .el-del:hover){border-color:#a4442c;color:#a4442c}
+    :global(.adm .el-az button:disabled){opacity:.3;cursor:default;border-color:var(--filo);color:var(--grafite)}
+    :global(.adm .el-riga.in-modifica){background:var(--carta);box-shadow:-12px 0 0 var(--carta),12px 0 0 var(--carta)}
+    :global(.adm .el-vuoto){padding:2rem 0;color:var(--grigio);font-family:var(--disp);font-style:italic;font-size:1.25rem;text-align:center;border-bottom:1px solid var(--filo)}
+
     /* orari */
-    .orari-tab{width:100%;border-collapse:collapse;margin-top:.4rem}
-    .orari-tab th,.orari-tab td{text-align:left;padding:.75rem .6rem .75rem 0;border-bottom:1px solid var(--filo);vertical-align:middle}
-    .orari-tab thead th{font-size:.66rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--grigio)}
-    .orari-tab tbody th{font-family:var(--disp);font-weight:400;font-size:1.25rem;color:var(--inchiostro);white-space:nowrap}
-    .o-ap{display:inline-flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.9rem;color:var(--grafite)}
-    .o-ap input{width:18px;height:18px;accent-color:var(--oro)}
+    .orari-tab{width:100%;border-collapse:collapse;margin-bottom:1.2rem}
+    .orari-tab th,.orari-tab td{text-align:left;padding:.7rem .8rem .7rem 0;border-bottom:1px solid var(--filo);vertical-align:middle}
+    .orari-tab thead th{font-size:.72rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--grafite)}
+    .orari-tab tbody th{font-family:var(--disp);font-weight:400;font-size:1.3rem;color:var(--inchiostro);white-space:nowrap}
+    .o-ap{display:inline-flex;align-items:center;gap:.55rem;cursor:pointer;font-size:.92rem;color:var(--grafite);min-height:44px}
+    .o-ap input{width:20px;height:20px;accent-color:var(--oro)}
     .o-fascia{display:inline-flex;align-items:center;gap:.5rem}
-    .o-fascia input{padding:.45rem .5rem;border:1px solid var(--filo);background:var(--carta);font:inherit;font-size:.95rem;color:var(--inchiostro);min-width:0}
+    .o-fascia input{padding:.55rem .55rem;border:1px solid var(--filo);background:#fffdf9;font:inherit;font-size:1rem;color:var(--inchiostro);min-width:0;min-height:44px}
     .o-fascia input:disabled{opacity:.35}
     .o-fascia input[aria-invalid="true"]{border-color:#a4442c;background:#fbf0ec}
     tr.chiuso .o-fascia{opacity:.45}
-    .o-ok{color:#3c6e47;font-size:.88rem}
-    @media (max-width:700px){
-      .orari-tab thead{display:none}
-      .orari-tab,.orari-tab tbody,.orari-tab tr,.orari-tab th,.orari-tab td{display:block;width:100%}
-      .orari-tab tr{padding:.8rem 0;border-bottom:1px solid var(--filo)}
-      .orari-tab th,.orari-tab td{border:0;padding:.25rem 0}
-      .orari-tab td:nth-child(3)::before{content:'Mattina';display:block;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--grigio);margin:.3rem 0}
-      .orari-tab td:nth-child(4)::before{content:'Pomeriggio';display:block;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--grigio);margin:.3rem 0}
+    .o-stato{font-size:.9rem;color:#3c6e47}
+    .o-stato.sporco{color:#9a5b12}
+
+    .chiu-form{display:grid;grid-template-columns:1fr 1fr 1.4fr auto;align-items:end;gap:1rem;margin-bottom:1rem}
+    .chiu-form>*{min-width:0}
+
+    .marchio-campi{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem}
+    .marchio-campi>*{min-width:0}
+    .marchio-nota{grid-column:1 / -1}
+
+    .bozza{margin-top:clamp(3rem,6vw,4.5rem)}
+    .bozza .promemoria{margin-top:0}
+    .bozza-reset{text-align:center;margin-top:1rem}
+    .bozza-reset .adm-link{font-size:.82rem;color:var(--grigio);border-color:var(--filo)}
+
+    .avviso-adm{position:fixed;left:50%;bottom:22px;z-index:180;transform:translate(-50%,12px);display:flex;align-items:center;gap:1.2rem;
+      background:var(--inchiostro);color:var(--avorio);padding:.85rem 1.2rem;font-size:.9rem;max-width:calc(100vw - 32px);
+      opacity:0;pointer-events:none;transition:opacity .25s var(--e),transform .25s var(--e)}
+    .avviso-adm.mostra{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+    .avviso-adm button{background:none;border:0;color:var(--oro-c);font:inherit;font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.78rem;cursor:pointer;padding:.5rem 0;min-height:44px}
+
+    @media (max-width:900px){
+      .chiu-form{grid-template-columns:1fr 1fr}
+      .chiu-motivo{grid-column:1 / -1}
     }
-    @media (max-width:900px){.pann-in{grid-template-columns:1fr}}
+    @media (max-width:700px){
+      .schede{gap:.4rem}
+      .schede button{padding:.75rem .7rem;min-height:66px}
+      .s-t{font-size:1.15rem}
+      .s-d{font-size:.74rem}
+      .sez-testa .btn{width:100%}
+      .pezzo-griglia{grid-template-columns:1fr}
+      .foto-campo{grid-template-columns:110px 1fr;align-items:start}
+      .foto-vuota,.z-anteprima{grid-row:1 / span 2}
+      .foto-nota{grid-column:2}
+      .marchio-campi{grid-template-columns:1fr}
+      :global(.adm .el-riga.con-foto){grid-template-columns:56px 1fr}
+      :global(.adm .el-riga img){width:56px;height:70px}
+      :global(.adm .el-riga.con-foto .el-az){grid-column:1 / -1;justify-content:flex-end}
+      /* da telefono: giorno e "Aperto" sulla stessa riga, etichette accanto agli orari,
+         e nei giorni chiusi le caselle vuote spariscono */
+      .orari-tab thead{display:none}
+      .orari-tab,.orari-tab tbody{display:block;width:100%}
+      .orari-tab tr{display:grid;grid-template-columns:1fr auto;align-items:center;gap:.35rem 1rem;padding:.6rem 0;border-bottom:1px solid var(--filo)}
+      .orari-tab th,.orari-tab td{display:block;border:0;padding:0}
+      .orari-tab td:nth-child(3),.orari-tab td:nth-child(4){grid-column:1 / -1;display:flex;align-items:center;gap:.6rem}
+      .orari-tab td:nth-child(3)::before,.orari-tab td:nth-child(4)::before{flex:0 0 6.2rem;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grafite)}
+      .orari-tab td:nth-child(3)::before{content:'Mattina'}
+      .orari-tab td:nth-child(4)::before{content:'Pomeriggio'}
+      .orari-tab tr.chiuso td:nth-child(3),.orari-tab tr.chiuso td:nth-child(4){display:none}
+      .o-fascia input{width:6.4rem}
+      .form-azioni .btn{flex:1 1 100%}
+    }
   </style>
 
   <script>
-    import { BRAND_BASE, leggiBrand, scriviBrand, esc, salvaSessione, PEZZI, leggiSelezione, scriviSelezione, orariAttivi, scriviOrari, cancellaOrari, GIORNI } from './_shared.js';
+    import { BRAND_BASE, leggiBrand, scriviBrand, esc, salvaSessione, PEZZI, leggiSelezione, scriviSelezione,
+      orariAttivi, scriviOrari, cancellaOrari, GIORNI, leggiChiusure, scriviChiusure, periodo, isoGiorno, renderOrari } from './_shared.js';
     const $ = (s) => document.querySelector(s);
 
-    /* ---- accesso (nella versione reale: autenticazione lato server) ---- */
+    /* ---------------- conferme, con "Annulla" dopo le eliminazioni ---------------- */
+    let tAvviso, annullaFn = null;
+    const avviso = (msg, annulla) => {
+      $('#avvisoTxt').textContent = msg;
+      annullaFn = annulla || null;
+      $('#avvisoAnnulla').hidden = !annulla;
+      $('#avviso').classList.add('mostra');
+      clearTimeout(tAvviso);
+      tAvviso = setTimeout(() => { $('#avviso').classList.remove('mostra'); annullaFn = null; }, annulla ? 7000 : 2800);
+    };
+    $('#avvisoAnnulla').addEventListener('click', () => {
+      const f = annullaFn; annullaFn = null;
+      $('#avviso').classList.remove('mostra');
+      if (f) f();
+    });
+
+    /* ---------------- accesso (nella versione reale: sul server) ---------------- */
     const USER = 'masgioielli', PASS = 'trapani146';
-    const secAccesso = $('#accesso'), secPannello = $('#pannello');
+    const dentro = () => { try { return sessionStorage.getItem('mas-auth') === 'ok'; } catch { return false; } };
+    let entrato = false;
     const gate = () => {
-      const dentro = sessionStorage.getItem('mas-auth') === 'ok';
-      secAccesso.hidden = dentro;
-      secPannello.hidden = !dentro;
+      const ok = dentro() || entrato;
+      $('#accesso').hidden = ok;
+      $('#pannello').hidden = !ok;
+      if (ok) avvia();
     };
     $('#loginForm').addEventListener('submit', (e) => {
       e.preventDefault();
       const u = $('#l-user').value.trim().toLowerCase();
       const p = $('#l-pass').value;
-      if (u === USER && p === PASS) { salvaSessione('mas-auth', 'ok'); $('#lErr').hidden = true; gate(); }
+      if (u === USER && p === PASS) { salvaSessione('mas-auth', 'ok'); entrato = true; $('#lErr').hidden = true; gate(); }
       else $('#lErr').hidden = false;
     });
     $('#lProva').addEventListener('click', () => { $('#l-user').value = USER; $('#l-pass').value = PASS; $('#l-pass').focus(); });
-    $('#esci').addEventListener('click', () => { sessionStorage.removeItem('mas-auth'); gate(); window.scrollTo({ top: 0 }); });
-    gate();
-
-    /* ---- marchi ---- */
-    // se non ha mai salvato nulla parto dagli esempi, così vede subito com'è fatto
-    let marchi = leggiBrand() ?? BRAND_BASE.map((b) => ({ ...b }));
-    let inModifica = null;
-
-    const elenco = $('#elenco'), form = $('#brandForm');
-    const setModo = (mod) => {
-      $('#formTitolo').textContent = mod ? 'Modifica marchio' : 'Nuovo marchio';
-      $('#salva').textContent = mod ? 'Salva le modifiche' : 'Aggiungi il marchio';
-      $('#annulla').hidden = !mod;
-    };
-    const reset = () => { form.reset(); inModifica = null; setModo(false); };
-
-    const render = () => {
-      elenco.innerHTML = marchi.length
-        ? marchi.map((b) => `<li class="el-riga${b.id === inModifica ? ' in-modifica' : ''}">
-            <div class="el-tx"><span>${esc(b.reparto || '')}</span><b>${esc(b.nome)}</b>${b.nota ? `<i>${esc(b.nota)}</i>` : ''}</div>
-            <button type="button" class="el-mod" data-mod="${esc(b.id)}" aria-label="Modifica ${esc(b.nome)}">✎</button>
-            <button type="button" class="el-del" data-del="${esc(b.id)}" aria-label="Elimina ${esc(b.nome)}">✕</button>
-          </li>`).join('')
-        : '<li class="el-vuoto">Nessun marchio in elenco.<br/>In home comparirà una frase generica al posto della fascia.</li>';
-
-      elenco.querySelectorAll('[data-del]').forEach((b) => b.addEventListener('click', () => {
-        marchi = marchi.filter((m) => m.id !== b.dataset.del);
-        if (inModifica === b.dataset.del) reset();
-        scriviBrand(marchi); render();
-      }));
-      elenco.querySelectorAll('[data-mod]').forEach((b) => b.addEventListener('click', () => {
-        const m = marchi.find((x) => x.id === b.dataset.mod);
-        if (!m) return;
-        $('#b-nome').value = m.nome; $('#b-reparto').value = m.reparto || 'Gioielleria'; $('#b-nota').value = m.nota || '';
-        inModifica = m.id; setModo(true); render();
-        $('#b-nome').focus();
-        form.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }));
-    };
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const nome = $('#b-nome').value.trim();
-      if (!nome) return;
-      const dati = { nome, reparto: $('#b-reparto').value, nota: $('#b-nota').value.trim() };
-      if (inModifica) marchi = marchi.map((m) => (m.id === inModifica ? { ...m, ...dati } : m));
-      else marchi = [...marchi, { id: 'm' + Date.now(), ...dati }];
-      scriviBrand(marchi); reset(); render();
-    });
-    $('#annulla').addEventListener('click', () => { reset(); render(); });
-    $('#ripristina').addEventListener('click', () => {
-      marchi = BRAND_BASE.map((b) => ({ ...b }));
-      scriviBrand(marchi); reset(); render();
+    $('#esci').addEventListener('click', () => {
+      if (sporco && !confirm('Ci sono modifiche agli orari non salvate. Uscire lo stesso?')) return;
+      sporco = false;
+      try { sessionStorage.removeItem('mas-auth'); } catch { /* niente */ }
+      entrato = false; gate(); window.scrollTo({ top: 0 });
     });
 
-    setModo(false); render();
+    /* ---------------- schede ---------------- */
+    const SCHEDE = ['vetrina', 'orari', 'marchi'];
+    const apriScheda = (k, fuoco) => {
+      SCHEDE.forEach((s) => {
+        const on = s === k;
+        $('#t-' + s).setAttribute('aria-selected', String(on));
+        $('#t-' + s).tabIndex = on ? 0 : -1;
+        $('#p-' + s).hidden = !on;
+      });
+      try { sessionStorage.setItem('mas-scheda', k); } catch { /* niente */ }
+      history.replaceState(null, '', '#' + k);
+      if (fuoco) $('#t-' + k).focus();
+    };
+    SCHEDE.forEach((s, i) => {
+      $('#t-' + s).addEventListener('click', () => apriScheda(s));
+      $('#t-' + s).addEventListener('keydown', (e) => {
+        const n = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: SCHEDE.length - 1 }[e.key];
+        if (n === undefined) return;
+        e.preventDefault();
+        apriScheda(SCHEDE[(n + SCHEDE.length) % SCHEDE.length], true);
+      });
+    });
 
-    /* ---- selezione del momento ---- */
+    /* ---------------- riepilogo sulle schede ---------------- */
+    const riepilogo = () => {
+      $('#sVetrina').textContent = `${pezzi.length} ${pezzi.length === 1 ? 'pezzo' : 'pezzi'} in vetrina`;
+      const s = document.createElement('span'); document.createElement('span').append(s);
+      renderOrari(null, s);
+      $('#sOrari').textContent = s.textContent;
+      $('#sMarchi').textContent = `${marchi.length} ${marchi.length === 1 ? 'marchio' : 'marchi'} in home`;
+    };
+
+    /* ================= VETRINA ================= */
     let pezzi = leggiSelezione()?.pezzi ?? PEZZI.map((x) => ({ ...x }));
-    const elencoPezzi = $('#elencoPezzi'), zErr = $('#zErr');
-    const errore = (m) => { zErr.textContent = m; zErr.hidden = !m; };
+    let pezzoInModifica = null, fotoPronta = '';
+    const zErr = $('#zErr');
+    const erroreZ = (m) => { zErr.textContent = m; zErr.hidden = !m; };
     const salvaPezzi = () => {
       const ok = scriviSelezione({ pezzi, agg: new Date().toISOString() });
-      errore(ok ? '' : 'Non c’è più spazio su questo dispositivo: togliete qualche pezzo e riprovate.');
+      if (!ok) erroreZ('Non c’è più spazio su questo dispositivo: togliete qualche pezzo e riprovate.');
+      riepilogo();
       return ok;
     };
-    const renderPezzi = () => {
-      elencoPezzi.innerHTML = pezzi.length
-        ? pezzi.map((x, i) => `<li class="el-riga con-foto">
-            <img src="${esc(x.img)}" alt="" width="56" height="70" />
+    const renderPezzi = (fuoco) => {
+      $('#elencoPezzi').innerHTML = pezzi.length
+        ? pezzi.map((x, i) => `<li class="el-riga con-foto${x.id === pezzoInModifica ? ' in-modifica' : ''}">
+            <img src="${esc(x.img)}" alt="" width="64" height="80" />
             <div class="el-tx"><span>${esc(x.cat)}</span><b>${esc(x.nome)}</b>${x.materiale ? `<i>${esc(x.materiale)}</i>` : ''}</div>
-            <button type="button" data-su="${i}" aria-label="Porta ${esc(x.nome)} in cima"${i === 0 ? ' disabled' : ''}>↑</button>
-            <button type="button" class="el-del" data-via="${i}" aria-label="Togli ${esc(x.nome)} dalla vetrina">✕</button>
+            <div class="el-az">
+              <button type="button" class="az-testo" data-mod="${esc(x.id)}">Modifica</button>
+              <button type="button" data-su="${i}" aria-label="Sposta su ${esc(x.nome)}"${i === 0 ? ' disabled' : ''}>↑</button>
+              <button type="button" data-giu="${i}" aria-label="Sposta giù ${esc(x.nome)}"${i === pezzi.length - 1 ? ' disabled' : ''}>↓</button>
+              <button type="button" class="el-del" data-via="${i}" aria-label="Togli ${esc(x.nome)} dalla vetrina">✕</button>
+            </div>
           </li>`).join('')
         : '<li class="el-vuoto">La vetrina è vuota.<br/>Sul sito comparirà «Stiamo rinnovando la selezione».</li>';
-      elencoPezzi.querySelectorAll('[data-via]').forEach((b) => b.addEventListener('click', () => {
-        pezzi.splice(+b.dataset.via, 1); salvaPezzi(); renderPezzi();
-      }));
-      elencoPezzi.querySelectorAll('[data-su]').forEach((b) => b.addEventListener('click', () => {
-        const [x] = pezzi.splice(+b.dataset.su, 1); pezzi.unshift(x); salvaPezzi(); renderPezzi();
-      }));
+      // fuoco: elenco di selettori, il primo disponibile vince
+      for (const sel of [].concat(fuoco || [])) { const el = document.querySelector(sel + ':not(:disabled)'); if (el) { el.focus(); break; } }
     };
+    const sposta = (da, a) => {
+      if (a < 0 || a >= pezzi.length) return;
+      const [x] = pezzi.splice(da, 1); pezzi.splice(a, 0, x);
+      salvaPezzi();
+      // il fuoco resta sul pulsante appena usato, nella nuova posizione
+      // arrivato in cima "su" e' spento: allora va su "giu" (e viceversa in fondo)
+      const [primo, altro] = a < da ? ['su', 'giu'] : ['giu', 'su'];
+      renderPezzi([`[data-${primo}="${a}"]`, `[data-${altro}="${a}"]`]);
+    };
+    $('#elencoPezzi').addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      if (b.dataset.su !== undefined) sposta(+b.dataset.su, +b.dataset.su - 1);
+      else if (b.dataset.giu !== undefined) sposta(+b.dataset.giu, +b.dataset.giu + 1);
+      else if (b.dataset.mod !== undefined) apriPezzo(pezzi.find((x) => x.id === b.dataset.mod));
+      else if (b.dataset.via !== undefined) {
+        const i = +b.dataset.via;
+        const [tolto] = pezzi.splice(i, 1);
+        if (tolto.id === pezzoInModifica) chiudiPezzo();
+        salvaPezzi(); renderPezzi();
+        avviso(`«${tolto.nome}» tolto dalla vetrina`, () => { pezzi.splice(i, 0, tolto); salvaPezzi(); renderPezzi(); avviso('Rimesso in vetrina'); });
+      }
+    });
 
     // La foto del telefono pesa diversi MB: la riduco a 900 px sul lato lungo prima di salvarla.
-    let fotoPronta = '';
     const riduci = (file) => new Promise((ok, ko) => {
       const img = new Image();
       img.onload = () => {
@@ -327,70 +467,111 @@ import { INFO, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_shared.js';
       img.onerror = () => ko(new Error('foto'));
       img.src = URL.createObjectURL(file);
     });
+    const mostraFoto = (src) => {
+      $('#zAnteprima').hidden = !src; $('#fotoVuota').hidden = !!src;
+      if (src) $('#zAnteprima').src = src; else $('#zAnteprima').removeAttribute('src');
+      $('#fotoEtichetta').textContent = src ? 'Cambia foto' : 'Scegli una foto';
+    };
     $('#z-foto').addEventListener('change', async (e) => {
       const f = e.target.files && e.target.files[0];
-      fotoPronta = '';
-      $('#zAnteprima').hidden = true;
       if (!f) return;
-      try {
-        fotoPronta = await riduci(f);
-        $('#zAnteprima').src = fotoPronta; $('#zAnteprima').hidden = false; errore('');
-      } catch { errore('Questa foto non si riesce ad aprire: provate con un’altra.'); }
+      try { fotoPronta = await riduci(f); mostraFoto(fotoPronta); erroreZ(''); }
+      catch { erroreZ('Questa foto non si riesce ad aprire: provate con un’altra.'); }
     });
+    const apriPezzo = (x) => {
+      const form = $('#pezzoForm');
+      form.reset(); erroreZ('');
+      pezzoInModifica = x ? x.id : null;
+      fotoPronta = x ? x.img : '';
+      mostraFoto(fotoPronta);
+      $('#pezzoTitolo').textContent = x ? `Modifica «${x.nome}»` : 'Nuovo pezzo';
+      $('#pezzoSalva').textContent = x ? 'Salva le modifiche' : 'Metti in vetrina';
+      if (x) { $('#z-nome').value = x.nome; $('#z-cat').value = x.cat; $('#z-mat').value = x.materiale || ''; $('#z-desc').value = x.desc || ''; }
+      form.hidden = false;
+      renderPezzi();
+      scrollTo({ top: form.getBoundingClientRect().top + scrollY - 150 });
+      (x ? $('#z-nome') : $('#z-foto')).focus();
+    };
+    const chiudiPezzo = () => { $('#pezzoForm').hidden = true; pezzoInModifica = null; fotoPronta = ''; renderPezzi(); };
+    $('#nuovoPezzo').addEventListener('click', () => apriPezzo(null));
+    $('#pezzoAnnulla').addEventListener('click', () => { chiudiPezzo(); $('#nuovoPezzo').focus(); });
     $('#pezzoForm').addEventListener('submit', (e) => {
       e.preventDefault();
       const nome = $('#z-nome').value.trim();
-      if (!fotoPronta) { errore('Scegliete prima una fotografia.'); return; }
-      if (!nome) return;
-      const nuovo = { id: 'z' + Date.now(), nome, cat: $('#z-cat').value, img: fotoPronta, alt: nome,
-        materiale: $('#z-mat').value.trim(), desc: $('#z-desc').value.trim() };
-      pezzi.unshift(nuovo);
-      if (!salvaPezzi()) { pezzi.shift(); return; }
-      e.target.reset(); fotoPronta = ''; $('#zAnteprima').hidden = true; renderPezzi();
+      if (!fotoPronta) { erroreZ('Scegliete prima una fotografia.'); $('#z-foto').focus(); return; }
+      if (!nome) { erroreZ('Scrivete il nome del pezzo.'); $('#z-nome').focus(); return; }
+      const dati = { nome, cat: $('#z-cat').value, img: fotoPronta, materiale: $('#z-mat').value.trim(), desc: $('#z-desc').value.trim() };
+      const prima = pezzi.map((x) => ({ ...x }));
+      if (pezzoInModifica) {
+        pezzi = pezzi.map((x) => (x.id === pezzoInModifica ? { ...x, ...dati, alt: x.nome === nome && x.alt ? x.alt : nome } : x));
+      } else {
+        pezzi.unshift({ id: 'z' + Date.now(), alt: nome, ...dati });
+      }
+      if (!salvaPezzi()) { pezzi = prima; return; }
+      const nuovo = !pezzoInModifica;
+      chiudiPezzo();
+      avviso(nuovo ? `«${nome}» è in vetrina` : 'Modifiche salvate: il sito è già aggiornato');
     });
-    $('#ripristinaPezzi').addEventListener('click', () => { pezzi = PEZZI.map((x) => ({ ...x })); salvaPezzi(); renderPezzi(); });
-    renderPezzi();
 
-    /* ---- orari di apertura ---- */
+    /* ================= ORARI ================= */
     // "09:30" <-> 9.5
     const ore = (v) => { const [h, m] = v.split(':').map(Number); return h + m / 60; };
     const hhmm = (x) => `${String(Math.floor(x)).padStart(2, '0')}:${String(Math.round((x % 1) * 60)).padStart(2, '0')}`;
-    const righeOrari = [...document.querySelectorAll('#orariForm tbody tr')];
+    const righe = [...document.querySelectorAll('#orariForm tbody tr')];
+    const campi = (tr) => ['.o-a1', '.o-b1', '.o-a2', '.o-b2'].map((s) => tr.querySelector(s));
+    let sporco = false;
+    const segnaSporco = (v) => {
+      sporco = v;
+      $('#oStato').textContent = v ? 'Modifiche non salvate' : '';
+      $('#oStato').classList.toggle('sporco', v);
+    };
     const statoRiga = (tr) => {
       const aperto = tr.querySelector('.o-aperto').checked;
       tr.classList.toggle('chiuso', !aperto);
-      tr.querySelectorAll('input[type=time]').forEach((i) => { i.disabled = !aperto; });
+      campi(tr).forEach((i) => { i.disabled = !aperto; });
     };
     const riempiOrari = () => {
       const o = orariAttivi();
-      righeOrari.forEach((tr) => {
+      righe.forEach((tr) => {
         const f = o[+tr.dataset.g];
         tr.querySelector('.o-aperto').checked = !!f;
-        tr.querySelector('.o-a1').value = f ? hhmm(f[0][0]) : '';
-        tr.querySelector('.o-b1').value = f ? hhmm(f[0][1]) : '';
-        tr.querySelector('.o-a2').value = f && f[1] ? hhmm(f[1][0]) : '';
-        tr.querySelector('.o-b2').value = f && f[1] ? hhmm(f[1][1]) : '';
+        const [a1, b1, a2, b2] = campi(tr);
+        a1.value = f ? hhmm(f[0][0]) : ''; b1.value = f ? hhmm(f[0][1]) : '';
+        a2.value = f && f[1] ? hhmm(f[1][0]) : ''; b2.value = f && f[1] ? hhmm(f[1][1]) : '';
         statoRiga(tr);
       });
+      segnaSporco(false);
     };
-    righeOrari.forEach((tr) => tr.querySelector('.o-aperto').addEventListener('change', () => {
+    // il modello da copiare: il primo giorno aperto con la mattina compilata
+    const modello = () => righe.find((tr) => tr.querySelector('.o-aperto').checked && campi(tr)[0].value && campi(tr)[1].value);
+    righe.forEach((tr) => tr.querySelector('.o-aperto').addEventListener('change', () => {
       statoRiga(tr);
-      // aprendo un giorno chiuso propongo l'orario solito, da ritoccare se serve
-      if (tr.querySelector('.o-aperto').checked && !tr.querySelector('.o-a1').value) {
-        tr.querySelector('.o-a1').value = '09:30'; tr.querySelector('.o-b1').value = '12:30';
-        tr.querySelector('.o-a2').value = '15:30'; tr.querySelector('.o-b2').value = '19:30';
+      // aprendo un giorno chiuso propongo l'orario degli altri giorni, da ritoccare se serve
+      if (tr.querySelector('.o-aperto').checked && !campi(tr)[0].value) {
+        const m = modello();
+        const valori = m && m !== tr ? campi(m).map((i) => i.value) : ['09:30', '12:30', '15:30', '19:30'];
+        campi(tr).forEach((i, k) => { i.value = valori[k]; });
       }
     }));
-    const oErr = $('#oErr'), oOk = $('#oOk');
+    $('#orariForm').addEventListener('input', () => { segnaSporco(true); $('#oErr').hidden = true; });
+    $('#orariForm').addEventListener('change', () => segnaSporco(true));
+    $('#orariCopia').addEventListener('click', () => {
+      const m = modello();
+      if (!m) { $('#oErr').textContent = 'Aprite almeno un giorno e scrivetene l’orario: verrà copiato sugli altri.'; $('#oErr').hidden = false; return; }
+      const valori = campi(m).map((i) => i.value);
+      righe.filter((tr) => tr !== m && tr.querySelector('.o-aperto').checked).forEach((tr) => campi(tr).forEach((i, k) => { i.value = valori[k]; }));
+      segnaSporco(true);
+      avviso(`Orario di ${GIORNI[+m.dataset.g].toLowerCase()} copiato sugli altri giorni aperti: ricordate di salvare`);
+    });
     $('#orariForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      oOk.textContent = '';
       document.querySelectorAll('#orariForm [aria-invalid]').forEach((i) => i.removeAttribute('aria-invalid'));
+      const oErr = $('#oErr');
       const nuovi = {};
-      for (const tr of righeOrari) {
+      for (const tr of righe) {
         const g = +tr.dataset.g, nome = GIORNI[g];
         if (!tr.querySelector('.o-aperto').checked) { nuovi[g] = null; continue; }
-        const [a1, b1, a2, b2] = ['.o-a1', '.o-b1', '.o-a2', '.o-b2'].map((s) => tr.querySelector(s));
+        const [a1, b1, a2, b2] = campi(tr);
         const sbaglia = (campo, msg) => { campo.setAttribute('aria-invalid', 'true'); campo.focus(); oErr.textContent = msg; oErr.hidden = false; };
         if (!a1.value || !b1.value) return sbaglia(a1.value ? b1 : a1, `${nome}: scrivete a che ora aprite e chiudete la mattina.`);
         if (ore(a1.value) >= ore(b1.value)) return sbaglia(b1, `${nome}: la chiusura della mattina viene prima dell’apertura.`);
@@ -404,9 +585,129 @@ import { INFO, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_shared.js';
         nuovi[g] = fasce;
       }
       oErr.hidden = true;
-      oOk.textContent = scriviOrari(nuovi) ? '✓ Orari salvati: il sito è già aggiornato.' : 'Non riesco a salvare su questo dispositivo.';
+      if (!scriviOrari(nuovi)) { oErr.textContent = 'Non riesco a salvare su questo dispositivo.'; oErr.hidden = false; return; }
+      segnaSporco(false); riepilogo();
+      $('#oStato').textContent = '✓ Salvati';
+      avviso('Orari salvati: il sito è già aggiornato');
     });
-    $('#ripristinaOrari').addEventListener('click', () => { cancellaOrari(); riempiOrari(); oErr.hidden = true; oOk.textContent = 'Ripristinati gli orari di sempre.'; });
-    riempiOrari();
+    // uscendo con modifiche non salvate il browser chiede conferma
+    addEventListener('beforeunload', (e) => { if (sporco) { e.preventDefault(); e.returnValue = ''; } });
+
+    /* ---- chiusure straordinarie ---- */
+    let chiusure = leggiChiusure();
+    const cErr = $('#cErr');
+    const renderChiusure = () => {
+      const oggi = isoGiorno(new Date());
+      const attive = chiusure.filter((c) => c.al >= oggi);
+      $('#elencoChiusure').innerHTML = attive.length
+        ? attive.map((c) => `<li class="el-riga">
+            <div class="el-tx"><span>${c.dal <= oggi ? 'In corso' : 'In programma'}</span><b>Chiuso${c.motivo ? ' per ' + esc(c.motivo) : ''}</b><i>${esc(periodo(c))}</i></div>
+            <div class="el-az"><button type="button" class="el-del" data-chiu="${esc(c.dal + '|' + c.al)}" aria-label="Togli la chiusura ${esc(periodo(c))}">✕</button></div>
+          </li>`).join('')
+        : '<li class="el-vuoto">Nessuna chiusura in programma.</li>';
+    };
+    const salvaChiusure = () => { scriviChiusure(chiusure); chiusure = leggiChiusure(); renderChiusure(); riepilogo(); };
+    $('#c-dal').min = isoGiorno(new Date());
+    $('#c-dal').addEventListener('change', () => {
+      $('#c-al').min = $('#c-dal').value;
+      if (!$('#c-al').value || $('#c-al').value < $('#c-dal').value) $('#c-al').value = $('#c-dal').value;
+    });
+    $('#chiuForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const dal = $('#c-dal').value, al = $('#c-al').value || dal, motivo = $('#c-motivo').value.trim();
+      const errore = (m) => { cErr.textContent = m; cErr.hidden = false; };
+      if (!dal) return errore('Scegliete il primo giorno di chiusura.');
+      if (al < dal) return errore('Il giorno di riapertura viene prima della chiusura.');
+      if (al < isoGiorno(new Date())) return errore('Queste date sono già passate.');
+      cErr.hidden = true;
+      chiusure.push({ dal, al, motivo });
+      salvaChiusure();
+      e.target.reset();
+      avviso(`Chiusura aggiunta: ${periodo({ dal, al })}`);
+    });
+    $('#elencoChiusure').addEventListener('click', (e) => {
+      const b = e.target.closest('[data-chiu]'); if (!b) return;
+      const [dal, al] = b.dataset.chiu.split('|');
+      const i = chiusure.findIndex((c) => c.dal === dal && c.al === al);
+      if (i < 0) return;
+      const [tolta] = chiusure.splice(i, 1);
+      salvaChiusure();
+      avviso(`Chiusura ${periodo(tolta)} tolta`, () => { chiusure.push(tolta); salvaChiusure(); avviso('Chiusura rimessa'); });
+    });
+
+    /* ================= MARCHI ================= */
+    // se non ha mai salvato nulla parto dagli esempi, così vede subito com'è fatto
+    let marchi = leggiBrand() ?? BRAND_BASE.map((b) => ({ ...b }));
+    let marchioInModifica = null;
+    const renderMarchi = () => {
+      $('#elenco').innerHTML = marchi.length
+        ? marchi.map((b) => `<li class="el-riga${b.id === marchioInModifica ? ' in-modifica' : ''}">
+            <div class="el-tx"><span>${esc(b.reparto || '')}</span><b>${esc(b.nome)}</b>${b.nota ? `<i>${esc(b.nota)}</i>` : ''}</div>
+            <div class="el-az">
+              <button type="button" class="az-testo" data-bmod="${esc(b.id)}">Modifica</button>
+              <button type="button" class="el-del" data-bvia="${esc(b.id)}" aria-label="Elimina ${esc(b.nome)}">✕</button>
+            </div>
+          </li>`).join('')
+        : '<li class="el-vuoto">Nessun marchio in elenco.<br/>In home comparirà una frase generica al posto della fascia.</li>';
+    };
+    const salvaMarchi = () => { scriviBrand(marchi); riepilogo(); };
+    const apriMarchio = (b) => {
+      const form = $('#brandForm');
+      form.reset();
+      marchioInModifica = b ? b.id : null;
+      $('#formTitolo').textContent = b ? `Modifica «${b.nome}»` : 'Nuovo marchio';
+      $('#salva').textContent = b ? 'Salva le modifiche' : 'Aggiungi il marchio';
+      if (b) { $('#b-nome').value = b.nome; $('#b-reparto').value = b.reparto || 'Gioielleria'; $('#b-nota').value = b.nota || ''; }
+      form.hidden = false; renderMarchi();
+      scrollTo({ top: form.getBoundingClientRect().top + scrollY - 150 });
+      $('#b-nome').focus();
+    };
+    const chiudiMarchio = () => { $('#brandForm').hidden = true; marchioInModifica = null; renderMarchi(); };
+    $('#nuovoMarchio').addEventListener('click', () => apriMarchio(null));
+    $('#annulla').addEventListener('click', () => { chiudiMarchio(); $('#nuovoMarchio').focus(); });
+    $('#elenco').addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      if (b.dataset.bmod) apriMarchio(marchi.find((m) => m.id === b.dataset.bmod));
+      if (b.dataset.bvia) {
+        const i = marchi.findIndex((m) => m.id === b.dataset.bvia);
+        const [tolto] = marchi.splice(i, 1);
+        if (tolto.id === marchioInModifica) chiudiMarchio();
+        salvaMarchi(); renderMarchi();
+        avviso(`«${tolto.nome}» tolto dalla home`, () => { marchi.splice(i, 0, tolto); salvaMarchi(); renderMarchi(); avviso('Marchio rimesso'); });
+      }
+    });
+    $('#brandForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nome = $('#b-nome').value.trim();
+      if (!nome) { $('#b-nome').focus(); return; }
+      const dati = { nome, reparto: $('#b-reparto').value, nota: $('#b-nota').value.trim() };
+      const nuovo = !marchioInModifica;
+      if (marchioInModifica) marchi = marchi.map((m) => (m.id === marchioInModifica ? { ...m, ...dati } : m));
+      else marchi = [...marchi, { id: 'm' + Date.now(), ...dati }];
+      salvaMarchi(); chiudiMarchio();
+      avviso(nuovo ? `«${nome}» aggiunto alla home` : 'Modifiche salvate');
+    });
+
+    /* ---------------- solo per la bozza: torna agli esempi ---------------- */
+    $('#ripristinaTutto').addEventListener('click', () => {
+      if (!confirm('Riportare la bozza agli esempi? Pezzi, orari, chiusure e marchi inseriti verranno cancellati.')) return;
+      pezzi = PEZZI.map((x) => ({ ...x })); salvaPezzi();
+      cancellaOrari(); chiusure = []; scriviChiusure([]);
+      marchi = BRAND_BASE.map((b) => ({ ...b })); salvaMarchi();
+      chiudiPezzo(); chiudiMarchio(); riempiOrari(); renderChiusure(); riepilogo();
+      avviso('Bozza riportata agli esempi');
+    });
+
+    /* ---------------- avvio ---------------- */
+    let avviato = false;
+    function avvia() {
+      if (avviato) return; avviato = true;
+      renderPezzi(); riempiOrari(); renderChiusure(); renderMarchi(); riepilogo();
+      // si riapre sulla scheda di prima (o su quella del link: #orari, #marchi)
+      let k = location.hash.slice(1);
+      if (!SCHEDE.includes(k)) { try { k = sessionStorage.getItem('mas-scheda'); } catch { k = null; } }
+      apriScheda(SCHEDE.includes(k) ? k : 'vetrina');
+    }
+    gate();
   </script>
 </Layout>
