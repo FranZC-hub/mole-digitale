@@ -211,11 +211,8 @@ const negozio = [
     </div>
   </section>
 
-  <!-- STRISCIA: un respiro di fotografia tra la parte emotiva e quella pratica -->
-  <div class="striscia" aria-hidden="true">
-    <img src="/img/demo-gioielleria/dettaglio-oro.webp" width="1800" height="822"
-         alt="" loading="lazy" decoding="async" />
-  </div>
+  <!-- SEPARE': un respiro tra la parte emotiva e quella pratica (prima era una foto d'esempio) -->
+  <div class="separe misura" aria-hidden="true"><p class="fregio"><span></span></p></div>
 
   <!-- VISITA: indirizzo e orari, a filo -->
   <section class="banda visita">
@@ -340,8 +337,7 @@ const negozio = [
     .marchi-vuoto{text-align:center;font-family:var(--disp);font-style:italic;font-size:clamp(1.2rem,2.4vw,1.6rem);color:var(--grafite)}
 
     /* ---------- striscia macro ---------- */
-    .striscia{overflow:hidden;line-height:0}
-    .striscia img{width:100%;height:clamp(120px,17vw,230px);object-fit:cover;object-position:center 55%}
+    .separe .fregio::before,.separe .fregio::after{max-width:260px}
 
     /* ---------- atelier ---------- */
     /* fotografia sotto una velatura fitta: la banda non e' piu' un rettangolo nero piatto */
