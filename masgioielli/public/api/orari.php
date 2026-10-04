@@ -64,7 +64,7 @@ function fasce_valide(mixed $f, int $g): ?array
 function stato(PDO $pdo): array
 {
     $orari = [];
-    foreach ($pdo->query('SELECT giorno, fasce FROM orari')->fetchAll() as $r) {
+    foreach ($pdo->query('SELECT giorno, fasce FROM orari ORDER BY giorno')->fetchAll() as $r) {
         $orari[(string) $r['giorno']] = $r['fasce'] === '' ? null : json_decode($r['fasce'], true);
     }
     $q = $pdo->prepare('SELECT id, dal, al, motivo FROM chiusure WHERE al >= ? ORDER BY dal');

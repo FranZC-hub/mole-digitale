@@ -34,7 +34,7 @@ function dati_pubblici(PDO $pdo): array
     ], $pdo->query('SELECT * FROM pezzi ORDER BY ordine, id')->fetchAll());
 
     $orari = null;
-    $righe = $pdo->query('SELECT giorno, fasce FROM orari')->fetchAll();
+    $righe = $pdo->query('SELECT giorno, fasce FROM orari ORDER BY giorno')->fetchAll();
     if (count($righe) === 7) {
         $orari = [];
         foreach ($righe as $r) $orari[(string) $r['giorno']] = $r['fasce'] === '' ? null : json_decode($r['fasce'], true);

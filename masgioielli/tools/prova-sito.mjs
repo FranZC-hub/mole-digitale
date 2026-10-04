@@ -3,6 +3,8 @@
 // quindi la aggiunge il test alle pagine). Serve Chrome e puppeteer-core.
 // Uso:  npm run build  poi  node tools/prova-sito.mjs        (SQLite)
 //       MAS_MYSQL=127.0.0.1:3307:root: node tools/prova-sito.mjs   (MySQL/MariaDB)
+//       MAS_URL=https://127.0.0.1:8443 MAS_CODICE=... node tools/prova-sito.mjs
+//         (server gia' acceso, es. Apache con .htaccess: CSP e intestazioni sono quelle vere)
 import { spawn, execSync } from 'node:child_process';
 import { existsSync, mkdirSync, rmSync, writeFileSync, readFileSync, readdirSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -13,7 +15,9 @@ const RADICE = resolve(dirname(new URL(import.meta.url).pathname.replace(/^\/([A
 const require = createRequire(join(RADICE, '..', 'package.json'));
 const puppeteer = require('puppeteer-core');
 const CHROME = process.env.CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
-const PORTA = 8092, H = `http://127.0.0.1:${PORTA}`;
+const ESTERNO = (process.env.MAS_URL || '').replace(/\/$/, '');
+if (ESTERNO) process.env.NODE_TLS_REJECT_UNAUTHORIZED ??= '0';   // certificato di prova
+const PORTA = 8092, H = ESTERNO || `http://127.0.0.1:${PORTA}`;
 const PROVA = join(RADICE, '.locale', 'prova-sito');
 rmSync(PROVA, { recursive: true, force: true }); mkdirSync(PROVA, { recursive: true });
 const CSP = readFileSync(join(RADICE, 'public/.htaccess'), 'utf8').match(/Content-Security-Policy "([^"]+)"/)[1];
@@ -25,11 +29,13 @@ try {
   if (existsSync(ext)) estensioni = ['-d', `extension_dir=${ext}`, ...['pdo_sqlite', 'pdo_mysql', 'gd', 'mbstring', 'fileinfo'].flatMap((e) => ['-d', `extension=${e}`])];
 } catch {}
 const phpEsegui = (c) => execSync(`php ${estensioni.map((x) => `"${x}"`).join(' ')} -r "${c.replace(/"/g, '\\"')}"`).toString();
-const CODICE = randomBytes(16).toString('hex');
+const CODICE = process.env.MAS_CODICE || randomBytes(16).toString('hex');
 const conf = join(PROVA, 'config.php');
 const MY = process.env.MAS_MYSQL ? process.env.MAS_MYSQL.split(':') : null;
 const NOMEDB = 'mas_sito_' + Date.now();
-if (MY) {
+if (ESTERNO) {
+  console.log('Server esterno: ' + ESTERNO);
+} else if (MY) {
   const [host, porta, utente, password = ''] = MY;
   phpEsegui(`$p = new PDO('mysql:host=${host};port=${porta}', '${utente}', '${password}'); $p->exec('CREATE DATABASE ${NOMEDB} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');`);
   writeFileSync(conf, `<?php return ['db' => ['dsn' => 'mysql:host=${host};port=${porta};dbname=${NOMEDB};charset=utf8mb4', 'utente' => '${utente}', 'password' => '${password}'], 'posta' => ['host' => ''], 'sale' => 'prova', 'installazione' => '${CODICE}'];`);
@@ -38,22 +44,22 @@ if (MY) {
   writeFileSync(conf, `<?php return ['db' => ['dsn' => 'sqlite:${join(PROVA, 'sito.sqlite').replace(/\\/g, '/')}'], 'posta' => ['host' => ''], 'sale' => 'prova', 'installazione' => '${CODICE}'];`);
   console.log('Database: SQLite');
 }
-const server = spawn('php', [...estensioni, '-d', 'upload_max_filesize=10M', '-d', 'post_max_size=12M', '-S', `127.0.0.1:${PORTA}`, '-t', join(RADICE, 'dist')], { env: { ...process.env, MAS_CONFIG: conf }, stdio: ['ignore', 'ignore', 'pipe'] });
+const server = ESTERNO ? { kill() {}, stderr: { on() {} } } : spawn('php', [...estensioni, '-d', 'upload_max_filesize=10M', '-d', 'post_max_size=12M', '-S', `127.0.0.1:${PORTA}`, '-t', join(RADICE, 'dist')], { env: { ...process.env, MAS_CONFIG: conf }, stdio: ['ignore', 'ignore', 'pipe'] });
 let logServer = ''; server.stderr.on('data', (d) => { logServer += d; });
-await new Promise((r) => setTimeout(r, 900));
+if (!ESTERNO) await new Promise((r) => setTimeout(r, 900));
 
 let ko = 0;
 const ok = (c, m) => { console.log((c ? '  ok   ' : '  KO   ') + m); if (!c) ko++; };
 const pausa = (ms = 300) => new Promise((r) => setTimeout(r, ms));
-const b = await puppeteer.launch({ executablePath: CHROME, headless: true, args: ['--no-sandbox', '--disable-gpu'] });
+const b = await puppeteer.launch({ executablePath: CHROME, headless: true, acceptInsecureCerts: !!ESTERNO, args: ['--no-sandbox', '--disable-gpu'] });
 const errori = [];
 const ctx = await b.createBrowserContext();
 async function pagina(vp = { width: 1280, height: 900 }) {
   const p = await ctx.newPage();
   await p.setViewport(vp);
   // la CSP del server sulle pagine HTML
-  await p.setRequestInterception(true);
-  p.on('request', async (req) => {
+  if (!ESTERNO) await p.setRequestInterception(true);
+  if (!ESTERNO) p.on('request', async (req) => {
     if (req.resourceType() !== 'document') return req.continue();
     try {
       const r = await fetch(req.url(), { redirect: 'manual' });
@@ -69,6 +75,8 @@ async function pagina(vp = { width: 1280, height: 900 }) {
   p.on('console', (m) => {
     // il 401 e' la risposta giusta al tentativo con password sbagliata che il test fa apposta
     if (m.type() === 'error' && /status of 401/.test(m.text())) return;
+    // e il 404 della pagina inesistente che il test apre apposta
+    if (m.type() === 'error' && /status of 404/.test(m.text()) && /pagina-che-non-esiste/.test(m.location()?.url || '')) return;
     if (m.type() === 'error' || /Refused|Content Security Policy/i.test(m.text())) errori.push('console: ' + m.text().slice(0, 160));
   });
   p.on('dialog', (d) => d.accept());
@@ -220,7 +228,7 @@ try {
 } finally {
   await b.close();
   server.kill();
-  if (MY) { const [host, porta, utente, password = ''] = MY; try { phpEsegui(`$p = new PDO('mysql:host=${host};port=${porta}', '${utente}', '${password}'); $p->exec('DROP DATABASE ${NOMEDB}');`); } catch {} }
+  if (MY && !ESTERNO) { const [host, porta, utente, password = ''] = MY; try { phpEsegui(`$p = new PDO('mysql:host=${host};port=${porta}', '${utente}', '${password}'); $p->exec('DROP DATABASE ${NOMEDB}');`); } catch {} }
   const cart = join(RADICE, 'dist/uploads/pezzi');
   if (existsSync(cart)) rmSync(cart, { recursive: true });
 }

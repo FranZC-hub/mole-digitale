@@ -29,6 +29,7 @@ masgioielli/
 └── tools/
     ├── prova-api.mjs          collaudo dell'API (lo esegue anche il deploy)
     ├── prova-sito.mjs         collaudo completo nel browser, con la CSP del server
+    ├── prova-server.mjs       collaudo del server Apache: HTTPS, intestazioni, file vietati, redirect
     ├── server-locale.mjs      sito + API in locale su SQLite
     └── controlla-link.mjs     dopo la build: link interni e credenziali in dist/
 ```
@@ -57,9 +58,23 @@ MAS_MYSQL=127.0.0.1:3306:root:password node tools/prova-api.mjs   # API su MySQL
 node tools/prova-sito.mjs                                 # tutto nel browser (serve Chrome)
 ```
 
+Su un Apache già acceso (di prova o il server vero, prima del lancio), con il `.htaccess` attivo:
+
+```bash
+MAS_URL=https://DOMINIO MAS_HTTP=http://DOMINIO node tools/prova-server.mjs
+# facoltativi: MAS_UTENTE/MAS_PASSWORD (controlla il cookie Secure),
+#              MAS_DIST=cartella servita (solo in locale: crea e toglie file trappola)
+MAS_URL=https://127.0.0.1:8443 MAS_CODICE=... node tools/prova-sito.mjs   # solo su un database di prova appena creato
+```
+
+`prova-sito.mjs` contro un server esterno installa l'utente con il codice dato e ne cambia
+la password durante la prova: **non** va mai lanciato sul sito vero.
+
 ## Sul server (prima volta)
 
-1. Creare un database MySQL/MariaDB dal pannello dell'hosting.
+1. Creare un database MySQL/MariaDB dal pannello dell'hosting. Se il pannello lo permette,
+   all'utente del sito bastano `SELECT, INSERT, UPDATE, DELETE, CREATE, INDEX` su quel
+   solo database (niente `DROP`, `ALTER`, `GRANT`).
 2. Caricare il contenuto di `dist/` nella cartella pubblica del dominio
    (oppure configurare i secret del deploy automatico, vedi sotto).
 3. Sul server, copiare `api/config.esempio.php` in `api/config.php` e compilarlo:
@@ -90,4 +105,14 @@ Il deploy non tocca mai `api/config.php` né le foto in `uploads/pezzi/`.
   nome casuale; in `uploads/` nessuno script può girare.
 - Moduli pubblici: campo trappola, tempo minimo, 5 invii l'ora per indirizzo.
 - Errori: mai dettagli tecnici al browser, solo nel log del server.
-- `.htaccess`: HTTPS obbligatorio, HSTS, CSP senza script esterni o in linea, nosniff, frame-ancestors.
+- `.htaccess`: HTTPS obbligatorio su www.masgioielli.it, HSTS, CSP senza script esterni o in linea,
+  nosniff, frame-ancestors, file nascosti vietati (`/.well-known/` resta aperto per il certificato).
+
+## Indirizzi del vecchio sito
+
+Il `.htaccess` porta con un 301 gli indirizzi del vecchio WordPress (italiani e `?lang=en`)
+alle pagine nuove: `/negozio/` → `/`, `/gioielleria/` → `/selezione/`,
+`/orologeria/` → `/selezione/?cat=Orologi`, `/laboratorio/` `/creazioni/`
+`/pendoleria-orologeria/` → `/atelier/`, `/privacy-policy/` → `/privacy/`,
+`/wp-sitemap.xml` → `/sitemap-index.xml`. `/perizie/` e `/contatti/` restano uguali.
+`/bozza/`, `/wp-admin/`, `/wp-login.php`, `/xmlrpc.php` rispondono 410 (non esistono più).
