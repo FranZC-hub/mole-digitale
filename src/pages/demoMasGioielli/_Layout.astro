@@ -68,8 +68,10 @@ const schema = {
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="it_IT" />
   <meta property="og:site_name" content={INFO.nome} />
-  <meta property="og:image" content="https://www.moledigitale.it/img/demo-gioielleria/hero.webp" />
-  <meta property="og:image:alt" content="Anello con diamante a taglio principessa" />
+  <meta property="og:image" content="https://www.moledigitale.it/img/masgioielli/anteprima.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Il logo di MAS Gioielli, Corso Trapani 146/b, Torino" />
   <meta name="twitter:card" content="summary_large_image" />
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 </head>
@@ -83,10 +85,10 @@ const schema = {
       <button class="menu-btn" id="menuBtn" aria-label="Apri il menu" aria-expanded="false" aria-controls="menuNav">
         <span></span><span></span>
       </button>
-      <a href={BASE} class="marchio" aria-label={INFO.nome + ' — home'}>
+      <a href={BASE} class="marchio">
         <!-- logo vettoriale fornito dal negozio (EPS di Illustrator convertito in SVG):
              nitido a qualsiasi misura, colore PANTONE Warm Gray 11 C -->
-        <img class="marchio-logo" src="/img/masgioielli/logo-mas.svg" width="795" height="265" alt="" fetchpriority="high" />
+        <img class="marchio-logo" src="/img/masgioielli/logo-mas.svg" width="795" height="265" alt={INFO.nome + ' — home'} fetchpriority="high" />
         <span class="marchio-sotto" aria-hidden="true">Torino · dal {INFO.fondata}</span>
       </a>
       <div class="testata-dx">
