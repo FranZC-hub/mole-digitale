@@ -17,6 +17,8 @@ Stato al 5 ottobre 2026. ✅ fatto · ⬜ da fare · 👤 serve qualcosa dal neg
   HTTPS e www obbligatori, intestazioni di sicurezza e CSP vere, cache e gzip, 404 del sito,
   `config.php`/librerie/`.env`/`.git` irraggiungibili, nessuno script eseguibile tra le foto
   (nemmeno `foto.php.jpg`), cookie di sessione Secure
+- ✅ Database MySQL d'esempio in locale con un comando (`npm run esempio`): stessa struttura e
+  stessi permessi della produzione, pezzi con foto, marchi, chiusura e messaggi caricati dall'API
 - ✅ Redirect 301 dai 19 indirizzi del vecchio WordPress (italiani e inglesi) alle pagine nuove;
   `/bozza/` e i file di WordPress rispondono 410
 - ✅ Lighthouse, pagine pubbliche: prestazioni 97–100, accessibilità 100, buone pratiche 100, SEO 100, CLS 0

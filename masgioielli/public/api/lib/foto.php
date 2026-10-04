@@ -6,9 +6,15 @@ declare(strict_types=1);
 // immagine, compresi i dati EXIF con la posizione GPS delle foto del telefono.
 if (!defined('MAS_API')) { http_response_code(404); exit; }
 
-const CARTELLA_FOTO = CARTELLA_API . '/../uploads/pezzi';
 const URL_FOTO = '/uploads/pezzi/';
 const LATO_MASSIMO = 1600;
+
+/** Dove stanno le foto: uploads/pezzi accanto all'API. Solo il server locale la sposta
+ *  ('foto' nella configurazione), perche' la build di Astro svuota dist/. */
+function cartella_foto(): string
+{
+    return config()['foto'] ?? CARTELLA_API . '/../uploads/pezzi';
+}
 
 function salva_foto(array $f): string
 {
@@ -27,8 +33,8 @@ function salva_foto(array $f): string
     if (!$info || !isset($tipi[$info[2]])) errore('Il file non è una foto JPEG, PNG o WebP', 422);
     if ($info[0] > 12000 || $info[1] > 12000) errore('La foto è troppo grande', 422);
 
-    if (!is_dir(CARTELLA_FOTO) && !mkdir(CARTELLA_FOTO, 0755, true)) {
-        error_log('MasGioielli: impossibile creare ' . CARTELLA_FOTO);
+    if (!is_dir(cartella_foto()) && !mkdir(cartella_foto(), 0755, true)) {
+        error_log('MasGioielli: impossibile creare ' . cartella_foto());
         errore('Non riesco a salvare la foto', 500);
     }
     $nome = bin2hex(random_bytes(12));
@@ -45,7 +51,7 @@ function salva_foto(array $f): string
             imagedestroy($img);
             $img = $r;
         }
-        $file = CARTELLA_FOTO . "/{$nome}.jpg";
+        $file = cartella_foto() . "/{$nome}.jpg";
         $ok = imagejpeg($img, $file, 84);
         imagedestroy($img);
         if (!$ok) errore('Non riesco a salvare la foto', 500);
@@ -55,7 +61,7 @@ function salva_foto(array $f): string
     // Senza GD: si conserva il file cosi' com'e' (dal browser arriva gia' ridotto e
     // ripulito dal canvas dell'area riservata).
     $est = $tipi[$info[2]];
-    if (!move_uploaded_file($f['tmp_name'], CARTELLA_FOTO . "/{$nome}.{$est}")) errore('Non riesco a salvare la foto', 500);
+    if (!move_uploaded_file($f['tmp_name'], cartella_foto() . "/{$nome}.{$est}")) errore('Non riesco a salvare la foto', 500);
     return URL_FOTO . "{$nome}.{$est}";
 }
 
@@ -63,16 +69,16 @@ function salva_foto(array $f): string
 function foto_esistente(mixed $percorso): ?string
 {
     if (!is_string($percorso) || !preg_match('#^/uploads/pezzi/[a-f0-9]{24}\.(jpg|png|webp)$#', $percorso)) return null;
-    return is_file(CARTELLA_FOTO . '/' . basename($percorso)) ? $percorso : null;
+    return is_file(cartella_foto() . '/' . basename($percorso)) ? $percorso : null;
 }
 
 /** Le foto non piu' usate da nessun pezzo, dopo due giorni (il tempo di un "Annulla"). */
 function pulisci_foto_orfane(PDO $pdo): void
 {
-    if (!is_dir(CARTELLA_FOTO)) return;
+    if (!is_dir(cartella_foto())) return;
     $usate = array_flip(array_map('basename', $pdo->query('SELECT immagine FROM pezzi')->fetchAll(PDO::FETCH_COLUMN)));
     // niente GLOB_BRACE: su alcuni Linux (Alpine, musl) non esiste
-    foreach (glob(CARTELLA_FOTO . '/*') ?: [] as $f) {
+    foreach (glob(cartella_foto() . '/*') ?: [] as $f) {
         if (!preg_match('/^[a-f0-9]{24}\.(jpg|png|webp)$/', basename($f))) continue;
         if (!isset($usate[basename($f)]) && filemtime($f) < time() - 2 * 86400) @unlink($f);
     }

@@ -8,7 +8,9 @@
     "dev": "astro dev",
     "build": "astro build && node tools/controlla-link.mjs",
     "preview": "astro preview",
-    "server": "node tools/server-locale.mjs"
+    "server": "node tools/server-locale.mjs",
+    "server:mysql": "node tools/server-locale.mjs --mysql",
+    "esempio": "npm run build && node tools/server-locale.mjs --mysql --esempio"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
