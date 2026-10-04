@@ -1,6 +1,6 @@
 ---
 import Layout from './_Layout.astro';
-import { INFO, PEZZI, CATEGORIE, prezzoLabel } from './_shared.js';
+import { INFO, PEZZI, CATEGORIE } from './_shared.js';
 // Selezione del momento (prima "Collezione", cambiata su richiesta del negozio):
 // pochi pezzi scelti dal titolare e aggiornati da lui dall'area riservata.
 // Galleria editoriale (foto verticali, didascalia sotto, nessun riquadro),
@@ -40,7 +40,7 @@ import { INFO, PEZZI, CATEGORIE, prezzoLabel } from './_shared.js';
         {PEZZI.map((p) => (
           <article class="pezzo a" id={p.id}
             data-id={p.id} data-nome={p.nome} data-cat={p.cat} data-img={p.img} data-alt={p.alt}
-            data-prezzo={p.prezzo} data-materiale={p.materiale} data-desc={p.desc}>
+            data-materiale={p.materiale} data-desc={p.desc}>
             <div class="pezzo-foto">
               <img src={p.img} width="640" height="480" alt={p.alt} loading="lazy" />
               <button type="button" class="segna" aria-label={`Segna ${p.nome} nella tua lista`}>
@@ -50,13 +50,12 @@ import { INFO, PEZZI, CATEGORIE, prezzoLabel } from './_shared.js';
             <p class="pezzo-cat">{p.cat}</p>
             <h3><button type="button" class="pezzo-apri" aria-haspopup="dialog">{p.nome}</button></h3>
             <p class="pezzo-mat">{p.materiale}</p>
-            <p class="pezzo-prezzo">{prezzoLabel(p.prezzo)}</p>
           </article>
         ))}
       </div>
       <p class="vuoto" id="vuoto" hidden>Nessun pezzo con questo nome. In negozio c’è molto altro: chiedeteci pure.</p>
 
-      <p class="promemoria">💡 <b>Per il titolare:</b> la selezione la cambiate voi, quando volete, dall’<a href="/demoMasGioielli/riservata/">area riservata</a>: una foto dal telefono, nome e prezzo, e il pezzo compare qui e in home. Le richieste dei clienti arrivano su WhatsApp già scritte.</p>
+      <p class="promemoria">💡 <b>Per il titolare:</b> la selezione la cambiate voi, quando volete, dall’<a href="/demoMasGioielli/riservata/">area riservata</a>: una foto dal telefono, il nome e due righe di descrizione, e il pezzo compare qui e in home. Le richieste dei clienti arrivano su WhatsApp già scritte.</p>
     </div>
   </section>
 
@@ -76,9 +75,8 @@ import { INFO, PEZZI, CATEGORIE, prezzoLabel } from './_shared.js';
       <h2 id="sNome"></h2>
       <p class="pezzo-mat" id="sMat"></p>
       <p class="scheda-desc" id="sDesc"></p>
-      <p class="scheda-prezzo" id="sPrezzo"></p>
       <button type="button" class="btn btn-pieno" id="sSegna">Segna nella lista</button>
-      <p class="nota">Prezzi indicativi della bozza. In negozio vi mostriamo il pezzo dal vivo.</p>
+      <p class="nota">Prezzo e disponibilità: <a id="sChiedi" href="#" target="_blank" rel="noopener" class="nota-link">chiedeteci su WhatsApp</a>, oppure passate a vederlo dal vivo.</p>
     </div>
   </div>
 
@@ -132,13 +130,12 @@ import { INFO, PEZZI, CATEGORIE, prezzoLabel } from './_shared.js';
     .pezzo-apri{background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;text-align:left}
     .pezzo-apri:hover{color:var(--oro)}
     .pezzo-mat{color:var(--grigio);font-size:.86rem;margin-top:.3rem}
-    .pezzo-prezzo{color:var(--grafite);font-size:.95rem;margin-top:.5rem}
     .vuoto{text-align:center;color:var(--grafite);padding:3rem 1rem;font-family:var(--disp);font-size:1.4rem;font-style:italic}
 
     /* scheda */
     .scheda-foto{width:100%;aspect-ratio:4/5;object-fit:cover}
     .scheda-desc{color:var(--grafite);font-size:.98rem}
-    .scheda-prezzo{font-family:var(--disp);font-size:1.9rem;color:var(--oro)}
+    .nota-link{color:var(--oro);border-bottom:1px solid var(--oro)}
 
     /* lista */
     .lista-btn{position:fixed;left:20px;bottom:20px;z-index:160;width:46px;height:46px;border:1px solid var(--filo);background:var(--carta);color:var(--inchiostro);font-size:1.1rem;cursor:pointer;display:grid;place-items:center;border-radius:50%;transition:background .25s,color .25s,transform .25s var(--e)}
@@ -178,7 +175,7 @@ import { INFO, PEZZI, CATEGORIE, prezzoLabel } from './_shared.js';
   </style>
 
   <script>
-    import { INFO, esc, leggiLista, scriviLista, initModal, prezzoLabel, traccia, leggiSelezione, pezzoHTML, dataEstesa } from './_shared.js';
+    import { INFO, esc, leggiLista, scriviLista, initModal, traccia, leggiSelezione, pezzoHTML, dataEstesa } from './_shared.js';
     const $ = (s) => document.querySelector(s);
     const griglia = $('#galleria');
     // Se il titolare ha curato la selezione dall'area riservata, quella sostituisce gli esempi.
@@ -210,7 +207,7 @@ import { INFO, PEZZI, CATEGORIE, prezzoLabel } from './_shared.js';
 
     const segna = (d) => {
       if (lista.some((i) => i.id === d.id)) { avviso('È già nella vostra lista'); return; }
-      lista.push({ id: d.id, nome: d.nome, prezzo: d.prezzo, img: d.img });
+      lista.push({ id: d.id, nome: d.nome, cat: d.cat, img: d.img });
       scriviLista(lista); sync(); batte(); avviso(d.nome + ' — segnato');
     };
     const togli = (id) => { lista = lista.filter((i) => i.id !== id); scriviLista(lista); sync(); renderLista(); };
@@ -249,7 +246,7 @@ import { INFO, PEZZI, CATEGORIE, prezzoLabel } from './_shared.js';
       $('#sNome').textContent = d.nome;
       $('#sMat').textContent = d.materiale;
       $('#sDesc').textContent = d.desc;
-      $('#sPrezzo').textContent = prezzoLabel(d.prezzo);
+      $('#sChiedi').href = `https://wa.me/${INFO.wa}?text=${encodeURIComponent(`Buongiorno ${INFO.nome}! Vorrei informazioni su «${d.nome}» che ho visto sul sito.`)}`;
       $('#sSegna').textContent = lista.some((i) => i.id === d.id) ? 'Già nella vostra lista' : 'Segna nella lista';
       scheda.open();
     };
@@ -269,7 +266,7 @@ import { INFO, PEZZI, CATEGORIE, prezzoLabel } from './_shared.js';
         righe.innerHTML = '<p class="lista-vuota">La vostra lista è vuota.<br/>Segnate i pezzi col ♡.</p>';
         piede.hidden = true; return;
       }
-      righe.innerHTML = lista.map((i) => `<div class="riga"><img src="${esc(i.img)}" alt="" width="54" height="66" /><div class="tx"><b>${esc(i.nome)}</b><span>${esc(prezzoLabel(i.prezzo))}</span></div><button type="button" data-rm="${esc(i.id)}" aria-label="Togli ${esc(i.nome)} dalla lista">✕</button></div>`).join('');
+      righe.innerHTML = lista.map((i) => `<div class="riga"><img src="${esc(i.img)}" alt="" width="54" height="66" /><div class="tx"><b>${esc(i.nome)}</b><span>${esc(i.cat || '')}</span></div><button type="button" data-rm="${esc(i.id)}" aria-label="Togli ${esc(i.nome)} dalla lista">✕</button></div>`).join('');
       righe.querySelectorAll('[data-rm]').forEach((b) => b.addEventListener('click', () => togli(b.dataset.rm)));
       piede.hidden = false;
     }
@@ -277,7 +274,7 @@ import { INFO, PEZZI, CATEGORIE, prezzoLabel } from './_shared.js';
     $('#lSvuota').addEventListener('click', () => { lista = []; scriviLista(lista); sync(); renderLista(); });
     $('#lInvia').addEventListener('click', () => {
       if (!lista.length) return;
-      const voci = lista.map((i) => `• ${i.nome} — ${prezzoLabel(i.prezzo)}`).join('\n');
+      const voci = lista.map((i) => `• ${i.nome}${i.cat ? ` (${i.cat.toLowerCase()})` : ''}`).join('\n');
       let quando = '';
       if (data.value) { const [y, m, g] = data.value.split('-'); quando = `\nPasserei il ${g}/${m}/${y}.`; }
       const msg = `Buongiorno ${INFO.nome}! 👋\nVorrei vedere questi pezzi in negozio:\n\n${voci}\n${quando}\nGrazie!`;

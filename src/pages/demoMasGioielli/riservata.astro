@@ -1,10 +1,11 @@
 ---
 import Layout from './_Layout.astro';
-import { INFO, REPARTI, CATEGORIE } from './_shared.js';
-// Area riservata al titolare: la selezione del momento (vetrina e home) e i marchi trattati.
+import { INFO, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_shared.js';
+// Area riservata al titolare: la selezione del momento (vetrina e home), gli orari
+// di apertura e i marchi trattati.
 // Nella versione reale l'accesso è protetto sul server; qui è una dimostrazione.
 ---
-<Layout title="Area riservata" active="Riservata" desc="Area riservata al titolare: selezione del momento e marchi trattati.">
+<Layout title="Area riservata" active="Riservata" desc="Area riservata al titolare: selezione del momento, orari e marchi trattati.">
 
   <!-- ACCESSO -->
   <section class="testa-pagina" id="accesso">
@@ -55,7 +56,6 @@ import { INFO, REPARTI, CATEGORIE } from './_shared.js';
           <select id="z-cat">{CATEGORIE.map((c) => <option>{c}</option>)}</select>
         </label>
         <label>Materiale <small>(facoltativo)</small><input type="text" id="z-mat" maxlength="80" placeholder="Es. Oro bianco 18kt · diamanti" /></label>
-        <label>Prezzo <small>(in euro, oppure «su richiesta»)</small><input type="text" id="z-prezzo" required maxlength="20" placeholder="Es. 1.250" /></label>
         <label>Due righe di descrizione <small>(facoltative)</small><textarea id="z-desc" rows="3" maxlength="300"></textarea></label>
         <p class="errore" id="zErr" role="alert" hidden></p>
         <button type="submit" class="btn btn-pieno">Metti in vetrina</button>
@@ -68,6 +68,36 @@ import { INFO, REPARTI, CATEGORIE } from './_shared.js';
           <button type="button" class="ripristina" id="ripristinaPezzi">Ripristina gli esempi</button>
         </div>
       </div>
+    </div>
+
+    <!-- ORARI -->
+    <div class="misura blocco" id="orari">
+      <h2 class="blocco-t">Orari di apertura</h2>
+      <p class="blocco-d">Si aggiornano da soli in home, nella pagina Contatti, nel piede di ogni pagina e nell’indicatore «aperto ora». Per l’orario continuato lasciate vuoto il pomeriggio.</p>
+    </div>
+    <div class="misura">
+      <form class="orari-form" id="orariForm" novalidate>
+        <table class="orari-tab">
+          <thead><tr><th scope="col">Giorno</th><th scope="col">Aperto</th><th scope="col">Mattina</th><th scope="col">Pomeriggio</th></tr></thead>
+          <tbody>
+            {SETTIMANA.map((i) => (
+              <tr data-g={i}>
+                <th scope="row">{GIORNI[i]}</th>
+                <td><label class="o-ap"><input type="checkbox" class="o-aperto" /><span>Aperto</span></label></td>
+                <td><span class="o-fascia"><input type="time" class="o-a1" step="900" aria-label={GIORNI[i] + ', mattina: apre alle'} /><span aria-hidden="true">–</span><input type="time" class="o-b1" step="900" aria-label={GIORNI[i] + ', mattina: chiude alle'} /></span></td>
+                <td><span class="o-fascia"><input type="time" class="o-a2" step="900" aria-label={GIORNI[i] + ', pomeriggio: apre alle'} /><span aria-hidden="true">–</span><input type="time" class="o-b2" step="900" aria-label={GIORNI[i] + ', pomeriggio: chiude alle'} /></span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p class="errore" id="oErr" role="alert" hidden></p>
+        <div class="pann-azioni">
+          <button type="submit" class="btn">Salva gli orari</button>
+          <a href="/demoMasGioielli/contatti/" class="btn btn-vuoto">Guarda come appaiono</a>
+          <button type="button" class="ripristina" id="ripristinaOrari">Ripristina gli orari di sempre</button>
+          <span class="o-ok" id="oOk" role="status"></span>
+        </div>
+      </form>
     </div>
 
     <!-- MARCHI -->
@@ -155,11 +185,32 @@ import { INFO, REPARTI, CATEGORIE } from './_shared.js';
     :global(.el-riga.con-foto){grid-template-columns:56px 1fr auto auto}
     :global(.el-riga.con-foto img){width:56px;height:70px;object-fit:cover}
     :global(.el-riga button:disabled){opacity:.3;cursor:default}
+    /* orari */
+    .orari-tab{width:100%;border-collapse:collapse;margin-top:.4rem}
+    .orari-tab th,.orari-tab td{text-align:left;padding:.75rem .6rem .75rem 0;border-bottom:1px solid var(--filo);vertical-align:middle}
+    .orari-tab thead th{font-size:.66rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--grigio)}
+    .orari-tab tbody th{font-family:var(--disp);font-weight:400;font-size:1.25rem;color:var(--inchiostro);white-space:nowrap}
+    .o-ap{display:inline-flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.9rem;color:var(--grafite)}
+    .o-ap input{width:18px;height:18px;accent-color:var(--oro)}
+    .o-fascia{display:inline-flex;align-items:center;gap:.5rem}
+    .o-fascia input{padding:.45rem .5rem;border:1px solid var(--filo);background:var(--carta);font:inherit;font-size:.95rem;color:var(--inchiostro);min-width:0}
+    .o-fascia input:disabled{opacity:.35}
+    .o-fascia input[aria-invalid="true"]{border-color:#a4442c;background:#fbf0ec}
+    tr.chiuso .o-fascia{opacity:.45}
+    .o-ok{color:#3c6e47;font-size:.88rem}
+    @media (max-width:700px){
+      .orari-tab thead{display:none}
+      .orari-tab,.orari-tab tbody,.orari-tab tr,.orari-tab th,.orari-tab td{display:block;width:100%}
+      .orari-tab tr{padding:.8rem 0;border-bottom:1px solid var(--filo)}
+      .orari-tab th,.orari-tab td{border:0;padding:.25rem 0}
+      .orari-tab td:nth-child(3)::before{content:'Mattina';display:block;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--grigio);margin:.3rem 0}
+      .orari-tab td:nth-child(4)::before{content:'Pomeriggio';display:block;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--grigio);margin:.3rem 0}
+    }
     @media (max-width:900px){.pann-in{grid-template-columns:1fr}}
   </style>
 
   <script>
-    import { BRAND_BASE, leggiBrand, scriviBrand, esc, salvaSessione, PEZZI, leggiSelezione, scriviSelezione, prezzoLabel } from './_shared.js';
+    import { BRAND_BASE, leggiBrand, scriviBrand, esc, salvaSessione, PEZZI, leggiSelezione, scriviSelezione, orariAttivi, scriviOrari, cancellaOrari, GIORNI } from './_shared.js';
     const $ = (s) => document.querySelector(s);
 
     /* ---- accesso (nella versione reale: autenticazione lato server) ---- */
@@ -248,7 +299,7 @@ import { INFO, REPARTI, CATEGORIE } from './_shared.js';
       elencoPezzi.innerHTML = pezzi.length
         ? pezzi.map((x, i) => `<li class="el-riga con-foto">
             <img src="${esc(x.img)}" alt="" width="56" height="70" />
-            <div class="el-tx"><span>${esc(x.cat)}</span><b>${esc(x.nome)}</b><i>${esc(prezzoLabel(x.prezzo))}</i></div>
+            <div class="el-tx"><span>${esc(x.cat)}</span><b>${esc(x.nome)}</b>${x.materiale ? `<i>${esc(x.materiale)}</i>` : ''}</div>
             <button type="button" data-su="${i}" aria-label="Porta ${esc(x.nome)} in cima"${i === 0 ? ' disabled' : ''}>↑</button>
             <button type="button" class="el-del" data-via="${i}" aria-label="Togli ${esc(x.nome)} dalla vetrina">✕</button>
           </li>`).join('')
@@ -288,11 +339,10 @@ import { INFO, REPARTI, CATEGORIE } from './_shared.js';
     });
     $('#pezzoForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      const nome = $('#z-nome').value.trim(), prezzo = $('#z-prezzo').value.trim();
+      const nome = $('#z-nome').value.trim();
       if (!fotoPronta) { errore('Scegliete prima una fotografia.'); return; }
-      if (!nome || !prezzo) return;
+      if (!nome) return;
       const nuovo = { id: 'z' + Date.now(), nome, cat: $('#z-cat').value, img: fotoPronta, alt: nome,
-        prezzo: /^[\d.,\s€]+$/.test(prezzo) ? prezzo.replace(/[€\s]/g, '') : prezzo.toLowerCase(),
         materiale: $('#z-mat').value.trim(), desc: $('#z-desc').value.trim() };
       pezzi.unshift(nuovo);
       if (!salvaPezzi()) { pezzi.shift(); return; }
@@ -300,5 +350,63 @@ import { INFO, REPARTI, CATEGORIE } from './_shared.js';
     });
     $('#ripristinaPezzi').addEventListener('click', () => { pezzi = PEZZI.map((x) => ({ ...x })); salvaPezzi(); renderPezzi(); });
     renderPezzi();
+
+    /* ---- orari di apertura ---- */
+    // "09:30" <-> 9.5
+    const ore = (v) => { const [h, m] = v.split(':').map(Number); return h + m / 60; };
+    const hhmm = (x) => `${String(Math.floor(x)).padStart(2, '0')}:${String(Math.round((x % 1) * 60)).padStart(2, '0')}`;
+    const righeOrari = [...document.querySelectorAll('#orariForm tbody tr')];
+    const statoRiga = (tr) => {
+      const aperto = tr.querySelector('.o-aperto').checked;
+      tr.classList.toggle('chiuso', !aperto);
+      tr.querySelectorAll('input[type=time]').forEach((i) => { i.disabled = !aperto; });
+    };
+    const riempiOrari = () => {
+      const o = orariAttivi();
+      righeOrari.forEach((tr) => {
+        const f = o[+tr.dataset.g];
+        tr.querySelector('.o-aperto').checked = !!f;
+        tr.querySelector('.o-a1').value = f ? hhmm(f[0][0]) : '';
+        tr.querySelector('.o-b1').value = f ? hhmm(f[0][1]) : '';
+        tr.querySelector('.o-a2').value = f && f[1] ? hhmm(f[1][0]) : '';
+        tr.querySelector('.o-b2').value = f && f[1] ? hhmm(f[1][1]) : '';
+        statoRiga(tr);
+      });
+    };
+    righeOrari.forEach((tr) => tr.querySelector('.o-aperto').addEventListener('change', () => {
+      statoRiga(tr);
+      // aprendo un giorno chiuso propongo l'orario solito, da ritoccare se serve
+      if (tr.querySelector('.o-aperto').checked && !tr.querySelector('.o-a1').value) {
+        tr.querySelector('.o-a1').value = '09:30'; tr.querySelector('.o-b1').value = '12:30';
+        tr.querySelector('.o-a2').value = '15:30'; tr.querySelector('.o-b2').value = '19:30';
+      }
+    }));
+    const oErr = $('#oErr'), oOk = $('#oOk');
+    $('#orariForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      oOk.textContent = '';
+      document.querySelectorAll('#orariForm [aria-invalid]').forEach((i) => i.removeAttribute('aria-invalid'));
+      const nuovi = {};
+      for (const tr of righeOrari) {
+        const g = +tr.dataset.g, nome = GIORNI[g];
+        if (!tr.querySelector('.o-aperto').checked) { nuovi[g] = null; continue; }
+        const [a1, b1, a2, b2] = ['.o-a1', '.o-b1', '.o-a2', '.o-b2'].map((s) => tr.querySelector(s));
+        const sbaglia = (campo, msg) => { campo.setAttribute('aria-invalid', 'true'); campo.focus(); oErr.textContent = msg; oErr.hidden = false; };
+        if (!a1.value || !b1.value) return sbaglia(a1.value ? b1 : a1, `${nome}: scrivete a che ora aprite e chiudete la mattina.`);
+        if (ore(a1.value) >= ore(b1.value)) return sbaglia(b1, `${nome}: la chiusura della mattina viene prima dell’apertura.`);
+        const fasce = [[ore(a1.value), ore(b1.value)]];
+        if (a2.value || b2.value) {
+          if (!a2.value || !b2.value) return sbaglia(a2.value ? b2 : a2, `${nome}: il pomeriggio va completato, oppure lasciato tutto vuoto per l’orario continuato.`);
+          if (ore(a2.value) >= ore(b2.value)) return sbaglia(b2, `${nome}: la chiusura del pomeriggio viene prima dell’apertura.`);
+          if (ore(a2.value) < ore(b1.value)) return sbaglia(a2, `${nome}: il pomeriggio comincia prima che finisca la mattina.`);
+          fasce.push([ore(a2.value), ore(b2.value)]);
+        }
+        nuovi[g] = fasce;
+      }
+      oErr.hidden = true;
+      oOk.textContent = scriviOrari(nuovi) ? '✓ Orari salvati: il sito è già aggiornato.' : 'Non riesco a salvare su questo dispositivo.';
+    });
+    $('#ripristinaOrari').addEventListener('click', () => { cancellaOrari(); riempiOrari(); oErr.hidden = true; oOk.textContent = 'Ripristinati gli orari di sempre.'; });
+    riempiOrari();
   </script>
 </Layout>

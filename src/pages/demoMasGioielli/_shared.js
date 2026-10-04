@@ -13,17 +13,18 @@ export const INFO = {
   cap: '10141',
   tel: '011 331725',
   telHref: '+39011331725',
-  wa: '393667210230',        // 366 7210230
-  waLabel: '366 7210230',
+  wa: '393385386701',        // 338 538 6701 (indicato dal negozio, mail di ottobre 2026)
+  waLabel: '338 538 6701',
   email: 'info@masgioielli.it',
-  piva: '07049710010',
+  piva: '12754900012',
   fb: 'https://www.facebook.com/masgioielli',
   ig: 'https://www.instagram.com/masgioielli/',
   stelle: '4,9',
   recensioni: 200,
 };
 
-// Orari ufficiali: Martedì–Sabato 9:30–12:30 / 15:30–19:30. Lunedì e domenica chiuso.
+// Orari di partenza: Martedì–Sabato 9:30–12:30 / 15:30–19:30. Lunedì e domenica chiuso.
+// Il negozio li cambia dall'area riservata (vedi orariAttivi piu' sotto).
 // Ore in decimale: .5 = 30 minuti (9.5 = 9:30).
 export const ORARI = {
   0: null,                                  // domenica
@@ -34,22 +35,71 @@ export const ORARI = {
   5: [[9.5, 12.5], [15.5, 19.5]],
   6: [[9.5, 12.5], [15.5, 19.5]],
 };
-const GIORNI = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
-const fmt = (h) => `${Math.floor(h)}:${String(Math.round((h - Math.floor(h)) * 60)).padStart(2, '0')}`;
+export const GIORNI = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
+// la settimana come la legge un negoziante: dal lunedì alla domenica
+export const SETTIMANA = [1, 2, 3, 4, 5, 6, 0];
+export const fmt = (h) => `${Math.floor(h)}:${String(Math.round((h - Math.floor(h)) * 60)).padStart(2, '0')}`;
+
+// ---- orari salvati dal titolare. `null` = mai toccati: valgono quelli qui sopra.
+const LS_ORARI = 'mas-orari';
+const fasciaOk = (f) => Array.isArray(f) && f.length === 2 && f.every((x) => typeof x === 'number' && x >= 0 && x <= 24) && f[0] < f[1];
+export const leggiOrari = () => {
+  try {
+    const raw = localStorage.getItem(LS_ORARI);
+    if (raw === null) return null;
+    const o = JSON.parse(raw), out = {};
+    for (let i = 0; i < 7; i++) { const g = o[i]; out[i] = Array.isArray(g) && g.length && g.every(fasciaOk) ? g : null; }
+    return out;
+  } catch { return null; }
+};
+export const scriviOrari = (o) => salva(LS_ORARI, JSON.stringify(o));
+export const cancellaOrari = () => { try { localStorage.removeItem(LS_ORARI); } catch { /* niente */ } };
+export const orariAttivi = () => leggiOrari() ?? ORARI;
 
 // Forma pura: usata sia per il render statico (SSR, visibile senza JavaScript)
 // sia per l'aggiornamento lato client.
-export function orariSettimana() {
-  return [1, 2, 3, 4, 5, 6, 0].map((i) => ({
+export function orariSettimana(o = ORARI) {
+  return SETTIMANA.map((i) => ({
     i,
     giorno: GIORNI[i],
-    label: ORARI[i] ? ORARI[i].map(([a, b]) => `${fmt(a)}–${fmt(b)}`).join(' / ') : 'Chiuso',
+    label: o[i] ? o[i].map(([a, b]) => `${fmt(a)}–${fmt(b)}`).join(' / ') : 'Chiuso',
   }));
 }
 
+// Giorni consecutivi con lo stesso orario raggruppati ("Martedì – Sabato").
+function gruppi(o) {
+  const out = [];
+  SETTIMANA.forEach((i) => {
+    const lab = o[i] ? o[i].map(([a, b]) => `${fmt(a)} – ${fmt(b)}`).join(' · ') : '';
+    const u = out[out.length - 1];
+    if (u && u.lab === lab) u.fine = i; else out.push({ inizio: i, fine: i, lab });
+  });
+  return out.map((g) => ({ ...g, giorni: g.inizio === g.fine ? GIORNI[g.inizio] : `${GIORNI[g.inizio]} – ${GIORNI[g.fine]}` }));
+}
+// Per il piede: i gruppi aperti con il loro orario, e i giorni di chiusura in una riga.
+export function orariPiede(o = ORARI) {
+  const g = gruppi(o);
+  const chiusi = SETTIMANA.filter((i) => !o[i]).map((i) => GIORNI[i]);
+  const elenco = chiusi.length > 1 ? chiusi.slice(0, -1).join(', ') + ' e ' + chiusi.at(-1).toLowerCase() : chiusi[0] || '';
+  return {
+    aperti: g.filter((x) => x.lab).map((x) => ({ giorni: x.giorni, orario: x.lab })),
+    chiusi: elenco ? `${elenco.charAt(0) + elenco.slice(1).toLowerCase()} ${chiusi.length > 1 ? 'chiusi' : 'chiuso'}` : '',
+  };
+}
+// Per le note nelle pagine: "martedì – sabato, 9:30 – 12:30 e 15:30 – 19:30".
+export function orariInRiga(o = ORARI) {
+  return gruppi(o).filter((x) => x.lab).map((x) => `${x.giorni.toLowerCase()}, ${x.lab.replace(' · ', ' e ')}`).join('; ');
+}
+// HTML del piede: stesso markup lato server e lato client
+export function piedeHTML(o = ORARI) {
+  const p = orariPiede(o);
+  return p.aperti.map((x) => `<p class="chiusura-sp">${x.giorni}</p><p>${x.orario}</p>`).join('') + (p.chiusi ? `<p class="chiusura-muto">${p.chiusi}</p>` : '');
+}
+
 export function renderOrari(listEl, statoEl) {
+  const O = orariAttivi();
   const now = new Date(), d = now.getDay(), t = now.getHours() + now.getMinutes() / 60;
-  const fasce = ORARI[d];
+  const fasce = O[d];
   const aperto = !!fasce && fasce.some(([a, b]) => t >= a && t < b);
   if (statoEl) {
     if (aperto) {
@@ -60,15 +110,16 @@ export function renderOrari(listEl, statoEl) {
       if (dopo) statoEl.textContent = `Chiuso ora · riapre alle ${fmt(dopo[0])}`;
       else {
         let k = 1;
-        while (k <= 7 && !ORARI[(d + k) % 7]) k++;
-        const g = GIORNI[(d + k) % 7];
-        statoEl.textContent = `Chiuso ora · riapre ${k === 1 ? 'domani' : g} alle ${fmt(ORARI[(d + k) % 7][0][0])}`;
+        while (k <= 7 && !O[(d + k) % 7]) k++;
+        // con gli orari modificabili puo' capitare una settimana tutta chiusa (ferie)
+        if (k > 7) statoEl.textContent = 'Chiuso';
+        else statoEl.textContent = `Chiuso ora · riapre ${k === 1 ? 'domani' : GIORNI[(d + k) % 7].toLowerCase()} alle ${fmt(O[(d + k) % 7][0][0])}`;
       }
     }
     statoEl.parentElement.classList.toggle('is-closed', !aperto);
   }
   if (listEl) {
-    listEl.innerHTML = orariSettimana()
+    listEl.innerHTML = orariSettimana(O)
       .map(({ i, giorno, label }) => `<li class="${i === d ? 'oggi' : ''}"><span>${giorno}</span><b>${label}</b></li>`)
       .join('');
   }
@@ -77,24 +128,23 @@ export function renderOrari(listEl, statoEl) {
 // ---------------------------------------------------------------- catalogo
 // Selezione dimostrativa: i pezzi veri li caricherebbe il titolare dal gestionale.
 export const PEZZI = [
-  { id: 'g1', nome: 'Solitario ovale',         cat: 'Anelli',    img: '/img/demo-gioielleria/p-solitario.webp',  prezzo: '3.900', materiale: 'Oro bianco 18kt · diamante taglio ovale', alt: 'Anello solitario con diamante ovale indossato al dito', desc: 'Diamante ovale su gambo pavé, con contorno nascosto sotto la pietra. L\'anello di fidanzamento che scegliamo insieme, misura compresa.' },
-  { id: 'g2', nome: 'Veretta rubini e diamanti', cat: 'Anelli',  img: '/img/demo-gioielleria/p-veretta.webp',    prezzo: '1.450', materiale: 'Oro giallo 18kt · rubini navette e diamanti', alt: 'Veretta in oro giallo con rubini a navette e diamanti', desc: 'Rubini a navette alternati a diamanti, tutt\'intorno. Si porta da sola o affiancata alla fede: un colore che si nota senza gridare.' },
-  { id: 'g3', nome: 'Fedi su misura',          cat: 'Anelli',    img: '/img/demo-gioielleria/p-intreccio.webp',  prezzo: '890',   materiale: 'Oro giallo e oro bianco 18kt · la coppia', alt: 'Coppia di fedi nuziali in oro giallo e bianco su spighe di grano', desc: 'Le facciamo noi, in laboratorio: scegliete profilo, larghezza e finitura, e le incidiamo con la data o quello che volete. Provate le misure in negozio.' },
-  { id: 'g4', nome: 'Collana con stella',      cat: 'Collane',   img: '/img/demo-gioielleria/p-goccia.webp',     prezzo: '4.200', materiale: 'Oro bianco · rubini, zaffiri e diamanti', alt: 'Collana in oro bianco con pendente a rosetta di rubini, zaffiri e diamanti', desc: 'Pendente a rosetta con stella centrale in pavé di diamanti, rubini e zaffiri calibrati; girocollo con stelle. Pezzo unico da vedere dal vivo.' },
-  { id: 'g5', nome: 'Orecchino d\'epoca',      cat: 'Orecchini', img: '/img/demo-gioielleria/p-pendenti.webp',   prezzo: 'su richiesta', materiale: 'Oro · granato e perline · restaurato in laboratorio', alt: 'Orecchino antico in oro con castone decorato e granato', desc: 'Gioiello antico a cerchio con castone decorato, tornato indossabile dopo il restauro conservativo fatto al nostro banco. Portateci i vostri: spesso si salvano.' },
-  { id: 'o1', nome: 'Cronografo automatico',   cat: 'Orologi',   img: '/img/demo-orologiaio/g-cronografo.webp',  prezzo: '2.300', materiale: 'Acciaio · movimento automatico', alt: 'Cronografo automatico in acciaio con tre contatori', desc: 'Cronografo a tre contatori, vetro zaffiro e impermeabilità 100m. Revisionato e garantito dal nostro laboratorio di orologeria.' },
-  { id: 'o2', nome: 'Diver 300m',              cat: 'Orologi',   img: '/img/demo-orologiaio/g-diver.webp',       prezzo: '1.750', materiale: 'Acciaio · ghiera unidirezionale', alt: 'Orologio subacqueo in acciaio con ghiera girevole', desc: 'Subacqueo professionale con lunetta girevole e quadrante luminescente. Bracciale accorciabile su misura in negozio.' },
-  { id: 'o3', nome: 'Solo tempo essenziale',   cat: 'Orologi',   img: '/img/demo-orologiaio/g-solotempo.webp',   prezzo: '890',   materiale: 'Acciaio · cinturino in pelle', alt: 'Orologio solo tempo con cinturino in pelle', desc: 'Quadrante pulito, cassa sottile: l\'orologio da portare sempre, sotto qualsiasi camicia.' },
-  { id: 'o4', nome: 'Orologio da tasca d\'epoca', cat: 'Orologi', img: '/img/demo-orologiaio/g-tasca.webp',      prezzo: '1.320', materiale: 'Argento · carica manuale', alt: 'Orologio da tasca d\'epoca in argento', desc: 'Pezzo d\'epoca restaurato nel nostro laboratorio di pendoleria. Meccanica revisionata, funzionante e garantita.' },
+  { id: 'g1', nome: 'Solitario ovale',         cat: 'Anelli',    img: '/img/demo-gioielleria/p-solitario.webp',  materiale: 'Oro bianco 18kt · diamante taglio ovale', alt: 'Anello solitario con diamante ovale indossato al dito', desc: 'Diamante ovale su gambo pavé, con contorno nascosto sotto la pietra. L\'anello di fidanzamento che scegliamo insieme, misura compresa.' },
+  { id: 'g2', nome: 'Veretta rubini e diamanti', cat: 'Anelli',  img: '/img/demo-gioielleria/p-veretta.webp',    materiale: 'Oro giallo 18kt · rubini navette e diamanti', alt: 'Veretta in oro giallo con rubini a navette e diamanti', desc: 'Rubini a navette alternati a diamanti, tutt\'intorno. Si porta da sola o affiancata alla fede: un colore che si nota senza gridare.' },
+  { id: 'g3', nome: 'Fedi su misura',          cat: 'Anelli',    img: '/img/demo-gioielleria/p-intreccio.webp',    materiale: 'Oro giallo e oro bianco 18kt · la coppia', alt: 'Coppia di fedi nuziali in oro giallo e bianco su spighe di grano', desc: 'Le facciamo noi, in laboratorio: scegliete profilo, larghezza e finitura, e le incidiamo con la data o quello che volete. Provate le misure in negozio.' },
+  { id: 'g4', nome: 'Collana con stella',      cat: 'Collane',   img: '/img/demo-gioielleria/p-goccia.webp',     materiale: 'Oro bianco · rubini, zaffiri e diamanti', alt: 'Collana in oro bianco con pendente a rosetta di rubini, zaffiri e diamanti', desc: 'Pendente a rosetta con stella centrale in pavé di diamanti, rubini e zaffiri calibrati; girocollo con stelle. Pezzo unico da vedere dal vivo.' },
+  { id: 'g5', nome: 'Orecchino d\'epoca',      cat: 'Orecchini', img: '/img/demo-gioielleria/p-pendenti.webp',   materiale: 'Oro · granato e perline · restaurato in laboratorio', alt: 'Orecchino antico in oro con castone decorato e granato', desc: 'Gioiello antico a cerchio con castone decorato, tornato indossabile dopo il restauro conservativo fatto al nostro banco. Portateci i vostri: spesso si salvano.' },
+  { id: 'o1', nome: 'Cronografo automatico',   cat: 'Orologi',   img: '/img/demo-orologiaio/g-cronografo.webp',  materiale: 'Acciaio · movimento automatico', alt: 'Cronografo automatico in acciaio con tre contatori', desc: 'Cronografo a tre contatori, vetro zaffiro e impermeabilità 100m. Revisionato e garantito dal nostro laboratorio di orologeria.' },
+  { id: 'o2', nome: 'Diver 300m',              cat: 'Orologi',   img: '/img/demo-orologiaio/g-diver.webp',       materiale: 'Acciaio · ghiera unidirezionale', alt: 'Orologio subacqueo in acciaio con ghiera girevole', desc: 'Subacqueo professionale con lunetta girevole e quadrante luminescente. Bracciale accorciabile su misura in negozio.' },
+  { id: 'o3', nome: 'Solo tempo essenziale',   cat: 'Orologi',   img: '/img/demo-orologiaio/g-solotempo.webp',     materiale: 'Acciaio · cinturino in pelle', alt: 'Orologio solo tempo con cinturino in pelle', desc: 'Quadrante pulito, cassa sottile: l\'orologio da portare sempre, sotto qualsiasi camicia.' },
+  { id: 'o4', nome: 'Orologio da tasca d\'epoca', cat: 'Orologi', img: '/img/demo-orologiaio/g-tasca.webp',      materiale: 'Argento · carica manuale', alt: 'Orologio da tasca d\'epoca in argento', desc: 'Pezzo d\'epoca restaurato nel nostro laboratorio di pendoleria. Meccanica revisionata, funzionante e garantita.' },
 ];
 export const CATEGORIE = ['Anelli', 'Collane', 'Orecchini', 'Orologi'];
 
-// Etichetta del prezzo: i pezzi unici o da restaurare non hanno una cifra fissa.
-export const prezzoLabel = (p) => (/^[\d.,]+$/.test(String(p)) ? `€ ${p}` : String(p).charAt(0).toUpperCase() + String(p).slice(1));
+// Niente prezzi in vetrina: tolti su richiesta del negozio (si chiedono in negozio o su WhatsApp).
 
 // ---------------------------------------------------------------- selezione del momento
 // Il negozio non vende online: la vetrina e' una SELEZIONE di pezzi che il titolare
-// cambia quando vuole dall'area riservata (foto, nome, prezzo). `null` = mai
+// cambia quando vuole dall'area riservata (foto, nome, descrizione). `null` = mai
 // toccata: si mostrano gli esempi resi lato server.
 const LS_SEL = 'mas-selezione';
 export const leggiSelezione = () => {
@@ -113,18 +163,17 @@ export const dataEstesa = (d) => new Date(d).toLocaleDateString('it-IT', { day: 
 // dall'area riservata non si notano stacchi.
 export function pezzoHTML(x) {
   const e = esc;
-  return `<article class="pezzo" id="${e(x.id)}" data-id="${e(x.id)}" data-nome="${e(x.nome)}" data-cat="${e(x.cat)}" data-img="${e(x.img)}" data-alt="${e(x.alt || x.nome)}" data-prezzo="${e(x.prezzo)}" data-materiale="${e(x.materiale || '')}" data-desc="${e(x.desc || '')}">
+  return `<article class="pezzo" id="${e(x.id)}" data-id="${e(x.id)}" data-nome="${e(x.nome)}" data-cat="${e(x.cat)}" data-img="${e(x.img)}" data-alt="${e(x.alt || x.nome)}" data-materiale="${e(x.materiale || '')}" data-desc="${e(x.desc || '')}">
     <div class="pezzo-foto"><img src="${e(x.img)}" width="640" height="480" alt="${e(x.alt || x.nome)}" loading="lazy" />
       <button type="button" class="segna" aria-label="Segna ${e(x.nome)} nella tua lista"><span class="segna-ic" aria-hidden="true">♡</span></button></div>
     <p class="pezzo-cat">${e(x.cat)}</p>
     <h3><button type="button" class="pezzo-apri" aria-haspopup="dialog">${e(x.nome)}</button></h3>
     <p class="pezzo-mat">${e(x.materiale || '')}</p>
-    <p class="pezzo-prezzo">${e(prezzoLabel(x.prezzo))}</p>
   </article>`;
 }
 export function railHTML(x) {
   const e = esc;
-  return `<a class="rail-el" href="/demoMasGioielli/vetrina/#${e(x.id)}"><div class="rail-foto"><img src="${e(x.img)}" width="640" height="480" alt="${e(x.alt || x.nome)}" loading="lazy" /></div><p class="rail-cat">${e(x.cat)}</p><p class="rail-nome">${e(x.nome)}</p><p class="rail-prezzo">${e(prezzoLabel(x.prezzo))}</p></a>`;
+  return `<a class="rail-el" href="/demoMasGioielli/vetrina/#${e(x.id)}"><div class="rail-foto"><img src="${e(x.img)}" width="640" height="480" alt="${e(x.alt || x.nome)}" loading="lazy" /></div><p class="rail-cat">${e(x.cat)}</p><p class="rail-nome">${e(x.nome)}</p></a>`;
 }
 
 // ---------------------------------------------------------------- marchi trattati

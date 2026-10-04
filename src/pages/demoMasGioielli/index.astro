@@ -1,6 +1,6 @@
 ---
 import Layout from './_Layout.astro';
-import { INFO, PEZZI, orariSettimana, prezzoLabel, BRAND_BASE } from './_shared.js';
+import { INFO, PEZZI, orariSettimana, BRAND_BASE } from './_shared.js';
 const ORARI = orariSettimana();          // reso lato server: leggibile anche senza JavaScript
 const rail = PEZZI.slice(0, 6);
 const WA = `https://wa.me/${INFO.wa}`;
@@ -131,7 +131,6 @@ const negozio = [
           <div class="rail-foto"><img src={p.img} width="640" height="480" alt={p.alt} loading="lazy" /></div>
           <p class="rail-cat">{p.cat}</p>
           <p class="rail-nome">{p.nome}</p>
-          <p class="rail-prezzo">{prezzoLabel(p.prezzo)}</p>
         </a>
       ))}
     </div>
@@ -318,7 +317,6 @@ const negozio = [
     .rail-el:hover .rail-foto img{transform:scale(1.04)}
     .rail-cat{font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--oro);margin-top:1.1rem}
     .rail-nome{font-family:var(--disp);font-size:1.5rem;line-height:1.2;margin-top:.3rem}
-    .rail-prezzo{font-family:var(--disp);font-size:1.15rem;color:var(--oro);margin-top:.35rem;font-variant-numeric:lining-nums}
     .coll-azioni{display:flex;align-items:center;gap:2rem}
     .coll-scorri{display:inline-flex;align-items:center;gap:.5rem;font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--grigio)}
     .coll-fr{display:inline-block;animation:scorri 2.6s var(--e) infinite}

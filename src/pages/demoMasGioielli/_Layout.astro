@@ -14,7 +14,7 @@ import '@fontsource-variable/inter';
 // testo "salti" quando il font sostituisce quello di ripiego (layout shift).
 import cormorantWoff2 from '@fontsource-variable/cormorant/files/cormorant-latin-wght-normal.woff2?url';
 import interWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
-import { INFO } from './_shared.js';
+import { INFO, piedeHTML } from './_shared.js';
 
 interface Props { title: string; desc?: string; active?: string; scuro?: boolean }
 const {
@@ -124,9 +124,7 @@ const schema = {
         <h2>Il negozio</h2>
         <p>{INFO.via}</p>
         <p>{INFO.cap} {INFO.citta}</p>
-        <p class="chiusura-sp">Martedì – Sabato</p>
-        <p>9:30 – 12:30 · 15:30 – 19:30</p>
-        <p class="chiusura-muto">Lunedì chiuso</p>
+        <div id="piedeOrari" set:html={piedeHTML()} />
       </div>
       <div>
         <h2>Contatti</h2>
@@ -371,6 +369,11 @@ const schema = {
   </style>
 
   <script>
+    import { orariAttivi, piedeHTML, orariInRiga } from './_shared.js';
+    // orari cambiati dall'area riservata: piede e note di ogni pagina
+    document.getElementById('piedeOrari').innerHTML = piedeHTML(orariAttivi());
+    document.querySelectorAll('[data-orari-riga]').forEach((el) => { el.textContent = orariInRiga(orariAttivi()); });
+
     const testata = document.getElementById('testata');
     const btn = document.getElementById('menuBtn');
     btn.addEventListener('click', () => {

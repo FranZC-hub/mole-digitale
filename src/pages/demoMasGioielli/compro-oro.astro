@@ -1,6 +1,6 @@
 ---
 import Layout from './_Layout.astro';
-import { INFO } from './_shared.js';
+import { INFO, orariInRiga } from './_shared.js';
 // Compro oro: servizio aggiunto su richiesta del negozio.
 // Nessuna cifra inventata (niente quotazioni né "miglior prezzo garantito"): solo
 // come funziona, cosa serve per legge e l'alternativa onesta del laboratorio.
@@ -67,7 +67,7 @@ const WA_ORO = `https://wa.me/${INFO.wa}?text=${encodeURIComponent(`Buongiorno $
         <p class="serve-p">Passate negli orari del negozio, oppure scriveteci prima: vi diciamo quando c’è meno attesa.</p>
         <a class="btn btn-pieno" id="oroWa" href={WA_ORO} target="_blank" rel="noopener">Scriveteci su WhatsApp</a>
         <a class="btn btn-vuoto btn-pieno" href={'tel:' + INFO.telHref}>Chiamate il {INFO.tel}</a>
-        <p class="nota">{INFO.via}, {INFO.citta} · martedì – sabato, 9:30 – 12:30 e 15:30 – 19:30</p>
+        <p class="nota">{INFO.via}, {INFO.citta} · <span data-orari-riga>{orariInRiga()}</span></p>
       </div>
     </div>
     <div class="misura">

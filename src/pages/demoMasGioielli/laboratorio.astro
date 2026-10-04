@@ -1,6 +1,6 @@
 ---
 import Layout from './_Layout.astro';
-import { INFO } from './_shared.js';
+import { INFO, orariInRiga } from './_shared.js';
 // Atelier: cosa si fa al banco, con le fotografie del laboratorio vero.
 // Preventivo guidato e calibro della misura dell'anello tolti su richiesta del negozio:
 // il preventivo lo fanno col pezzo in mano.
@@ -72,7 +72,7 @@ const WA_LAB = `https://wa.me/${INFO.wa}?text=${encodeURIComponent(`Buongiorno $
       <div class="prev-azioni a">
         <a class="btn btn-chiaro btn-pieno" id="labWa" href={WA_LAB} target="_blank" rel="noopener">Mandateci una foto su WhatsApp</a>
         <a class="btn btn-vuoto-scuro btn-pieno" href={'tel:' + INFO.telHref}>Chiamate il {INFO.tel}</a>
-        <p class="nota">Martedì – sabato, 9:30 – 12:30 e 15:30 – 19:30</p>
+        <p class="nota orari-nota" data-orari-riga>{orariInRiga()}</p>
       </div>
     </div>
   </section>
@@ -98,6 +98,7 @@ const WA_LAB = `https://wa.me/${INFO.wa}?text=${encodeURIComponent(`Buongiorno $
 
     .prev-azioni{display:flex;flex-direction:column;gap:1rem;align-self:center}
     .prev-azioni .nota{color:#8f867c;text-align:center}
+    .orari-nota::first-letter{text-transform:uppercase}
     .btn-vuoto-scuro{background:transparent;color:var(--avorio);border-color:var(--filo-c)}
     .btn-vuoto-scuro:hover{border-color:var(--oro-c);color:var(--oro-c)}
 
