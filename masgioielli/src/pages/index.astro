@@ -20,7 +20,7 @@ const negozio = [
 ---
 <Layout title="Preziosi di qualità dal 1996" active="Maison">
 
-  <!-- APERTURA: tipografia grande a sinistra, fotografia a vivo a destra -->
+  {/* APERTURA: tipografia grande a sinistra, fotografia a vivo a destra */}
   <section class="apertura">
     <div class="apertura-testo">
       <span class="occhiello">Torino · dal {INFO.fondata}</span>
@@ -33,13 +33,13 @@ const negozio = [
     </div>
     <div class="apertura-foto">
       <span class="apertura-cornice" aria-hidden="true"></span>
-      <!-- FOTO PROVVISORIA (archivio): da sostituire con una foto del negozio prima della pubblicazione -->
+      {/* FOTO PROVVISORIA (archivio): da sostituire con una foto del negozio prima della pubblicazione */}
       <img src="/img/apertura-provvisoria.webp" width="660" height="660"
            alt="Anello con diamante a taglio principessa, dettaglio ravvicinato" fetchpriority="high" />
     </div>
   </section>
 
-  <!-- RIGA DI FIDUCIA -->
+  {/* RIGA DI FIDUCIA */}
   <section class="fiducia">
     <div class="misura fiducia-in">
       <p><a href={INFO.recensioniUrl} target="_blank" rel="noopener"><b>★ {INFO.stelle}</b> su {INFO.recensioni} recensioni Google</a></p>
@@ -49,7 +49,7 @@ const negozio = [
     </div>
   </section>
 
-  <!-- I MESTIERI: elenco editoriale numerato, niente riquadri -->
+  {/* I MESTIERI: elenco editoriale numerato, niente riquadri */}
   <section class="banda">
     <div class="misura">
       <div class="intro a">
@@ -72,7 +72,7 @@ const negozio = [
     </div>
   </section>
 
-  <!-- IL NEGOZIO E LE PERSONE: richiesta del negozio, con le loro fotografie -->
+  {/* IL NEGOZIO E LE PERSONE: richiesta del negozio, con le loro fotografie */}
   <section class="banda negozio" id="negozio">
     <div class="misura">
       <div class="intro a">
@@ -106,7 +106,7 @@ const negozio = [
     </div>
   </section>
 
-  <!-- SELEZIONE DEL MOMENTO: rail orizzontale, la cambia il titolare dall'area riservata -->
+  {/* SELEZIONE DEL MOMENTO: rail orizzontale, la cambia il titolare dall'area riservata */}
   <section class="banda collezione" id="selezioneHome" hidden>
     <div class="misura">
       <div class="coll-testa a">
@@ -125,7 +125,7 @@ const negozio = [
     <div class="rail" id="rail" tabindex="0" role="region" aria-label="Pezzi in evidenza, scorrevole orizzontalmente"></div>
   </section>
 
-  <!-- MARCHI TRATTATI: fascia sobria, alimentata dall'area riservata -->
+  {/* MARCHI TRATTATI: fascia sobria, alimentata dall'area riservata */}
   <section class="banda marchi-banda" id="marchiBanda" hidden>
     <div class="misura">
       <p class="marchi-occ occhiello centro">Le marche che trattiamo</p>
@@ -134,7 +134,7 @@ const negozio = [
     </div>
   </section>
 
-  <!-- ATELIER: banda scura, citazione grande -->
+  {/* ATELIER: banda scura, citazione grande */}
   <section class="scuro atelier">
     <div class="misura atelier-in">
       <div class="a">
@@ -158,7 +158,7 @@ const negozio = [
     </div>
   </section>
 
-  <!-- PERIZIE: molta aria, centrato -->
+  {/* PERIZIE: molta aria, centrato */}
   <section class="banda perizie">
     <div class="misura stretta perizie-in a">
       <p class="fregio perizie-fregio" aria-hidden="true"><span></span></p>
@@ -169,7 +169,7 @@ const negozio = [
     </div>
   </section>
 
-  <!-- COMPRO ORO -->
+  {/* COMPRO ORO */}
   <section class="banda oro-banda">
     <div class="misura oro-in a">
       <div>
@@ -183,7 +183,7 @@ const negozio = [
     </div>
   </section>
 
-  <!-- RECENSIONI: il voto e il link a quelle vere su Google (nessuna citazione inventata) -->
+  {/* RECENSIONI: il voto e il link a quelle vere su Google (nessuna citazione inventata) */}
   <section class="banda voce">
     <div class="misura stretta a">
       <div class="voce-q">
@@ -194,10 +194,10 @@ const negozio = [
     </div>
   </section>
 
-  <!-- SEPARE': un respiro tra la parte emotiva e quella pratica (prima era una foto d'esempio) -->
+  {/* SEPARE': un respiro tra la parte emotiva e quella pratica (prima era una foto d'esempio) */}
   <div class="separe misura" aria-hidden="true"><p class="fregio"><span></span></p></div>
 
-  <!-- VISITA: indirizzo e orari, a filo -->
+  {/* VISITA: indirizzo e orari, a filo */}
   <section class="banda visita">
     <div class="misura visita-in">
       <div class="a">

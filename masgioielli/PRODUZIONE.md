@@ -22,9 +22,10 @@ Stato al 5 ottobre 2026. ✅ fatto · ⬜ da fare · 👤 serve qualcosa dal neg
 - ✅ Redirect 301 dai 19 indirizzi del vecchio WordPress (italiani e inglesi) alle pagine nuove;
   `/bozza/` e i file di WordPress rispondono 410
 - ✅ Lighthouse, pagine pubbliche: prestazioni 97–100, accessibilità 100, buone pratiche 100, SEO 100, CLS 0
-- ✅ Tolto tutto ciò che era da bozza: fascia «Anteprima», «Bozza dimostrativa», riquadri «Per il
+- ✅ Tolto tutto ciò che era da bozza (verificato sul codice e sulla build): fascia «Anteprima», «Bozza dimostrativa», riquadri «Per il
   titolare», credenziali di prova, «Riporta agli esempi», `noindex`, statistiche di moledigitale.it,
-  la recensione d'esempio («Silvia R.»), i marchi inventati, le 9 foto d'archivio della Selezione
+  la recensione d'esempio («Silvia R.»), i marchi inventati, le 9 foto d'archivio della Selezione,
+  i commenti interni nell'HTML pubblicato
 - ✅ SEO: canonical, Open Graph con indirizzi assoluti, dati strutturati JewelryStore, sitemap,
   robots.txt (area riservata e API escluse)
 - ✅ Informativa privacy di produzione; messaggi cancellati dopo 24 mesi, impronte IP dopo 24 ore
@@ -32,9 +33,20 @@ Stato al 5 ottobre 2026. ✅ fatto · ⬜ da fare · 👤 serve qualcosa dal neg
 
 ## Hosting e messa online — 🧑‍💻 noi
 
-- ⬜ Decidere l'hosting (Aruba o Seeweb, dove oggi sta masgioielli.it con WordPress)
+- ⬜ Decidere l'hosting (Aruba o Seeweb, dove oggi sta masgioielli.it con WordPress).
+  Requisiti: PHP 8.1+ con `pdo_mysql` e `gd`, MySQL/MariaDB, **Apache con `.htaccess`**
+  (`mod_rewrite`, `mod_headers`, `mod_expires`, `mod_deflate`), FTP, certificato HTTPS
+- ⬜ Se si resta su Seeweb: oggi il sito risponde con **nginx**. Verificare che dietro ci sia
+  Apache con `.htaccess` attivo, altrimenti redirect, intestazioni di sicurezza e protezione
+  di `uploads/` vanno riscritti per nginx (`prova-server.mjs` lo scopre subito)
+- ⬜ **Email del negozio**: DNS e posta del dominio sono su Seeweb (MX `m-07b.th.seeweb.it`,
+  SPF solo Seeweb). Se il sito va su Aruba si cambiano **solo** i record A/AAAA del sito, mai
+  gli MX, o le email del negozio smettono di arrivare. Il sito deve spedire da una casella che
+  l'SPF autorizza (una casella Seeweb, oppure aggiungere Aruba all'SPF)
 - ⬜ Creare il database MySQL (permessi all'utente: `SELECT, INSERT, UPDATE, DELETE, CREATE, INDEX`)
   e la casella email che manda i messaggi (es. sito@masgioielli.it)
+- ⬜ Utente dell'area riservata: crearlo all'installazione e consegnare la password al negozio
+  a voce o di persona (non per email/WhatsApp); al primo accesso la cambiano
 - ⬜ Secret su GitHub: `MAS_FTP_HOST`, `MAS_FTP_USER`, `MAS_FTP_PASS`, `MAS_FTP_DIR`
 - ⬜ Sul server: `api/config.php` da `config.esempio.php`, poi `/api/installa.php`, poi svuotare il codice
 - ⬜ Certificato HTTPS attivo sul dominio **prima** di pubblicare (il `.htaccess` impone HTTPS e HSTS)
@@ -63,6 +75,9 @@ Stato al 5 ottobre 2026. ✅ fatto · ⬜ da fare · 👤 serve qualcosa dal neg
 - ⬜ Conferme già chieste: il 338 538 6701 come WhatsApp, la perizia in banca per le cassette
   di sicurezza, il logo a triangolo pieno
 - ⬜ **Informativa privacy** da far rileggere al loro consulente
+- ⬜ **A quale indirizzo** far arrivare i messaggi dei moduli (es. info@masgioielli.it)
+- ⬜ **Statistiche delle visite**: oggi non ce ne sono (niente cookie, niente banner). Se le
+  vogliono, una soluzione senza cookie che non richiede il banner
 
 ## Dopo il lancio
 

@@ -86,15 +86,15 @@ const schema = {
 <body>
   <a class="mskip" href="#main">Salta al contenuto</a>
 
-  <!-- TESTATA: marchio centrato su due righe, si compatta scorrendo -->
+  {/* TESTATA: marchio centrato su due righe, si compatta scorrendo */}
   <header class="testata" id="testata">
     <div class="testata-alto">
       <button class="menu-btn" id="menuBtn" aria-label="Apri il menu" aria-expanded="false" aria-controls="menuNav">
         <span></span><span></span>
       </button>
       <a href={BASE} class="marchio">
-        <!-- logo vettoriale fornito dal negozio (EPS di Illustrator convertito in SVG):
-             nitido a qualsiasi misura, colore PANTONE Warm Gray 11 C -->
+        {/* logo vettoriale fornito dal negozio (EPS di Illustrator convertito in SVG):
+             nitido a qualsiasi misura, colore PANTONE Warm Gray 11 C */}
         <img class="marchio-logo" src="/img/logo-mas.svg" width="795" height="265" alt={INFO.nome + ' — home'} fetchpriority="high" />
         <span class="marchio-sotto" aria-hidden="true">Torino · dal {INFO.fondata}</span>
       </a>
