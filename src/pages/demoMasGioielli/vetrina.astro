@@ -99,6 +99,7 @@ import { INFO, PEZZI, CATEGORIE } from './_shared.js';
   </div>
 
   <style>
+    /* Le schede dei pezzi possono arrivare da JavaScript (selezione curata dall'area riservata): stili :global, altrimenti gli stili "scoped" non le raggiungono. */
     .testa-pagina{padding-top:calc(var(--tastata) + clamp(2.5rem,6vw,4.5rem));padding-bottom:clamp(2rem,4vw,3rem)}
 
     /* filtri: filetto sopra e sotto, niente pillole colorate */
@@ -116,20 +117,20 @@ import { INFO, PEZZI, CATEGORIE } from './_shared.js';
     .conteggio{font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;color:var(--grigio);margin-bottom:2rem}
     .galleria{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1.6rem,3.4vw,3.2rem) clamp(1.2rem,2.6vw,2.4rem)}
     .galleria>*{min-width:0}
-    .pezzo[hidden]{display:none}
-    .pezzo-foto{position:relative;overflow:hidden;background:var(--avorio-2)}
-    .pezzo-foto img{width:100%;aspect-ratio:4/5;object-fit:cover;transition:transform 1.1s var(--e);cursor:pointer}
-    .pezzo:hover .pezzo-foto img{transform:scale(1.04)}
+    :global(.pezzo[hidden]){display:none}
+    :global(.pezzo-foto){position:relative;overflow:hidden;background:var(--avorio-2)}
+    :global(.pezzo-foto img){width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;transition:transform 1.1s var(--e);cursor:pointer}
+    :global(.pezzo:hover .pezzo-foto img){transform:scale(1.04)}
     /* il segnalibro compare all'hover, ma resta sempre raggiungibile da tastiera */
-    .segna{position:absolute;top:.9rem;right:.9rem;width:38px;height:38px;border:0;background:rgba(247,243,236,.92);color:var(--inchiostro);font-size:1.05rem;line-height:1;cursor:pointer;display:grid;place-items:center;opacity:0;transform:translateY(-4px);transition:opacity .3s var(--e),transform .3s var(--e),background .25s,color .25s}
-    .pezzo:hover .segna,.segna:focus-visible,.segna.on{opacity:1;transform:none}
-    .segna:hover{background:var(--inchiostro);color:var(--avorio)}
-    .segna.on{background:var(--oro);color:var(--carta)}
-    .pezzo-cat{font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--oro);margin-top:1.2rem}
-    .pezzo h3{font-size:1.55rem;line-height:1.2;margin-top:.35rem}
-    .pezzo-apri{background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;text-align:left}
-    .pezzo-apri:hover{color:var(--oro)}
-    .pezzo-mat{color:var(--grigio);font-size:.86rem;margin-top:.3rem}
+    :global(.segna){position:absolute;top:.9rem;right:.9rem;width:38px;height:38px;border:0;background:rgba(247,243,236,.92);color:var(--inchiostro);font-size:1.05rem;line-height:1;cursor:pointer;display:grid;place-items:center;opacity:0;transform:translateY(-4px);transition:opacity .3s var(--e),transform .3s var(--e),background .25s,color .25s}
+    :global(.pezzo:hover .segna),:global(.segna:focus-visible),:global(.segna.on){opacity:1;transform:none}
+    :global(.segna:hover){background:var(--inchiostro);color:var(--avorio)}
+    :global(.segna.on){background:var(--oro);color:var(--carta)}
+    :global(.pezzo-cat){font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--oro);margin-top:1.2rem}
+    :global(.pezzo h3){font-size:1.55rem;line-height:1.2;margin-top:.35rem}
+    :global(.pezzo-apri){background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;text-align:left}
+    :global(.pezzo-apri:hover){color:var(--oro)}
+    :global(.pezzo-mat){color:var(--grigio);font-size:.86rem;margin-top:.3rem}
     .vuoto{text-align:center;color:var(--grafite);padding:3rem 1rem;font-family:var(--disp);font-size:1.4rem;font-style:italic}
 
     /* scheda */
@@ -170,7 +171,7 @@ import { INFO, PEZZI, CATEGORIE } from './_shared.js';
       .galleria{grid-template-columns:1fr;gap:2.5rem}
       .barra-in{flex-direction:column;align-items:stretch;gap:.9rem}
       .cerca input{width:100%}
-      .segna{opacity:1;transform:none}
+      :global(.segna){opacity:1;transform:none}
     }
   </style>
 
