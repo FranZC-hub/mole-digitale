@@ -20,6 +20,8 @@ src/pages/masgioielliDev/            le pagine: / selezione/ atelier/ compro-oro
 ├── _Layout.astro                    contatti/ privacy/ area-riservata/ 404/
 └── _sito.js                         dati del negozio, BASE (la cartella), chiamate all'API
 src/data/clienti.js                  i clienti, condivisi da /demoClienti/ e /demoClientiDev/
+src/scripts/checklist.js             la checklist di /demoClientiDev/: si spunta, si modifica come testo, si copia
+                                     (resta nel browser; si parte da docs/masgioielli/PRODUZIONE.md)
 public/masgioielliDev/
 ├── .htaccess                        CSP propria, noindex, 404 (si aggiunge a quello del sito)
 ├── img/                             foto e logo del negozio

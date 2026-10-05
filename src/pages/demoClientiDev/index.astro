@@ -9,6 +9,7 @@ import { CLIENTI } from '../../data/clienti.js';
 // Elenca TUTTI i clienti: chi non ha ancora la versione reale compare con la sola bozza.
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { createHash } from 'node:crypto';
 
 // Credenziali dell'area riservata: mai nel codice (il repository e' pubblico). Si leggono qui,
 // durante la build: dai secret di GitHub (es. MAS_DEV_PASSWORD) per il sito online, oppure in
@@ -24,14 +25,16 @@ function credenziali(a) {
   }
 }
 
-// Checklist: le voci ✅/⬜ di docs/<cliente>/PRODUZIONE.md, sezione per sezione (le righe
-// rientrate continuano la voce sopra). Il documento resta l'unica fonte: niente doppioni.
+// Checklist: si parte dalle voci ✅/⬜ di docs/<cliente>/PRODUZIONE.md, sezione per sezione (le
+// righe rientrate continuano la voce sopra). Sulla pagina si spunta e si modifica (resta nel
+// browser, src/scripts/checklist.js); l'impronta del documento dice quando e' cambiato.
 const html = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
   .replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
 function checklist(file) {
   const sezioni = [];
   let sez = null, voce = null;
-  for (const riga of readFileSync(join(process.cwd(), file), 'utf8').replace(/\r\n/g, '\n').split('\n')) {
+  const testo = readFileSync(join(process.cwd(), file), 'utf8').replace(/\r\n/g, '\n');
+  for (const riga of testo.split('\n')) {
     const h = riga.match(/^## (.+)/);
     if (h) {
       const [titolo, chi] = h[1].split(/ — (?=[^—]*$)/);
@@ -43,22 +46,30 @@ function checklist(file) {
     if (voce && /^ {2,}\S/.test(riga)) { voce.testo += ' ' + riga.trim(); continue; }
     voce = null;
   }
-  return sezioni.filter((s) => s.voci.length).map((s) => ({
-    ...s,
-    voci: s.voci.map((x) => ({ ...x, html: html(x.testo) })),
-    daFare: s.voci.filter((x) => !x.fatto).length,
-  }));
+  const piene = sezioni.filter((s) => s.voci.length);
+  return {
+    base: createHash('sha1').update(testo).digest('hex').slice(0, 12),
+    sezioni: piene.map((s) => ({ titolo: s.titolo, chi: s.chi, voci: s.voci.map(({ testo, fatto }) => ({ testo, fatto })) })),
+    // per la pagina senza JavaScript: prima le sezioni da finire, quelle completate chiuse in fondo
+    vista: piene.map((s) => ({ ...s, voci: s.voci.map((x) => ({ ...x, html: html(x.testo) })), daFare: s.voci.filter((x) => !x.fatto).length })),
+  };
 }
 
 const reali = CLIENTI.filter((c) => c.dev).map((c) => {
-  const lista = c.dev.checklist ? checklist(c.dev.checklist) : [];
+  const ck = c.dev.checklist ? checklist(c.dev.checklist) : null;
+  const vista = ck?.vista ?? [];
+  const id = c.dev.url.replace(/\W/g, '');
   return {
     ...c,
+    id,
     cred: credenziali(c.dev.accesso),
-    daFare: lista.filter((s) => s.daFare > 0),
-    fatte: lista.filter((s) => s.daFare === 0),
-    contaDaFare: lista.reduce((n, s) => n + s.daFare, 0),
-    contaFatte: lista.reduce((n, s) => n + s.voci.length - s.daFare, 0),
+    ck,
+    // dati per lo script; "<" diventa \u003c, cosi' nessun testo puo' chiudere il <script>
+    ckJson: ck && JSON.stringify({ chiave: id, nome: c.nome, fonte: c.dev.checklist, base: ck.base, sezioni: ck.sezioni }).replace(/</g, '\\u003c'),
+    daFare: vista.filter((s) => s.daFare > 0),
+    fatte: vista.filter((s) => s.daFare === 0),
+    contaDaFare: vista.reduce((n, s) => n + s.daFare, 0),
+    contaFatte: vista.reduce((n, s) => n + s.voci.length - s.daFare, 0),
   };
 });
 const soloBozza = CLIENTI.filter((c) => !c.dev);
@@ -103,34 +114,57 @@ const soloBozza = CLIENTI.filter((c) => !c.dev);
             {c.dev.pagine.map((p) => <a href={p.u}>{p.t}</a>)}
           </nav>
 
-          {c.daFare.length + c.fatte.length > 0 && (
-            <section class="cl-check" aria-label={'Cosa manca per ' + c.nome}>
-              <h3 class="cl-h3">Cosa manca <span class="cl-conta">{c.contaDaFare} da fare · {c.contaFatte} fatte</span></h3>
-              {c.daFare.map((s) => (
-                <div class="ck-sez">
-                  <p class="ck-titolo">{s.titolo}{s.chi && <span class="ck-chi">{s.chi}</span>}</p>
-                  <ul class="ck-lista">
-                    {s.voci.map((x) => (
-                      <li class={x.fatto ? 'ck-fatto' : undefined}>
-                        <span class="ck-box" aria-hidden="true">{x.fatto ? '✓' : ''}</span>
-                        <span class="sr-only">{x.fatto ? 'Fatto: ' : 'Da fare: '}</span>
-                        <span set:html={x.html} />
-                      </li>
-                    ))}
-                  </ul>
+          {c.ck && (
+            <section class="ck" aria-label={'Cosa manca per ' + c.nome}>
+              <div class="ck-testa">
+                <h3 class="cl-h3">Cosa manca <span class="ck-conta">{c.contaDaFare} da fare · {c.contaFatte} fatte</span></h3>
+                <div class="ck-azioni" hidden>
+                  <button type="button" class="ck-btn" data-az="copia" title="Testo semplice con ☐ e ☑: WhatsApp, email, Note">Copia</button>
+                  <button type="button" class="ck-btn" data-az="copia-md" title="Caselle vere in Notion, GitHub, Obsidian, Trello">Copia Markdown</button>
+                  <button type="button" class="ck-btn" data-az="modifica" aria-expanded="false">Modifica</button>
                 </div>
-              ))}
-              {c.fatte.map((s) => (
-                <details class="ck-sez ck-chiusa">
-                  <summary class="ck-titolo">{s.titolo} <span class="ck-chi">{s.voci.length} fatte</span></summary>
-                  <ul class="ck-lista">
-                    {s.voci.map((x) => (
-                      <li class="ck-fatto"><span class="ck-box" aria-hidden="true">✓</span><span set:html={x.html} /></li>
-                    ))}
-                  </ul>
-                </details>
-              ))}
-              <p class="ck-fonte">Dalla checklist <code>{c.dev.checklist}</code>: per spuntare una voce, nel documento ⬜ diventa ✅.</p>
+              </div>
+              <p class="ck-avviso" hidden>
+                La checklist del documento è cambiata dopo le modifiche fatte qui.
+                <button type="button" class="ck-link" data-az="nuova">Usa quella nuova</button> ·
+                <button type="button" class="ck-link" data-az="tieni">Tieni la mia</button>
+              </p>
+              <div class="ck-corpo">
+                {c.daFare.map((s) => (
+                  <div class="ck-sez">
+                    <p class="ck-titolo">{s.titolo}{s.chi && <span class="ck-chi">{s.chi}</span>}</p>
+                    <ul class="ck-lista">
+                      {s.voci.map((x) => (
+                        <li class={'ck-voce' + (x.fatto ? ' ck-fatto' : '')}>
+                          <label><input type="checkbox" class="ck-cb" checked={x.fatto} disabled /><span class="ck-testo" set:html={x.html} /></label>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+                {c.fatte.map((s) => (
+                  <details class="ck-sez ck-chiusa">
+                    <summary class="ck-titolo">{s.titolo}<span class="ck-chi">{s.voci.length} fatte</span></summary>
+                    <ul class="ck-lista">
+                      {s.voci.map((x) => (
+                        <li class="ck-voce ck-fatto"><label><input type="checkbox" class="ck-cb" checked disabled /><span class="ck-testo" set:html={x.html} /></label></li>
+                      ))}
+                    </ul>
+                  </details>
+                ))}
+              </div>
+              <div class="ck-editor" hidden>
+                <label class="ck-area-et" for={'ck-area-' + c.id}>La checklist come testo: modificala, oppure incollane una presa da un’altra parte</label>
+                <textarea class="ck-area" id={'ck-area-' + c.id} spellcheck="false" rows="14"></textarea>
+                <p class="ck-aiuto">Una riga per voce: <code>- [ ]</code> da fare, <code>- [x]</code> fatta (vanno bene anche ☐ ☑ ⬜ ✅ o un semplice elenco). <code>## Titolo</code> apre una sezione; <code>(Noi)</code> o <code>(Dal negozio)</code> in fondo al titolo dice chi se ne occupa.</p>
+                <p class="ck-errore" role="alert"></p>
+                <div class="ck-editor-azioni">
+                  <button type="button" class="btn btn-primary" data-az="salva">Salva</button>
+                  <button type="button" class="btn btn-ghost" data-az="annulla">Annulla</button>
+                </div>
+              </div>
+              <p class="ck-stato">Dalla checklist <code>{c.dev.checklist}</code>.</p>
+              <script type="application/json" class="ck-dati" set:html={c.ckJson} />
             </section>
           )}
 
@@ -204,27 +238,6 @@ const soloBozza = CLIENTI.filter((c) => !c.dev);
       color:var(--muted);transition:.25s var(--ease)}
     .cl-pagine a:hover{border-color:rgba(34,211,238,.55);color:var(--text);transform:translateY(-1px)}
 
-    /* checklist: le voci di docs/<cliente>/PRODUZIONE.md */
-    .cl-conta{margin-left:.6rem;letter-spacing:.08em;color:var(--warning)}
-    .ck-sez{margin-top:1.1rem}
-    .ck-titolo{font-weight:700;color:var(--text);font-size:.95rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
-    .ck-chi{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--muted-2);
-      border:1px solid var(--border);border-radius:999px;padding:.12rem .55rem}
-    .ck-lista{list-style:none;display:grid;gap:.55rem;margin-top:.7rem}
-    .ck-lista li{display:grid;grid-template-columns:1.15rem minmax(0,1fr);gap:.7rem;align-items:start;
-      color:var(--muted);font-size:.92rem;line-height:1.55}
-    .ck-box{width:1.15rem;height:1.15rem;margin-top:.12rem;border:1.5px solid rgba(255,200,61,.6);border-radius:5px;
-      display:grid;place-items:center;font-size:.75rem;font-weight:800;line-height:1}
-    .ck-fatto .ck-box{border-color:rgba(34,211,238,.6);background:rgba(34,211,238,.14);color:var(--c2)}
-    .ck-fatto{opacity:.75}
-    .ck-lista code{background:rgba(255,255,255,.08);border-radius:5px;padding:.05rem .35rem;font-size:.86em;overflow-wrap:anywhere}
-    .ck-lista b{color:var(--text)}
-    .ck-chiusa summary{cursor:pointer;list-style:none}
-    .ck-chiusa summary::-webkit-details-marker{display:none}
-    .ck-chiusa summary::before{content:'▸';color:var(--c2);transition:transform .2s var(--ease)}
-    .ck-chiusa[open] summary::before{transform:rotate(90deg)}
-    .ck-fonte{margin-top:1.1rem;color:var(--muted-2);font-size:.82rem}
-    .ck-fonte code{background:rgba(255,255,255,.08);border-radius:5px;padding:.05rem .35rem}
     .cl-acc-cred code{background:rgba(255,255,255,.08);border-radius:6px;padding:.12rem .45rem;color:var(--text)}
     .cl-acc-nota{color:var(--muted-2);font-size:.85rem}
 
@@ -251,4 +264,54 @@ const soloBozza = CLIENTI.filter((c) => !c.dev);
       .cl-apri{width:100%;justify-content:center}
     }
   </style>
+
+  <style is:global>
+    /* checklist: globale perche' le voci le ridisegna src/scripts/checklist.js */
+    .ck-testa{display:flex;align-items:baseline;justify-content:space-between;gap:.6rem 1rem;flex-wrap:wrap}
+    .ck-conta{margin-left:.6rem;letter-spacing:.08em;color:var(--warning)}
+    .ck-azioni{display:flex;gap:.45rem;flex-wrap:wrap}
+    .ck-btn{font:inherit;font-size:.8rem;font-weight:600;color:var(--text);background:rgba(255,255,255,.05);
+      border:1px solid var(--border);border-radius:999px;padding:.35rem .85rem;cursor:pointer;transition:.2s var(--ease)}
+    .ck-btn:hover{border-color:rgba(34,211,238,.55)}
+    .ck-btn[aria-expanded="true"]{border-color:var(--c2);color:var(--c2)}
+    .ck-link{font:inherit;color:var(--c2);background:none;border:0;padding:0;cursor:pointer;border-bottom:1px solid rgba(34,211,238,.4)}
+    .ck-avviso{margin-top:.6rem;padding:.7rem .9rem;border-radius:12px;border:1px solid rgba(255,200,61,.35);
+      background:rgba(255,200,61,.06);color:var(--muted);font-size:.88rem}
+    .ck-sez{margin-top:1.1rem}
+    .ck-titolo{font-weight:700;color:var(--text);font-size:.95rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+    .ck-chi{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--muted-2);
+      border:1px solid var(--border);border-radius:999px;padding:.12rem .55rem}
+    .ck-lista{list-style:none;display:grid;gap:.45rem;margin-top:.7rem}
+    .ck-voce label{display:grid;grid-template-columns:1.15rem minmax(0,1fr);gap:.7rem;align-items:start;
+      color:var(--muted);font-size:.92rem;line-height:1.55;cursor:pointer}
+    .ck-cb{appearance:none;-webkit-appearance:none;margin:.18rem 0 0;width:1.15rem;height:1.15rem;cursor:pointer;
+      border:1.5px solid rgba(255,200,61,.6);border-radius:5px;background:transparent center/78% no-repeat;transition:.15s var(--ease)}
+    .ck-cb:checked{border-color:rgba(34,211,238,.7);background-color:rgba(34,211,238,.16);
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3L13 4.5' fill='none' stroke='%2322d3ee' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+    .ck-cb:focus-visible{outline:2px solid var(--c2);outline-offset:2px}
+    .ck-cb:disabled{cursor:default}
+    .ck-fatto .ck-testo{opacity:.6;text-decoration:line-through;text-decoration-color:rgba(255,255,255,.25)}
+    .ck-testo code{background:rgba(255,255,255,.08);border-radius:5px;padding:.05rem .35rem;font-size:.86em;overflow-wrap:anywhere}
+    .ck-testo b{color:var(--text)}
+    .ck-chiusa summary{cursor:pointer;list-style:none}
+    .ck-chiusa summary::-webkit-details-marker{display:none}
+    .ck-chiusa summary::before{content:'▸';color:var(--c2);transition:transform .2s var(--ease)}
+    .ck-chiusa[open] summary::before{transform:rotate(90deg)}
+    .ck-editor{margin-top:.9rem}
+    .ck-area-et{display:block;color:var(--muted);font-size:.86rem;margin-bottom:.45rem}
+    .ck-area{width:100%;min-height:14rem;resize:vertical;font:.84rem/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      color:var(--text);background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:12px;padding:.9rem 1rem}
+    .ck-area:focus{outline:2px solid rgba(34,211,238,.55);outline-offset:1px}
+    .ck-aiuto{margin-top:.5rem;color:var(--muted-2);font-size:.8rem;line-height:1.55}
+    .ck-aiuto code,.ck-stato code{background:rgba(255,255,255,.08);border-radius:5px;padding:.05rem .35rem}
+    .ck-errore{color:var(--warning);font-size:.85rem;margin-top:.35rem}
+    .ck-errore:empty{display:none}
+    .ck-editor-azioni{display:flex;gap:.6rem;margin-top:.7rem}
+    .ck-stato{margin-top:1.1rem;color:var(--muted-2);font-size:.82rem}
+  </style>
 </Layout>
+
+<script>
+  import { avviaChecklist } from '../../scripts/checklist.js';
+  document.querySelectorAll('.ck').forEach(avviaChecklist);
+</script>
