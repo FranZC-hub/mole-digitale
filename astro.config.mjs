@@ -11,7 +11,8 @@ export default defineConfig({
   build: { inlineStylesheets: 'auto' },
   // Sitemap: dentro solo le pagine che vogliamo su Google.
   // Fuori: le singole demo (/demo/bar/, /demo/sushi/…), le bozze dei clienti
-  // (/demoFarmaciaAusiliatrice/, /demoMasGioielli/, /demoClienti/) e le pagine di servizio.
+  // (/demoFarmaciaAusiliatrice/, /demoMasGioielli/, /demoClienti/), le versioni reali in sviluppo
+  // (/demoClientiDev/…) e le pagine di servizio.
   // La galleria /demo/ resta indicizzabile.
   integrations: [
     sitemap({

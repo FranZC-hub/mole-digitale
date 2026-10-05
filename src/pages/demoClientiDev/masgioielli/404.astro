@@ -1,0 +1,25 @@
+---
+import Layout from './_Layout.astro';
+import { BASE, INFO } from './_sito.js';
+// Pagina per gli indirizzi che non esistono (.htaccess della cartella: ErrorDocument 404).
+---
+<Layout title="Pagina non trovata" noindex desc={`Pagina non trovata sul sito di ${INFO.nome}.`}>
+  <section class="non-trovata">
+    <div class="misura stretta intro centro">
+      <p class="fregio" aria-hidden="true"><span></span></p>
+      <span class="occhiello centro">Pagina non trovata</span>
+      <h1>Questa pagina <span class="it oro">non c’è.</span></h1>
+      <p>Forse l’indirizzo è cambiato, o il pezzo che cercavate non è più in vetrina. Ripartite da qui:</p>
+      <div class="vie">
+        <a href={BASE} class="btn">Torna alla home</a>
+        <a href={BASE + 'selezione/'} class="link-filo">La selezione</a>
+        <a href={BASE + 'contatti/'} class="link-filo">Contatti</a>
+      </div>
+    </div>
+  </section>
+  <style>
+    .non-trovata{padding:calc(var(--tastata) + clamp(3rem,8vw,6rem)) 0 clamp(4rem,10vw,8rem)}
+    .non-trovata .fregio{margin-bottom:2rem}
+    .vie{display:flex;justify-content:center;align-items:center;gap:1.4rem 2rem;flex-wrap:wrap;margin-top:2.4rem}
+  </style>
+</Layout>

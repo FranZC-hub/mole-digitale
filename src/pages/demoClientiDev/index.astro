@@ -1,0 +1,147 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { CLIENTI } from '../../data/clienti.js';
+
+// PAGINA PRIVATA — le versioni REALI dei siti clienti, in sviluppo: database, area riservata
+// con password vera, messaggi via email. Ogni progetto nasce come bozza in /demoClienti/;
+// quando il cliente dice si', la versione reale cresce qui prima di andare sul suo dominio.
+// Come /demoClienti: non collegata dal sito, noindex, fuori dalla sitemap (astro.config.mjs).
+// Elenca TUTTI i clienti: chi non ha ancora la versione reale compare con la sola bozza.
+const reali = CLIENTI.filter((c) => c.dev);
+const soloBozza = CLIENTI.filter((c) => !c.dev);
+---
+<Layout
+  title="Versioni reali dei clienti — pagina privata | Mole Digitale"
+  description="Pagina privata: i siti dei clienti in sviluppo, con database e area riservata."
+  noindex={true}
+>
+  <section class="section" style="padding-top:8rem;">
+    <div class="section-head" data-reveal>
+      <span class="kicker">Riservato · sviluppo</span>
+      <h1>I siti dei clienti, <span class="grad">quelli veri</span>.</h1>
+      <p class="section-lead">Qui i siti funzionano davvero: database, area riservata con password, messaggi che arrivano per email. Ogni progetto parte come bozza in <a class="in-testo" href="/demoClienti/">/demoClienti</a>; quando il cliente dice sì, cresce qui prima di andare sul suo dominio.</p>
+    </div>
+
+    <div class="avviso glass" data-reveal>
+      <b>Questa pagina è privata, e qui i dati sono veri.</b>
+      <p>Non è collegata dal sito, non è nella sitemap ed è marcata <code>noindex</code>, come anche le versioni qui sotto. Le password delle aree riservate <b>non</b> sono su questa pagina: si creano quando il sito viene installato sul server e le consegniamo al cliente a voce. A un cliente manda il link del suo sito, non questa pagina.</p>
+    </div>
+
+    <div class="clienti">
+      {reali.map((c) => (
+        <article class="cliente glass" data-reveal>
+          <header class="cl-testa">
+            <div>
+              <span class="cl-stato cl-stato-dev">{c.dev.stato}</span>
+              <h2>{c.nome}</h2>
+              <p class="cl-meta">{c.settore} · {c.dove}</p>
+              <p class="cl-tecnica">{c.dev.tecnica}</p>
+            </div>
+            <a href={c.dev.url} class="btn btn-primary cl-apri">Apri il sito →</a>
+          </header>
+
+          <h3 class="cl-h3">Cosa c’è in più rispetto alla bozza</h3>
+          <ul class="cl-dentro">
+            {c.dev.dentro.map((d) => <li>{d}</li>)}
+          </ul>
+
+          <h3 class="cl-h3">Le pagine</h3>
+          <nav class="cl-pagine" aria-label={'Pagine del sito ' + c.nome}>
+            {c.dev.pagine.map((p) => <a href={p.u}>{p.t}</a>)}
+          </nav>
+
+          <p class="cl-manca"><b>Cosa manca:</b> {c.dev.manca}</p>
+
+          <div class="cl-accesso">
+            <div>
+              <span class="cl-acc-et">{c.dev.accesso.t}</span>
+              <p class="cl-acc-cred">Credenziali create all’installazione sul server, non scritte qui</p>
+            </div>
+            <div class="cl-azioni">
+              <a href={c.url} class="btn btn-ghost">La bozza</a>
+              <a href={c.dev.accesso.u} class="btn btn-ghost">Apri →</a>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    {soloBozza.length > 0 && (
+      <div class="attesa" data-reveal>
+        <h2 class="attesa-titolo">Ancora solo bozza</h2>
+        <p class="attesa-lead">Per questi clienti la versione reale non è ancora iniziata: c’è la bozza da far vedere.</p>
+        <ul class="attesa-lista">
+          {soloBozza.map((c) => (
+            <li class="glass">
+              <div>
+                <span class="attesa-nome">{c.nome}</span>
+                <span class="attesa-meta">{c.settore} · {c.dove}</span>
+              </div>
+              <a href={c.url} class="btn btn-ghost">Apri la bozza →</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+
+    <p class="chiusa" data-reveal>
+      Le bozze per i clienti stanno in <a href="/demoClienti/">/demoClienti</a>, le demo generiche di settore in <a href="/demo/">/demo</a>.
+    </p>
+  </section>
+
+  <style>
+    .in-testo{color:var(--c2);border-bottom:1px solid rgba(34,211,238,.4)}
+    .avviso{max-width:820px;margin:0 auto 3rem;padding:1.6rem 1.8rem;border-radius:var(--radius);
+      border-left:3px solid var(--warning)}
+    .avviso b{color:var(--text)}
+    .avviso p{color:var(--muted);font-size:.95rem;margin-top:.4rem}
+    .avviso code{background:rgba(255,255,255,.08);border-radius:6px;padding:.1rem .4rem;font-size:.88em}
+
+    .clienti{display:grid;gap:1.6rem;max-width:900px;margin:0 auto}
+    .cliente{padding:clamp(1.6rem,3vw,2.4rem);border-radius:var(--radius)}
+    .cl-testa{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:1.5rem}
+    .cl-stato{display:inline-block;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;
+      border-radius:999px;padding:.2rem .7rem;margin-bottom:.7rem}
+    .cl-stato-dev{color:var(--c2);border:1px solid rgba(34,211,238,.4)}
+    .cl-testa h2{font-size:clamp(1.5rem,3vw,2rem);line-height:1.15}
+    .cl-meta{color:var(--muted-2);font-size:.9rem;margin-top:.3rem}
+    .cl-tecnica{color:var(--muted);font-size:.86rem;margin-top:.5rem}
+    .cl-apri{flex:none}
+
+    .cl-h3{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2);font-weight:700;margin:1.8rem 0 .7rem}
+    .cl-dentro{list-style:none;display:grid;gap:.5rem}
+    .cl-dentro li{color:var(--muted);font-size:.94rem;padding-left:1.4rem;position:relative}
+    .cl-dentro li::before{content:'';position:absolute;left:0;top:.55em;width:6px;height:6px;border-radius:50%;background:var(--c2)}
+
+    .cl-pagine{display:flex;flex-wrap:wrap;gap:.5rem}
+    .cl-pagine a{border:1px solid var(--border);border-radius:999px;padding:.35rem .9rem;font-size:.86rem;
+      color:var(--muted);transition:.25s var(--ease)}
+    .cl-pagine a:hover{border-color:rgba(34,211,238,.55);color:var(--text);transform:translateY(-1px)}
+
+    .cl-manca{margin-top:1.6rem;color:var(--muted);font-size:.92rem}
+    .cl-manca b{color:var(--text)}
+
+    .cl-accesso{display:flex;align-items:center;justify-content:space-between;gap:1.2rem;flex-wrap:wrap;
+      margin-top:1.8rem;padding-top:1.4rem;border-top:1px solid var(--border)}
+    .cl-acc-et{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-2);font-weight:700}
+    .cl-acc-cred{color:var(--muted);font-size:.92rem;margin-top:.25rem}
+    .cl-azioni{display:flex;gap:.6rem;flex-wrap:wrap}
+
+    .attesa{max-width:900px;margin:3.2rem auto 0}
+    .attesa-titolo{font-size:clamp(1.2rem,2.4vw,1.5rem)}
+    .attesa-lead{color:var(--muted);font-size:.94rem;margin-top:.4rem}
+    .attesa-lista{list-style:none;display:grid;gap:.8rem;margin-top:1.2rem}
+    .attesa-lista li{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+      padding:1.1rem 1.4rem;border-radius:var(--radius)}
+    .attesa-nome{display:block;font-weight:700;color:var(--text)}
+    .attesa-meta{display:block;color:var(--muted-2);font-size:.88rem;margin-top:.15rem}
+
+    .chiusa{text-align:center;color:var(--muted-2);font-size:.9rem;margin-top:2.6rem}
+    .chiusa a{color:var(--c2);border-bottom:1px solid rgba(34,211,238,.4)}
+
+    @media (max-width:640px){
+      .cl-testa{grid-template-columns:1fr}
+      .cl-apri{width:100%;justify-content:center}
+    }
+  </style>
+</Layout>

@@ -1,0 +1,164 @@
+---
+import Layout from './_Layout.astro';
+import { BASE, INFO, orariSettimana } from './_sito.js';
+const ORARI = orariSettimana();   // reso lato server: leggibile anche senza JavaScript
+const WA = `https://wa.me/${INFO.wa}`;
+const MAPPA = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(INFO.via + ', ' + INFO.citta)}`;
+---
+<Layout title="Contatti e orari" active="Contatti" desc={`Dove siamo e come contattarci: ${INFO.via}, ${INFO.citta}. Telefono ${INFO.tel}, WhatsApp ${INFO.waLabel}. Aperti da martedì a sabato.`}>
+
+  <section class="testa-pagina">
+    <div class="misura stretta intro centro a">
+      <span class="occhiello centro">Vieni a trovarci</span>
+      <h1>Ci trovate in<br/><span class="it oro">Corso Trapani</span></h1>
+      <p>Il modo migliore per scegliere un gioiello resta guardarlo dal vivo. Passate quando volete — o scriveteci prima, così vi prepariamo quello che vi interessa.</p>
+    </div>
+  </section>
+
+  {/* TRE MODI PER SCRIVERCI */}
+  <section class="banda modi-banda">
+    <div class="misura">
+      <h2 class="sr-only">Come contattarci</h2>
+      <div class="modi">
+        <a class="modo a" href={'tel:' + INFO.telHref}>
+          <span class="modo-et">Telefono</span>
+          <span class="modo-v">{INFO.tel}</span>
+          <span class="modo-d">negli orari di apertura</span>
+        </a>
+        <a class="modo a" href={WA} target="_blank" rel="noopener">
+          <span class="modo-et">WhatsApp</span>
+          <span class="modo-v">{INFO.waLabel}</span>
+          <span class="modo-d">mandateci anche una foto del pezzo</span>
+        </a>
+        <a class="modo a" href={'mailto:' + INFO.email}>
+          <span class="modo-et">Email</span>
+          <span class="modo-v modo-mail">{INFO.email}</span>
+          <span class="modo-d">per richieste non urgenti</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {/* DOVE E QUANDO */}
+  <section class="banda dove-banda">
+    <div class="misura dove-in">
+      <div class="a">
+        <span class="occhiello">Il negozio</span>
+        <h2 class="dove-h2">{INFO.via}<br/><span class="it oro">{INFO.cap} {INFO.citta}</span></h2>
+        <p class="dove-p">Zona San Paolo. Si parcheggia in strada davanti al negozio, con le fermate GTT a pochi passi.</p>
+        <p class="stato dove-stato" id="stato"><span class="pt"></span><span id="statoTxt">Orari del negozio</span></p>
+        <div class="dove-azioni">
+          <a href={MAPPA} target="_blank" rel="noopener" class="btn">Apri in Google Maps</a>
+          <a href={WA} target="_blank" rel="noopener" class="link-filo">Scrivici su WhatsApp</a>
+        </div>
+      </div>
+      <div class="a">
+        <h3 class="dove-h3">Orari di apertura</h3>
+        <ul class="orari" id="listaOrari">
+          {ORARI.map((o) => <li><span>{o.giorno}</span><b>{o.label}</b></li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  {/* SCRIVICI */}
+  <section class="banda scrivi-banda">
+    <div class="misura scrivi-in">
+      <div class="a">
+        <span class="occhiello">Scriveteci</span>
+        <h2 class="scrivi-h2">Raccontateci<br/><span class="it oro">cosa vi serve.</span></h2>
+        <p class="scrivi-p">Un’informazione su un pezzo, una riparazione, una creazione su misura, una valutazione o dell’oro da vendere: rispondiamo noi, di solito in giornata.</p>
+      </div>
+      <form class="modulo a" id="contForm">
+        <label>Il vostro nome<input type="text" id="c-nome" required autocomplete="name" /></label>
+        <label>Telefono o email<input type="text" id="c-rec" required autocomplete="tel" /></label>
+        <label>Di cosa avete bisogno
+          <select id="c-motivo">
+            <option>Informazioni su un gioiello</option>
+            <option>Una riparazione</option>
+            <option>Una creazione su misura</option>
+            <option>Una perizia o valutazione</option>
+            <option>Vendere oro usato</option>
+            <option>Altro</option>
+          </select>
+        </label>
+        <label>Messaggio<textarea id="c-msg" rows="4" maxlength="600" placeholder="Raccontateci pure con parole vostre"></textarea></label>
+        <label class="consenso">
+          <input type="checkbox" id="c-privacy" required />
+          <span>Ho letto l’<a href={BASE + 'privacy/'}>informativa privacy</a> e acconsento al trattamento dei dati.</span>
+        </label>
+        <p class="trappola" aria-hidden="true"><label>Sito web<input type="text" id="c-sito" tabindex="-1" autocomplete="off" /></label></p>
+        <button type="submit" class="btn btn-pieno">Invia il messaggio</button>
+        <p class="esito" id="contOk" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <style>
+    .testa-pagina{padding-top:calc(var(--tastata) + clamp(2.5rem,6vw,4.5rem));padding-bottom:clamp(1rem,2vw,2rem)}
+
+    /* tre modi: colonne a filetto, il valore in display grande */
+    .modi-banda{padding-block:clamp(2rem,4vw,3rem)}
+    .modi{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+    .modi>*{min-width:0}
+    .modo{display:flex;flex-direction:column;gap:.45rem;padding:clamp(1.6rem,3vw,2.2rem) clamp(1rem,2.5vw,2rem);border-top:1px solid var(--filo);border-bottom:1px solid var(--filo);border-left:1px solid var(--filo);transition:background .3s var(--e)}
+    .modo:last-child{border-right:1px solid var(--filo)}
+    .modo:hover{background:var(--carta)}
+    .modo-et{font-size:.64rem;letter-spacing:.24em;text-transform:uppercase;color:var(--oro)}
+    .modo-v{font-family:var(--disp);font-size:clamp(1.5rem,2.8vw,2rem);line-height:1.2}
+    .modo-mail{font-size:clamp(1.1rem,2vw,1.4rem);word-break:break-word}
+    .modo-d{font-size:.85rem;color:var(--grigio)}
+
+    /* dove e quando */
+    .dove-in{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(2.5rem,6vw,5rem);align-items:start}
+    .dove-in>*{min-width:0}
+    .dove-h2{font-size:clamp(1.9rem,4vw,2.9rem);margin:1.4rem 0 0}
+    .dove-p{color:var(--grafite);margin:1.3rem 0 1.5rem;max-width:44ch}
+    .dove-stato{margin-bottom:2rem}
+    .dove-azioni{display:flex;align-items:center;gap:2rem;flex-wrap:wrap}
+    .dove-h3{font-family:var(--sans);font-size:.66rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--oro);margin-bottom:1rem}
+
+    /* scrivici */
+    .scrivi-banda{padding-top:0}
+    .scrivi-in{display:grid;grid-template-columns:.95fr 1.05fr;gap:clamp(2.5rem,6vw,5rem);align-items:start;border-top:1px solid var(--filo);padding-top:clamp(3rem,6vw,4.5rem)}
+    .scrivi-in>*{min-width:0}
+    .scrivi-h2{font-size:clamp(1.9rem,4vw,2.9rem);margin:1.4rem 0 0}
+    .scrivi-p{color:var(--grafite);margin-top:1.3rem;max-width:44ch}
+
+    @media (max-width:900px){
+      .modi{grid-template-columns:1fr}
+      .modo{border-right:1px solid var(--filo);border-bottom:0}
+      .modo:last-child{border-bottom:1px solid var(--filo)}
+      .dove-in,.scrivi-in{grid-template-columns:1fr}
+    }
+  </style>
+
+  <script>
+    import { caricaDati, renderOrari, inviaMessaggio } from './_sito.js';
+    renderOrari(document.getElementById('listaOrari'), document.getElementById('statoTxt'), null);
+    caricaDati().then((d) => { if (d) renderOrari(document.getElementById('listaOrari'), document.getElementById('statoTxt'), d); });
+
+    const aperto = Date.now();
+    const form = document.getElementById('contForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const v = (id) => document.getElementById(id).value.trim();
+      const esito = document.getElementById('contOk');
+      const bottone = form.querySelector('button[type=submit]');
+      // un solo campo "telefono o email": se c'e' la chiocciola e' un'email
+      const recapito = v('c-rec');
+      const email = recapito.includes('@') ? recapito : '';
+      const nome = v('c-nome');
+      bottone.disabled = true; bottone.textContent = 'Invio in corso…';
+      const r = await inviaMessaggio({
+        tipo: 'contatti', nome, telefono: email ? '' : recapito, email, argomento: v('c-motivo'), messaggio: v('c-msg'),
+        privacy: document.getElementById('c-privacy').checked, sito_web: v('c-sito'), aperto,
+      });
+      bottone.disabled = false; bottone.textContent = 'Invia il messaggio';
+      esito.textContent = r.ok ? `Grazie ${nome}, messaggio ricevuto: vi rispondiamo al più presto.` : r.errore;
+      esito.classList.toggle('esito-ko', !r.ok);
+      esito.style.display = 'block';
+      if (r.ok) form.reset();
+    });
+  </script>
+</Layout>

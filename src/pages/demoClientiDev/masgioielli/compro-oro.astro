@@ -1,0 +1,115 @@
+---
+import Layout from './_Layout.astro';
+import { BASE, INFO, orariInRiga } from './_sito.js';
+// Compro oro: servizio aggiunto su richiesta del negozio.
+// Nessuna cifra inventata (niente quotazioni né "miglior prezzo garantito"): solo
+// come funziona, cosa serve per legge e l'alternativa onesta del laboratorio.
+const passi = [
+  { n: 'I', t: 'Portateci l’oro', d: 'Catenine spezzate, orecchini spaiati, fedi che non portate più, anche con pietre: va bene tutto, in qualsiasi stato.' },
+  { n: 'II', t: 'Titolo e peso, davanti a voi', d: 'Verifichiamo la caratura di ogni pezzo e lo pesiamo sulla bilancia sotto i vostri occhi. Niente passa dietro il banco.' },
+  { n: 'III', t: 'Una proposta chiara', d: 'Calcolata sulla quotazione dell’oro del giorno. Decidete voi, con calma: se non vi convince, ve lo riportate a casa.' },
+  { n: 'IV', t: 'Il pagamento', d: 'Con documento d’identità e codice fiscale, come chiede la legge. Sopra i 500 € il pagamento è tracciabile.' },
+];
+const WA_ORO = `https://wa.me/${INFO.wa}?text=${encodeURIComponent(`Buongiorno ${INFO.nome}! Avrei dell’oro usato da far valutare: quando posso passare?`)}`;
+---
+<Layout title="Compro oro" active="Compro oro" desc={`Compro oro a Torino in Corso Trapani: valutazione dell’oro usato in negozio, davanti a voi, sulla quotazione del giorno. ${INFO.nome}, dal ${INFO.fondata}.`}>
+
+  <section class="testa-pagina">
+    <div class="misura stretta intro centro a">
+      <span class="occhiello centro">Compro oro</span>
+      <h1>Il vostro oro usato,<br/><span class="it oro">valutato con onestà</span></h1>
+      <p>Lo pesiamo e lo valutiamo in negozio, davanti a voi, sulla quotazione del giorno. La valutazione è gratuita e non vi impegna a nulla.</p>
+    </div>
+  </section>
+
+  {/* COME FUNZIONA */}
+  <section class="banda passi-banda">
+    <div class="misura">
+      <h2 class="sr-only">Come funziona</h2>
+      <ol class="passi">
+        {passi.map((p) => (
+          <li class="a"><span class="passo-n">{p.n}</span><b>{p.t}</b><p>{p.d}</p></li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  {/* PRIMA DI VENDERE: l'alternativa che solo chi ha un laboratorio puo' offrire */}
+  <section class="scuro banda prima">
+    <div class="misura prima-in">
+      <div class="a">
+        <span class="occhiello">Prima di vendere</span>
+        <p class="prima-t">Non tutto<br/><span class="it prima-oro">va venduto.</span></p>
+      </div>
+      <div class="a">
+        <p>Un gioiello di famiglia rotto, spesso, si ripara. E con l’oro che avete in un cassetto si può fare un pezzo nuovo, che vi rappresenta: lo disegniamo e lo realizziamo nel nostro laboratorio. Ve lo diciamo sempre, prima di fare una proposta d’acquisto.</p>
+        <ul class="prima-lista">
+          <li><a href={BASE + 'atelier/'}>Riparazioni e trasformazioni in laboratorio</a></li>
+          <li><a href={BASE + 'perizie/'}>State dividendo un’eredità? Prima serve una perizia</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  {/* COSA SERVE + CONTATTO */}
+  <section class="banda">
+    <div class="misura serve-in">
+      <div class="a">
+        <span class="occhiello">Cosa portare</span>
+        <h2 class="serve-h2">Due documenti,<br/><span class="it oro">e l’oro.</span></h2>
+        <ul class="serve-lista">
+          <li><b>Documento d’identità</b> valido</li>
+          <li><b>Codice fiscale</b> (va bene la tessera sanitaria)</li>
+        </ul>
+        <p class="serve-legge">Li chiede la legge a tutti i compro oro (D.Lgs. 92/2017), per garantire che ogni acquisto sia tracciato e regolare.{INFO.oam && <> Iscrizione al Registro degli operatori compro oro n. {INFO.oam}.</>}</p>
+      </div>
+      <div class="a serve-azioni">
+        <p class="serve-p">Passate negli orari del negozio, oppure scriveteci prima: vi diciamo quando c’è meno attesa.</p>
+        <a class="btn btn-pieno" id="oroWa" href={WA_ORO} target="_blank" rel="noopener">Scriveteci su WhatsApp</a>
+        <a class="btn btn-vuoto btn-pieno" href={'tel:' + INFO.telHref}>Chiamate il {INFO.tel}</a>
+        <p class="nota">{INFO.via}, {INFO.citta} · <span data-orari-riga>{orariInRiga()}</span></p>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .testa-pagina{padding-top:calc(var(--tastata) + clamp(2.5rem,6vw,4.5rem));padding-bottom:clamp(1rem,2vw,2rem)}
+
+    .passi-banda{padding-top:clamp(2rem,4vw,3rem)}
+    .passi{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(1.4rem,3vw,2.6rem)}
+    .passi>*{min-width:0}
+    .passi li{border-top:1px solid var(--filo);padding-top:1.4rem}
+    .passo-n{display:block;font-family:var(--disp);font-size:1.05rem;color:var(--oro);letter-spacing:.1em;margin-bottom:.7rem}
+    .passi b{display:block;font-family:var(--disp);font-weight:400;font-size:clamp(1.35rem,2.2vw,1.7rem);line-height:1.2}
+    .passi p{color:var(--grafite);font-size:.93rem;margin-top:.5rem}
+
+    .prima-in{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(2.5rem,6vw,5rem);align-items:start}
+    .prima-in>*{min-width:0}
+    .prima-t{font-family:var(--disp);font-size:clamp(2.2rem,4.6vw,3.4rem);line-height:1.12;color:var(--avorio);margin-top:1.4rem}
+    .prima-oro{color:var(--oro-c)}
+    .prima-lista{list-style:none;margin-top:1.8rem}
+    .prima-lista li{border-top:1px solid var(--filo-c)}
+    .prima-lista li:last-child{border-bottom:1px solid var(--filo-c)}
+    .prima-lista a{display:block;padding:.95rem 0;color:var(--avorio);transition:color .25s,padding-left .35s var(--e)}
+    .prima-lista a::after{content:' →';color:var(--oro-c)}
+    .prima-lista a:hover{color:var(--oro-c);padding-left:.6rem}
+
+    .serve-in{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(2.5rem,6vw,5rem);align-items:start}
+    .serve-in>*{min-width:0}
+    .serve-h2{font-size:clamp(2rem,4.2vw,3rem);margin:1.4rem 0 0}
+    .serve-lista{list-style:none;margin:1.8rem 0 1.2rem}
+    .serve-lista li{padding:.85rem 0;border-bottom:1px solid var(--filo);color:var(--grafite)}
+    .serve-lista li:first-child{border-top:1px solid var(--filo)}
+    .serve-lista b{font-weight:500;color:var(--inchiostro)}
+    .serve-legge{font-size:.86rem;color:var(--grigio);max-width:52ch}
+    .serve-azioni{display:flex;flex-direction:column;gap:1rem;align-self:center}
+    .serve-p{color:var(--grafite)}
+
+    @media (max-width:980px){
+      .passi{grid-template-columns:1fr 1fr}
+      .prima-in,.serve-in{grid-template-columns:1fr}
+    }
+    @media (max-width:560px){.passi{grid-template-columns:1fr}}
+  </style>
+
+</Layout>

@@ -1,0 +1,23 @@
+# MasGioielli, versione reale in sviluppo dentro moledigitale.it/demoClientiDev/masgioielli/
+#
+# Si AGGIUNGE al .htaccess del sito principale (HTTPS, HSTS, nosniff, cache, compressione
+# restano quelli): qui solo cio' che questo sito ha di diverso.
+# Niente mod_rewrite in questa cartella: le sue regole sostituirebbero quelle del sito
+# principale (compreso il passaggio obbligato a HTTPS).
+# Per quando il sito andra' su masgioielli.it: docs/masgioielli/masgioielli.it.htaccess
+
+Options -Indexes
+ErrorDocument 404 /demoClientiDev/masgioielli/404/index.html
+
+# file nascosti (.git, .env...) mai serviti
+<IfModule mod_alias.c>
+  RedirectMatch 404 "^/demoClientiDev/masgioielli/(.*/)?\."
+</IfModule>
+
+<IfModule mod_headers.c>
+  # Versione in sviluppo: fuori da Google anche se qualcuno trovasse il link
+  Header always set X-Robots-Tag "noindex, nofollow"
+  # CSP propria, piu' stretta di quella del sito principale (niente script in linea) e con
+  # le immagini blob: che servono all'anteprima delle foto nell'area riservata.
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
+</IfModule>
