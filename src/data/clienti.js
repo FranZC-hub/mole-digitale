@@ -52,7 +52,7 @@ export const CLIENTI = [
     ],
     accesso: { t: 'Area riservata', u: '/demoMasGioielli/riservata/', user: 'masgioielli', pass: 'trapani146' },
     dev: {
-      url: '/demoClientiDev/masgioielli/',
+      url: '/masgioielliDev/',
       stato: 'Versione reale in sviluppo',
       tecnica: 'Pagine statiche · area riservata in PHP · database MySQL',
       dentro: [
@@ -63,16 +63,20 @@ export const CLIENTI = [
         'Fuori da Google finché è in sviluppo; quando è pronto si sposta su masgioielli.it',
       ],
       pagine: [
-        { t: 'Home', u: '/demoClientiDev/masgioielli/' },
-        { t: 'Selezione', u: '/demoClientiDev/masgioielli/selezione/' },
-        { t: 'Atelier', u: '/demoClientiDev/masgioielli/atelier/' },
-        { t: 'Compro oro', u: '/demoClientiDev/masgioielli/compro-oro/' },
-        { t: 'Perizie', u: '/demoClientiDev/masgioielli/perizie/' },
-        { t: 'Contatti', u: '/demoClientiDev/masgioielli/contatti/' },
-        { t: 'Privacy', u: '/demoClientiDev/masgioielli/privacy/' },
+        { t: 'Home', u: '/masgioielliDev/' },
+        { t: 'Selezione', u: '/masgioielliDev/selezione/' },
+        { t: 'Atelier', u: '/masgioielliDev/atelier/' },
+        { t: 'Compro oro', u: '/masgioielliDev/compro-oro/' },
+        { t: 'Perizie', u: '/masgioielliDev/perizie/' },
+        { t: 'Contatti', u: '/masgioielliDev/contatti/' },
+        { t: 'Privacy', u: '/masgioielliDev/privacy/' },
       ],
-      accesso: { t: 'Area riservata', u: '/demoClientiDev/masgioielli/area-riservata/' },
-      manca: 'Il database sull’hosting e i contenuti del negozio: l’elenco completo è in docs/masgioielli/PRODUZIONE.md.',
+      // Le credenziali NON stanno qui (il repository e' pubblico): /demoClientiDev/ le legge
+      // durante la build da MAS_DEV_UTENTE / MAS_DEV_PASSWORD (secret di GitHub, per il sito
+      // online) oppure, in locale, dal database d'esempio di `npm run mas:esempio`.
+      accesso: { t: 'Area riservata', u: '/masgioielliDev/area-riservata/', env: 'MAS_DEV', locale: '.locale/negozio-mysql.json' },
+      // la checklist della pagina viene da qui: per spuntare una voce, ⬜ → ✅ nel documento
+      checklist: 'docs/masgioielli/PRODUZIONE.md',
     },
   },
   {

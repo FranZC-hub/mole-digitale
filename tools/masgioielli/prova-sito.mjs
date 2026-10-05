@@ -19,10 +19,10 @@ const CHROME = process.env.CHROME || 'C:/Program Files/Google/Chrome/Application
 const ESTERNO = (process.env.MAS_URL || '').replace(/\/$/, '');
 if (ESTERNO) process.env.NODE_TLS_REJECT_UNAUTHORIZED ??= '0';   // certificato di prova
 // MAS_URL e' l'indirizzo del server (senza la cartella del sito)
-const PORTA = 8092, SERVER = ESTERNO || `http://127.0.0.1:${PORTA}`, H = SERVER + '/demoClientiDev/masgioielli';
+const PORTA = 8092, SERVER = ESTERNO || `http://127.0.0.1:${PORTA}`, H = SERVER + '/masgioielliDev';
 const PROVA = join(RADICE, '.locale', 'prova-sito');
 rmSync(PROVA, { recursive: true, force: true }); mkdirSync(PROVA, { recursive: true });
-const CSP = readFileSync(join(RADICE, 'public/demoClientiDev/masgioielli/.htaccess'), 'utf8').match(/Content-Security-Policy "([^"]+)"/)[1];
+const CSP = readFileSync(join(RADICE, 'public/masgioielliDev/.htaccess'), 'utf8').match(/Content-Security-Policy "([^"]+)"/)[1];
 
 let estensioni = [];
 try {
@@ -99,7 +99,7 @@ try {
   ok((await p.$$eval('#listaOrari li', (l) => l.length)) === 7, 'home: orari dal database');
   ok(!(await p.content()).includes('Silvia R.'), 'nessuna recensione inventata');
   ok(!/demoMasGioielli|Bozza dimostrativa|Per il titolare|Anteprima realizzata/.test(await p.content()), 'nessuna traccia della bozza');
-  ok((await p.$eval('link[rel=canonical]', (l) => l.href)) === 'https://www.moledigitale.it/demoClientiDev/masgioielli/', 'link canonico all’indirizzo vero');
+  ok((await p.$eval('link[rel=canonical]', (l) => l.href)) === 'https://www.moledigitale.it/masgioielliDev/', 'link canonico all’indirizzo vero');
   ok((await p.$eval('meta[name=robots]', (m) => m.content)).includes('noindex'), 'versione in sviluppo: fuori da Google (noindex)');
   await p.goto(H + '/selezione/', { waitUntil: 'networkidle0' });
   ok(await p.$eval('#vuotoTutto', (e) => !e.hidden), 'Selezione vuota: «Stiamo rinnovando la selezione»');
@@ -118,7 +118,7 @@ try {
   // aggiunta di due pezzi con foto
   for (const [nome, cat, foto] of [['Collana Arzani', 'Collane', 'vetrina.webp'], ['Anello trilogy', 'Anelli', 'titolare.webp']]) {
     await a.click('#nuovoPezzo'); await pausa(200);
-    await (await a.$('#z-foto')).uploadFile(join(RADICE, 'public/demoClientiDev/masgioielli/img', foto));
+    await (await a.$('#z-foto')).uploadFile(join(RADICE, 'public/masgioielliDev/img', foto));
     await a.waitForFunction(() => !document.getElementById('zAnteprima').hidden, { timeout: 5000 });
     await a.type('#z-nome', nome); await a.select('#z-cat', cat);
     await a.type('#z-desc', 'Prima riga\nSeconda riga');
@@ -126,7 +126,7 @@ try {
   }
   let nomi = await a.$$eval('#elencoPezzi .el-tx b', (x) => x.map((y) => y.textContent));
   ok(nomi.join('|') === 'Anello trilogy|Collana Arzani', 'due pezzi caricati, l’ultimo in cima');
-  ok(/^\/demoClientiDev\/masgioielli\/(uploads\/pezzi\/|api\/foto\.php\?f=)/.test(await a.$eval('#elencoPezzi img', (i) => i.getAttribute('src'))), 'foto salvata sul server');
+  ok(/^\/masgioielliDev\/(uploads\/pezzi\/|api\/foto\.php\?f=)/.test(await a.$eval('#elencoPezzi img', (i) => i.getAttribute('src'))), 'foto salvata sul server');
   // modifica
   await a.click('#elencoPezzi [data-mod]'); await pausa(300);
   await a.$eval('#z-mat', (i) => { i.value = ''; }); await a.type('#z-mat', 'Oro bianco 18kt');
@@ -224,12 +224,12 @@ try {
     ok(w <= 390 && (u.includes('non-esiste') || r.status() === 200), `${u} (${r.status()}) senza scorrimento orizzontale (${w}px)`);
   }
   const sitemap = await fetch(SERVER + '/sitemap-0.xml').then((r) => r.text());
-  ok(sitemap.includes('<loc>') && !sitemap.includes('demoClientiDev'), 'nella sitemap di moledigitale.it non c’è (versione in sviluppo)');
+  ok(sitemap.includes('<loc>') && !sitemap.includes('masgioielliDev') && !sitemap.includes('demoClientiDev'), 'nella sitemap di moledigitale.it non c’è (versione in sviluppo)');
 } finally {
   await b.close();
   server.kill();
   if (MY && !ESTERNO) { const [host, porta, utente, password = ''] = MY; try { phpEsegui(`$p = new PDO('mysql:host=${host};port=${porta}', '${utente}', '${password}'); $p->exec('DROP DATABASE ${NOMEDB}');`); } catch {} }
-  const cart = join(RADICE, 'dist/demoClientiDev/masgioielli/uploads/pezzi');
+  const cart = join(RADICE, 'dist/masgioielliDev/uploads/pezzi');
   if (existsSync(cart)) rmSync(cart, { recursive: true });
 }
 const avvisiPhp = logServer.split('\n').filter((l) => /Warning|Notice|Deprecated|Fatal/.test(l));

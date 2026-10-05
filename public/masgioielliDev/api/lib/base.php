@@ -181,7 +181,7 @@ function connessione_sicura(): bool
         || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
 }
 
-/** Indirizzo del sito senza barra finale: '' alla radice di un dominio, '/demoClientiDev/masgioielli'
+/** Indirizzo del sito senza barra finale: '' alla radice di un dominio, '/masgioielliDev'
  *  dentro moledigitale.it. Si ricava da quello dello script (…/api/x.php): il sito funziona
  *  ovunque lo si metta, senza configurarlo. */
 function base_sito(): string
@@ -192,7 +192,7 @@ function base_sito(): string
 
 /** La cartella dei dati SOPRA quella pubblica del dominio (accanto a mail-config.php):
  *  dalla cartella api/ si risale di tanti livelli quanti sono quelli dell'indirizzo del sito,
- *  poi di uno. Funziona sia in /demoClientiDev/masgioielli/ sia alla radice di un dominio. */
+ *  poi di uno. Funziona sia in /masgioielliDev/ sia alla radice di un dominio. */
 function cartella_privata(): string
 {
     $api = realpath(CARTELLA_API) ?: CARTELLA_API;

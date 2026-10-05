@@ -12,7 +12,7 @@ export default defineConfig({
   // Sitemap: dentro solo le pagine che vogliamo su Google.
   // Fuori: le singole demo (/demo/bar/, /demo/sushi/…), le bozze dei clienti
   // (/demoFarmaciaAusiliatrice/, /demoMasGioielli/, /demoClienti/), le versioni reali in sviluppo
-  // (/demoClientiDev/…) e le pagine di servizio.
+  // (/demoClientiDev/ e i siti /<cliente>Dev/, es. /masgioielliDev/) e le pagine di servizio.
   // La galleria /demo/ resta indicizzabile.
   integrations: [
     sitemap({
@@ -20,6 +20,7 @@ export default defineConfig({
         const p = new URL(page).pathname;
         if (p.startsWith('/demo/') && p !== '/demo/') return false;
         if (/^\/demo[A-Z]/.test(p)) return false;
+        if (/^\/[a-zA-Z]+Dev\//.test(p)) return false;
         return !['/privacy', '/dypa', '/crediti'].some((x) => p.startsWith(x));
       },
     }),

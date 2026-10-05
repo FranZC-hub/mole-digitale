@@ -4,7 +4,7 @@ Il sito del negozio MasGioielli (Corso Trapani 146/b, Torino): pagine statiche f
 Astro e un'area riservata in PHP + MySQL, con cui il negozio aggiorna da solo la vetrina,
 gli orari, le chiusure e i marchi, e legge i messaggi dei moduli.
 
-Vive **dentro il sito di Mole Digitale**, in `https://www.moledigitale.it/demoClientiDev/masgioielli/`,
+Vive **dentro il sito di Mole Digitale**, in `https://www.moledigitale.it/masgioielliDev/`,
 finché non è pronto per masgioielli.it. È fuori da Google (`noindex`, fuori dalla sitemap).
 La raccolta di tutti i progetti in sviluppo è `/demoClientiDev/`; la bozza vista dal cliente
 resta in `/demoMasGioielli/`.
@@ -15,13 +15,12 @@ niente Node sul server, niente servizi esterni.
 ## Dove sta
 
 ```
-src/pages/demoClientiDev/
-├── index.astro                      raccolta dei progetti (versioni reali e sole bozze)
-└── masgioielli/                     le pagine: / selezione/ atelier/ compro-oro/ perizie/
-    ├── _Layout.astro                contatti/ privacy/ area-riservata/ 404/
-    └── _sito.js                     dati del negozio, BASE (la cartella), chiamate all'API
+src/pages/demoClientiDev/index.astro raccolta: versioni reali (con credenziali e checklist) e sole bozze
+src/pages/masgioielliDev/            le pagine: / selezione/ atelier/ compro-oro/ perizie/
+├── _Layout.astro                    contatti/ privacy/ area-riservata/ 404/
+└── _sito.js                         dati del negozio, BASE (la cartella), chiamate all'API
 src/data/clienti.js                  i clienti, condivisi da /demoClienti/ e /demoClientiDev/
-public/demoClientiDev/masgioielli/
+public/masgioielliDev/
 ├── .htaccess                        CSP propria, noindex, 404 (si aggiunge a quello del sito)
 ├── img/                             foto e logo del negozio
 ├── api/                             backend PHP
@@ -66,7 +65,7 @@ scrivere lì, `api/config.php` funziona ancora (bloccato da `.htaccess`), senza 
 2. Via FTP, creare `masgioielli-dati/` accanto a `www.moledigitale.it/` e caricarci
    `config.php`, copiato da `api/config.esempio.php` e compilato: database, casella email,
    una `sale` casuale, un codice di `installazione` casuale (almeno 20 caratteri).
-3. Aprire `https://www.moledigitale.it/demoClientiDev/masgioielli/api/installa.php`, inserire
+3. Aprire `https://www.moledigitale.it/masgioielliDev/api/installa.php`, inserire
    il codice e creare l'utente del negozio (password di almeno 10 caratteri).
 4. Svuotare `installazione` in `config.php` (`'installazione' => ''`).
 5. Collaudo del server vero:
@@ -81,7 +80,7 @@ npm run mas:prova-api        # collaudo dell'API (73 controlli; lo esegue anche 
 npm run mas:prova-sito       # build + collaudo nel browser con la CSP del server (50 controlli)
 ```
 
-Il sito locale è su `http://127.0.0.1:8090/demoClientiDev/masgioielli/`.
+Il sito locale è su `http://127.0.0.1:8090/masgioielliDev/`.
 
 `mas:esempio`, la prima volta, su Windows scarica MariaDB 11.4 portatile in `.locale/mariadb`
 (87 MB, controllato con SHA-256; niente installazione né servizi) e lo accende solo su
@@ -116,7 +115,7 @@ dell'API, build, controllo dei link e di `dist/`, poi FTP su Aruba. Parte solo c
 
 - Credenziali solo in `masgioielli-dati/config.php` sul server, fuori dalla cartella pubblica.
 - Password con `password_hash`; sessione con cookie HttpOnly, Secure, SameSite=Strict, valido
-  solo in `/demoClientiDev/masgioielli/`; identificativo rigenerato all'accesso; uscita dopo
+  solo in `/masgioielliDev/`; identificativo rigenerato all'accesso; uscita dopo
   2 ore di inattività.
 - Token CSRF su ogni modifica; massimo 8 tentativi di accesso ogni 15 minuti.
 - Query sempre preparate; testi validati e limitati sul server; nell'HTML tutto passa da `esc()`.

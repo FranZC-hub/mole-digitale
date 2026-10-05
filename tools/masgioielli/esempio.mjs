@@ -2,7 +2,7 @@
 // chiusura straordinaria, qualche messaggio. Passano dall'API vera, come se li
 // inserisse il negozio dall'area riservata (e i visitatori dai moduli).
 // Li carica server-locale.mjs --esempio su un database appena creato. H e' l'indirizzo del
-// sito, cartella compresa (es. http://127.0.0.1:8090/demoClientiDev/masgioielli).
+// sito, cartella compresa (es. http://127.0.0.1:8090/masgioielliDev).
 // Non partono mai verso un server che non sia questo computer.
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';

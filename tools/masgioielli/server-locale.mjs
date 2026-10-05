@@ -1,16 +1,18 @@
 // Server di prova in locale: tutto il sito di Mole Digitale compilato (dist/) + l'API PHP di
-// MasGioielli, che sta in /demoClientiDev/masgioielli/.
-//   npm run mas:server            SQLite, database vuoto   → http://127.0.0.1:8090/demoClientiDev/masgioielli/
+// MasGioielli, che sta in /masgioielliDev/.
+//   npm run mas:server            SQLite, database vuoto   → http://127.0.0.1:8090/masgioielliDev/
 //   npm run mas:server:mysql      MySQL come sull'hosting (vedi mysql-locale.mjs)
 //   npm run mas:esempio           build + MySQL + dati d'esempio pronti da guardare
 //   npm run mas:esempio -- --azzera    ricomincia da un database vuoto con i dati d'esempio
 //
-// - --esempio: su un database nuovo crea da solo l'utente del negozio (password stampata
-//   qui sotto) e carica pezzi, marchi, una chiusura e qualche messaggio (tools/esempio.mjs).
+// - --esempio: su un database nuovo crea da solo l'utente del negozio e carica pezzi, marchi,
+//   una chiusura e qualche messaggio (tools/esempio.mjs). La password sta in
+//   .locale/negozio-<db>.json, resta la stessa anche con --azzera, e /demoClientiDev/ la mostra.
+// - --build: compila il sito DOPO aver preparato la password, cosi' la pagina la trova subito.
 // - La configurazione di prova sta in .locale/ (esclusa da git), MAI in public/api/config.php:
 //   cosi' non finisce in dist/ ne' sul server per sbaglio. Anche le foto caricate stanno in
 //   .locale/ (tools/masgioielli/router-locale.php): la build di Astro svuota dist/ e le perderebbe.
-import { spawn, execSync } from 'node:child_process';
+import { spawn, spawnSync, execSync } from 'node:child_process';
 import { existsSync, mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
 import { randomBytes } from 'node:crypto';
 import { connect } from 'node:net';
@@ -22,10 +24,9 @@ import { caricaEsempio } from './esempio.mjs';
 const RADICE = resolve(dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Z]:)/, '$1')), '..', '..');
 const LOCALE = join(RADICE, '.locale');
 const PORTA = process.env.PORTA || '8090';
-const H = `http://127.0.0.1:${PORTA}/demoClientiDev/masgioielli`;
+const H = `http://127.0.0.1:${PORTA}/masgioielliDev`;
 const arg = (a) => process.argv.includes(a);
-const MYSQL = arg('--mysql'), AZZERA = arg('--azzera'), ESEMPIO = arg('--esempio') || AZZERA;
-if (!existsSync(join(RADICE, 'dist', 'demoClientiDev', 'masgioielli'))) { console.error('Manca dist/: prima  npm run build'); process.exit(1); }
+const MYSQL = arg('--mysql'), AZZERA = arg('--azzera'), ESEMPIO = arg('--esempio') || AZZERA, BUILD = arg('--build');
 mkdirSync(LOCALE, { recursive: true });
 const percorso = (p) => p.replace(/\\/g, '/');
 const attendi = (ms) => new Promise((ok) => setTimeout(ok, ms));
@@ -50,9 +51,22 @@ const sqlite = join(LOCALE, 'mas.sqlite');
 const foto = join(LOCALE, `foto-${nome}`);
 const fileAccesso = join(LOCALE, `negozio-${nome}.json`);
 if (AZZERA) {
-  for (const f of [conf, fileAccesso, foto, ...(MYSQL ? [] : [sqlite])]) rmSync(f, { recursive: true, force: true });
+  // la password d'esempio resta (fileAccesso): cambia solo il contenuto del database
+  for (const f of [conf, foto, ...(MYSQL ? [] : [sqlite])]) rmSync(f, { recursive: true, force: true });
   console.log(`Database ${MYSQL ? 'MySQL' : 'SQLite'} locale azzerato`);
 }
+let accesso = existsSync(fileAccesso) ? JSON.parse(readFileSync(fileAccesso, 'utf8')) : null;
+if (ESEMPIO && !accesso) {
+  accesso = { utente: 'negozio', password: 'esempio-' + randomBytes(4).toString('hex') };
+  writeFileSync(fileAccesso, JSON.stringify(accesso, null, 2));
+}
+if (BUILD) {
+  console.log('Build del sito…');
+  // la build legge la password appena preparata: /demoClientiDev/ la mostra
+  const b = spawnSync('npx astro build', { cwd: RADICE, shell: true, stdio: ['ignore', 'ignore', 'inherit'] });
+  if (b.status !== 0) { console.error('Build non riuscita'); process.exit(1); }
+}
+if (!existsSync(join(RADICE, 'dist', 'masgioielliDev'))) { console.error('Manca dist/: prima  npm run build'); process.exit(1); }
 const db = MYSQL ? await avviaMysql({ locale: LOCALE, azzera: AZZERA, php: estensioni }) : null;
 
 // si riscrive a ogni avvio (i dati del database possono cambiare), tenendo sale e codice
@@ -101,15 +115,12 @@ process.on('SIGINT', () => chiudi(0));
 for (let i = 0; i < 40 && !(await portaAperta(PORTA)); i++) await attendi(150);
 
 // ---------------------------------------------------------------- installazione e dati d'esempio
-let accesso = existsSync(fileAccesso) ? JSON.parse(readFileSync(fileAccesso, 'utf8')) : null;
 installato = (await fetch(H + '/api/dati.php')).status === 200;
 try {
   if (ESEMPIO && !installato) {
-    const password = 'esempio-' + randomBytes(4).toString('hex');
-    const t = await (await fetch(H + '/api/installa.php', { method: 'POST', body: new URLSearchParams({ codice, utente: 'negozio', password, ripeti: password }) })).text();
+    const { utente, password } = accesso;
+    const t = await (await fetch(H + '/api/installa.php', { method: 'POST', body: new URLSearchParams({ codice, utente, password, ripeti: password }) })).text();
     if (!t.includes('Installazione completata')) throw new Error('installazione non riuscita: ' + t.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').slice(0, 200));
-    accesso = { utente: 'negozio', password };
-    writeFileSync(fileAccesso, JSON.stringify(accesso, null, 2));
     installato = true;
     const n = await caricaEsempio(H, accesso.utente, accesso.password);
     console.log(`Dati d'esempio caricati: ${n.pezzi} pezzi con foto, ${n.marchi} marchi, ${n.messaggi} messaggi, 1 chiusura`);

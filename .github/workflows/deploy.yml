@@ -50,6 +50,11 @@ jobs:
 
       - name: Build del sito (genera dist/)
         run: npm run build
+        env:
+          # Credenziali dell'area riservata di MasGioielli, mostrate solo in /demoClientiDev/
+          # (pagina privata): stanno nei secret, mai nel repository, che e' pubblico.
+          MAS_DEV_UTENTE: ${{ secrets.MAS_DEV_UTENTE }}
+          MAS_DEV_PASSWORD: ${{ secrets.MAS_DEV_PASSWORD }}
 
       - name: Verifica link interni (blocca il deploy se rotti)
         run: node tools/check-links.mjs
@@ -93,8 +98,8 @@ jobs:
             stats-*.csv
             # MasGioielli, se un giorno configurazione o foto stessero nella cartella pubblica
             # (di norma sono in masgioielli-dati/, sopra): il deploy normale non le tocca
-            demoClientiDev/masgioielli/api/config.php
-            demoClientiDev/masgioielli/uploads/pezzi/**
+            masgioielliDev/api/config.php
+            masgioielliDev/uploads/pezzi/**
             # Subset dei font che il sito (in italiano) non usa mai: grazie a unicode-range
             # il browser non li richiede nemmeno, quindi non caricarli fa solo risparmiare
             # ~500 KB di upload. Se un giorno servisse un'altra lingua, togli queste righe.

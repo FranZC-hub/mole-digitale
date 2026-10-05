@@ -5,7 +5,7 @@
 
 // Il sito vive in una sottocartella di moledigitale.it (versione reale, in sviluppo):
 // tutti gli indirizzi interni partono da qui.
-export const BASE = '/demoClientiDev/masgioielli/';
+export const BASE = '/masgioielliDev/';
 
 export const INFO = {
   nome: 'MasGioielli',

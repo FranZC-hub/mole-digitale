@@ -3,12 +3,12 @@
 Stato al 5 ottobre 2026. ✅ fatto · ⬜ da fare · 👤 serve qualcosa dal negozio
 
 Due tappe: prima la **versione reale in sviluppo** dentro moledigitale.it
-(`/demoClientiDev/masgioielli/`, su Aruba), dove il negozio può già caricare pezzi e marchi;
+(`/masgioielliDev/`, su Aruba), dove il negozio può già caricare pezzi e marchi;
 poi il **passaggio a masgioielli.it**.
 
 ## Tecnica — fatto e verificato
 
-- ✅ Dentro il sito di Mole Digitale, in `/demoClientiDev/masgioielli/`, con la raccolta
+- ✅ Dentro il sito di Mole Digitale, in `/masgioielliDev/`, con la raccolta
   `/demoClientiDev/` (tutti i clienti: chi ha la versione reale e chi solo la bozza)
 - ✅ Backend PHP + MySQL: selezione con foto, orari, chiusure straordinarie, marchi, messaggi, cambio password
 - ✅ Moduli Contatti e Perizie che inviano davvero: email al negozio + copia nell'area riservata
@@ -37,11 +37,13 @@ poi il **passaggio a masgioielli.it**.
 
 - ⬜ **Secret FTP di Aruba** su GitHub (`ARUBA_FTP_HOST`, `ARUBA_FTP_USER`, `ARUBA_FTP_PASS`):
   senza, il deploy di tutto moledigitale.it resta fermo
+- ⬜ Dopo l'installazione, secret `MAS_DEV_PASSWORD` (e `MAS_DEV_UTENTE` se non è `negozio`)
+  su GitHub: così utente e password compaiono in `/demoClientiDev/` senza finire nel codice
 - ⬜ **Database MySQL** dal pannello di Aruba (verificare che il piano lo includa); permessi
   all'utente, se si possono scegliere: `SELECT, INSERT, UPDATE, DELETE, CREATE, INDEX`
 - ⬜ **`masgioielli-dati/config.php`** accanto a `www.moledigitale.it/` (da `api/config.esempio.php`):
   database, casella email che spedisce, `sale` e codice di installazione casuali
-- ⬜ Installazione da `/demoClientiDev/masgioielli/api/installa.php`, poi svuotare il codice;
+- ⬜ Installazione da `/masgioielliDev/api/installa.php`, poi svuotare il codice;
   password del negozio consegnata a voce o di persona (al primo accesso la cambiano)
 - ⬜ `MAS_URL=https://www.moledigitale.it MAS_HTTP=http://www.moledigitale.it node tools/masgioielli/prova-server.mjs`
 - ⬜ Un messaggio di prova da Contatti e da Perizie: arriva l'email?

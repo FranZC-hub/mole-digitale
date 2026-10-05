@@ -7,7 +7,60 @@ import { CLIENTI } from '../../data/clienti.js';
 // quando il cliente dice si', la versione reale cresce qui prima di andare sul suo dominio.
 // Come /demoClienti: non collegata dal sito, noindex, fuori dalla sitemap (astro.config.mjs).
 // Elenca TUTTI i clienti: chi non ha ancora la versione reale compare con la sola bozza.
-const reali = CLIENTI.filter((c) => c.dev);
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+// Credenziali dell'area riservata: mai nel codice (il repository e' pubblico). Si leggono qui,
+// durante la build: dai secret di GitHub (es. MAS_DEV_PASSWORD) per il sito online, oppure in
+// locale dal database d'esempio creato da `npm run mas:esempio`.
+function credenziali(a) {
+  const pass = process.env[a.env + '_PASSWORD'];
+  if (pass) return { user: process.env[a.env + '_UTENTE'] || 'negozio', pass, nota: '' };
+  try {
+    const j = JSON.parse(readFileSync(join(process.cwd(), a.locale), 'utf8'));
+    return { user: j.utente, pass: j.password, nota: 'database d’esempio in locale' };
+  } catch {
+    return null;
+  }
+}
+
+// Checklist: le voci ✅/⬜ di docs/<cliente>/PRODUZIONE.md, sezione per sezione (le righe
+// rientrate continuano la voce sopra). Il documento resta l'unica fonte: niente doppioni.
+const html = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  .replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+function checklist(file) {
+  const sezioni = [];
+  let sez = null, voce = null;
+  for (const riga of readFileSync(join(process.cwd(), file), 'utf8').replace(/\r\n/g, '\n').split('\n')) {
+    const h = riga.match(/^## (.+)/);
+    if (h) {
+      const [titolo, chi] = h[1].split(/ — (?=[^—]*$)/);
+      sez = { titolo: /noi|negozio/.test(chi || '') ? titolo : h[1], chi: /negozio/.test(chi || '') ? 'Dal negozio' : /noi/.test(chi || '') ? 'Noi' : '', voci: [] };
+      sezioni.push(sez); voce = null; continue;
+    }
+    const v = riga.match(/^- (✅|⬜) (.*)/);
+    if (v && sez) { voce = { fatto: v[1] === '✅', testo: v[2] }; sez.voci.push(voce); continue; }
+    if (voce && /^ {2,}\S/.test(riga)) { voce.testo += ' ' + riga.trim(); continue; }
+    voce = null;
+  }
+  return sezioni.filter((s) => s.voci.length).map((s) => ({
+    ...s,
+    voci: s.voci.map((x) => ({ ...x, html: html(x.testo) })),
+    daFare: s.voci.filter((x) => !x.fatto).length,
+  }));
+}
+
+const reali = CLIENTI.filter((c) => c.dev).map((c) => {
+  const lista = c.dev.checklist ? checklist(c.dev.checklist) : [];
+  return {
+    ...c,
+    cred: credenziali(c.dev.accesso),
+    daFare: lista.filter((s) => s.daFare > 0),
+    fatte: lista.filter((s) => s.daFare === 0),
+    contaDaFare: lista.reduce((n, s) => n + s.daFare, 0),
+    contaFatte: lista.reduce((n, s) => n + s.voci.length - s.daFare, 0),
+  };
+});
 const soloBozza = CLIENTI.filter((c) => !c.dev);
 ---
 <Layout
@@ -24,7 +77,7 @@ const soloBozza = CLIENTI.filter((c) => !c.dev);
 
     <div class="avviso glass" data-reveal>
       <b>Questa pagina è privata, e qui i dati sono veri.</b>
-      <p>Non è collegata dal sito, non è nella sitemap ed è marcata <code>noindex</code>, come anche le versioni qui sotto. Le password delle aree riservate <b>non</b> sono su questa pagina: si creano quando il sito viene installato sul server e le consegniamo al cliente a voce. A un cliente manda il link del suo sito, non questa pagina.</p>
+      <p>Non è collegata dal sito, non è nella sitemap ed è marcata <code>noindex</code>, come anche le versioni qui sotto. Ma qui ci sono le <b>password delle aree riservate vere</b>: chi ha questo link entra, e vede anche i messaggi lasciati dai clienti. Non mandarla a nessuno: a un cliente manda il link del suo sito. Le password non sono nel codice (il repository è pubblico): la pagina le prende dal server quando viene pubblicata.</p>
     </div>
 
     <div class="clienti">
@@ -50,12 +103,45 @@ const soloBozza = CLIENTI.filter((c) => !c.dev);
             {c.dev.pagine.map((p) => <a href={p.u}>{p.t}</a>)}
           </nav>
 
-          <p class="cl-manca"><b>Cosa manca:</b> {c.dev.manca}</p>
+          {c.daFare.length + c.fatte.length > 0 && (
+            <section class="cl-check" aria-label={'Cosa manca per ' + c.nome}>
+              <h3 class="cl-h3">Cosa manca <span class="cl-conta">{c.contaDaFare} da fare · {c.contaFatte} fatte</span></h3>
+              {c.daFare.map((s) => (
+                <div class="ck-sez">
+                  <p class="ck-titolo">{s.titolo}{s.chi && <span class="ck-chi">{s.chi}</span>}</p>
+                  <ul class="ck-lista">
+                    {s.voci.map((x) => (
+                      <li class={x.fatto ? 'ck-fatto' : undefined}>
+                        <span class="ck-box" aria-hidden="true">{x.fatto ? '✓' : ''}</span>
+                        <span class="sr-only">{x.fatto ? 'Fatto: ' : 'Da fare: '}</span>
+                        <span set:html={x.html} />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+              {c.fatte.map((s) => (
+                <details class="ck-sez ck-chiusa">
+                  <summary class="ck-titolo">{s.titolo} <span class="ck-chi">{s.voci.length} fatte</span></summary>
+                  <ul class="ck-lista">
+                    {s.voci.map((x) => (
+                      <li class="ck-fatto"><span class="ck-box" aria-hidden="true">✓</span><span set:html={x.html} /></li>
+                    ))}
+                  </ul>
+                </details>
+              ))}
+              <p class="ck-fonte">Dalla checklist <code>{c.dev.checklist}</code>: per spuntare una voce, nel documento ⬜ diventa ✅.</p>
+            </section>
+          )}
 
           <div class="cl-accesso">
             <div>
               <span class="cl-acc-et">{c.dev.accesso.t}</span>
-              <p class="cl-acc-cred">Credenziali create all’installazione sul server, non scritte qui</p>
+              {c.cred ? (
+                <p class="cl-acc-cred">utente <code>{c.cred.user}</code> · password <code>{c.cred.pass}</code>{c.cred.nota && <span class="cl-acc-nota"> ({c.cred.nota})</span>}</p>
+              ) : (
+                <p class="cl-acc-cred">Credenziali non ancora impostate: si creano all’installazione sul server (secret <code>{c.dev.accesso.env}_PASSWORD</code> per mostrarle qui)</p>
+              )}
             </div>
             <div class="cl-azioni">
               <a href={c.url} class="btn btn-ghost">La bozza</a>
@@ -118,8 +204,29 @@ const soloBozza = CLIENTI.filter((c) => !c.dev);
       color:var(--muted);transition:.25s var(--ease)}
     .cl-pagine a:hover{border-color:rgba(34,211,238,.55);color:var(--text);transform:translateY(-1px)}
 
-    .cl-manca{margin-top:1.6rem;color:var(--muted);font-size:.92rem}
-    .cl-manca b{color:var(--text)}
+    /* checklist: le voci di docs/<cliente>/PRODUZIONE.md */
+    .cl-conta{margin-left:.6rem;letter-spacing:.08em;color:var(--warning)}
+    .ck-sez{margin-top:1.1rem}
+    .ck-titolo{font-weight:700;color:var(--text);font-size:.95rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+    .ck-chi{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--muted-2);
+      border:1px solid var(--border);border-radius:999px;padding:.12rem .55rem}
+    .ck-lista{list-style:none;display:grid;gap:.55rem;margin-top:.7rem}
+    .ck-lista li{display:grid;grid-template-columns:1.15rem minmax(0,1fr);gap:.7rem;align-items:start;
+      color:var(--muted);font-size:.92rem;line-height:1.55}
+    .ck-box{width:1.15rem;height:1.15rem;margin-top:.12rem;border:1.5px solid rgba(255,200,61,.6);border-radius:5px;
+      display:grid;place-items:center;font-size:.75rem;font-weight:800;line-height:1}
+    .ck-fatto .ck-box{border-color:rgba(34,211,238,.6);background:rgba(34,211,238,.14);color:var(--c2)}
+    .ck-fatto{opacity:.75}
+    .ck-lista code{background:rgba(255,255,255,.08);border-radius:5px;padding:.05rem .35rem;font-size:.86em;overflow-wrap:anywhere}
+    .ck-lista b{color:var(--text)}
+    .ck-chiusa summary{cursor:pointer;list-style:none}
+    .ck-chiusa summary::-webkit-details-marker{display:none}
+    .ck-chiusa summary::before{content:'▸';color:var(--c2);transition:transform .2s var(--ease)}
+    .ck-chiusa[open] summary::before{transform:rotate(90deg)}
+    .ck-fonte{margin-top:1.1rem;color:var(--muted-2);font-size:.82rem}
+    .ck-fonte code{background:rgba(255,255,255,.08);border-radius:5px;padding:.05rem .35rem}
+    .cl-acc-cred code{background:rgba(255,255,255,.08);border-radius:6px;padding:.12rem .45rem;color:var(--text)}
+    .cl-acc-nota{color:var(--muted-2);font-size:.85rem}
 
     .cl-accesso{display:flex;align-items:center;justify-content:space-between;gap:1.2rem;flex-wrap:wrap;
       margin-top:1.8rem;padding-top:1.4rem;border-top:1px solid var(--border)}

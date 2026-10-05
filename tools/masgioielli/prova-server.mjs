@@ -12,7 +12,7 @@ import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED ??= '0';   // certificato di prova in locale
-const CARTELLA = '/demoClientiDev/masgioielli/';
+const CARTELLA = '/masgioielliDev/';
 const SERVER = (process.env.MAS_URL || '').replace(/\/$/, '');
 const HTTP = (process.env.MAS_HTTP || '').replace(/\/$/, '');
 const DIST = process.env.MAS_DIST ? join(process.env.MAS_DIST, ...CARTELLA.split('/').filter(Boolean)) : '';
@@ -123,7 +123,7 @@ try {
     r = await get('api/accesso.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ utente: process.env.MAS_UTENTE, password: process.env.MAS_PASSWORD }) });
     const c = r.headers.get('set-cookie') || '';
     ok(r.status === 200 && /;\s*secure/i.test(c) && /httponly/i.test(c) && /samesite=strict/i.test(c), 'in HTTPS il cookie di sessione è Secure, HttpOnly, SameSite=Strict');
-    ok(/path=\/demoClientiDev\/masgioielli\/(;|$)/i.test(c), 'e vale solo nella cartella di MasGioielli');
+    ok(/path=\/masgioielliDev\/(;|$)/i.test(c), 'e vale solo nella cartella di MasGioielli');
   }
 } finally {
   for (const p of creati) rmSync(p, { force: true });

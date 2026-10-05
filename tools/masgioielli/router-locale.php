@@ -10,7 +10,7 @@ $cercato = $radice . rawurldecode((string) $percorso);
 if (str_contains($cercato, '..') || (!is_file($cercato) && !is_file(rtrim($cercato, '/') . '/index.html'))) {
     http_response_code(404);
     header('Content-Type: text/html; charset=utf-8');
-    $mas = '/demoClientiDev/masgioielli/';
+    $mas = '/masgioielliDev/';
     readfile($radice . (str_starts_with((string) $percorso, $mas) ? $mas . '404/index.html' : '/404.html'));
     exit;
 }

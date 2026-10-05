@@ -1,6 +1,6 @@
 # NON IN USO. Il .htaccess per quando MasGioielli andra' alla radice di masgioielli.it
-# (oggi il sito e' in moledigitale.it/demoClientiDev/masgioielli/, con il suo .htaccess in
-# public/demoClientiDev/masgioielli/). Va in public/ del progetto pubblicato su quel dominio.
+# (oggi il sito e' in moledigitale.it/masgioielliDev/, con il suo .htaccess in
+# public/masgioielliDev/). Va in public/ del progetto pubblicato su quel dominio.
 #
 # MasGioielli — regole del server (Apache 2.4: Aruba, Seeweb e simili)
 

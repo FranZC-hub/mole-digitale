@@ -11,11 +11,11 @@ import { dirname, join, resolve } from 'node:path';
 const RADICE = resolve(dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Z]:)/, '$1')), '..', '..');
 const PROVA = join(RADICE, '.locale', 'prova');
 // il sito sta in una sottocartella del sito principale: l'API si prova li'
-const PORTA = 8091, H = `http://127.0.0.1:${PORTA}/demoClientiDev/masgioielli`;
+const PORTA = 8091, H = `http://127.0.0.1:${PORTA}/masgioielliDev`;
 rmSync(PROVA, { recursive: true, force: true });
 mkdirSync(PROVA, { recursive: true });
 // le foto caricate nelle prove vanno via alla fine
-const fotoPrima = new Set(existsSync(join(RADICE, 'public/demoClientiDev/masgioielli/uploads/pezzi')) ? readdirSync(join(RADICE, 'public/demoClientiDev/masgioielli/uploads/pezzi')) : []);
+const fotoPrima = new Set(existsSync(join(RADICE, 'public/masgioielliDev/uploads/pezzi')) ? readdirSync(join(RADICE, 'public/masgioielliDev/uploads/pezzi')) : []);
 
 const CODICE = randomBytes(16).toString('hex');
 const conf = join(PROVA, 'config.php');
@@ -62,7 +62,7 @@ const chiama = async (percorso, { metodo = 'GET', json, form, csrf, intestazioni
   let d = null; try { d = JSON.parse(t); } catch {}
   return { s: r.status, d, t, h: r.headers };
 };
-const jpeg = readFileSync(join(RADICE, 'public/demoClientiDev/masgioielli/img/anteprima.jpg'));
+const jpeg = readFileSync(join(RADICE, 'public/masgioielliDev/img/anteprima.jpg'));
 const fotoForm = (campi, foto = jpeg, nome = 'foto.jpg', tipo = 'image/jpeg') => {
   const f = new FormData();
   for (const [k, v] of Object.entries(campi)) f.append(k, String(v));
@@ -110,7 +110,7 @@ try {
   const CSRF = r.d.csrf;
   const sc = r.h.get('set-cookie') || '';
   ok(/HttpOnly/i.test(sc) && /SameSite=Strict/i.test(sc), 'cookie di sessione HttpOnly e SameSite=Strict');
-  ok(/path=\/demoClientiDev\/masgioielli\/(;|$)/i.test(sc), 'cookie valido solo nella cartella del sito, non in tutto moledigitale.it');
+  ok(/path=\/masgioielliDev\/(;|$)/i.test(sc), 'cookie valido solo nella cartella del sito, non in tutto moledigitale.it');
   ok(!sc || !cookieSessione.includes(sc.split(';')[0]), 'all’accesso la sessione cambia identificativo');
 
   console.log('\n[5] CSRF');
@@ -121,7 +121,7 @@ try {
 
   console.log('\n[6] Selezione con foto');
   r = await chiama('/api/pezzi.php', { metodo: 'POST', form: fotoForm({ azione: 'crea', nome: 'Collana Arzani', categoria: 'Collane', materiale: 'Argento', descrizione: 'Riga uno\nRiga due' }), csrf: CSRF });
-  ok(r.s === 200 && r.d.pezzi.length === 1 && /^\/demoClientiDev\/masgioielli\/api\/foto\.php\?f=[a-f0-9]{24}\.jpg$/.test(r.d.pezzi[0].img), 'pezzo creato, foto salvata con nome casuale fuori dalla cartella pubblica: ' + r.d.pezzi?.[0]?.img);
+  ok(r.s === 200 && r.d.pezzi.length === 1 && /^\/masgioielliDev\/api\/foto\.php\?f=[a-f0-9]{24}\.jpg$/.test(r.d.pezzi[0].img), 'pezzo creato, foto salvata con nome casuale fuori dalla cartella pubblica: ' + r.d.pezzi?.[0]?.img);
   ok(r.d.pezzi[0].desc === 'Riga uno\nRiga due', 'gli a capo della descrizione restano');
   const foto1 = r.d.pezzi[0].img;
   const img = await fetch(new URL(foto1, H));   // l'API da' l'indirizzo completo
@@ -249,7 +249,7 @@ try {
     try { phpEsegui(`$p = new PDO('mysql:host=${host};port=${porta}', '${utente}', '${password}'); $p->exec('DROP DATABASE ${NOMEDB}');`); } catch (e) { console.log('  (database di prova non cancellato: ' + e.message + ')'); }
   }
   // via le foto create dalle prove
-  const cart = join(RADICE, 'public/demoClientiDev/masgioielli/uploads/pezzi');
+  const cart = join(RADICE, 'public/masgioielliDev/uploads/pezzi');
   if (existsSync(cart)) for (const f of readdirSync(cart)) if (!fotoPrima.has(f)) rmSync(join(cart, f));
   if (existsSync(cart) && readdirSync(cart).length === 0) rmSync(cart, { recursive: true });
 }

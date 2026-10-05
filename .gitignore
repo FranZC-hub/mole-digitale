@@ -37,9 +37,9 @@ tools/_touchtest.mjs
 .DS_Store
 Thumbs.db
 
-# MasGioielli (versione reale in /demoClientiDev/masgioielli/): la configurazione con le
+# MasGioielli (versione reale in /masgioielliDev/): la configurazione con le
 # password sta solo sul server, le foto le carica il negozio. In locale tutto in .locale/
-public/demoClientiDev/masgioielli/api/config.php
-public/demoClientiDev/masgioielli/uploads/*
-!public/demoClientiDev/masgioielli/uploads/.htaccess
+public/masgioielliDev/api/config.php
+public/masgioielliDev/uploads/*
+!public/masgioielliDev/uploads/.htaccess
 .locale/

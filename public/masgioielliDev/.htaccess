@@ -1,4 +1,4 @@
-# MasGioielli, versione reale in sviluppo dentro moledigitale.it/demoClientiDev/masgioielli/
+# MasGioielli, versione reale in sviluppo dentro moledigitale.it/masgioielliDev/
 #
 # Si AGGIUNGE al .htaccess del sito principale (HTTPS, HSTS, nosniff, cache, compressione
 # restano quelli): qui solo cio' che questo sito ha di diverso.
@@ -7,11 +7,11 @@
 # Per quando il sito andra' su masgioielli.it: docs/masgioielli/masgioielli.it.htaccess
 
 Options -Indexes
-ErrorDocument 404 /demoClientiDev/masgioielli/404/index.html
+ErrorDocument 404 /masgioielliDev/404/index.html
 
 # file nascosti (.git, .env...) mai serviti
 <IfModule mod_alias.c>
-  RedirectMatch 404 "^/demoClientiDev/masgioielli/(.*/)?\."
+  RedirectMatch 404 "^/masgioielliDev/(.*/)?\."
 </IfModule>
 
 <IfModule mod_headers.c>

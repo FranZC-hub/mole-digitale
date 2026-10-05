@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const RADICE = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Z]:)/, '$1')), '..', '..');
-const SITO = path.join(RADICE, 'dist', 'demoClientiDev', 'masgioielli');
+const SITO = path.join(RADICE, 'dist', 'masgioielliDev');
 
 let problemi = 0;
 for (const p of ['index.html', 'area-riservata/index.html', '404/index.html', '.htaccess',
@@ -14,7 +14,7 @@ for (const p of ['index.html', 'area-riservata/index.html', '404/index.html', '.
   if (!fs.existsSync(path.join(SITO, p))) { console.error('MANCA  ' + p); problemi++; }
 }
 if (fs.existsSync(path.join(SITO, 'api', 'config.php'))) {
-  console.error('PERICOLO  dist/demoClientiDev/masgioielli/api/config.php: le credenziali finirebbero sul server con il deploy');
+  console.error('PERICOLO  dist/masgioielliDev/api/config.php: le credenziali finirebbero sul server con il deploy');
   problemi++;
 }
 if (fs.existsSync(path.join(SITO, 'uploads', 'pezzi'))) {
