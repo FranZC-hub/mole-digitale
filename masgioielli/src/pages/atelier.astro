@@ -1,0 +1,123 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { INFO, orariInRiga } from '../lib/sito.js';
+// Atelier: cosa si fa al banco, con le fotografie del laboratorio vero.
+// Preventivo guidato e calibro della misura dell'anello tolti su richiesta del negozio:
+// il preventivo lo fanno col pezzo in mano.
+const lavori = [
+  { n: '01', t: 'Creazioni su misura', d: 'Dal disegno al pezzo finito. Portateci un’idea, una foto o un gioiello di famiglia da reinterpretare.' },
+  { n: '02', t: 'Trasformazioni', d: 'Un gioiello che non mettete più può tornare a vivere in un’altra forma, con le stesse pietre.' },
+  { n: '03', t: 'Riparazioni', d: 'Saldature, cambio misura, rimonta di pietre, chiusure, catene spezzate, lucidature.' },
+  { n: '04', t: 'Orologeria', d: 'Pile, cinturini, accorciatura bracciali, revisioni complete e prove di impermeabilità.' },
+  { n: '05', t: 'Pendoleria', d: 'Orologi da tasca, sveglie e pendoli d’epoca: revisione della meccanica e restauro.' },
+  { n: '06', t: 'Manutenzione', d: 'Pulizia a ultrasuoni, lucidatura e controllo delle griffe: il pezzo torna come nuovo.' },
+];
+// fotografie del laboratorio del negozio (dal sito attuale, di Elisa Miglietti)
+const scatti = [
+  { src: '/img/lab-saldatura.webp', alt: 'Saldatura a fiamma di un gioiello al banco', t: 'Saldatura' },
+  { src: '/img/lab-incastonatura.webp', alt: 'Incastonatura di una pietra su un anello', t: 'Incastonatura' },
+  { src: '/img/lab-cera.webp', alt: 'Modello in cera di un anello, prima della fusione', t: 'Il modello in cera, prima della fusione' },
+  { src: '/img/lab-orologio.webp', alt: 'Revisione del movimento di un orologio', t: 'Revisione di un movimento' },
+];
+const WA_LAB = `https://wa.me/${INFO.wa}?text=${encodeURIComponent(`Buongiorno ${INFO.nome}! Vorrei un parere su un lavoro in laboratorio: vi mando una foto del pezzo.`)}`;
+---
+<Layout title="Atelier" active="Atelier" desc={`Il laboratorio artigianale di ${INFO.nome} a Torino: creazioni su misura, riparazioni, trasformazioni, orologeria e pendoleria. Preventivo gratuito in negozio.`}>
+
+  <section class="testa-pagina">
+    <div class="misura stretta intro centro a">
+      <span class="occhiello centro">L’atelier</span>
+      <h1>Qui il gioiello<br/><span class="it oro">nasce e rinasce</span></h1>
+      <p>Il banco è dietro il negozio. Non mandiamo via niente: quello che si può salvare, lo salviamo noi — con le mani, come si è sempre fatto.</p>
+    </div>
+  </section>
+
+  <section class="banda lavori-banda">
+    <div class="misura">
+      <h2 class="sr-only">Cosa facciamo in laboratorio</h2>
+      <ul class="lavori">
+        {lavori.map((l) => (
+          <li class="a"><span class="lav-n">{l.n}</span><div><b>{l.t}</b><p>{l.d}</p></div></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {/* IL LABORATORIO VERO: fotografie del banco */}
+  <section class="banda foto-lab">
+    <div class="misura">
+      <div class="intro a">
+        <span class="occhiello">Al banco</span>
+        <h2>Le mani,<br/><span class="it oro">prima di tutto.</span></h2>
+      </div>
+      <div class="lab-griglia">
+        {scatti.map((f) => (
+          <figure class="a">
+            <img src={f.src} width="800" height="534" alt={f.alt} loading="lazy" />
+            <figcaption>{f.t}</figcaption>
+          </figure>
+        ))}
+      </div>
+      <p class="lab-nota a">{INFO.fondatore} si è diplomato alla <b>Scuola Orologiai di Torino</b> nel 1986: l’orologeria, qui, è il mestiere di partenza.</p>
+    </div>
+  </section>
+
+  {/* COME FUNZIONA: niente calcolatori, il pezzo si guarda insieme */}
+  <section class="scuro banda" id="preventivo">
+    <div class="misura prev-in">
+      <div class="a">
+        <span class="occhiello">Preventivo</span>
+        <h2 class="prev-h2">Lo guardiamo<br/><span class="it prev-oro">insieme.</span></h2>
+        <p class="prev-p">Portateci il pezzo: vi diciamo subito cosa si può fare, quanto costa e quanto tempo serve. Il preventivo è gratuito e senza impegno. Se preferite, mandateci prima una foto.</p>
+      </div>
+      <div class="prev-azioni a">
+        <a class="btn btn-chiaro btn-pieno" id="labWa" href={WA_LAB} target="_blank" rel="noopener">Mandateci una foto su WhatsApp</a>
+        <a class="btn btn-vuoto-scuro btn-pieno" href={'tel:' + INFO.telHref}>Chiamate il {INFO.tel}</a>
+        <p class="nota orari-nota" data-orari-riga>{orariInRiga()}</p>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .testa-pagina{padding-top:calc(var(--tastata) + clamp(2.5rem,6vw,4.5rem));padding-bottom:clamp(1rem,2vw,2rem)}
+
+    /* elenco lavori: due colonne di voci a filetto, niente riquadri */
+    .lavori-banda{padding-top:clamp(2rem,4vw,3rem)}
+    .lavori{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(2rem,5vw,4.5rem)}
+    .lavori li{display:grid;grid-template-columns:auto 1fr;gap:1.2rem;align-items:baseline;padding:clamp(1.3rem,2.6vw,1.9rem) 0;border-bottom:1px solid var(--filo)}
+    .lavori li:nth-child(-n+2){border-top:1px solid var(--filo)}
+    .lav-n{font-family:var(--disp);font-size:.95rem;color:var(--oro)}
+    .lavori b{display:block;font-family:var(--disp);font-weight:400;font-size:clamp(1.4rem,2.4vw,1.85rem);line-height:1.2}
+    .lavori p{color:var(--grafite);font-size:.93rem;margin-top:.3rem}
+
+    /* preventivo su fondo scuro */
+    .prev-in{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(2.5rem,6vw,5rem);align-items:start}
+    .prev-in>*{min-width:0}
+    .prev-h2{font-size:clamp(2rem,4.4vw,3.2rem);color:var(--avorio);margin:1.4rem 0 0}
+    .prev-oro{color:var(--oro-c)}
+    .prev-p{margin:1.3rem 0 2.2rem;max-width:46ch}
+
+    .prev-azioni{display:flex;flex-direction:column;gap:1rem;align-self:center}
+    .prev-azioni .nota{color:#8f867c;text-align:center}
+    .orari-nota::first-letter{text-transform:uppercase}
+    .btn-vuoto-scuro{background:transparent;color:var(--avorio);border-color:var(--filo-c)}
+    .btn-vuoto-scuro:hover{border-color:var(--oro-c);color:var(--oro-c)}
+
+    /* fotografie del laboratorio */
+    .foto-lab{padding-top:0}
+    .lab-griglia{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.2rem,2.6vw,2.2rem);margin-top:clamp(2rem,4vw,3rem)}
+    .lab-griglia>*{min-width:0}
+    .lab-griglia img{width:100%;height:auto;aspect-ratio:3/2;object-fit:cover}
+    .lab-griglia figcaption{margin-top:.8rem;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--oro)}
+    .lab-nota{margin-top:clamp(2rem,4vw,3rem);max-width:60ch;color:var(--grafite);font-family:var(--disp);font-size:clamp(1.25rem,2.2vw,1.55rem);line-height:1.4}
+    .lab-nota b{font-weight:500;color:var(--inchiostro)}
+
+    @media (max-width:900px){
+      .lavori{grid-template-columns:1fr}
+      .lavori li:nth-child(-n+2){border-top:0}
+      .lavori li:first-child{border-top:1px solid var(--filo)}
+      .prev-in{grid-template-columns:1fr}
+      .lab-griglia{grid-template-columns:1fr}
+    }
+  </style>
+
+</Layout>

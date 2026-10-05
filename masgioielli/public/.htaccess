@@ -1,0 +1,71 @@
+# MasGioielli — regole del server (Apache 2.4: Aruba, Seeweb e simili)
+
+Options -Indexes
+ErrorDocument 404 /404.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # le verifiche per il certificato HTTPS (Let's Encrypt) passano sempre, anche in http
+  RewriteRule ^\.well-known/ - [L]
+
+  # un solo indirizzo: www.masgioielli.it in HTTPS (come i link canonici del sito)
+  RewriteCond %{HTTP_HOST} ^masgioielli\.it$ [NC]
+  RewriteRule ^ https://www.masgioielli.it%{REQUEST_URI} [L,R=301]
+
+  # sempre HTTPS (dietro proxy si guarda X-Forwarded-Proto)
+  RewriteCond %{HTTPS} off
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # file nascosti (.git, .env...) mai serviti
+  RewriteRule (^|/)\. - [F]
+
+  # ---- Indirizzi del vecchio sito WordPress: 301 alle pagine nuove, per non perdere
+  #      visite, segnalibri e posizionamento su Google. La versione inglese non c'e'
+  #      piu': i suoi indirizzi portano alla pagina italiana corrispondente.
+  RewriteRule ^(negozio|the-shop)/?$ / [R=301,L,QSD]
+  RewriteRule ^(gioielleria|jewels)/?$ /selezione/ [R=301,L,QSD]
+  RewriteRule ^(orologeria|watches)/?$ /selezione/?cat=Orologi [R=301,L]
+  RewriteRule ^(laboratorio|creazioni|pendoleria-orologeria|craft-workshops|jewels-creations|pendulums-watchmaking)/?$ /atelier/ [R=301,L,QSD]
+  RewriteRule ^appraisals/?$ /perizie/ [R=301,L,QSD]
+  RewriteRule ^contacts/?$ /contatti/ [R=301,L,QSD]
+  RewriteRule ^privacy-policy/?$ /privacy/ [R=301,L,QSD]
+  RewriteRule ^(author/.*|feed/?|comments/feed/?)$ / [R=301,L,QSD]
+  RewriteRule ^(wp-sitemap[^/]*|sitemap|sitemap_index)\.xml$ /sitemap-index.xml [R=301,L,QSD]
+  # home e pagine con ?lang=en: stesso indirizzo senza il parametro
+  RewriteCond %{QUERY_STRING} (^|&)lang=en(&|$)
+  RewriteRule ^(.*)$ /$1 [R=301,L,QSD]
+  # WordPress (era in /bozza/) e i suoi file: non esistono piu' (410: Google smette di cercarli)
+  RewriteRule ^(bozza(/.*)?|wp-login\.php|wp-admin(/.*)?|wp-content(/.*)?|wp-includes(/.*)?|xmlrpc\.php)$ - [G]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set Strict-Transport-Security "max-age=31536000"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+  # Script solo dal sito stesso; gli stili in linea servono ad Astro.
+  # Le immagini possono essere anche blob:/data: (anteprima delle foto nell'area riservata).
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'"
+  # file con l'impronta nel nome (CSS/JS/font di Astro): non cambiano mai
+  <If "%{REQUEST_URI} =~ m#^/_astro/#">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </If>
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 0 seconds"
+  ExpiresByType image/webp "access plus 30 days"
+  ExpiresByType image/jpeg "access plus 30 days"
+  ExpiresByType image/png "access plus 30 days"
+  ExpiresByType image/svg+xml "access plus 30 days"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml text/plain
+</IfModule>

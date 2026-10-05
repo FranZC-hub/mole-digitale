@@ -1,0 +1,50 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { INFO } from '../lib/sito.js';
+// Informativa privacy (art. 13 GDPR) e cookie.
+// DA FAR RIVEDERE dal negozio o dal suo consulente prima della pubblicazione:
+// ragione sociale e fornitore di hosting vanno completati (vedi PRODUZIONE.md).
+const AGGIORNATA = '4 ottobre 2026';
+---
+<Layout title="Privacy e cookie" desc={`Informativa sul trattamento dei dati personali e sui cookie del sito di ${INFO.nome}.`}>
+  <section class="testa-pagina">
+    <div class="misura stretta intro">
+      <span class="occhiello">Privacy</span>
+      <h1>Privacy <span class="it oro">e cookie</span></h1>
+      <p>Come trattiamo i dati che ci lasciate su questo sito. Ultimo aggiornamento: {AGGIORNATA}.</p>
+    </div>
+  </section>
+
+  <section class="banda priv-banda">
+    <div class="misura stretta priv">
+      <h2>Chi tratta i dati</h2>
+      <p>Il titolare del trattamento è <b>{INFO.nome}</b>, {INFO.via}, {INFO.cap} {INFO.citta}, P.IVA {INFO.piva}. Per qualsiasi domanda sui vostri dati: <a href={'mailto:' + INFO.email}>{INFO.email}</a> o {INFO.tel}.</p>
+
+      <h2>Quali dati, e perché</h2>
+      <p><b>Moduli «Contatti» e «Perizie».</b> Nome, telefono o email e quello che ci scrivete. Li usiamo solo per rispondervi e, se ce lo chiedete, per organizzare la valutazione o il lavoro richiesto. La base è la vostra richiesta (art. 6.1.b del Regolamento UE 2016/679). Il messaggio ci arriva per email e resta in un archivio protetto, accessibile solo a noi, per il tempo necessario a seguire la richiesta e comunque <b>non oltre 24 mesi</b>, dopo i quali viene cancellato automaticamente.</p>
+      <p><b>WhatsApp.</b> I pulsanti WhatsApp e la «lista dei desideri» aprono l’app con un messaggio già scritto: da quel momento la conversazione è gestita da WhatsApp (Meta), secondo la sua informativa.</p>
+      <p><b>Lista dei desideri.</b> I pezzi che segnate nella pagina «Selezione» restano soltanto sul vostro dispositivo (memoria del browser) e non ci vengono inviati finché non scegliete voi di mandarceli. Potete cancellarli svuotando la lista.</p>
+      <p><b>Sicurezza.</b> Per proteggere i moduli dagli abusi conserviamo per al massimo 24 ore un’impronta non reversibile dell’indirizzo IP, che non permette di risalire a voi.</p>
+
+      <h2>Chi altro vede i dati</h2>
+      <p>Nessuno, a parte chi ci fornisce il servizio di hosting e di posta elettronica, che li conserva per nostro conto sui suoi server nell’Unione Europea. Non vendiamo né cediamo i vostri dati e non li usiamo per pubblicità.</p>
+
+      <h2>Cookie</h2>
+      <p>Il sito <b>non usa cookie di profilazione, pubblicitari o statistici</b>, né strumenti di terze parti che tracciano la navigazione: per questo non vi chiediamo alcun consenso all’ingresso. L’unico cookie è tecnico e riguarda solo l’area riservata del negozio, per mantenere l’accesso di chi ci lavora.</p>
+
+      <h2>I vostri diritti</h2>
+      <p>Potete chiederci in ogni momento di vedere, correggere o cancellare i vostri dati, di limitarne l’uso o di opporvi (artt. 15–22 del Regolamento UE 2016/679), scrivendo a <a href={'mailto:' + INFO.email}>{INFO.email}</a>. Se ritenete che i vostri dati siano trattati in modo non corretto potete rivolgervi al <a href="https://www.garanteprivacy.it/" target="_blank" rel="noopener">Garante per la protezione dei dati personali</a>.</p>
+    </div>
+  </section>
+
+  <style>
+    .testa-pagina{padding-top:calc(var(--tastata) + clamp(2.5rem,6vw,4.5rem));padding-bottom:0}
+    .priv-banda{padding-top:clamp(2rem,4vw,3rem)}
+    .priv h2{font-size:clamp(1.5rem,2.6vw,1.9rem);margin:2.6rem 0 .6rem;padding-top:1.4rem;border-top:1px solid var(--filo)}
+    .priv h2:first-child{margin-top:0;padding-top:0;border-top:0}
+    .priv p{color:var(--grafite);font-size:.97rem}
+    .priv p+p{margin-top:.8rem}
+    .priv b{color:var(--inchiostro);font-weight:500}
+    .priv a{color:var(--oro);border-bottom:1px solid var(--oro)}
+  </style>
+</Layout>

@@ -1,0 +1,131 @@
+// Server di prova in locale: sito compilato (dist/) + API PHP.
+//   npm run server            SQLite, database vuoto          → http://127.0.0.1:8090/
+//   npm run server:mysql      MySQL come sull'hosting (vedi mysql-locale.mjs)
+//   npm run esempio           build + MySQL + dati d'esempio pronti da guardare
+//   npm run esempio -- --azzera    ricomincia da un database vuoto con i dati d'esempio
+//
+// - --esempio: su un database nuovo crea da solo l'utente del negozio (password stampata
+//   qui sotto) e carica pezzi, marchi, una chiusura e qualche messaggio (tools/esempio.mjs).
+// - La configurazione di prova sta in .locale/ (esclusa da git), MAI in public/api/config.php:
+//   cosi' non finisce in dist/ ne' sul server per sbaglio. Anche le foto caricate stanno in
+//   .locale/ (tools/router-locale.php): la build di Astro svuota dist/ e le perderebbe.
+import { spawn, execSync } from 'node:child_process';
+import { existsSync, mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
+import { randomBytes } from 'node:crypto';
+import { connect } from 'node:net';
+import { dirname, join, resolve } from 'node:path';
+import { avviaMysql } from './mysql-locale.mjs';
+import { caricaEsempio } from './esempio.mjs';
+
+const RADICE = resolve(dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Z]:)/, '$1')), '..');
+const LOCALE = join(RADICE, '.locale');
+const PORTA = process.env.PORTA || '8090';
+const H = `http://127.0.0.1:${PORTA}`;
+const arg = (a) => process.argv.includes(a);
+const MYSQL = arg('--mysql'), AZZERA = arg('--azzera'), ESEMPIO = arg('--esempio') || AZZERA;
+if (!existsSync(join(RADICE, 'dist'))) { console.error('Manca dist/: prima  npm run build'); process.exit(1); }
+mkdirSync(LOCALE, { recursive: true });
+const percorso = (p) => p.replace(/\\/g, '/');
+const attendi = (ms) => new Promise((ok) => setTimeout(ok, ms));
+const portaAperta = (porta) => new Promise((ok) => {
+  const s = connect({ host: '127.0.0.1', port: Number(porta) }, () => { s.end(); ok(true); });
+  s.on('error', () => ok(false));
+});
+if (await portaAperta(PORTA)) { console.error(`La porta ${PORTA} è già occupata (un altro server locale acceso?). Cambiatela con PORTA=…`); process.exit(1); }
+
+// estensioni di PHP che servono (su Windows non sono attive senza php.ini)
+let estensioni = [];
+try {
+  const php = execSync(process.platform === 'win32' ? 'where php' : 'command -v php').toString().split(/\r?\n/)[0].trim();
+  const ext = join(dirname(php), 'ext');
+  if (existsSync(ext)) estensioni = ['-d', `extension_dir=${ext}`, ...['pdo_sqlite', 'pdo_mysql', 'gd', 'mbstring', 'fileinfo', 'openssl'].flatMap((e) => ['-d', `extension=${e}`])];
+} catch { /* php non trovato: lo dira' spawn */ }
+
+// ---------------------------------------------------------------- database e configurazione
+const nome = MYSQL ? 'mysql' : 'sqlite';
+const conf = join(LOCALE, MYSQL ? 'config-mysql.php' : 'config.php');
+const sqlite = join(LOCALE, 'mas.sqlite');
+const foto = join(LOCALE, `foto-${nome}`);
+const fileAccesso = join(LOCALE, `negozio-${nome}.json`);
+if (AZZERA) {
+  for (const f of [conf, fileAccesso, foto, ...(MYSQL ? [] : [sqlite])]) rmSync(f, { recursive: true, force: true });
+  console.log(`Database ${MYSQL ? 'MySQL' : 'SQLite'} locale azzerato`);
+}
+const db = MYSQL ? await avviaMysql({ locale: LOCALE, azzera: AZZERA, php: estensioni }) : null;
+
+// si riscrive a ogni avvio (i dati del database possono cambiare), tenendo sale e codice
+const vecchia = existsSync(conf) ? readFileSync(conf, 'utf8') : '';
+const prendi = (k) => vecchia.match(new RegExp(`'${k}' => '([0-9a-f]+)'`))?.[1];
+const codice = prendi('installazione') || randomBytes(16).toString('hex');
+const q = (t) => "'" + String(t).replace(/[\\']/g, (c) => '\\' + c) + "'";
+writeFileSync(conf, `<?php
+// Configurazione di PROVA (locale), scritta da tools/server-locale.mjs. Non usarla sul server.
+return [
+  'db' => ${db
+    ? `['dsn' => ${q(`mysql:host=${db.host};port=${db.porta};dbname=${db.database};charset=utf8mb4`)}, 'utente' => ${q(db.utente)}, 'password' => ${q(db.password)}]`
+    : `['dsn' => ${q('sqlite:' + percorso(sqlite))}]`},
+  'posta' => ['host' => ''],
+  'sale' => '${prendi('sale') || randomBytes(24).toString('hex')}',
+  'installazione' => '${codice}',
+  'foto' => ${q(percorso(foto))},
+];
+`);
+
+// ---------------------------------------------------------------- server PHP
+const server = spawn('php', [...estensioni, '-d', 'upload_max_filesize=10M', '-d', 'post_max_size=12M',
+  '-S', `127.0.0.1:${PORTA}`, '-t', join(RADICE, 'dist'), join(RADICE, 'tools', 'router-locale.php')], {
+  stdio: ['ignore', 'inherit', 'pipe'],
+  env: { ...process.env, MAS_CONFIG: conf },
+});
+// php -S scrive una riga per ogni richiesta: si mostrano solo errori e avvisi (non quello,
+// atteso, delle tabelle che mancano prima dell'installazione)
+let chiuso = false, installato = false;
+server.stderr.on('data', (d) => {
+  for (const riga of String(d).split(/\r?\n/)) {
+    if (!riga || /\] 127\.0\.0\.1:\d+ (Accepted|Closing|Closed without|\[\d{3}\]:)|Development Server .* started/.test(riga)) continue;
+    if (!installato && /Base table or view not found|no such table/.test(riga)) continue;
+    console.error(riga);
+  }
+});
+const chiudi = async (codiceUscita = 0) => {
+  if (chiuso) return;
+  chiuso = true;
+  server.kill();
+  if (db) await db.ferma();
+  process.exit(codiceUscita);
+};
+server.on('exit', (c) => chiudi(c ?? 0));
+process.on('SIGINT', () => chiudi(0));
+for (let i = 0; i < 40 && !(await portaAperta(PORTA)); i++) await attendi(150);
+
+// ---------------------------------------------------------------- installazione e dati d'esempio
+let accesso = existsSync(fileAccesso) ? JSON.parse(readFileSync(fileAccesso, 'utf8')) : null;
+installato = (await fetch(H + '/api/dati.php')).status === 200;
+try {
+  if (ESEMPIO && !installato) {
+    const password = 'esempio-' + randomBytes(4).toString('hex');
+    const t = await (await fetch(H + '/api/installa.php', { method: 'POST', body: new URLSearchParams({ codice, utente: 'negozio', password, ripeti: password }) })).text();
+    if (!t.includes('Installazione completata')) throw new Error('installazione non riuscita: ' + t.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').slice(0, 200));
+    accesso = { utente: 'negozio', password };
+    writeFileSync(fileAccesso, JSON.stringify(accesso, null, 2));
+    installato = true;
+    const n = await caricaEsempio(H, accesso.utente, accesso.password);
+    console.log(`Dati d'esempio caricati: ${n.pezzi} pezzi con foto, ${n.marchi} marchi, ${n.messaggi} messaggi, 1 chiusura`);
+  } else if (ESEMPIO) {
+    console.log(`Il database c’era già: lo lascio com’è (per ricominciare:  npm run ${MYSQL ? 'esempio' : 'server'} -- --azzera)`);
+  }
+} catch (e) {
+  console.error('Errore: ' + e.message);
+  await chiudi(1);
+}
+
+console.log(`
+Sito:            ${H}/`);
+if (!installato) console.log(`Installazione:   ${H}/api/installa.php   codice: ${codice}`);
+else if (accesso) console.log(`Area riservata:  ${H}/area-riservata/   utente ${accesso.utente} · password ${accesso.password}`);
+else console.log(`Area riservata:  ${H}/area-riservata/   (con l'utente creato all'installazione)`);
+if (db) {
+  console.log(`Database:        MySQL ${db.host}:${db.porta}, database ${db.database}, utente ${db.utente} · password ${db.password}`);
+  if (!process.env.MAS_MYSQL) console.log(`                 da riga di comando: .locale/mariadb/bin/mariadb.exe -uroot -h127.0.0.1 -P${db.porta} ${db.database}`);
+} else console.log(`Database:        SQLite, ${percorso(sqlite)}`);
+console.log('Ctrl+C per fermare.');

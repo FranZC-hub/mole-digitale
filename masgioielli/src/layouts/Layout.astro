@@ -1,0 +1,393 @@
+---
+// MasGioielli (Corso Trapani 146/b, Torino) — layout comune a tutte le pagine.
+//
+// IMPIANTO VISIVO: editoriale da maison, non "a schede".
+// - fondo avorio caldo, inchiostro scuro, oro antico usato solo come filo/accento
+// - testata su due righe con marchio centrato (si compatta allo scroll)
+// - niente riquadri bordati: filetti sottili, molta aria, fotografia grande
+// - display Cormorant in peso leggero e corpo molto grande
+import '@fontsource-variable/cormorant';
+import '@fontsource-variable/inter';
+// I due file effettivamente usati sopra la piega: li precarico per evitare che il
+// testo "salti" quando il font sostituisce quello di ripiego (layout shift).
+import cormorantWoff2 from '@fontsource-variable/cormorant/files/cormorant-latin-wght-normal.woff2?url';
+import interWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import { INFO, ORARI, piedeHTML } from '../lib/sito.js';
+
+interface Props { title: string; desc?: string; active?: string; noindex?: boolean }
+const {
+  title,
+  desc = `${INFO.nome} — gioielleria, orologeria, laboratorio artigianale e perizie a Torino dal ${INFO.fondata}. ${INFO.via}, ${INFO.citta}.`,
+  active = '',
+  noindex = false,
+} = Astro.props;
+const SITO = Astro.site ?? new URL('https://www.masgioielli.it');
+const canonico = new URL(Astro.url.pathname, SITO).href;
+const assoluto = (p) => new URL(p, SITO).href;
+
+const BASE = '/';
+const NAV = [
+  ['', 'Maison'], ['selezione/', 'Selezione'], ['atelier/', 'Atelier'],
+  ['compro-oro/', 'Compro oro'], ['perizie/', 'Perizie'], ['contatti/', 'Contatti'],
+];
+const WA = `https://wa.me/${INFO.wa}`;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'JewelryStore',
+  name: INFO.nome,
+  description: `Gioielleria con laboratorio artigianale a Torino dal ${INFO.fondata}: creazioni su misura, riparazioni, orologeria e perizie.`,
+  address: { '@type': 'PostalAddress', streetAddress: INFO.via, addressLocality: INFO.citta, postalCode: INFO.cap, addressRegion: 'TO', addressCountry: 'IT' },
+  geo: { '@type': 'GeoCoordinates', latitude: 45.0738, longitude: 7.6421 },
+  telephone: '+39' + INFO.telHref.replace('+39', ''),
+  email: INFO.email,
+  url: SITO.href,
+  image: assoluto('/img/anteprima.jpg'),
+  logo: assoluto('/img/logo-mas.svg'),
+  vatID: INFO.piva,
+  foundingDate: String(INFO.fondata),
+  sameAs: [INFO.fb, INFO.ig],
+  aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.9', reviewCount: String(INFO.recensioni) },
+  openingHoursSpecification: Object.entries(ORARI).flatMap(([g, f]) => (f || []).map(([a, b]) => ({
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][+g],
+    opens: `${String(Math.floor(a)).padStart(2, '0')}:${String(Math.round((a % 1) * 60)).padStart(2, '0')}`,
+    closes: `${String(Math.floor(b)).padStart(2, '0')}:${String(Math.round((b % 1) * 60)).padStart(2, '0')}`,
+  }))),
+};
+---
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  {noindex && <meta name="robots" content="noindex, nofollow" />}
+  <link rel="canonical" href={canonico} />
+  <title>{title} — {INFO.nome} · Torino</title>
+  <meta name="description" content={desc} />
+  <meta name="theme-color" content="#f7f3ec" />
+  <link rel="preload" as="font" type="font/woff2" href={cormorantWoff2} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href={interWoff2} crossorigin />
+  <link rel="icon" type="image/png" href="/img/icona-64.png" />
+  <link rel="apple-touch-icon" href="/img/icona-180.png" />
+  <meta property="og:title" content={title + ' — ' + INFO.nome} />
+  <meta property="og:description" content={desc} />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={canonico} />
+  <meta property="og:locale" content="it_IT" />
+  <meta property="og:site_name" content={INFO.nome} />
+  <meta property="og:image" content={assoluto('/img/anteprima.jpg')} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Il logo di MAS Gioielli, Corso Trapani 146/b, Torino" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+</head>
+<body>
+  <a class="mskip" href="#main">Salta al contenuto</a>
+
+  {/* TESTATA: marchio centrato su due righe, si compatta scorrendo */}
+  <header class="testata" id="testata">
+    <div class="testata-alto">
+      <button class="menu-btn" id="menuBtn" aria-label="Apri il menu" aria-expanded="false" aria-controls="menuNav">
+        <span></span><span></span>
+      </button>
+      <a href={BASE} class="marchio">
+        {/* logo vettoriale fornito dal negozio (EPS di Illustrator convertito in SVG):
+             nitido a qualsiasi misura, colore PANTONE Warm Gray 11 C */}
+        <img class="marchio-logo" src="/img/logo-mas.svg" width="795" height="265" alt={INFO.nome + ' — home'} fetchpriority="high" />
+        <span class="marchio-sotto" aria-hidden="true">Torino · dal {INFO.fondata}</span>
+      </a>
+      <div class="testata-dx">
+        <a href={'tel:' + INFO.telHref} class="testata-tel">{INFO.tel}</a>
+      </div>
+    </div>
+    <nav class="menu" id="menuNav">
+      {NAV.map(([href, label]) => (
+        <a href={BASE + href} class={active === label ? 'on' : undefined} aria-current={active === label ? 'page' : undefined}>{label}</a>
+      ))}
+    </nav>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <slot />
+  </main>
+
+  <footer class="chiusura">
+    <div class="chiusura-in">
+      <div class="chiusura-marchio">
+        <p class="chiusura-nome"><img src="/img/logo-mas-chiaro.svg" width="795" height="265" alt={INFO.nome} loading="lazy" /></p>
+        <span class="chiusura-filo" aria-hidden="true"></span>
+        <p class="chiusura-claim">Preziosi di qualità<br/>dal {INFO.fondata}</p>
+      </div>
+      <div>
+        <h2>Il negozio</h2>
+        <p>{INFO.via}</p>
+        <p>{INFO.cap} {INFO.citta}</p>
+        <div id="piedeOrari" set:html={piedeHTML()} />
+      </div>
+      <div>
+        <h2>Contatti</h2>
+        <p><a href={'tel:' + INFO.telHref}>{INFO.tel}</a></p>
+        <p><a href={WA} target="_blank" rel="noopener">WhatsApp {INFO.waLabel}</a></p>
+        <p><a href={'mailto:' + INFO.email}>{INFO.email}</a></p>
+        <p class="chiusura-sp"><a href={INFO.fb} target="_blank" rel="noopener">Facebook</a> · <a href={INFO.ig} target="_blank" rel="noopener">Instagram</a></p>
+      </div>
+    </div>
+    <p class="chiusura-legale">
+      <span>P.IVA {INFO.piva}</span>
+      <span>Fotografie del negozio: Elisa Miglietti</span>
+      <span><a href={BASE + 'privacy/'}>Privacy e cookie</a></span>
+      <span><a href={BASE + 'area-riservata/'} rel="nofollow">Area riservata</a></span>
+      <span>Sito: <a href="https://www.moledigitale.it/" target="_blank" rel="noopener">Mole Digitale</a></span>
+    </p>
+  </footer>
+
+  <a class="wa-flt" href={WA} target="_blank" rel="noopener" aria-label="Scrivici su WhatsApp">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.5-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c2.3 1 2.3.7 2.7.6a2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1z"/></svg>
+  </a>
+
+  <style is:global>
+    :root{
+      --avorio:#f7f3ec; --avorio-2:#efe7da; --carta:#fffdf9;
+      --inchiostro:#1c1916; --grafite:#57504a; --grigio:#726b64;
+      --oro:#826936; --oro-c:#c3a163; --scuro:#15120e;
+      --filo:rgba(28,25,22,.14); --filo-c:rgba(247,243,236,.18);
+      --disp:'Cormorant Variable',Georgia,serif; --sans:'Inter Variable',system-ui,sans-serif;
+      --e:cubic-bezier(.22,.61,.36,1);
+      --tastata:118px;
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:130px;overflow-x:clip}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    body{background:var(--avorio);color:var(--inchiostro);font-family:var(--sans);font-size:1rem;line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    /* grana di carta: toglie la piattezza al fondo avorio senza farsi notare */
+    body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.05;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E")}
+    @media (prefers-reduced-motion:no-preference){body::before{opacity:.05}}
+    img{display:block;max-width:100%}
+    a{color:inherit;text-decoration:none}
+    [hidden]{display:none !important}
+    ::selection{background:var(--oro);color:var(--carta)}
+    a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:1px solid var(--oro);outline-offset:4px}
+
+    /* Tipografia: display leggero e molto grande, come nelle maison */
+    h1,h2,h3{font-family:var(--disp);font-weight:400;line-height:1.06;letter-spacing:-.018em;
+      font-variant-ligatures:common-ligatures discretionary-ligatures;text-rendering:optimizeLegibility;
+      font-feature-settings:'kern' 1,'liga' 1}
+    /* il corsivo del Cormorant ha spalle piu' strette: recupero un filo di spazio */
+    h1 .it,h2 .it,h3 .it{letter-spacing:-.005em}
+    .it{font-style:italic}
+    .oro{color:var(--oro)}
+    /* etichettina in maiuscoletto spaziato, preceduta da un filo */
+    .occhiello{display:inline-flex;align-items:center;gap:.9rem;font-family:var(--sans);font-size:.68rem;font-weight:500;letter-spacing:.28em;text-transform:uppercase;color:var(--oro)}
+    .occhiello::before{content:'';width:34px;height:1px;background:var(--oro);opacity:.6}
+    .occhiello.centro::after{content:'';width:34px;height:1px;background:var(--oro);opacity:.6}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+
+    .mskip{position:fixed;top:-60px;left:.6rem;z-index:400;background:var(--inchiostro);color:var(--avorio);padding:.6rem 1rem;font-size:.85rem;transition:top .2s}
+    .mskip:focus{top:0}
+
+
+    /* ---------- TESTATA a due righe, marchio centrato ---------- */
+    .testata{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(247,243,236,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--filo);transition:padding .3s var(--e)}
+    .testata-alto{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:1rem;padding:1.15rem clamp(1rem,4vw,2.4rem) .55rem;transition:padding .3s var(--e)}
+    .marchio{grid-column:2;display:inline-flex;flex-direction:column;align-items:center;gap:.42rem;color:var(--inchiostro);text-align:center}
+    .marchio-logo{display:block;width:190px;height:auto;transition:width .35s var(--e)}
+    .testata.compatta .marchio-logo{width:136px}
+    .marchio-nome{font-family:var(--disp);font-size:1.95rem;font-weight:500;letter-spacing:.2em;text-indent:.2em;text-transform:uppercase;line-height:1;transition:font-size .35s var(--e),letter-spacing .35s var(--e)}
+    .marchio-sotto{font-size:.56rem;font-weight:500;letter-spacing:.34em;text-indent:.34em;text-transform:uppercase;color:var(--oro);line-height:1;transition:opacity .3s,max-height .35s var(--e);max-height:1.2em;overflow:hidden}
+    .testata-dx{grid-column:3;justify-self:end;display:inline-flex;align-items:center;gap:1.1rem}
+    .testata-tel{font-size:.78rem;letter-spacing:.1em;color:var(--grafite)}
+    .testata-tel:hover{color:var(--oro)}
+    .menu{display:flex;justify-content:center;gap:clamp(1.4rem,3vw,2.8rem);padding:0 1rem .8rem}
+    .menu a{font-size:.72rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--grafite);padding-bottom:.2rem;border-bottom:1px solid transparent;transition:color .25s,border-color .25s}
+    .menu a:hover{color:var(--inchiostro)}
+    .menu a.on{color:var(--oro);border-color:var(--oro)}
+    /* compatta: allo scroll il marchio rimpicciolisce e sparisce il simbolo */
+    .testata.compatta .testata-alto{padding-top:.6rem;padding-bottom:.35rem}
+    .testata.compatta .marchio-nome{font-size:1.3rem;letter-spacing:.24em}
+    .testata.compatta .marchio-sotto{opacity:0;max-height:0}
+    .menu-btn{grid-column:1;display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:none;border:0;cursor:pointer}
+    .menu-btn span{display:block;height:1px;background:var(--inchiostro);transition:transform .3s var(--e),opacity .3s}
+    .menu-btn[aria-expanded="true"] span:first-child{transform:translateY(3px) rotate(45deg)}
+    .menu-btn[aria-expanded="true"] span:last-child{transform:translateY(-3px) rotate(-45deg)}
+
+    /* ---------- impaginazione ---------- */
+    .banda{padding:clamp(4.5rem,10vw,8rem) 0}
+    .misura{max-width:1220px;margin:0 auto;padding:0 clamp(1.2rem,5vw,3.2rem)}
+    .stretta{max-width:760px;margin-inline:auto}
+    .intro{max-width:660px}
+    .intro.centro{margin-inline:auto;text-align:center}
+    .intro h1{font-size:clamp(3rem,7.5vw,6rem);margin:1.4rem 0 0}
+    .intro h2{font-size:clamp(2.4rem,5.4vw,4rem);margin:1.4rem 0 0}
+    .intro p{color:var(--grafite);margin-top:1.4rem;font-size:1.02rem;max-width:56ch}
+    .intro.centro p{margin-inline:auto}
+    .filo{height:1px;background:var(--filo);border:0;margin:0}
+    /* fregio: filetto con rombo al centro, come separatore tra i momenti della pagina */
+    .fregio{display:flex;align-items:center;justify-content:center;gap:1.1rem;color:var(--oro)}
+    .fregio::before,.fregio::after{content:'';height:1px;flex:1;max-width:180px;background:var(--filo)}
+    .fregio span{width:7px;height:7px;border:1px solid var(--oro);transform:rotate(45deg)}
+
+    /* bottoni: sobri, senza raggio */
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-family:var(--sans);font-size:.74rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;padding:1.05rem 2.1rem;border:1px solid var(--inchiostro);background:var(--inchiostro);color:var(--avorio);cursor:pointer;transition:background .45s var(--e),color .45s var(--e),border-color .45s var(--e)}
+    .btn:hover{background:transparent;color:var(--inchiostro)}
+    .btn-vuoto{background:transparent;color:var(--inchiostro);border-color:var(--filo)}
+    .btn-vuoto:hover{border-color:var(--inchiostro);background:transparent;color:var(--inchiostro)}
+    .btn-oro{background:var(--oro);border-color:var(--oro);color:var(--carta)}
+    .btn-oro:hover{background:transparent;color:var(--oro)}
+    .btn-chiaro{background:var(--avorio);border-color:var(--avorio);color:var(--inchiostro)}
+    .btn-chiaro:hover{background:transparent;color:var(--avorio)}
+    .btn-pieno{width:100%}
+    /* link testuale con filo che cresce */
+    .link-filo{display:inline-block;font-size:.74rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--inchiostro);padding-bottom:.35rem;border-bottom:1px solid var(--oro);transition:color .25s}
+    .link-filo:hover{color:var(--oro)}
+
+    /* sezione scura di contrasto */
+    .scuro{background:var(--scuro);color:var(--avorio)}
+    .scuro .intro p,.scuro p{color:#b7ada0}
+    .scuro .occhiello{color:var(--oro-c)}
+    .scuro .occhiello::before,.scuro .occhiello.centro::after{background:var(--oro-c)}
+    .scuro .filo{background:var(--filo-c)}
+
+    /* moduli: campi a filo, niente riquadri */
+    .modulo{display:flex;flex-direction:column;gap:1.5rem}
+    .modulo label{display:flex;flex-direction:column;gap:.5rem;font-size:.66rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--grigio)}
+    .modulo input,.modulo select,.modulo textarea{width:100%;min-width:0;padding:.6rem 0;border:0;border-bottom:1px solid var(--filo);background:transparent;color:var(--inchiostro);font-family:var(--sans);font-size:1rem;border-radius:0}
+    .modulo textarea{resize:vertical}
+    .modulo input:focus,.modulo select:focus,.modulo textarea:focus{outline:0;border-bottom-color:var(--oro)}
+    .modulo select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--oro) 50%),linear-gradient(135deg,var(--oro) 50%,transparent 50%);background-position:calc(100% - 12px) calc(50% + 1px),calc(100% - 7px) calc(50% + 1px);background-size:5px 5px,5px 5px;background-repeat:no-repeat;cursor:pointer}
+    .nota{font-size:.78rem;line-height:1.6;color:var(--grigio);letter-spacing:0;text-transform:none;font-weight:400}
+    .consenso{flex-direction:row !important;align-items:flex-start;gap:.7rem;font-size:.78rem;letter-spacing:0;text-transform:none;font-weight:400;color:var(--grafite);line-height:1.6}
+    .consenso input{width:auto;accent-color:var(--oro);margin-top:.35rem}
+    .consenso a{border-bottom:1px solid var(--oro)}
+    .esito{display:none;border-left:2px solid var(--oro);padding:.9rem 1.1rem;background:var(--carta);font-size:.95rem}
+    .esito.esito-ko{border-left-color:#a4442c;color:#7d2f1d}
+    /* campo trappola per i programmi di spam: fuori dallo schermo, non raggiungibile */
+    .trappola{position:absolute !important;left:-9999px;width:1px;height:1px;overflow:hidden}
+
+    /* stato orari, discreto */
+    .stato{display:inline-flex;align-items:center;gap:.6rem;font-size:.8rem;letter-spacing:.06em;color:var(--grafite)}
+    .stato .pt{width:6px;height:6px;border-radius:50%;background:#3f8f5e;flex:none}
+    .stato.chiuso .pt{background:#b4593f}
+    .orari{list-style:none;display:grid;gap:0;font-size:.92rem}
+    /* NB: siamo gia' dentro <style is:global>, quindi niente :global() (non verrebbe applicato) */
+    .orari li{display:flex;justify-content:space-between;align-items:baseline;gap:1.5rem;padding:.62rem 0;border-bottom:1px solid var(--filo);color:var(--grafite)}
+    .orari li b{font-weight:500;color:var(--inchiostro);font-variant-numeric:tabular-nums}
+    .orari li.oggi,.orari li.oggi b{color:var(--oro)}
+    /* chiusura straordinaria annunciata sotto gli orari */
+    .orari li.chiusura-avviso,.orari li.chiusura-avviso b{color:#9a3f28}
+
+    /* modale */
+    .velo{position:fixed;inset:0;z-index:320;display:grid;place-items:center;padding:1.2rem}
+    .velo-sfondo{position:absolute;inset:0;background:rgba(21,18,14,.55);backdrop-filter:blur(3px)}
+    .velo-foglio{position:relative;background:var(--carta);width:100%;max-width:440px;max-height:88vh;overflow:auto;padding:clamp(1.6rem,4vw,2.4rem);display:flex;flex-direction:column;gap:.9rem;animation:sali .35s var(--e)}
+    @keyframes sali{from{opacity:0;transform:translateY(18px)}}
+    @media (prefers-reduced-motion:reduce){.velo-foglio{animation:none}}
+    .velo-foglio h2{font-size:2rem}
+    .velo-x{position:absolute;top:.8rem;right:.9rem;width:34px;height:34px;border:0;background:none;color:var(--grafite);font-size:1.1rem;cursor:pointer;line-height:1}
+    .velo-x:hover{color:var(--oro)}
+    body.velo-aperto{overflow:hidden}
+
+    /* chiusura (footer) */
+    .chiusura{background:var(--scuro);color:#b7ada0;margin-top:0}
+    .chiusura-in{max-width:1220px;margin:0 auto;padding:clamp(3.5rem,7vw,5.5rem) clamp(1.2rem,5vw,3.2rem) 2.6rem;display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:2.5rem;font-size:.92rem}
+    .chiusura h2{font-family:var(--sans);font-size:.66rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--oro-c);margin-bottom:1rem}
+    .chiusura p{margin-bottom:.2rem}
+    .chiusura a:hover{color:var(--avorio)}
+    .chiusura-nome img{display:block;width:190px;height:auto}
+    .chiusura-nome{font-family:var(--disp);font-size:1.72rem;font-weight:500;letter-spacing:.2em;text-indent:.2em;text-transform:uppercase;color:var(--avorio);margin-bottom:1rem !important}
+    .chiusura-filo{display:block;width:44px;height:1px;background:var(--oro-c);opacity:.7;margin-bottom:1rem}
+    .chiusura-claim{font-family:var(--disp);font-size:1.12rem;font-style:italic;color:#9d9387}
+    .chiusura-sp{margin-top:.9rem}
+    .chiusura-muto{color:#8e857c}
+    .chiusura-legale{max-width:1220px;margin:0 auto;padding:1.3rem clamp(1.2rem,5vw,3.2rem) 2rem;border-top:1px solid var(--filo-c);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font-size:.75rem;letter-spacing:.05em;color:#8e857c}
+    .chiusura-legale a{border-bottom:1px solid rgba(195,161,99,.5)}
+
+    /* verde WhatsApp: si riconosce a colpo d'occhio, che e' tutto il suo valore.
+       Il glifo e' scuro (non bianco) per restare leggibile e non gridare. */
+    .wa-flt{position:fixed;right:20px;bottom:20px;z-index:160;width:50px;height:50px;display:grid;place-items:center;
+      background:#25d366;color:#0b3d20;border-radius:50%;box-shadow:0 10px 26px -12px rgba(20,90,50,.65);
+      transition:transform .25s var(--e),box-shadow .25s}
+    .wa-flt:hover{transform:translateY(-3px);box-shadow:0 16px 32px -12px rgba(20,90,50,.75)}
+
+    /* Comparsa allo scroll, lenta e discreta.
+       Lo stato nascosto vale SOLO se il JavaScript c'è: senza, l'introduzione, i
+       quattro servizi e il testo dell'atelier restavano invisibili per sempre invece
+       di limitarsi a non animarsi — mezza pagina bianca. Tutte le altre demo hanno
+       già questo guard: qui era rimasto indietro. */
+    @media (scripting: enabled){
+      .a{opacity:0;transform:translateY(22px);transition:opacity 1s var(--e),transform 1s var(--e)}
+    }
+    .a.vista{opacity:1;transform:none}
+    @media (prefers-reduced-motion:reduce){.a{opacity:1;transform:none;transition:none}}
+
+    /* ---------- stampa ----------
+       Capita davvero: si stampa la misura dell'anello, la lista dei pezzi o gli
+       orari. Senza queste regole uscivano barre, pulsanti e fondi scuri. */
+    @media print{
+      body{background:#fff;color:#000;font-size:11pt}
+      body::before,.testata,.wa-flt,.mskip,.velo{display:none !important}
+      main{padding-top:0 !important}
+      .banda,.testa-pagina{padding-block:1rem !important}
+      .scuro{background:#fff !important;color:#000 !important;border:1px solid #ccc}
+      .scuro *{color:#000 !important}
+      .a{opacity:1 !important;transform:none !important}
+      .btn,.link-filo{border:1px solid #999 !important;background:#fff !important;color:#000 !important}
+      /* i link utili vanno stampati per esteso, altrimenti sul foglio spariscono */
+      .chiusura a[href^="tel:"]::after,.chiusura a[href^="mailto:"]::after{content:" (" attr(href) ")";font-size:9pt}
+      .chiusura{background:#fff !important;color:#000 !important;border-top:1px solid #999}
+      .chiusura *{color:#000 !important}
+      img{max-height:8cm;object-fit:contain}
+      h1,h2,h3{break-after:avoid}
+      section{break-inside:avoid-page}
+    }
+
+    @media (max-width:900px){
+      .testata-alto{grid-template-columns:auto 1fr auto;padding-bottom:.9rem}
+      .menu-btn{display:flex}
+      .marchio{align-items:center}
+      .marchio-logo{width:152px}
+      .testata.compatta .marchio-logo{width:120px}
+      .testata-tel{display:none}
+      .menu{display:none;flex-direction:column;align-items:center;gap:1.4rem;padding:1.4rem 1rem 1.8rem;border-top:1px solid var(--filo)}
+      .testata.aperta .menu{display:flex}
+      .chiusura-in{grid-template-columns:1fr;gap:2rem}
+      .chiusura-legale{flex-direction:column;gap:.4rem}
+    }
+  </style>
+
+  <script>
+    import { caricaDati, orariAttivi, piedeHTML, orariInRiga } from '../lib/sito.js';
+    // orari aggiornati dal negozio: piede e note di ogni pagina
+    caricaDati().then((d) => {
+      if (!d) return;
+      document.getElementById('piedeOrari').innerHTML = piedeHTML(orariAttivi(d));
+      document.querySelectorAll('[data-orari-riga]').forEach((el) => { el.textContent = orariInRiga(orariAttivi(d)); });
+    });
+
+    const testata = document.getElementById('testata');
+    const btn = document.getElementById('menuBtn');
+    btn.addEventListener('click', () => {
+      const aperta = testata.classList.toggle('aperta');
+      btn.setAttribute('aria-expanded', String(aperta));
+    });
+    document.querySelectorAll('.menu a').forEach((a) => a.addEventListener('click', () => {
+      testata.classList.remove('aperta'); btn.setAttribute('aria-expanded', 'false');
+    }));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { testata.classList.remove('aperta'); btn.setAttribute('aria-expanded', 'false'); }
+    });
+    // la testata si compatta appena si scorre
+    const compatta = () => testata.classList.toggle('compatta', window.scrollY > 40);
+    window.addEventListener('scroll', compatta, { passive: true });
+    compatta();
+
+    const io = new IntersectionObserver((es) => es.forEach((e) => {
+      if (e.isIntersecting) { e.target.classList.add('vista'); io.unobserve(e.target); }
+    }), { threshold: 0.12 });
+    document.querySelectorAll('.a').forEach((el) => io.observe(el));
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "name": "masgioielli",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sito di MasGioielli (Torino): Astro statico + area riservata PHP/MySQL",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && node tools/controlla-link.mjs",
+    "preview": "astro preview",
+    "server": "node tools/server-locale.mjs",
+    "server:mysql": "node tools/server-locale.mjs --mysql",
+    "esempio": "npm run build && node tools/server-locale.mjs --mysql --esempio"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "@fontsource-variable/cormorant": "^5.2.8",
+    "@fontsource-variable/inter": "^5.2.8",
+    "astro": "^7.1.3"
+  }
+}

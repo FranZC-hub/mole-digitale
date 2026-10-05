@@ -1,0 +1,281 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { INFO } from '../lib/sito.js';
+// Selezione del momento: i pezzi scelti dal negozio e aggiornati dall'area riservata
+// (arrivano da /api/dati.php).
+// Galleria editoriale (foto verticali, didascalia sotto, nessun riquadro),
+// filtro a filetto, scheda di dettaglio e lista desideri da mandare in negozio
+// su WhatsApp prima di passare.
+---
+<Layout title="La selezione del momento" active="Selezione" desc={`La selezione di gioielli e orologi in vetrina da ${INFO.nome} a Torino, aggiornata di frequente. Segnate quelli che vi interessano e passate a vederli in negozio.`}>
+
+  <section class="testa-pagina">
+    <div class="misura stretta intro centro a">
+      <span class="occhiello centro">La selezione del momento</span>
+      <h1>In vetrina, <span class="it oro">ora</span></h1>
+      <p>Una scelta di gioielli e orologi che rinnoviamo spesso: in negozio c’è molto altro. Segnate i pezzi che vi interessano e ve li prepariamo sul banco per quando passate.</p>
+      <p class="agg" id="agg" hidden></p>
+    </div>
+  </section>
+
+  {/* FILTRI a filetto */}
+  <div class="barra">
+    <div class="misura barra-in">
+      <nav class="categorie" id="categorie" aria-label="Filtra per categoria">
+        <button type="button" class="cat on" data-cat="all" aria-pressed="true">Tutto</button>
+      </nav>
+      <label class="cerca">
+        <span class="sr-only">Cerca un pezzo per nome</span>
+        <input type="search" id="cerca" placeholder="Cerca…" autocomplete="off" />
+      </label>
+    </div>
+  </div>
+
+  <section class="banda galleria-banda">
+    <div class="misura">
+      <p class="conteggio" id="conteggio" hidden aria-live="polite"></p>
+      <h2 class="sr-only">Pezzi della selezione</h2>
+      <div class="galleria" id="galleria" aria-busy="true"></div>
+      <p class="vuoto" id="vuoto" hidden>Nessun pezzo con questo nome. In negozio c’è molto altro: chiedeteci pure.</p>
+      <p class="vuoto" id="vuotoTutto" hidden>Stiamo rinnovando la selezione: passate a trovarci in negozio, o <a href={'https://wa.me/' + INFO.wa} target="_blank" rel="noopener" class="link-testo">scriveteci su WhatsApp</a>.</p>
+    </div>
+  </section>
+
+  {/* LISTA (fluttuante) */}
+  <button class="lista-btn" id="listaBtn" aria-label="Apri la tua lista">
+    <span aria-hidden="true">♡</span><span class="lista-n" id="conta" hidden>0</span>
+  </button>
+  <div class="avviso" id="avviso" role="status" aria-live="polite"></div>
+
+  {/* SCHEDA */}
+  <div class="velo" id="scheda" hidden role="dialog" aria-modal="true" aria-labelledby="sNome">
+    <div class="velo-sfondo" data-close></div>
+    <div class="velo-foglio">
+      <button type="button" class="velo-x" data-close aria-label="Chiudi">✕</button>
+      <img id="sImg" class="scheda-foto" width="640" height="480" alt="" />
+      <p class="pezzo-cat" id="sCat"></p>
+      <h2 id="sNome"></h2>
+      <p class="pezzo-mat" id="sMat"></p>
+      <p class="scheda-desc" id="sDesc"></p>
+      <button type="button" class="btn btn-pieno" id="sSegna">Segna nella lista</button>
+      <p class="nota">Prezzo e disponibilità: <a id="sChiedi" href="#" target="_blank" rel="noopener" class="nota-link">chiedeteci su WhatsApp</a>, oppure passate a vederlo dal vivo.</p>
+    </div>
+  </div>
+
+  {/* LISTA DESIDERI */}
+  <div class="velo" id="lista" hidden role="dialog" aria-modal="true" aria-labelledby="lTitolo">
+    <div class="velo-sfondo" data-close></div>
+    <div class="velo-foglio">
+      <button type="button" class="velo-x" data-close aria-label="Chiudi">✕</button>
+      <h2 id="lTitolo">La tua lista</h2>
+      <div class="righe" id="righe"></div>
+      <div class="lista-piede" id="lPiede" hidden>
+        <label class="lista-data">Quando vorreste passare? <small>(facoltativo)</small>
+          <input type="date" id="lData" />
+        </label>
+        <button type="button" class="btn btn-oro btn-pieno" id="lInvia">Chiedi di vederli in negozio</button>
+        <button type="button" class="lista-svuota" id="lSvuota">Svuota la lista</button>
+        <p class="nota">La lista resta su questo dispositivo. «Chiedi» apre WhatsApp col messaggio già pronto.</p>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .testa-pagina{padding-top:calc(var(--tastata) + clamp(2.5rem,6vw,4.5rem));padding-bottom:clamp(2rem,4vw,3rem)}
+
+    /* filtri: filetto sopra e sotto, niente pillole colorate */
+    .barra{border-block:1px solid var(--filo);position:sticky;top:92px;z-index:100;background:rgba(247,243,236,.95);backdrop-filter:blur(8px)}
+    .barra-in{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;padding-block:.9rem}
+    .categorie{display:flex;gap:clamp(1rem,2.4vw,2rem);flex-wrap:wrap}
+    :global(.cat){background:none;border:0;padding:.2rem 0;font-family:var(--sans);font-size:.7rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--grigio);cursor:pointer;border-bottom:1px solid transparent;transition:color .25s,border-color .25s}
+    :global(.cat:hover){color:var(--inchiostro)}
+    :global(.cat.on){color:var(--oro);border-color:var(--oro)}
+    .cerca input{width:clamp(140px,18vw,220px);padding:.4rem 0;border:0;border-bottom:1px solid var(--filo);background:transparent;font-family:var(--sans);font-size:.9rem;color:var(--inchiostro)}
+    .cerca input:focus{outline:0;border-bottom-color:var(--oro)}
+
+    .agg{margin-top:1.1rem !important;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--oro)}
+    /* schede, cuore e filtri arrivano da JavaScript (dati dall'API): stili :global,
+       con nomi di classe che esistono solo in questa pagina */
+    .link-testo{border-bottom:1px solid var(--oro)}
+    /* mentre arrivano i pezzi lo spazio e' gia' riservato: il piede non salta (CLS) */
+    .galleria[aria-busy="true"]{min-height:70vh}
+    .galleria-banda{padding-top:clamp(2.5rem,5vw,4rem)}
+    .conteggio{font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;color:var(--grigio);margin-bottom:2rem}
+    .galleria{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1.6rem,3.4vw,3.2rem) clamp(1.2rem,2.6vw,2.4rem)}
+    .galleria>*{min-width:0}
+    :global(.pezzo[hidden]){display:none}
+    :global(.pezzo-foto){position:relative;overflow:hidden;background:var(--avorio-2)}
+    :global(.pezzo-foto img){width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;transition:transform 1.1s var(--e);cursor:pointer}
+    :global(.pezzo:hover .pezzo-foto img){transform:scale(1.04)}
+    /* il segnalibro compare all'hover, ma resta sempre raggiungibile da tastiera */
+    :global(.segna){position:absolute;top:.9rem;right:.9rem;width:38px;height:38px;border:0;background:rgba(247,243,236,.92);color:var(--inchiostro);font-size:1.05rem;line-height:1;cursor:pointer;display:grid;place-items:center;opacity:0;transform:translateY(-4px);transition:opacity .3s var(--e),transform .3s var(--e),background .25s,color .25s}
+    :global(.pezzo:hover .segna),:global(.segna:focus-visible),:global(.segna.on){opacity:1;transform:none}
+    :global(.segna:hover){background:var(--inchiostro);color:var(--avorio)}
+    :global(.segna.on){background:var(--oro);color:var(--carta)}
+    :global(.pezzo-cat){font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--oro);margin-top:1.2rem}
+    :global(.pezzo h3){font-size:1.55rem;line-height:1.2;margin-top:.35rem}
+    :global(.pezzo-apri){background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;text-align:left}
+    :global(.pezzo-apri:hover){color:var(--oro)}
+    :global(.pezzo-mat){color:var(--grigio);font-size:.86rem;margin-top:.3rem}
+    .vuoto{text-align:center;color:var(--grafite);padding:3rem 1rem;font-family:var(--disp);font-size:1.4rem;font-style:italic}
+
+    /* scheda */
+    .scheda-foto{width:100%;aspect-ratio:4/5;object-fit:cover}
+    .scheda-desc{color:var(--grafite);font-size:.98rem}
+    .nota-link{color:var(--oro);border-bottom:1px solid var(--oro)}
+
+    /* lista */
+    .lista-btn{position:fixed;left:20px;bottom:20px;z-index:160;width:46px;height:46px;border:1px solid var(--filo);background:var(--carta);color:var(--inchiostro);font-size:1.1rem;cursor:pointer;display:grid;place-items:center;border-radius:50%;transition:background .25s,color .25s,transform .25s var(--e)}
+    .lista-btn:hover{background:var(--inchiostro);color:var(--avorio)}
+    .lista-btn.batte{animation:batte .5s var(--e)}
+    @keyframes batte{40%{transform:scale(1.18)}}
+    @media (prefers-reduced-motion:reduce){.lista-btn.batte{animation:none}}
+    .lista-n{position:absolute;top:-5px;right:-5px;min-width:20px;height:20px;padding:0 5px;background:var(--oro);color:var(--carta);font-family:var(--sans);font-size:.68rem;font-weight:600;display:grid;place-items:center;border-radius:999px}
+
+    .righe{display:grid;grid-template-columns:minmax(0,1fr);gap:0;margin:.3rem 0}
+    :global(.riga){display:flex;align-items:center;gap:1rem;min-width:0;padding:.85rem 0;border-bottom:1px solid var(--filo)}
+    :global(.riga img){width:54px;height:66px;object-fit:cover;flex:none}
+    :global(.riga .tx){flex:1;min-width:0}
+    :global(.riga .tx b){display:block;font-family:var(--disp);font-size:1.2rem;font-weight:400;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    :global(.riga .tx span){font-size:.85rem;color:var(--grigio)}
+    :global(.riga button){background:none;border:0;color:var(--grigio);font-size:.95rem;cursor:pointer;flex:none;padding:.3rem}
+    :global(.riga button:hover){color:#b4593f}
+    :global(.lista-vuota){text-align:center;color:var(--grigio);font-family:var(--disp);font-style:italic;font-size:1.25rem;padding:2.2rem 1rem}
+    .lista-piede{display:flex;flex-direction:column;gap:1rem;margin-top:.6rem}
+    .lista-data{display:flex;flex-direction:column;gap:.45rem;font-size:.66rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--grigio)}
+    .lista-data small{letter-spacing:0;text-transform:none;font-weight:400}
+    .lista-data input{padding:.55rem 0;border:0;border-bottom:1px solid var(--filo);background:transparent;font-family:var(--sans);font-size:1rem;color:var(--inchiostro)}
+    .lista-data input:focus{outline:0;border-bottom-color:var(--oro)}
+    .lista-svuota{background:none;border:0;color:var(--grigio);font-size:.78rem;letter-spacing:.06em;cursor:pointer;font-family:inherit;text-decoration:underline}
+    .lista-svuota:hover{color:#b4593f}
+
+    .avviso{position:fixed;left:50%;bottom:24px;transform:translate(-50%,10px);z-index:170;background:var(--inchiostro);color:var(--avorio);padding:.7rem 1.3rem;font-size:.82rem;letter-spacing:.06em;max-width:90vw;text-align:center;opacity:0;pointer-events:none;transition:opacity .3s var(--e),transform .3s var(--e)}
+    .avviso.mostra{opacity:1;transform:translate(-50%,0)}
+
+    @media (max-width:900px){.galleria{grid-template-columns:1fr 1fr}}
+    @media (max-width:560px){
+      .galleria{grid-template-columns:1fr;gap:2.5rem}
+      .barra-in{flex-direction:column;align-items:stretch;gap:.9rem}
+      .cerca input{width:100%}
+      :global(.segna){opacity:1;transform:none}
+    }
+  </style>
+
+  <script>
+    import { INFO, esc, leggiLista, scriviLista, initModal, caricaDati, pezziAttivi, pezzoHTML, dataEstesa, CATEGORIE, idPezzo } from '../lib/sito.js';
+    const $ = (s) => document.querySelector(s);
+    const griglia = $('#galleria');
+    // la selezione arriva dall'API
+    const dati = await caricaDati();
+    const elenco = pezziAttivi(dati);
+    griglia.innerHTML = elenco.map(pezzoHTML).join('');
+    griglia.removeAttribute('aria-busy');
+    $('#vuotoTutto').hidden = elenco.length > 0;
+    if (dati?.aggiornato && elenco.length) { $('#agg').textContent = 'Aggiornata il ' + dataEstesa(dati.aggiornato); $('#agg').hidden = false; }
+    // un filtro per ogni categoria presente, nell'ordine di sempre
+    const presenti = CATEGORIE.filter((c) => elenco.some((x) => x.cat === c));
+    $('#categorie').insertAdjacentHTML('beforeend', presenti.length > 1
+      ? presenti.map((c) => `<button type="button" class="cat" data-cat="${esc(c)}" aria-pressed="false">${esc(c)}</button>`).join('') : '');
+    const pezzi = [...griglia.querySelectorAll('.pezzo')];
+    const btnLista = $('#listaBtn'), conta = $('#conta'), avvisoEl = $('#avviso');
+    let lista = leggiLista();
+
+    const sync = () => {
+      conta.hidden = lista.length === 0;
+      conta.textContent = String(lista.length);
+      btnLista.setAttribute('aria-label', lista.length ? `Apri la tua lista — ${lista.length} ${lista.length === 1 ? 'pezzo' : 'pezzi'}` : 'La tua lista è vuota');
+      const ids = new Set(lista.map((i) => i.id));
+      pezzi.forEach((c) => {
+        const dentro = ids.has(c.dataset.id);
+        const b = c.querySelector('.segna');
+        b.classList.toggle('on', dentro);
+        b.querySelector('.segna-ic').textContent = dentro ? '♥' : '♡';
+      });
+    };
+    let tA;
+    const avviso = (m) => { avvisoEl.textContent = m; avvisoEl.classList.add('mostra'); clearTimeout(tA); tA = setTimeout(() => avvisoEl.classList.remove('mostra'), 2000); };
+    const batte = () => { btnLista.classList.remove('batte'); void btnLista.offsetWidth; btnLista.classList.add('batte'); };
+
+    const segna = (d) => {
+      if (lista.some((i) => i.id === d.id)) { avviso('È già nella vostra lista'); return; }
+      lista.push({ id: d.id, nome: d.nome, cat: d.cat, img: d.img });
+      scriviLista(lista); sync(); batte(); avviso(d.nome + ' — segnato');
+    };
+    const togli = (id) => { lista = lista.filter((i) => i.id !== id); scriviLista(lista); sync(); renderLista(); };
+
+    // ---- filtri ----
+    const cerca = $('#cerca'), cats = [...document.querySelectorAll('.cat')], conteggio = $('#conteggio');
+    let cat = 'all';
+    const filtra = () => {
+      const q = cerca.value.trim().toLowerCase();
+      let n = 0;
+      pezzi.forEach((c) => {
+        const ok = c.dataset.nome.toLowerCase().includes(q) && (cat === 'all' || c.dataset.cat === cat);
+        c.hidden = !ok; if (ok) { c.classList.add('vista'); n++; }
+      });
+      $('#vuoto').hidden = n !== 0;
+      const attivo = q !== '' || cat !== 'all';
+      conteggio.hidden = !attivo;
+      if (attivo) conteggio.textContent = `${n} ${n === 1 ? 'pezzo' : 'pezzi'}`;
+    };
+    cerca.addEventListener('input', filtra);
+    cats.forEach((b) => b.addEventListener('click', () => {
+      cat = b.dataset.cat;
+      cats.forEach((o) => { const on = o === b; o.classList.toggle('on', on); o.setAttribute('aria-pressed', String(on)); });
+      filtra();
+    }));
+    const catUrl = new URLSearchParams(location.search).get('cat');
+    if (catUrl) { const b = cats.find((x) => x.dataset.cat === catUrl); if (b) b.click(); }
+
+    // ---- scheda ----
+    const scheda = initModal($('#scheda'));
+    let corrente = null;
+    const apri = (d) => {
+      corrente = d;
+      $('#sImg').src = d.img; $('#sImg').alt = d.alt || d.nome;
+      $('#sCat').textContent = d.cat;
+      $('#sNome').textContent = d.nome;
+      $('#sMat').textContent = d.materiale;
+      $('#sDesc').textContent = d.desc;
+      $('#sChiedi').href = `https://wa.me/${INFO.wa}?text=${encodeURIComponent(`Buongiorno ${INFO.nome}! Vorrei informazioni su «${d.nome}» che ho visto sul sito.`)}`;
+      $('#sSegna').textContent = lista.some((i) => i.id === d.id) ? 'Già nella vostra lista' : 'Segna nella lista';
+      scheda.open();
+    };
+    $('#sSegna').addEventListener('click', () => { if (corrente) { segna(corrente); scheda.close(); } });
+    pezzi.forEach((c) => {
+      c.querySelector('.pezzo-apri').addEventListener('click', () => apri(c.dataset));
+      c.querySelector('.pezzo-foto img').addEventListener('click', () => apri(c.dataset));
+      c.querySelector('.segna').addEventListener('click', (e) => { e.stopPropagation(); segna(c.dataset); });
+    });
+
+    // ---- lista ----
+    const modLista = initModal($('#lista'));
+    const righe = $('#righe'), piede = $('#lPiede'), data = $('#lData');
+    data.min = new Date().toISOString().slice(0, 10);
+    function renderLista() {
+      if (!lista.length) {
+        righe.innerHTML = '<p class="lista-vuota">La vostra lista è vuota.<br/>Segnate i pezzi col ♡.</p>';
+        piede.hidden = true; return;
+      }
+      righe.innerHTML = lista.map((i) => `<div class="riga"><img src="${esc(i.img)}" alt="" width="54" height="66" /><div class="tx"><b>${esc(i.nome)}</b><span>${esc(i.cat || '')}</span></div><button type="button" data-rm="${esc(i.id)}" aria-label="Togli ${esc(i.nome)} dalla lista">✕</button></div>`).join('');
+      righe.querySelectorAll('[data-rm]').forEach((b) => b.addEventListener('click', () => togli(b.dataset.rm)));
+      piede.hidden = false;
+    }
+    btnLista.addEventListener('click', () => { renderLista(); modLista.open(); });
+    $('#lSvuota').addEventListener('click', () => { lista = []; scriviLista(lista); sync(); renderLista(); });
+    $('#lInvia').addEventListener('click', () => {
+      if (!lista.length) return;
+      const voci = lista.map((i) => `• ${i.nome}${i.cat ? ` (${i.cat.toLowerCase()})` : ''}`).join('\n');
+      let quando = '';
+      if (data.value) { const [y, m, g] = data.value.split('-'); quando = `\nPasserei il ${g}/${m}/${y}.`; }
+      const msg = `Buongiorno ${INFO.nome}! 👋\nVorrei vedere questi pezzi in negozio:\n\n${voci}\n${quando}\nGrazie!`;
+      window.open(`https://wa.me/${INFO.wa}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
+    });
+
+    sync();
+    if (location.hash) {
+      const c = pezzi.find((x) => '#' + x.id === location.hash);
+      if (c) apri(c.dataset);
+    }
+  </script>
+</Layout>
