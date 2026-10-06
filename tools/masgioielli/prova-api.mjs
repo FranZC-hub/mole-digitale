@@ -44,7 +44,9 @@ if (MY) {
   writeFileSync(conf, `<?php return ['db' => ['dsn' => 'sqlite:${join(PROVA, 'prova.sqlite').replace(/\\/g, '/')}'], ${confPosta}, 'sale' => 'prova', 'installazione' => '${CODICE}', 'foto' => '${join(PROVA, 'foto').replace(/\\/g, '/')}'];`);
   console.log('Prove su SQLite');
 }
-const server = spawn('php', [...estensioni, '-S', `127.0.0.1:${PORTA}`, '-t', join(RADICE, 'public')], { env: { ...process.env, MAS_CONFIG: conf }, stdio: ['ignore', 'ignore', 'pipe'] });
+// OPcache spento: le prove riscrivono la configurazione a meta' corsa, e con OPcache (attivo
+// nel PHP di Ubuntu, quello di GitHub) php -S continuerebbe a usare la versione vecchia
+const server = spawn('php', [...estensioni, '-d', 'opcache.enable=0', '-S', `127.0.0.1:${PORTA}`, '-t', join(RADICE, 'public')], { env: { ...process.env, MAS_CONFIG: conf }, stdio: ['ignore', 'ignore', 'pipe'] });
 let logServer = ''; server.stderr.on('data', (d) => { logServer += d; });
 await new Promise((r) => setTimeout(r, 900));
 
