@@ -1,27 +1,104 @@
 ---
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { createHash, pbkdf2Sync } from 'node:crypto';
 import Layout from './_Layout.astro';
-import { BASE, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_sito.js';
+import { BASE, REPARTI, CATEGORIE, GIORNI, SETTIMANA, SENZA_DATABASE } from './_sito.js';
+
+// Senza database l'accesso si controlla nel browser (_locale.js): nella pagina va solo
+// l'impronta PBKDF2 della password, mai la password (il repository e' pubblico). Si legge
+// in build come fa /demoClientiDev/: dai secret MAS_DEV_UTENTE / MAS_DEV_PASSWORD, oppure
+// in locale da .locale/negozio-mysql.json.
+function accessoLocale() {
+  if (!SENZA_DATABASE) return null;
+  let utente = process.env.MAS_DEV_UTENTE || 'negozio', password = process.env.MAS_DEV_PASSWORD || '';
+  if (!password) {
+    try { ({ utente, password } = JSON.parse(readFileSync(join(process.cwd(), '.locale/negozio-mysql.json'), 'utf8'))); }
+    catch { return null; }
+  }
+  const giri = 300000, sale = createHash('sha256').update('masgioielliDev:' + utente).digest('hex').slice(0, 32);
+  return { utente, sale, giri, impronta: pbkdf2Sync(password, sale, giri, 32, 'sha256').toString('hex') };
+}
+const accesso = accessoLocale();
 // Area riservata del negozio: vetrina (selezione del momento), orari con chiusure
-// straordinarie, marchi trattati, messaggi arrivati dai moduli.
+// straordinarie, marchi trattati. I messaggi dei moduli arrivano per email (la copia nel
+// database non si mostra qui).
 // I dati stanno nel database (api/*.php): l'accesso e' una sessione sul server, ogni
 // modifica porta il token CSRF. Questa pagina non e' indicizzata e non e' nel menu.
+// Per ora SENZA_DATABASE: le stesse chiamate le serve _locale.js, con i dati nel browser.
+// Password dimenticata: link per email valido un'ora (api/recupero.php); il link riporta qui
+// con #recupero=<codice>.
 ---
 <Layout title="Area riservata" active="Riservata" noindex desc="Area riservata del negozio.">
 
-  {/* ACCESSO */}
-  <section class="testa-pagina" id="accesso" hidden>
-    <div class="misura accesso-in">
-      <div class="intro centro">
-        <span class="occhiello centro">Area riservata</span>
-        <h1>Il pannello <span class="it oro">del negozio</span></h1>
+  {/* ACCESSO: entrare; se la password non si ricorda, chiedere il link per email;
+       dal link, sceglierne una nuova (api/recupero.php) */}
+  <section class="accesso adm" id="accesso" data-accesso-locale={accesso ? JSON.stringify(accesso) : undefined} hidden>
+    <div class="acc-scheda">
+      <div class="acc-foto" aria-hidden="true">
+        <img src={BASE + 'img/sala.webp'} alt="" width="419" height="627" />
+        <div class="acc-foto-tx">
+          <img class="acc-logo" src={BASE + 'img/logo-mas-chiaro.svg'} alt="" width="795" height="265" />
+          <p>Corso Trapani 146/b · Torino</p>
+        </div>
       </div>
-      <form class="modulo accesso-form" id="loginForm">
-        <label>Nome utente<input type="text" id="l-user" autocomplete="username" required maxlength="60" /></label>
-        <label>Password<input type="password" id="l-pass" autocomplete="current-password" required /></label>
-        <p class="errore" id="lErr" role="alert" hidden></p>
-        <button type="submit" class="btn btn-pieno" id="lEntra">Entra</button>
-      </form>
+
+      <div class="acc-corpo">
+        <div class="acc-passo" id="passoEntra">
+          <span class="occhiello">Area riservata</span>
+          <h1>Il pannello <span class="it oro">del negozio</span></h1>
+          <p class="acc-d">Vetrina, orari e marchi: quello che cambiate qui è subito sul sito.</p>
+          <p class="acc-ok" id="lOk" role="status" hidden></p>
+          <form class="modulo acc-form" id="loginForm" novalidate>
+            <label>Nome utente<input type="text" id="l-user" autocomplete="username" autocapitalize="none" spellcheck="false" required maxlength="60" /></label>
+            <div class="campo">
+              <label for="l-pass">Password</label>
+              <span class="pw-campo"><input type="password" id="l-pass" autocomplete="current-password" required /><button type="button" class="pw-mostra" aria-controls="l-pass">Mostra</button></span>
+              <small class="maiuscole" hidden>Il blocco maiuscole è attivo</small>
+            </div>
+            <p class="errore" id="lErr" role="alert" hidden></p>
+            <button type="submit" class="btn btn-pieno" id="lEntra">Entra</button>
+          </form>
+          <button type="button" class="acc-link" id="vaiRecupero">Password dimenticata?</button>
+        </div>
+
+        <div class="acc-passo" id="passoRecupero" hidden>
+          <span class="occhiello">Password dimenticata</span>
+          <h1>Ne scegliete <span class="it oro">una nuova</span></h1>
+          <p class="acc-d">Scrivete il nome utente: all’indirizzo email del negozio arriva un link per scegliere una nuova password. Il link vale un’ora.</p>
+          <form class="modulo acc-form" id="recForm" novalidate>
+            <label>Nome utente<input type="text" id="r-user" autocomplete="username" autocapitalize="none" spellcheck="false" required maxlength="60" /></label>
+            <p class="errore" id="rErr" role="alert" hidden></p>
+            <button type="submit" class="btn btn-pieno" id="rManda">Manda il link</button>
+          </form>
+          <div class="acc-fatto" id="rFatto" tabindex="-1" hidden>
+            <b>Guardate nell’email del negozio.</b>
+            <p>Se il nome utente è giusto, tra un attimo arriva un messaggio con il link. Non lo trovate? Controllate anche nello spam, oppure chiedete a chi vi segue il sito.</p>
+          </div>
+          <button type="button" class="acc-link" data-torna>← Torna all’accesso</button>
+        </div>
+
+        <div class="acc-passo" id="passoNuova" hidden>
+          <span class="occhiello">Nuova password</span>
+          <h1>Scegliete <span class="it oro">la nuova password</span></h1>
+          <p class="acc-d" id="nPer"></p>
+          <form class="modulo acc-form" id="nuovaForm" novalidate>
+            {/* il nome utente, per i gestori di password: cosi' salvano quella nuova al posto giusto */}
+            <input type="text" id="n-user" class="sr-only" autocomplete="username" tabindex="-1" aria-hidden="true" readonly />
+            <div class="campo">
+              <label for="n-pass">Nuova password <small>(almeno 10 caratteri)</small></label>
+              <span class="pw-campo"><input type="password" id="n-pass" autocomplete="new-password" minlength="10" required /><button type="button" class="pw-mostra" aria-controls="n-pass">Mostra</button></span>
+              <small class="maiuscole" hidden>Il blocco maiuscole è attivo</small>
+            </div>
+            <label>Ripetetela<input type="password" id="n-ripeti" autocomplete="new-password" required /></label>
+            <p class="errore" id="nErr" role="alert" hidden></p>
+            <button type="submit" class="btn btn-pieno" id="nSalva">Salva la nuova password</button>
+          </form>
+          <button type="button" class="acc-link" data-torna>← Torna all’accesso</button>
+        </div>
+      </div>
     </div>
+    <a class="acc-sito" href={BASE}>← Torna al sito</a>
   </section>
 
   <p class="caricamento" id="caricamento">Un momento…</p>
@@ -39,12 +116,14 @@ import { BASE, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_sito.js';
           <button type="button" id="esci" class="adm-link">Esci</button>
         </div>
       </header>
+      {SENZA_DATABASE && (
+        <p class="adm-locale" id="avvisoLocale"><b>Versione di prova, senza database.</b> Quello che cambiate qui resta su questo dispositivo: sul sito lo vedete solo da qui, non da altri telefoni o computer.</p>
+      )}
 
       <div class="schede" role="tablist" aria-label="Sezioni del pannello">
         <button type="button" role="tab" id="t-vetrina" aria-controls="p-vetrina" aria-selected="true"><span class="s-t">Vetrina</span><span class="s-d" id="sVetrina">&nbsp;</span></button>
         <button type="button" role="tab" id="t-orari" aria-controls="p-orari" aria-selected="false" tabindex="-1"><span class="s-t">Orari</span><span class="s-d" id="sOrari">&nbsp;</span></button>
         <button type="button" role="tab" id="t-marchi" aria-controls="p-marchi" aria-selected="false" tabindex="-1"><span class="s-t">Marchi</span><span class="s-d" id="sMarchi">&nbsp;</span></button>
-        <button type="button" role="tab" id="t-messaggi" aria-controls="p-messaggi" aria-selected="false" tabindex="-1"><span class="s-t">Messaggi</span><span class="s-d" id="sMessaggi">&nbsp;</span></button>
       </div>
 
       {/* ================= VETRINA ================= */}
@@ -163,17 +242,6 @@ import { BASE, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_sito.js';
         <ul class="elenco" id="elenco"></ul>
       </div>
 
-      {/* ================= MESSAGGI ================= */}
-      <div class="sez" role="tabpanel" id="p-messaggi" aria-labelledby="t-messaggi" tabindex="-1" hidden>
-        <div class="sez-testa">
-          <div>
-            <h2 class="sez-t">Messaggi dal sito</h2>
-            <p class="sez-d">Le richieste arrivate dai moduli Contatti e Perizie. Arrivano anche per email: qui restano come copia di sicurezza.</p>
-          </div>
-        </div>
-        <ul class="elenco" id="elencoMessaggi"></ul>
-      </div>
-
       <details class="password" id="password">
         <summary>Cambia la password</summary>
         <form class="modulo pw-form" id="pwForm" novalidate>
@@ -196,9 +264,39 @@ import { BASE, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_sito.js';
   <style>
     .testa-pagina{padding-top:calc(var(--tastata) + clamp(2.5rem,6vw,4.5rem));padding-bottom:clamp(2.5rem,5vw,4rem)}
 
-    /* accesso */
-    .accesso-in{max-width:420px;margin-inline:auto}
-    .accesso-form{margin-top:2.5rem}
+    /* accesso: una scheda con la foto della sala a sinistra e il modulo a destra */
+    .accesso{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.3rem;
+      padding:calc(var(--tastata) + clamp(2.5rem,6vw,4.5rem)) clamp(1rem,4vw,2rem) clamp(2.5rem,5vw,4rem)}
+    .acc-scheda{width:100%;max-width:980px;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1fr);
+      background:var(--carta);border:1px solid var(--filo);box-shadow:0 40px 70px -50px rgba(28,25,22,.5)}
+    .acc-foto{position:relative;overflow:hidden;background:var(--scuro);min-height:560px}
+    .acc-foto>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.62}
+    .acc-foto::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(21,18,14,0) 35%,rgba(21,18,14,.85))}
+    .acc-foto-tx{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:clamp(1.6rem,3vw,2.4rem)}
+    .acc-logo{width:150px;height:auto;margin-bottom:.9rem}
+    .acc-foto-tx p{font-size:.64rem;font-weight:500;letter-spacing:.26em;text-transform:uppercase;color:var(--oro-c)}
+    .acc-corpo{padding:clamp(2rem,5vw,3.6rem) clamp(1.4rem,5vw,3.6rem);display:flex;flex-direction:column;justify-content:center}
+    .acc-passo{display:flex;flex-direction:column;align-items:flex-start}
+    .acc-passo h1{font-size:clamp(2.2rem,3.6vw,2.9rem);margin-top:.9rem}
+    .acc-d{color:var(--grafite);font-size:.95rem;margin-top:.7rem;max-width:40ch}
+    .acc-form{align-self:stretch;margin-top:1.9rem}
+    .acc-form .btn{margin-top:.3rem}
+    .acc-ok{align-self:stretch;margin-top:1.4rem;padding:.8rem 1rem;border-left:2px solid #3c6e47;background:#eef3ec;color:#2f5a39;font-size:.92rem}
+    .acc-fatto{align-self:stretch;margin-top:1.9rem;padding:1.1rem 1.2rem;border-left:2px solid var(--oro);background:var(--avorio);font-size:.93rem;color:var(--grafite)}
+    .acc-fatto:focus{outline:0}
+    .acc-fatto b{display:block;font-family:var(--disp);font-weight:400;font-size:1.45rem;color:var(--inchiostro);margin-bottom:.35rem}
+    .acc-link{margin-top:1.4rem;background:none;border:0;padding:.35rem 0;font:inherit;font-size:.88rem;color:var(--grafite);border-bottom:1px solid var(--filo);cursor:pointer;transition:color .2s,border-color .2s}
+    .acc-link:hover{color:var(--oro);border-color:var(--oro)}
+    .acc-sito{font-size:.84rem;color:var(--grafite);padding:.4rem 0}
+    .acc-sito:hover{color:var(--oro)}
+    /* campo password con «Mostra» */
+    .campo{display:flex;flex-direction:column;gap:.4rem}
+    .adm .modulo .campo label{display:block}
+    .pw-campo{position:relative;display:block}
+    .adm .modulo .pw-campo input:not([type=file]){padding-right:5.4rem}
+    .pw-mostra{position:absolute;right:.3rem;top:50%;transform:translateY(-50%);min-height:40px;padding:0 .7rem;background:none;border:0;font:inherit;font-size:.8rem;color:var(--grafite);cursor:pointer}
+    .pw-mostra:hover{color:var(--oro)}
+    .adm .modulo .maiuscole{font-size:.8rem;color:#9a5b12}
     .errore{color:#a4442c;font-size:.88rem}
 
     /* il pannello: strumento di lavoro, piu' leggibile della vetrina */
@@ -208,14 +306,14 @@ import { BASE, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_sito.js';
     .adm-testa-dx{display:flex;gap:1.4rem;align-items:center}
     .adm-link{background:none;border:0;padding:.4rem 0;font:inherit;font-size:.92rem;color:var(--inchiostro);border-bottom:1px solid var(--oro);cursor:pointer}
     .adm-link:hover{color:var(--oro)}
+    .adm-locale{margin-top:1.4rem;padding:.8rem 1rem;border-left:2px solid #9a5b12;background:#fbf3e6;color:#6b4310;font-size:.9rem;max-width:80ch}
 
-    .schede{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin:clamp(1.6rem,3vw,2.2rem) 0 clamp(1.8rem,3.4vw,2.6rem)}
+    .schede{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin:clamp(1.6rem,3vw,2.2rem) 0 clamp(1.8rem,3.4vw,2.6rem)}
     .schede button{display:flex;flex-direction:column;align-items:flex-start;gap:.25rem;text-align:left;padding:1rem 1.15rem;min-height:76px;background:transparent;border:1px solid var(--filo);font:inherit;cursor:pointer;transition:border-color .2s,background .2s;position:relative}
     .schede button:hover{border-color:var(--oro)}
     .schede button[aria-selected="true"]{background:var(--carta);border-color:var(--oro);box-shadow:inset 0 -3px 0 var(--oro)}
     .s-t{font-family:var(--disp);font-size:1.45rem;line-height:1.1;color:var(--inchiostro)}
     .s-d{font-size:.84rem;color:var(--grafite)}
-    .schede button.ha-nuovi .s-d{color:#8a4f0f;font-weight:600}
 
     .sez:focus{outline:0}
     .sez-testa{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem 2rem;flex-wrap:wrap;margin-bottom:1.4rem}
@@ -296,23 +394,9 @@ import { BASE, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_sito.js';
 
     /* in attesa della risposta del server */
     /* stessa altezza dell'accesso: quando compare il modulo la pagina non salta (CLS) */
-    #accesso,.caricamento{min-height:calc(100vh - 120px)}
+    .accesso,.caricamento{min-height:calc(100vh - 120px)}
     .caricamento{padding:calc(var(--tastata) + 4rem) 0 8rem;text-align:center;color:var(--grigio);font-family:var(--disp);font-style:italic;font-size:1.3rem}
     .adm .btn:disabled,.adm .el-az button:disabled{opacity:.45;cursor:wait}
-
-    /* messaggi (righe create via JS: :global) */
-    :global(.adm .msg){padding:1.1rem 0;border-bottom:1px solid var(--filo)}
-    :global(.adm .msg.nuovo){background:var(--carta);box-shadow:-12px 0 0 var(--carta),12px 0 0 var(--carta)}
-    :global(.adm .msg-testa){display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem 1rem}
-    :global(.adm .msg-testa b){font-family:var(--disp);font-weight:400;font-size:1.4rem;color:var(--inchiostro)}
-    :global(.adm .msg-testa time){margin-left:auto;font-size:.82rem;color:var(--grigio)}
-    :global(.adm .msg-tipo){font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--oro)}
-    :global(.adm .msg.nuovo .msg-tipo::after){content:' · nuovo';color:#8a4f0f}
-    :global(.adm .msg-rec){margin:.3rem 0 .6rem;font-size:.95rem}
-    :global(.adm .msg-rec a){border-bottom:1px solid var(--oro)}
-    :global(.adm .msg-dati){display:grid;grid-template-columns:auto 1fr;gap:.25rem 1rem;font-size:.92rem;margin-bottom:.7rem}
-    :global(.adm .msg-dati dt){color:var(--grigio)}
-    :global(.adm .msg-dati dd){white-space:pre-line;color:var(--inchiostro)}
 
     /* cambio password */
     .password{margin-top:clamp(3rem,6vw,4.5rem);border-top:1px solid var(--filo);padding-top:1.4rem}
@@ -320,11 +404,14 @@ import { BASE, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_sito.js';
     .pw-form{max-width:420px;margin-top:1.2rem}
 
     @media (max-width:900px){
+      /* da telefono e tablet stretto la foto lascia tutto lo spazio al modulo */
+      .acc-scheda{grid-template-columns:1fr;max-width:520px}
+      .acc-foto{display:none}
       .chiu-form{grid-template-columns:1fr 1fr}
       .chiu-motivo{grid-column:1 / -1}
     }
     @media (max-width:700px){
-      .schede{gap:.4rem;grid-template-columns:repeat(2,1fr)}
+      .schede{gap:.4rem}
       .schede button{padding:.75rem .7rem;min-height:66px}
       .s-t{font-size:1.15rem}
       .s-d{font-size:.74rem}
@@ -355,12 +442,21 @@ import { BASE, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_sito.js';
 
 
   <script>
-    import { BASE, esc, GIORNI, periodo, isoGiorno, renderOrari, CATEGORIE } from './_sito.js';
+    import { BASE, esc, GIORNI, periodo, isoGiorno, renderOrari, CATEGORIE, SENZA_DATABASE } from './_sito.js';
+    import { apiLocale, configuraAccesso } from './_locale.js';
     const $ = (s) => document.querySelector(s);
 
     /* ---------------- chiamate all'API ---------------- */
+    // senza database le stesse chiamate le serve il browser (_locale.js)
+    if (SENZA_DATABASE) { try { configuraAccesso(JSON.parse($('#accesso').dataset.accessoLocale || 'null')); } catch { configuraAccesso(null); } }
     let CSRF = '';
     async function api(percorso, { json, form, metodo } = {}) {
+      if (SENZA_DATABASE) {
+        try { return await apiLocale(percorso, { json, form, metodo }); } catch (err) {
+          if (err.stato === 401 && percorso !== 'accesso.php') mostraAccesso('La sessione è scaduta: rientrate.');
+          throw err;
+        }
+      }
       const opz = { method: metodo || (json || form ? 'POST' : 'GET'), headers: { Accept: 'application/json' }, credentials: 'same-origin' };
       if (json) { opz.headers['Content-Type'] = 'application/json'; opz.body = JSON.stringify(json); }
       if (form) opz.body = form;
@@ -369,7 +465,7 @@ import { BASE, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_sito.js';
       try { r = await fetch(BASE + 'api/' + percorso, opz); } catch { throw new Error('Connessione assente: riprovate fra poco.'); }
       const d = await r.json().catch(() => ({}));
       if (r.status === 401 && percorso !== 'accesso.php') { mostraAccesso('La sessione è scaduta: rientrate.'); throw new Error(d.errore || 'Accesso scaduto'); }
-      if (!r.ok) throw new Error(d.errore || 'Qualcosa non ha funzionato: riprovate.');
+      if (!r.ok) throw Object.assign(new Error(d.errore || 'Qualcosa non ha funzionato: riprovate.'), { stato: r.status });
       return d;
     }
     // durante una richiesta il pulsante non si puo' ripremere
@@ -396,23 +492,91 @@ import { BASE, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_sito.js';
       if (f) f().catch(sbaglio);
     });
 
-    /* ---------------- accesso ---------------- */
+    /* ---------------- accesso, password dimenticata, nuova password ---------------- */
+    const PASSI = { entra: '#passoEntra', recupero: '#passoRecupero', nuova: '#passoNuova' };
+    const passo = (k, fuoco) => {
+      Object.entries(PASSI).forEach(([n, sel]) => { $(sel).hidden = n !== k; });
+      $('#caricamento').hidden = true; $('#pannello').hidden = true; $('#accesso').hidden = false;
+      window.scrollTo({ top: 0 });
+      if (fuoco) $(fuoco).focus();
+    };
     function mostraAccesso(msg = '') {
-      $('#caricamento').hidden = true;
-      $('#pannello').hidden = true;
-      $('#accesso').hidden = false;
       $('#lErr').textContent = msg; $('#lErr').hidden = !msg;
-      $('#l-user').focus();
+      $('#lOk').hidden = true;
+      passo('entra', $('#l-user').value ? '#l-pass' : '#l-user');
     }
+    const erroreIn = (p, msg, campo) => { p.textContent = msg; p.hidden = false; if (campo) campo.focus(); };
+
+    // «Mostra» la password: da telefono si sbaglia spesso a scriverla
+    document.querySelectorAll('.pw-mostra').forEach((b) => b.addEventListener('click', () => {
+      const i = document.getElementById(b.getAttribute('aria-controls'));
+      const vedi = i.type === 'password';
+      i.type = vedi ? 'text' : 'password';
+      b.textContent = vedi ? 'Nascondi' : 'Mostra';
+      i.focus();
+    }));
+    // il blocco maiuscole e' la causa piu' comune di «la password non va»
+    document.querySelectorAll('.campo input').forEach((i) => ['keydown', 'keyup'].forEach((t) => i.addEventListener(t, (e) => {
+      if (e.getModifierState) i.closest('.campo').querySelector('.maiuscole').hidden = !e.getModifierState('CapsLock');
+    })));
+
     $('#loginForm').addEventListener('submit', (e) => {
       e.preventDefault();
+      const utente = $('#l-user').value.trim(), password = $('#l-pass').value;
+      if (!utente || !password) return erroreIn($('#lErr'), 'Scrivete nome utente e password.', utente ? $('#l-pass') : $('#l-user'));
       occupato($('#lEntra'), async () => {
         try {
-          const d = await api('accesso.php', { json: { utente: $('#l-user').value.trim(), password: $('#l-pass').value } });
+          const d = await api('accesso.php', { json: { utente, password } });
           CSRF = d.csrf;
-          $('#l-pass').value = '';
+          $('#l-pass').value = ''; $('#lErr').hidden = true; $('#lOk').hidden = true;
           await avvia();
-        } catch (err) { $('#lErr').textContent = err.message; $('#lErr').hidden = false; }
+          window.scrollTo({ top: 0 });
+        } catch (err) { erroreIn($('#lErr'), err.message); }
+      });
+    });
+
+    // password dimenticata: il link arriva all'email del negozio (api/recupero.php)
+    const apriRecupero = (msg = '') => {
+      $('#recForm').hidden = false; $('#rFatto').hidden = true;
+      $('#rErr').textContent = msg; $('#rErr').hidden = !msg;
+      passo('recupero', '#r-user');
+    };
+    $('#vaiRecupero').addEventListener('click', () => { $('#r-user').value = $('#l-user').value.trim(); apriRecupero(); });
+    document.querySelectorAll('[data-torna]').forEach((b) => b.addEventListener('click', () => mostraAccesso()));
+    $('#recForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const utente = $('#r-user').value.trim();
+      if (!utente) return erroreIn($('#rErr'), 'Scrivete il nome utente.', $('#r-user'));
+      occupato($('#rManda'), async () => {
+        try {
+          await api('recupero.php', { json: { azione: 'richiesta', utente } });
+          $('#rErr').hidden = true; $('#recForm').hidden = true; $('#rFatto').hidden = false; $('#rFatto').focus();
+        } catch (err) { erroreIn($('#rErr'), err.message); }
+      });
+    });
+
+    // dal link dell'email: …/area-riservata/#recupero=<codice>
+    let codiceRecupero = '';
+    const apriNuova = (utente) => {
+      $('#n-user').value = utente;
+      $('#nPer').textContent = `Per l’utente «${utente}». Appena salvata, entrate con quella nuova.`;
+      passo('nuova', '#n-pass');
+    };
+    $('#nuovaForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const password = $('#n-pass').value;
+      if (password.length < 10) return erroreIn($('#nErr'), 'La nuova password deve avere almeno 10 caratteri.', $('#n-pass'));
+      if (password !== $('#n-ripeti').value) return erroreIn($('#nErr'), 'Le due password non coincidono.', $('#n-ripeti'));
+      occupato($('#nSalva'), async () => {
+        try {
+          const d = await api('recupero.php', { json: { azione: 'nuova', codice: codiceRecupero, password } });
+          codiceRecupero = ''; e.target.reset(); $('#nErr').hidden = true;
+          $('#l-user').value = d.utente; $('#l-pass').value = '';
+          mostraAccesso();
+          $('#lOk').textContent = 'Password cambiata: entrate con quella nuova.'; $('#lOk').hidden = false;
+        } catch (err) {
+          if (err.stato === 410) apriRecupero(err.message); else erroreIn($('#nErr'), err.message);
+        }
       });
     });
     $('#esci').addEventListener('click', async () => {
@@ -425,7 +589,7 @@ import { BASE, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_sito.js';
     });
 
     /* ---------------- schede ---------------- */
-    const SCHEDE = ['vetrina', 'orari', 'marchi', 'messaggi'];
+    const SCHEDE = ['vetrina', 'orari', 'marchi'];
     const apriScheda = (k, fuoco) => {
       SCHEDE.forEach((s) => {
         const on = s === k;
@@ -448,16 +612,13 @@ import { BASE, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_sito.js';
     });
 
     /* ---------------- stato caricato dal server ---------------- */
-    let pezzi = [], orari = null, chiusure = [], marchi = [], messaggi = [];
+    let pezzi = [], orari = null, chiusure = [], marchi = [];
     const riepilogo = () => {
       $('#sVetrina').textContent = `${pezzi.length} ${pezzi.length === 1 ? 'pezzo' : 'pezzi'} in vetrina`;
       const s = document.createElement('span'); document.createElement('span').append(s);
       renderOrari(null, s, { orari, chiusure });
       $('#sOrari').textContent = s.textContent;
       $('#sMarchi').textContent = `${marchi.length} ${marchi.length === 1 ? 'marchio' : 'marchi'} in home`;
-      const nuovi = messaggi.filter((m) => !m.letto).length;
-      $('#sMessaggi').textContent = nuovi ? `${nuovi} da leggere` : `${messaggi.length} in archivio`;
-      $('#t-messaggi').classList.toggle('ha-nuovi', nuovi > 0);
     };
 
     /* ================= VETRINA ================= */
@@ -774,35 +935,6 @@ import { BASE, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_sito.js';
       });
     });
 
-    /* ================= MESSAGGI ================= */
-    const quando = (iso) => new Date(iso).toLocaleString('it-IT', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
-    const renderMessaggi = () => {
-      $('#elencoMessaggi').innerHTML = messaggi.length
-        ? messaggi.map((m) => `<li class="msg${m.letto ? '' : ' nuovo'}">
-            <div class="msg-testa">
-              <span class="msg-tipo">${m.tipo === 'perizia' ? 'Perizia' : 'Contatti'}</span>
-              <b>${esc(m.nome)}</b>
-              <time datetime="${esc(m.creato)}">${esc(quando(m.creato))}</time>
-            </div>
-            <p class="msg-rec">${m.telefono ? `<a href="tel:${esc(m.telefono.replace(/[^\d+]/g, ''))}">${esc(m.telefono)}</a>` : ''}${m.telefono && m.email ? ' · ' : ''}${m.email ? `<a href="mailto:${esc(m.email)}">${esc(m.email)}</a>` : ''}</p>
-            <dl class="msg-dati">${Object.entries(m.dati || {}).filter(([, v]) => v).map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
-            <div class="el-az">
-              ${m.letto ? '' : `<button type="button" class="az-testo" data-letto="${m.id}">Segna come letto</button>`}
-              <button type="button" class="el-del" data-mvia="${m.id}" aria-label="Elimina il messaggio di ${esc(m.nome)}">✕</button>
-            </div>
-          </li>`).join('')
-        : '<li class="el-vuoto">Nessun messaggio, per ora.</li>';
-      riepilogo();
-    };
-    $('#elencoMessaggi').addEventListener('click', (e) => {
-      const b = e.target.closest('button'); if (!b) return;
-      if (b.dataset.letto) occupato(b, async () => { messaggi = (await api('messaggi.php', { json: { azione: 'letto', id: +b.dataset.letto } })).messaggi; renderMessaggi(); }).catch(sbaglio);
-      if (b.dataset.mvia) {
-        if (!confirm('Eliminare questo messaggio? Non si potrà recuperare.')) return;
-        occupato(b, async () => { messaggi = (await api('messaggi.php', { json: { azione: 'elimina', id: +b.dataset.mvia } })).messaggi; renderMessaggi(); avviso('Messaggio eliminato'); }).catch(sbaglio);
-      }
-    });
-
     /* ================= PASSWORD ================= */
     $('#pwForm').addEventListener('submit', (e) => {
       e.preventDefault();
@@ -821,15 +953,25 @@ import { BASE, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_sito.js';
 
     /* ---------------- avvio ---------------- */
     async function avvia() {
-      const [p, o, m, g] = await Promise.all([api('pezzi.php'), api('orari.php'), api('marchi.php'), api('messaggi.php')]);
-      pezzi = p.pezzi; orari = o.orari; chiusure = o.chiusure; marchi = m.marchi; messaggi = g.messaggi;
+      const [p, o, m] = await Promise.all([api('pezzi.php'), api('orari.php'), api('marchi.php')]);
+      pezzi = p.pezzi; orari = o.orari; chiusure = o.chiusure; marchi = m.marchi;
       $('#caricamento').hidden = true; $('#accesso').hidden = true; $('#pannello').hidden = false;
-      renderPezzi(); riempiOrari(); renderChiusure(); renderMarchi(); renderMessaggi();
+      renderPezzi(); riempiOrari(); renderChiusure(); renderMarchi();
       let k = location.hash.slice(1);
       if (!SCHEDE.includes(k)) { try { k = sessionStorage.getItem('mas-scheda'); } catch { k = null; } }
       apriScheda(SCHEDE.includes(k) ? k : 'vetrina');
     }
+    // il codice del link si toglie subito dall'indirizzo (cronologia, schermate): resta solo qui
+    const daLink = location.hash.startsWith('#recupero=') ? location.hash.slice(10) : null;
+    if (daLink !== null) history.replaceState(null, '', location.pathname + location.search);
     (async () => {
+      if (daLink !== null) {
+        if (!/^[a-f0-9]{64}$/.test(daLink)) return apriRecupero('Il link non è completo: apritelo direttamente dall’email, oppure chiedetene uno nuovo qui sotto.');
+        codiceRecupero = daLink;
+        try { apriNuova((await api('recupero.php', { json: { azione: 'verifica', codice: daLink } })).utente); }
+        catch (err) { apriRecupero(err.message); }
+        return;
+      }
       try {
         const s = await api('accesso.php');
         if (s.collegato) { CSRF = s.csrf; await avvia(); } else mostraAccesso();

@@ -2,7 +2,8 @@
 
 Il sito del negozio MasGioielli (Corso Trapani 146/b, Torino): pagine statiche fatte con
 Astro e un'area riservata in PHP + MySQL, con cui il negozio aggiorna da solo la vetrina,
-gli orari, le chiusure e i marchi, e legge i messaggi dei moduli.
+gli orari, le chiusure e i marchi. I messaggi dei moduli arrivano per email (e una copia
+resta nel database, che l'area riservata non mostra).
 
 Vive **dentro il sito di Mole Digitale**, in `https://www.moledigitale.it/masgioielliDev/`,
 finché non è pronto per masgioielli.it. È fuori da Google (`noindex`, fuori dalla sitemap).
@@ -11,6 +12,16 @@ resta in `/demoMasGioielli/`.
 
 Gira su qualsiasi hosting Linux con **PHP 8.1+ e MySQL/MariaDB** e Apache con `.htaccess`:
 niente Node sul server, niente servizi esterni.
+
+> **Per ora senza database.** In `src/pages/masgioielliDev/_sito.js` c'è `SENZA_DATABASE = true`:
+> le pagine non chiamano l'API, e quello che il negozio cambia dall'area riservata resta nel
+> browser (localStorage) grazie a `_locale.js`, che risponde come le API PHP. Il sito si prova
+> con `npm run dev` su localhost:4321, senza PHP né MySQL. L'accesso usa utente e password di
+> `.locale/negozio-mysql.json` (o dei secret `MAS_DEV_*`): nella pagina va solo l'impronta
+> PBKDF2 della password. I moduli Contatti e Perizie avvisano che il messaggio non parte;
+> «Password dimenticata?» spiega che senza database il link via email non c'è.
+> Il backend PHP qui sotto è rimasto com'era: con `SENZA_DATABASE = false` si torna al database.
+> Collaudo di questa modalità: `npm run mas:prova-locale`.
 
 ## Dove sta
 
@@ -32,7 +43,9 @@ public/masgioielliDev/
 │   ├── foto.php                     pubblico: le foto dei pezzi (che stanno fuori dal sito)
 │   ├── messaggio.php                pubblico: moduli Contatti e Perizie (email + archivio)
 │   ├── accesso.php                  accesso, uscita, cambio password
-│   ├── pezzi.php orari.php marchi.php messaggi.php   area riservata
+│   ├── recupero.php                 pubblico: password dimenticata (link per email, vale un'ora)
+│   ├── pezzi.php orari.php marchi.php   area riservata
+│   ├── messaggi.php                 la copia dei messaggi (con accesso; il pannello non la usa)
 │   └── lib/                         base, schema del database, foto, posta (non raggiungibili)
 └── uploads/                         solo se le foto non stanno fuori (script disattivati)
 tools/masgioielli/                   collaudi, server locale, dati d'esempio

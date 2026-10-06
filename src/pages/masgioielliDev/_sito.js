@@ -1,11 +1,17 @@
 // Dati e funzioni comuni del sito MasGioielli.
 // I contenuti che il negozio cambia da solo (selezione, orari, chiusure, marchi) arrivano
-// da /api/dati.php; quelli qui sotto sono i valori di partenza usati nell'HTML statico,
+// da /api/dati.php (o, senza database, dal browser: _locale.js); quelli qui sotto sono i
+// valori di partenza usati nell'HTML statico,
 // cosi' la pagina e' completa anche prima che l'API risponda (o se non risponde).
 
 // Il sito vive in una sottocartella di moledigitale.it (versione reale, in sviluppo):
 // tutti gli indirizzi interni partono da qui.
 export const BASE = '/masgioielliDev/';
+
+// PER ORA SENZA DATABASE: i dati che il negozio cambia restano nel browser (localStorage,
+// _locale.js) e il sito gira su localhost senza PHP ne' MySQL. Il backend PHP e' rimasto in
+// public/masgioielliDev/api/: con `false` si torna al database, senza toccare altro.
+export const SENZA_DATABASE = true;
 
 export const INFO = {
   nome: 'MasGioielli',
@@ -37,8 +43,9 @@ let promessa = null;
 let DATI = null;
 export function caricaDati() {
   if (!promessa) {
-    promessa = fetch(BASE + 'api/dati.php', { headers: { Accept: 'application/json' } })
-      .then((r) => (r.ok ? r.json() : null))
+    promessa = (SENZA_DATABASE
+      ? import('./_locale.js').then((m) => m.datiLocali())
+      : fetch(BASE + 'api/dati.php', { headers: { Accept: 'application/json' } }).then((r) => (r.ok ? r.json() : null)))
       .catch(() => null)
       .then((d) => { DATI = d && typeof d === 'object' ? d : null; return DATI; });
   }
@@ -199,6 +206,8 @@ export const scriviLista = (a) => salva(LS, JSON.stringify(a));
 
 /** Invio dei moduli Contatti e Perizie a /api/messaggio.php. */
 export async function inviaMessaggio(dati) {
+  // senza server non parte nessuna email: meglio dirlo che fingere di averla mandata
+  if (SENZA_DATABASE) return { ok: false, errore: `Questa è la versione di prova, senza server: il messaggio non parte. Scriveteci su WhatsApp al ${INFO.waLabel} o chiamate lo ${INFO.tel}.` };
   try {
     const r = await fetch(BASE + 'api/messaggio.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dati) });
     const d = await r.json().catch(() => ({}));

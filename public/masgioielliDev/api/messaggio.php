@@ -57,8 +57,6 @@ $righe = ["Nome: {$nome}"];
 if ($telefono !== '') $righe[] = "Telefono: {$telefono}";
 if ($email !== '') $righe[] = "Email: {$email}";
 foreach ($dati as $k => $v) if ($v !== '') $righe[] = "{$k}: {$v}";
-$righe[] = '';
-$righe[] = 'Il messaggio è salvato anche nell’area riservata del sito.';
 invia_email($oggetto, implode("\n", $righe), $email, $nome);
 
 rispondi(['ok' => true]);

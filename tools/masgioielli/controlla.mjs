@@ -10,7 +10,7 @@ const SITO = path.join(RADICE, 'dist', 'masgioielliDev');
 let problemi = 0;
 for (const p of ['index.html', 'area-riservata/index.html', '404/index.html', '.htaccess',
   'api/dati.php', 'api/accesso.php', 'api/pezzi.php', 'api/orari.php', 'api/marchi.php', 'api/messaggio.php',
-  'api/messaggi.php', 'api/installa.php', 'api/foto.php', 'api/lib/base.php', 'api/.htaccess', 'api/lib/.htaccess', 'uploads/.htaccess']) {
+  'api/messaggi.php', 'api/recupero.php', 'api/installa.php', 'api/foto.php', 'api/lib/base.php', 'api/.htaccess', 'api/lib/.htaccess', 'uploads/.htaccess']) {
   if (!fs.existsSync(path.join(SITO, p))) { console.error('MANCA  ' + p); problemi++; }
 }
 if (fs.existsSync(path.join(SITO, 'api', 'config.php'))) {

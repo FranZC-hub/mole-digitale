@@ -13,6 +13,11 @@ import { dirname, join, resolve } from 'node:path';
 
 // tools/masgioielli/ → radice del sito di Mole Digitale
 const RADICE = resolve(dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Z]:)/, '$1')), '..', '..');
+// per ora il sito e' senza database (SENZA_DATABASE in _sito.js): le pagine non usano l'API
+if (/export const SENZA_DATABASE = true/.test(readFileSync(join(RADICE, 'src/pages/masgioielliDev/_sito.js'), 'utf8'))) {
+  console.log('Il sito è SENZA_DATABASE (_sito.js): questo collaudo è per la versione con PHP + MySQL. Ora serve  npm run mas:prova-locale');
+  process.exit(0);
+}
 const require = createRequire(join(RADICE, 'package.json'));
 const puppeteer = require('puppeteer-core');
 const CHROME = process.env.CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
@@ -33,6 +38,9 @@ try {
 const phpEsegui = (c) => execSync(`php ${estensioni.map((x) => `"${x}"`).join(' ')} -r "${c.replace(/"/g, '\\"')}"`).toString();
 const CODICE = process.env.MAS_CODICE || randomBytes(16).toString('hex');
 const conf = join(PROVA, 'config.php');
+// le email non partono: si scrivono qui (cosi' si legge il link «password dimenticata»)
+const POSTA = join(PROVA, 'posta');
+const confPosta = `'posta' => ['cartella_prova' => '${POSTA.replace(/\\/g, '/')}', 'destinatario' => 'negozio@esempio.it'], 'indirizzo' => '${SERVER}'`;
 const MY = process.env.MAS_MYSQL ? process.env.MAS_MYSQL.split(':') : null;
 const NOMEDB = 'mas_sito_' + Date.now();
 if (ESTERNO) {
@@ -40,10 +48,10 @@ if (ESTERNO) {
 } else if (MY) {
   const [host, porta, utente, password = ''] = MY;
   phpEsegui(`$p = new PDO('mysql:host=${host};port=${porta}', '${utente}', '${password}'); $p->exec('CREATE DATABASE ${NOMEDB} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');`);
-  writeFileSync(conf, `<?php return ['db' => ['dsn' => 'mysql:host=${host};port=${porta};dbname=${NOMEDB};charset=utf8mb4', 'utente' => '${utente}', 'password' => '${password}'], 'posta' => ['host' => ''], 'sale' => 'prova', 'installazione' => '${CODICE}'];`);
+  writeFileSync(conf, `<?php return ['db' => ['dsn' => 'mysql:host=${host};port=${porta};dbname=${NOMEDB};charset=utf8mb4', 'utente' => '${utente}', 'password' => '${password}'], ${confPosta}, 'sale' => 'prova', 'installazione' => '${CODICE}'];`);
   console.log('Database: MySQL/MariaDB');
 } else {
-  writeFileSync(conf, `<?php return ['db' => ['dsn' => 'sqlite:${join(PROVA, 'sito.sqlite').replace(/\\/g, '/')}'], 'posta' => ['host' => ''], 'sale' => 'prova', 'installazione' => '${CODICE}'];`);
+  writeFileSync(conf, `<?php return ['db' => ['dsn' => 'sqlite:${join(PROVA, 'sito.sqlite').replace(/\\/g, '/')}'], ${confPosta}, 'sale' => 'prova', 'installazione' => '${CODICE}'];`);
   console.log('Database: SQLite');
 }
 const server = ESTERNO ? { kill() {}, stderr: { on() {} } } : spawn('php', [...estensioni, '-d', 'upload_max_filesize=10M', '-d', 'post_max_size=12M', '-S', `127.0.0.1:${PORTA}`, '-t', join(RADICE, 'dist')], { env: { ...process.env, MAS_CONFIG: conf }, stdio: ['ignore', 'ignore', 'pipe'] });
@@ -77,6 +85,8 @@ async function pagina(vp = { width: 1280, height: 900 }) {
   p.on('console', (m) => {
     // il 401 e' la risposta giusta al tentativo con password sbagliata che il test fa apposta
     if (m.type() === 'error' && /status of 401/.test(m.text())) return;
+    // e il 410 del link di recupero gia' usato, che il test riapre apposta
+    if (m.type() === 'error' && /status of 410/.test(m.text())) return;
     // e il 404 della pagina inesistente che il test apre apposta
     if (m.type() === 'error' && /status of 404/.test(m.text()) && /pagina-che-non-esiste/.test(m.location()?.url || '')) return;
     if (m.type() === 'error' || /Refused|Content Security Policy/i.test(m.text())) errori.push('console: ' + m.text().slice(0, 160));
@@ -198,13 +208,10 @@ try {
   await p.click('#contForm button[type=submit]'); await pausa(800);
   await a.bringToFront();
   await a.reload({ waitUntil: 'networkidle0' }); await pausa(800);
-  await a.click('#t-messaggi'); await pausa(200);
-  const msg = await a.$$eval('#elencoMessaggi .msg', (x) => x.map((y) => y.innerText));
-  ok(msg.length === 2, `nell’area riservata 2 messaggi (l’invio «lampo» di un programma no): ${msg.length}`);
-  ok(!(await a.$('#elencoMessaggi img')) && msg.some((t) => t.includes('<img src=x')), 'il nome con codice è mostrato come testo, non eseguito');
-  ok((await a.$eval('#sMessaggi', (e) => e.textContent)) === '2 da leggere', 'riepilogo: 2 da leggere');
-  await a.click('#elencoMessaggi [data-letto]'); await pausa(700);
-  ok((await a.$eval('#sMessaggi', (e) => e.textContent)) === '1 da leggere', 'segnato come letto');
+  ok(!(await a.$('#t-messaggi')) && (await a.$$('.schede [role=tab]')).length === 3, 'il pannello non ha la scheda Messaggi: solo Vetrina, Orari, Marchi');
+  // i messaggi arrivano per email; la copia nel database si legge solo con l'accesso
+  const msg = await a.evaluate(async (b) => (await (await fetch(b + '/api/messaggi.php', { credentials: 'same-origin' })).json()).messaggi.map((m) => m.nome), H);
+  ok(msg.length === 2 && msg.includes('<img src=x onerror=alert(1)>'), `copia nel database: 2 messaggi (l’invio «lampo» di un programma no): ${msg.length}`);
 
   console.log('\n[6] Password e sessione');
   await a.click('#password summary');
@@ -216,7 +223,31 @@ try {
   await a.reload({ waitUntil: 'networkidle0' }); await pausa(400);
   ok(await a.$eval('#accesso', (e) => !e.hidden), 'ricaricando non si rientra senza password');
 
-  console.log('\n[7] Telefono e pagine');
+  console.log('\n[7] Password dimenticata');
+  if (ESTERNO) console.log('  (saltato: con un server esterno le email non si leggono da qui)');
+  else {
+    // chi ha scritto il nome utente e poi si accorge di non ricordare la password
+    await a.$eval('#l-user', (i) => { i.value = ''; }); await a.type('#l-user', 'negozio');
+    await a.click('#vaiRecupero'); await pausa(200);
+    ok(await a.$eval('#passoRecupero', (e) => !e.hidden) && (await a.$eval('#r-user', (i) => i.value)) === 'negozio', 'dall’accesso a «Password dimenticata?», con il nome utente già scritto');
+    await a.click('#rManda'); await pausa(700);
+    ok(await a.$eval('#rFatto', (e) => !e.hidden), 'richiesta fatta: «guardate nell’email del negozio»');
+    const email = existsSync(POSTA) ? readdirSync(POSTA).map((x) => readFileSync(join(POSTA, x), 'utf8')).filter((t) => t.includes('Oggetto: Area riservata')) : [];
+    const link = (email[0] || '').match(/https?:\/\/\S+#recupero=[a-f0-9]{64}/)?.[0];
+    ok(email.length === 1 && link?.startsWith(H + '/area-riservata/'), 'arriva un’email con il link');
+    if (!link) throw new Error('nessun link di recupero nelle email di prova');
+    await a.goto('about:blank'); await a.goto(link, { waitUntil: 'networkidle0' }); await pausa(500);
+    ok(await a.$eval('#passoNuova', (e) => !e.hidden) && !a.url().includes('recupero='), 'il link apre «nuova password» e il codice sparisce dall’indirizzo');
+    await a.type('#n-pass', 'Recuperata-password-1'); await a.type('#n-ripeti', 'Recuperata-password-1');
+    await a.click('#nSalva'); await pausa(800);
+    ok((await a.$eval('#lOk', (e) => (e.hidden ? '' : e.textContent))).includes('Password cambiata') && (await a.$eval('#l-user', (i) => i.value)) === 'negozio', 'salvata: si torna all’accesso con il nome utente pronto');
+    await a.type('#l-pass', 'Recuperata-password-1'); await a.click('#lEntra'); await pausa(800);
+    ok(await a.$eval('#pannello', (e) => !e.hidden), 'si entra con la nuova password');
+    await a.goto('about:blank'); await a.goto(link, { waitUntil: 'networkidle0' }); await pausa(500);
+    ok(await a.$eval('#passoRecupero', (e) => !e.hidden) && (await a.$eval('#rErr', (e) => e.textContent)).includes('non vale più'), 'lo stesso link una seconda volta: non vale più');
+  }
+
+  console.log('\n[8] Telefono e pagine');
   const m = await pagina({ width: 390, height: 844, isMobile: true, hasTouch: true });
   for (const u of ['/', '/selezione/', '/atelier/', '/compro-oro/', '/perizie/', '/contatti/', '/privacy/', '/area-riservata/', '/pagina-che-non-esiste/']) {
     const r = await m.goto(H + u, { waitUntil: 'networkidle0' });

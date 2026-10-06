@@ -67,6 +67,13 @@ function crea_tabelle(PDO $pdo): void
             chiave VARCHAR(100) NOT NULL,
             quando INT NOT NULL
         ){$fine}",
+        // link per scegliere una nuova password: solo l'impronta del codice, mai il codice
+        "CREATE TABLE IF NOT EXISTS recuperi (
+            id {$id},
+            utente VARCHAR(60) NOT NULL,
+            impronta CHAR(64) NOT NULL UNIQUE,
+            scade INT NOT NULL
+        ){$fine}",
         "CREATE TABLE IF NOT EXISTS impostazioni (
             chiave VARCHAR(40) NOT NULL PRIMARY KEY,
             valore TEXT NOT NULL

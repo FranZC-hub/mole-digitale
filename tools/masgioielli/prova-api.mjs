@@ -1,6 +1,6 @@
 // Collaudo dell'API PHP: avvia un server PHP su public/ con un database SQLite NUOVO,
 // prova installazione, accesso, CSRF, selezione con foto, orari, chiusure, marchi,
-// messaggi dei moduli, e i tentativi di abuso piu' comuni. Esce con 1 se qualcosa non va.
+// messaggi dei moduli, password dimenticata, e i tentativi di abuso piu' comuni. Esce con 1 se qualcosa non va.
 // Uso:  node tools/masgioielli/prova-api.mjs   (npm run mas:prova-api)
 import { spawn, execSync } from 'node:child_process';
 import { existsSync, mkdirSync, rmSync, writeFileSync, readFileSync, readdirSync } from 'node:fs';
@@ -19,6 +19,9 @@ const fotoPrima = new Set(existsSync(join(RADICE, 'public/masgioielliDev/uploads
 
 const CODICE = randomBytes(16).toString('hex');
 const conf = join(PROVA, 'config.php');
+// le email non partono: si scrivono qui (cosi' si legge il link «password dimenticata»)
+const POSTA = join(PROVA, 'posta');
+const confPosta = `'posta' => ['cartella_prova' => '${POSTA.replace(/\\/g, '/')}', 'destinatario' => 'negozio@esempio.it'], 'indirizzo' => 'http://127.0.0.1:${PORTA}'`;
 
 let estensioni = [];
 try {
@@ -35,10 +38,10 @@ const phpEsegui = (codice) => execSync(`php ${estensioni.map((x) => `"${x}"`).jo
 if (MY) {
   const [host, porta, utente, password = ''] = MY;
   phpEsegui(`$p = new PDO('mysql:host=${host};port=${porta}', '${utente}', '${password}'); $p->exec('CREATE DATABASE ${NOMEDB} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');`);
-  writeFileSync(conf, `<?php return ['db' => ['dsn' => 'mysql:host=${host};port=${porta};dbname=${NOMEDB};charset=utf8mb4', 'utente' => '${utente}', 'password' => '${password}'], 'posta' => ['host' => ''], 'sale' => 'prova', 'installazione' => '${CODICE}', 'foto' => '${join(PROVA, 'foto').replace(/\\/g, '/')}'];`);
+  writeFileSync(conf, `<?php return ['db' => ['dsn' => 'mysql:host=${host};port=${porta};dbname=${NOMEDB};charset=utf8mb4', 'utente' => '${utente}', 'password' => '${password}'], ${confPosta}, 'sale' => 'prova', 'installazione' => '${CODICE}', 'foto' => '${join(PROVA, 'foto').replace(/\\/g, '/')}'];`);
   console.log(`Prove su MySQL/MariaDB (${host}:${porta}, database ${NOMEDB})`);
 } else {
-  writeFileSync(conf, `<?php return ['db' => ['dsn' => 'sqlite:${join(PROVA, 'prova.sqlite').replace(/\\/g, '/')}'], 'posta' => ['host' => ''], 'sale' => 'prova', 'installazione' => '${CODICE}', 'foto' => '${join(PROVA, 'foto').replace(/\\/g, '/')}'];`);
+  writeFileSync(conf, `<?php return ['db' => ['dsn' => 'sqlite:${join(PROVA, 'prova.sqlite').replace(/\\/g, '/')}'], ${confPosta}, 'sale' => 'prova', 'installazione' => '${CODICE}', 'foto' => '${join(PROVA, 'foto').replace(/\\/g, '/')}'];`);
   console.log('Prove su SQLite');
 }
 const server = spawn('php', [...estensioni, '-S', `127.0.0.1:${PORTA}`, '-t', join(RADICE, 'public')], { env: { ...process.env, MAS_CONFIG: conf }, stdio: ['ignore', 'ignore', 'pipe'] });
@@ -236,7 +239,54 @@ try {
   r = await chiama('/api/accesso.php', { metodo: 'POST', json: { utente: 'negozio', password: 'Nuova-password-1' } });
   ok(r.s === 429, 'dopo 8 tentativi sbagliati si aspetta un quarto d’ora, anche con la password giusta');
 
-  console.log('\n[14] Metodi e file');
+  console.log('\n[14] Password dimenticata');
+  cookie = '';
+  const recupero = (json) => chiama('/api/recupero.php', { metodo: 'POST', json });
+  const emailRecupero = () => (existsSync(POSTA) ? readdirSync(POSTA).sort() : []).map((x) => readFileSync(join(POSTA, x), 'utf8')).filter((t) => t.includes('Oggetto: Area riservata'));
+  const codiceIn = (t) => (t || '').match(/#recupero=([a-f0-9]{64})/)?.[1];
+  const confVera = readFileSync(conf, 'utf8');
+  writeFileSync(conf, confVera.replace(/, 'indirizzo' => '[^']*'/, ''));
+  r = await recupero({ azione: 'richiesta', utente: 'negozio' });
+  ok(r.s === 503 && r.d.errore.includes('non è ancora attivo'), 'senza l’indirizzo del sito nella configurazione: «non ancora attivo», nessun link');
+  writeFileSync(conf, confVera);
+  r = await recupero({ azione: 'richiesta', utente: 'nessuno' });
+  ok(r.s === 200 && r.d.ok && emailRecupero().length === 0, 'utente inesistente: stessa risposta, nessuna email (non si scopre chi esiste)');
+  r = await recupero({ azione: 'richiesta', utente: 'negozio' });
+  let posta = emailRecupero();
+  const codice1 = codiceIn(posta[0]);
+  ok(r.s === 200 && posta.length === 1 && codice1, 'utente giusto: arriva l’email con il link');
+  ok(posta[0].startsWith('A: negozio@esempio.it') && posta[0].includes('http://127.0.0.1:' + PORTA + '/masgioielliDev/area-riservata/#recupero='), 'all’indirizzo del negozio, con il link all’indirizzo della configurazione');
+  if (!MY) ok(!readFileSync(join(PROVA, 'prova.sqlite')).includes(codice1), 'nel database c’è solo l’impronta del codice, non il codice');
+  r = await recupero({ azione: 'verifica', codice: 'f'.repeat(64) });
+  ok(r.s === 410, 'codice inventato: il link non vale');
+  r = await recupero({ azione: 'verifica', codice: '../../x' });
+  ok(r.s === 410, 'codice malformato: rifiutato');
+  r = await recupero({ azione: 'richiesta', utente: 'negozio' });
+  const codice2 = codiceIn(emailRecupero().at(-1));
+  r = await recupero({ azione: 'verifica', codice: codice1 });
+  ok(r.s === 410 && codice2 && codice2 !== codice1, 'un nuovo link annulla quello di prima');
+  r = await recupero({ azione: 'verifica', codice: codice2 });
+  ok(r.s === 200 && r.d.utente === 'negozio', 'link giusto: si può scegliere la nuova password');
+  r = await recupero({ azione: 'nuova', codice: codice2, password: 'corta' });
+  ok(r.s === 422, 'nuova password troppo corta: rifiutata (il link resta buono)');
+  r = await recupero({ azione: 'nuova', codice: codice2, password: 'Recuperata-password-1' });
+  ok(r.s === 200 && r.d.utente === 'negozio', 'nuova password salvata');
+  r = await recupero({ azione: 'nuova', codice: codice2, password: 'Un-altra-password-1' });
+  ok(r.s === 410, 'il link vale una volta sola');
+  r = await chiama('/api/accesso.php', { metodo: 'POST', json: { utente: 'negozio', password: 'Recuperata-password-1' } });
+  ok(r.s === 200 && r.d.collegato, 'si entra subito con la nuova password, anche dopo i tentativi sbagliati di prima');
+  cookie = '';
+  r = await chiama('/api/accesso.php', { metodo: 'POST', json: { utente: 'negozio', password: 'Nuova-password-1' } });
+  ok(r.s === 401, 'la password di prima non vale più');
+  r = await recupero({ azione: 'richiesta', utente: 'negozio' });
+  r = await recupero({ azione: 'richiesta', utente: 'negozio' });
+  ok(r.s === 429, 'più di 3 richieste in un’ora per lo stesso utente: fermato');
+  for (let i = 0; i < 8; i++) r = await recupero({ azione: 'verifica', codice: randomBytes(32).toString('hex') });
+  ok(r.s === 429, 'dopo 10 codici sbagliati in un quarto d’ora: fermato');
+  r = await recupero({ azione: 'boh' });
+  ok(r.s === 400 || r.s === 429, 'azione sconosciuta: rifiutata');
+
+  console.log('\n[15] Metodi e file');
   r = await chiama('/api/dati.php', { metodo: 'DELETE' });
   ok(r.s === 405, 'metodo non previsto: 405');
   r = await chiama('/api/lib/base.php');

@@ -54,12 +54,13 @@ export const CLIENTI = [
     dev: {
       url: '/masgioielliDev/',
       stato: 'Versione reale in sviluppo',
-      tecnica: 'Pagine statiche · area riservata in PHP · database MySQL',
+      // per ora senza database (SENZA_DATABASE in src/pages/masgioielliDev/_sito.js)
+      tecnica: 'Pagine statiche · per ora senza database: i dati restano nel browser',
       dentro: [
         'Le pagine della bozza approvata, senza più nulla da bozza: niente note per il titolare, niente dati inventati',
-        'I dati stanno in un database vero: quello che il negozio cambia dall’area riservata lo vedono subito tutti',
-        'Area riservata con accesso protetto: selezione con le foto dal telefono, orari, chiusure straordinarie, marchi, messaggi',
-        'I moduli Contatti e Perizie mandano davvero: email al negozio e copia nell’area riservata',
+        'Per ora senza database: quello che il negozio cambia dall’area riservata resta su quel dispositivo (il backend PHP + MySQL è pronto, si riaccende con un interruttore)',
+        'Area riservata con accesso protetto: selezione con le foto dal telefono, orari, chiusure straordinarie, marchi',
+        'I moduli Contatti e Perizie, senza server, avvisano che il messaggio non parte e indicano WhatsApp e telefono',
         'Fuori da Google finché è in sviluppo; quando è pronto si sposta su masgioielli.it',
       ],
       pagine: [
@@ -73,7 +74,8 @@ export const CLIENTI = [
       ],
       // Le credenziali NON stanno qui (il repository e' pubblico): /demoClientiDev/ le legge
       // durante la build da MAS_DEV_UTENTE / MAS_DEV_PASSWORD (secret di GitHub, per il sito
-      // online) oppure, in locale, dal database d'esempio di `npm run mas:esempio`.
+      // online) oppure, in locale, da .locale/negozio-mysql.json. Senza database l'area riservata
+      // usa le stesse credenziali (nella pagina va solo l'impronta della password).
       accesso: { t: 'Area riservata', u: '/masgioielliDev/area-riservata/', env: 'MAS_DEV', locale: '.locale/negozio-mysql.json' },
       // la checklist della pagina viene da qui: per spuntare una voce, ⬜ → ✅ nel documento
       checklist: 'docs/masgioielli/PRODUZIONE.md',

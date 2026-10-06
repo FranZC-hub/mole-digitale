@@ -15,7 +15,8 @@ return [
     ],
 
     // Posta in uscita per i messaggi dei moduli Contatti e Perizie.
-    // Lasciate 'host' vuoto per non mandare email: i messaggi restano nell'area riservata.
+    // Con 'host' vuoto non parte nessuna email: i messaggi restano solo nel database
+    // (tabella messaggi, da phpMyAdmin), perche' l'area riservata non li mostra.
     'posta' => [
         'host' => 'smtps.aruba.it',
         'porta' => 465,
@@ -24,7 +25,14 @@ return [
         'mittente' => 'sito@masgioielli.it',
         'nome_mittente' => 'Sito MasGioielli',
         'destinatario' => 'info@masgioielli.it',
+        // facoltativo: dove arriva il link «password dimenticata» (senza: a 'destinatario')
+        // 'recupero' => 'titolare@masgioielli.it',
     ],
+
+    // Indirizzo del sito, senza barra finale: serve al link dell'email «password dimenticata».
+    // Sta qui, e non si ricava dalla richiesta, perche' nessuno possa far arrivare al negozio
+    // un link verso un altro sito. Su masgioielli.it diventa 'https://www.masgioielli.it'.
+    'indirizzo' => 'https://www.moledigitale.it',
 
     // Stringa casuale lunga (almeno 32 caratteri): serve a rendere irriconoscibili
     // gli indirizzi IP nel conteggio dei tentativi. Generatela una volta e non cambiatela.

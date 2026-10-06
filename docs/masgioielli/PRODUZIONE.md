@@ -10,7 +10,7 @@ poi il **passaggio a masgioielli.it**.
 
 - ✅ Dentro il sito di Mole Digitale, in `/masgioielliDev/`, con la raccolta
   `/demoClientiDev/` (tutti i clienti: chi ha la versione reale e chi solo la bozza)
-- ✅ Backend PHP + MySQL: selezione con foto, orari, chiusure straordinarie, marchi, messaggi, cambio password
+- ✅ Backend PHP + MySQL: selezione con foto, orari, chiusure straordinarie, marchi, cambio password, password dimenticata (link per email); messaggi dei moduli per email, con copia nel database (non nel pannello)
 - ✅ Moduli Contatti e Perizie che inviano davvero: email al negozio + copia nell'area riservata
 - ✅ Configurazione e foto **sopra la cartella pubblica** (`masgioielli-dati/`, come `mail-config.php`):
   irraggiungibili dal browser e al sicuro anche dal «full_resync» del deploy, che svuota tutta
@@ -35,6 +35,9 @@ poi il **passaggio a masgioielli.it**.
 
 ## Tappa 1 — versione in sviluppo su moledigitale.it — 🧑‍💻 noi
 
+- ⬜ **Rimettere il database**: `SENZA_DATABASE = false` in `src/pages/masgioielliDev/_sito.js`
+  (per ora i dati restano nel browser di chi usa l'area riservata)
+
 - ⬜ **Secret FTP di Aruba** su GitHub (`ARUBA_FTP_HOST`, `ARUBA_FTP_USER`, `ARUBA_FTP_PASS`):
   senza, il deploy di tutto moledigitale.it resta fermo
 - ⬜ Dopo l'installazione, secret `MAS_DEV_PASSWORD` (e `MAS_DEV_UTENTE` se non è `negozio`)
@@ -42,11 +45,13 @@ poi il **passaggio a masgioielli.it**.
 - ⬜ **Database MySQL** dal pannello di Aruba (verificare che il piano lo includa); permessi
   all'utente, se si possono scegliere: `SELECT, INSERT, UPDATE, DELETE, CREATE, INDEX`
 - ⬜ **`masgioielli-dati/config.php`** accanto a `www.moledigitale.it/` (da `api/config.esempio.php`):
-  database, casella email che spedisce, `sale` e codice di installazione casuali
+  database, casella email che spedisce, `sale` e codice di installazione casuali,
+  `indirizzo` del sito (senza, «Password dimenticata?» risponde che non è attivo)
 - ⬜ Installazione da `/masgioielliDev/api/installa.php`, poi svuotare il codice;
   password del negozio consegnata a voce o di persona (al primo accesso la cambiano)
 - ⬜ `MAS_URL=https://www.moledigitale.it MAS_HTTP=http://www.moledigitale.it node tools/masgioielli/prova-server.mjs`
 - ⬜ Un messaggio di prova da Contatti e da Perizie: arriva l'email?
+- ⬜ «Password dimenticata?» di prova: arriva l'email con il link, e il link funziona?
 - ⬜ Backup del database e di `masgioielli-dati/` (pannello di Aruba)
 
 ## Tappa 2 — passaggio a masgioielli.it — 🧑‍💻 noi
@@ -62,7 +67,8 @@ poi il **passaggio a masgioielli.it**.
   autorizza (una casella Seeweb, oppure aggiungere l'hosting nuovo all'SPF)
 - ⬜ Pubblicare le pagine alla radice del dominio (`BASE = '/'` in `_sito.js`, percorso dello
   sfondo dell'atelier in `index.astro`), togliere `noindex` (`_Layout.astro`, `.htaccess`),
-  canonical e sitemap su masgioielli.it, `robots.txt` con l'area riservata esclusa
+  canonical e sitemap su masgioielli.it, `robots.txt` con l'area riservata esclusa;
+  in `config.php` `'indirizzo' => 'https://www.masgioielli.it'` (il link «password dimenticata»)
 - ⬜ `.htaccess` di dominio: `docs/masgioielli/masgioielli.it.htaccess` (HTTPS, www, 301 dai
   19 indirizzi del vecchio WordPress, 410 per `/bozza/` e i file di WordPress)
 - ⬜ Spostare i dati: esportare il database (`mariadb-dump`) e copiare `masgioielli-dati/`;

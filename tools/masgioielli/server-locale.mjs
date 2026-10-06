@@ -34,6 +34,9 @@ const portaAperta = (porta) => new Promise((ok) => {
   const s = connect({ host: '127.0.0.1', port: Number(porta) }, () => { s.end(); ok(true); });
   s.on('error', () => ok(false));
 });
+if (/export const SENZA_DATABASE = true/.test(readFileSync(join(RADICE, 'src/pages/masgioielliDev/_sito.js'), 'utf8'))) {
+  console.log('Attenzione: il sito è SENZA_DATABASE (_sito.js), quindi le pagine non usano questo server.\nPer provarlo basta  npm run dev  (localhost:4321); per tornare al database: SENZA_DATABASE = false.\n');
+}
 if (await portaAperta(PORTA)) { console.error(`La porta ${PORTA} è già occupata (un altro server locale acceso?). Cambiatela con PORTA=…`); process.exit(1); }
 
 // estensioni di PHP che servono (su Windows non sono attive senza php.ini)
@@ -49,10 +52,12 @@ const nome = MYSQL ? 'mysql' : 'sqlite';
 const conf = join(LOCALE, MYSQL ? 'config-mysql.php' : 'config.php');
 const sqlite = join(LOCALE, 'mas.sqlite');
 const foto = join(LOCALE, `foto-${nome}`);
+// le email non partono: si scrivono qui (moduli e link «password dimenticata»)
+const posta = join(LOCALE, `posta-${nome}`);
 const fileAccesso = join(LOCALE, `negozio-${nome}.json`);
 if (AZZERA) {
   // la password d'esempio resta (fileAccesso): cambia solo il contenuto del database
-  for (const f of [conf, foto, ...(MYSQL ? [] : [sqlite])]) rmSync(f, { recursive: true, force: true });
+  for (const f of [conf, foto, posta, ...(MYSQL ? [] : [sqlite])]) rmSync(f, { recursive: true, force: true });
   console.log(`Database ${MYSQL ? 'MySQL' : 'SQLite'} locale azzerato`);
 }
 let accesso = existsSync(fileAccesso) ? JSON.parse(readFileSync(fileAccesso, 'utf8')) : null;
@@ -80,7 +85,8 @@ return [
   'db' => ${db
     ? `['dsn' => ${q(`mysql:host=${db.host};port=${db.porta};dbname=${db.database};charset=utf8mb4`)}, 'utente' => ${q(db.utente)}, 'password' => ${q(db.password)}]`
     : `['dsn' => ${q('sqlite:' + percorso(sqlite))}]`},
-  'posta' => ['host' => ''],
+  'posta' => ['cartella_prova' => ${q(percorso(posta))}, 'destinatario' => 'negozio@esempio.it'],
+  'indirizzo' => 'http://127.0.0.1:${PORTA}',
   'sale' => '${prendi('sale') || randomBytes(24).toString('hex')}',
   'installazione' => '${codice}',
   'foto' => ${q(percorso(foto))},
@@ -137,6 +143,7 @@ Sito:            ${H}/`);
 if (!installato) console.log(`Installazione:   ${H}/api/installa.php   codice: ${codice}`);
 else if (accesso) console.log(`Area riservata:  ${H}/area-riservata/   utente ${accesso.utente} · password ${accesso.password}`);
 else console.log(`Area riservata:  ${H}/area-riservata/   (con l'utente creato all'installazione)`);
+console.log(`Email di prova:  ${percorso(posta)}/   (non partono: anche il link «password dimenticata» è qui)`);
 if (db) {
   console.log(`Database:        MySQL ${db.host}:${db.porta}, database ${db.database}, utente ${db.utente} · password ${db.password}`);
   if (!process.env.MAS_MYSQL) console.log(`                 da riga di comando: .locale/mariadb/bin/mariadb.exe -uroot -h127.0.0.1 -P${db.porta} ${db.database}`);
