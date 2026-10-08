@@ -12,7 +12,7 @@ import '@fontsource-variable/inter';
 // testo "salti" quando il font sostituisce quello di ripiego (layout shift).
 import cormorantWoff2 from '@fontsource-variable/cormorant/files/cormorant-latin-wght-normal.woff2?url';
 import interWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
-import { BASE, INFO, ORARI, piedeHTML } from './_sito.js';
+import { BASE, INFO, LOGO, LOGO_CHIARO, ORARI, piedeHTML } from './_sito.js';
 
 interface Props { title: string; desc?: string; active?: string; noindex?: boolean }
 const {
@@ -42,8 +42,8 @@ const schema = {
   telephone: '+39' + INFO.telHref.replace('+39', ''),
   email: INFO.email,
   url: assoluto(BASE),
-  image: assoluto(BASE + 'img/anteprima.jpg'),
-  logo: assoluto(BASE + 'img/logo-mas.svg'),
+  image: assoluto(BASE + 'img/anteprima.jpg?v=3'),
+  logo: assoluto(LOGO),
   vatID: INFO.piva,
   foundingDate: String(INFO.fondata),
   sameAs: [INFO.fb, INFO.ig],
@@ -76,7 +76,7 @@ const schema = {
   <meta property="og:url" content={canonico} />
   <meta property="og:locale" content="it_IT" />
   <meta property="og:site_name" content={INFO.nome} />
-  <meta property="og:image" content={assoluto(BASE + 'img/anteprima.jpg')} />
+  <meta property="og:image" content={assoluto(BASE + 'img/anteprima.jpg?v=3')} />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Il logo di MAS Gioielli, Corso Trapani 146/b, Torino" />
@@ -93,9 +93,9 @@ const schema = {
         <span></span><span></span>
       </button>
       <a href={BASE} class="marchio">
-        {/* logo del negozio (PDF di ottobre 2026, lettere dall'EPS originale) in SVG:
-             nitido a qualsiasi misura, colore PANTONE Warm Gray 11 C */}
-        <img class="marchio-logo" src={BASE + 'img/logo-mas.svg'} width="738" height="155" alt={INFO.nome + ' — home'} fetchpriority="high" />
+        {/* logo del negozio ricalcato sul PDF di ottobre 2026 (lettere dall'EPS originale) in SVG:
+             nitido a qualsiasi misura, colore #51493e del PDF */}
+        <img class="marchio-logo" src={LOGO} width="716" height="154" alt={INFO.nome + ' — home'} fetchpriority="high" />
         <span class="marchio-sotto" aria-hidden="true">Torino · dal {INFO.fondata}</span>
       </a>
       <div class="testata-dx">
@@ -116,7 +116,7 @@ const schema = {
   <footer class="chiusura">
     <div class="chiusura-in">
       <div class="chiusura-marchio">
-        <p class="chiusura-nome"><img src={BASE + 'img/logo-mas-chiaro.svg'} width="738" height="155" alt={INFO.nome} loading="lazy" /></p>
+        <p class="chiusura-nome"><img src={LOGO_CHIARO} width="716" height="154" alt={INFO.nome} loading="lazy" /></p>
         <span class="chiusura-filo" aria-hidden="true"></span>
         <p class="chiusura-claim">Preziosi di qualità<br/>dal {INFO.fondata}</p>
       </div>

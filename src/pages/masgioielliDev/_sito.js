@@ -7,6 +7,11 @@
 // tutti gli indirizzi interni partono da qui.
 export const BASE = '/masgioielliDev/';
 
+// Logo (SVG 716x154). Il server tiene le immagini in cache per 6 mesi: quando cambia il
+// disegno si alza ?v=, altrimenti chi ha gia' visto il sito continua a vedere quello vecchio.
+export const LOGO = BASE + 'img/logo-mas.svg?v=3';
+export const LOGO_CHIARO = BASE + 'img/logo-mas-chiaro.svg?v=3';
+
 export const INFO = {
   nome: 'MasGioielli',
   fondata: 1996,

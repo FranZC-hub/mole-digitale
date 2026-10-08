@@ -1,6 +1,6 @@
 ---
 import Layout from './_Layout.astro';
-import { BASE, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_sito.js';
+import { BASE, LOGO_CHIARO, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_sito.js';
 // Area riservata del negozio: vetrina (selezione del momento), orari con chiusure
 // straordinarie, marchi trattati. Come nella bozza, i dati restano nel browser e utente e
 // password sono scritti in _locale.js: quello che si cambia qui lo vede solo questo dispositivo.
@@ -14,7 +14,7 @@ import { BASE, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_sito.js';
       <div class="acc-foto" aria-hidden="true">
         <img src={BASE + 'img/sala.webp'} alt="" width="419" height="627" />
         <div class="acc-foto-tx">
-          <img class="acc-logo" src={BASE + 'img/logo-mas-chiaro.svg'} alt="" width="738" height="155" />
+          <img class="acc-logo" src={LOGO_CHIARO} alt="" width="716" height="154" />
           <p>Corso Trapani 146/b · Torino</p>
         </div>
       </div>
