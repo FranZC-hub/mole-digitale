@@ -92,8 +92,12 @@ if (@is_file($FILE) && @filesize($FILE) > 2 * 1024 * 1024) {
   if (!@file_exists($dest)) { @rename($FILE, $dest); }
 }
 
-// pulizia anti-injection CSV
-$clean = fn($s) => str_replace(['"', "\r", "\n"], '', $s);
+// pulizia anti-injection CSV: via virgolette e a capo, e (come in contact.php) un apostrofo
+// davanti a = + - @, perche' "r" lo manda il browser e aperto in Excel diventerebbe una formula
+$clean = function ($s) {
+  $s = str_replace(['"', "\r", "\n"], '', $s);
+  return ($s !== '' && in_array($s[0], ['=', '+', '-', '@'], true)) ? "'" . $s : $s;
+};
 @file_put_contents(
   $FILE,
   '"' . date('Y-m-d') . '","' . $clean($p) . '","' . $clean($r) . '","' . $clean($e) . "\"\n",

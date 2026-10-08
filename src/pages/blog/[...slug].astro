@@ -35,7 +35,7 @@ const related = (await getCollection('blog'))
     </div>
 
     {related.length > 0 && (
-      <aside class="blog-related" data-reveal>
+      <aside class="blog-related" aria-label="Da leggere dopo" data-reveal>
         <h2>Da leggere dopo</h2>
         <div class="blog-related-grid">
           {related.map((p) => (

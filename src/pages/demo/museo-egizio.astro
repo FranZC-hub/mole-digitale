@@ -43,13 +43,13 @@ const mostre = [
 </head>
 <body>
   <a class="skip" href="#main">Vai al contenuto</a>
-  <a class="demo-flag" href="/">★ Demo realizzata da <b>Mole Digitale</b> · torna al sito ↩</a>
+  <aside aria-label="Demo di Mole Digitale"><a class="demo-flag" href="/">★ Demo realizzata da <b>Mole Digitale</b> · torna al sito ↩</a></aside>
   <canvas id="dust" class="dust" aria-hidden="true"></canvas>
   <div class="progress" id="progress" aria-hidden="true"></div>
 
   <header class="menav" id="menav">
     <a href="#top" class="brand">MUSEO <span>EGIZIO</span></a>
-    <nav class="mlinks" id="mlinks">
+    <nav class="mlinks" id="mlinks" aria-label="Menu principale">
       <a href="#collezione">Collezione</a>
       <a href="#visita">Visita</a>
       <a href="#mostre">Mostre</a>
@@ -91,14 +91,14 @@ const mostre = [
     </div>
     <div class="cgrid">
       {collezione.map((c) => (
-        <article class="ccard r" tabindex="0" role="button" aria-haspopup="dialog" data-img={c.img} data-nome={c.nome} data-desc={c.desc}>
+        <div class="ccard r" tabindex="0" role="button" aria-haspopup="dialog" data-img={c.img} data-nome={c.nome} data-desc={c.desc}>
           <div class="ccard-img"><img src={c.img} alt={c.nome} loading="lazy" /></div>
           <div class="ccard-body">
             <h3>{c.nome}</h3>
             <p>{c.desc}</p>
             <span class="ccard-link">Scopri →</span>
           </div>
-        </article>
+        </div>
       ))}
     </div>
   </section>
@@ -195,7 +195,7 @@ const mostre = [
           <input type="date" id="bDate" />
         </div>
       </div>
-      <aside class="bsummary">
+      <aside class="bsummary" aria-label="Riepilogo biglietti">
         <h3>Riepilogo</h3>
         <ul class="brecap" id="bRecap"><li class="brecap-empty">Seleziona i biglietti</li></ul>
         <div class="ttot"><span>Totale</span><b id="tkTotal">€0,00</b></div>
@@ -286,9 +286,9 @@ const mostre = [
   </main>
 
   <!-- niente aria-label: il nome accessibile e' il testo visibile stesso (WCAG 2.5.3) -->
-  <a class="mobilebar" href="#biglietti">
+  <aside aria-label="Barra biglietti"><a class="mobilebar" href="#biglietti">
     <span>🎟️ Biglietti <i>da €1</i></span><b>Acquista →</b>
-  </a>
+  </a></aside>
 
   <footer class="mfoot">
     <div class="mfoot-top">
@@ -312,15 +312,15 @@ const mostre = [
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <!-- Per un museo l'azione flottante giusta sono i biglietti, non WhatsApp -->
-  <a class="wa-fab" href="#biglietti" aria-label="Vai ai biglietti">
+  <aside aria-label="Accesso rapido ai biglietti"><a class="wa-fab" href="#biglietti" aria-label="Vai ai biglietti">
     <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9V6a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v3a3 3 0 0 0 0 6v3a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-3a3 3 0 0 0 0-6z"/><path d="M14 5v2.5M14 10.5v3M14 16.5V19"/></svg>
-  </a>
+  </a></aside>
 
   <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="lbTitle" hidden>
     <div class="lb-backdrop" data-close></div>
     <figure class="lb-card">
       <button class="lb-close" id="lbClose" type="button" aria-label="Chiudi" data-close>✕</button>
-      <img id="lbImg" src="" alt="" />
+      <img id="lbImg" alt="" />
       <figcaption>
         <p class="kick">Dalla collezione</p>
         <h3 id="lbTitle"></h3>

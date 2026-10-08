@@ -611,7 +611,8 @@ main:focus { outline: none; }
 @media (max-width:560px){ .cookie-banner { bottom:76px; } } /* sopra la barra CTA mobile */
 
 /* ---------- Footer legal ---------- */
-.footer-legal a { color:var(--muted); transition:color .25s; }
+/* sottolineati: nel testo del piede il colore da solo non li distingueva (WCAG 1.4.1) */
+.footer-legal a { color:var(--muted); text-decoration:underline; text-decoration-color:rgba(148,163,184,.45); text-underline-offset:3px; transition:color .25s; }
 .footer-legal a:hover { color:var(--c2); }
 
 /* ---------- Focus da tastiera (accessibilità) ---------- */

@@ -9,6 +9,9 @@ export default defineConfig({
   // ⚠️ Dominio reale del sito (usato per sitemap, canonical e OG)
   site: 'https://www.moledigitale.it',
   build: { inlineStylesheets: 'auto' },
+  // I font restano sempre file a parte: sotto i 4 KB Vite li incorporerebbe nel CSS come
+  // data:, e la CSP del server (font-src 'self', in public/.htaccess) li bloccherebbe.
+  vite: { build: { assetsInlineLimit: (file) => (/\.(woff2?|ttf|otf)$/i.test(file) ? false : undefined) } },
   // Sitemap: dentro solo le pagine che vogliamo su Google.
   // Fuori: le singole demo (/demo/bar/, /demo/sushi/…), le bozze dei clienti
   // (/demoFarmaciaAusiliatrice/, /demoMasGioielli/, /demoClienti/), le versioni reali in sviluppo
