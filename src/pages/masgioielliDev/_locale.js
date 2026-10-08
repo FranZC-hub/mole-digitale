@@ -6,7 +6,7 @@
 //
 // L'accesso si controlla qui: nella pagina c'e' solo l'impronta PBKDF2 della password
 // (scritta in build da area-riservata.astro), mai la password.
-import { CATEGORIE, REPARTI } from './_sito.js';
+import { CATEGORIE, REPARTI, ORARI } from './_sito.js';
 
 const P = 'masdev:';   // le chiavi della bozza /demoMasGioielli/ cominciano con "mas-": niente scontri
 const SESSIONE = P + 'sessione';
@@ -161,8 +161,10 @@ async function selezione(metodo, d) {
 }
 
 // ---------------------------------------------------------------- orari e chiusure
+// finche' il negozio non li salva valgono quelli di partenza, come nel database appena
+// installato (orari_iniziali): con null il modulo mostrerebbe tutti i giorni chiusi
 const statoOrari = () => ({
-  orari: leggi('orari', null),
+  orari: leggi('orari', null) ?? ORARI,
   chiusure: leggi('chiusure', []).filter((c) => c.al >= ieri()).sort((a, b) => a.dal.localeCompare(b.dal)),
 });
 const fasceValide = (f, g) => {
@@ -231,9 +233,10 @@ async function marchi(metodo, d) {
 }
 
 // ---------------------------------------------------------------- password dimenticata
-// Senza server non parte nessuna email: il link non si puo' mandare.
+// Senza server non parte nessuna email: si fa come se partisse (versione di prova), cosi'
+// il percorso si vede tutto. Il link vero arriva con il database (api/recupero.php).
 async function recupero(metodo, d) {
-  if (d.azione === 'richiesta') errore('Senza database il link via email non si può mandare: chiedete a chi vi segue il sito di reimpostare la password.', 503);
+  if (d.azione === 'richiesta') { testo(d.utente, 'nome utente', 60, true); return { ok: true }; }
   return errore('Questo link non vale più: è scaduto o è già stato usato. Chiedetene uno nuovo qui sotto.', 410);
 }
 

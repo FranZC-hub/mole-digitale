@@ -284,8 +284,11 @@ const negozio = [
     .collezione{padding-bottom:clamp(3.5rem,7vw,6rem)}
     .coll-testa{display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap}
     .coll-tutti{white-space:nowrap}
-    .rail{display:flex;gap:clamp(1rem,2.5vw,2rem);overflow-x:auto;scroll-snap-type:x mandatory;
-      padding:clamp(2.2rem,4vw,3.2rem) clamp(1.2rem,5vw,3.2rem) .8rem;scrollbar-width:thin}
+    /* il nastro parte allineato al testo sopra (la colonna .misura, 1220 px); scroll-padding
+       serve allo scorrimento a scatti, che altrimenti incollava la prima foto al bordo */
+    .rail{--rail-m:max(clamp(1.2rem,5vw,3.2rem), calc((100% - 1220px) / 2 + clamp(1.2rem,5vw,3.2rem)));
+      display:flex;gap:clamp(1rem,2.5vw,2rem);overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:var(--rail-m);
+      padding:clamp(2.2rem,4vw,3.2rem) var(--rail-m) .8rem;scrollbar-width:thin}
     .rail::-webkit-scrollbar{height:2px}
     .rail::-webkit-scrollbar-thumb{background:var(--filo)}
     .rail{align-items:flex-start}

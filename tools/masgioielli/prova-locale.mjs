@@ -100,6 +100,7 @@ try {
 
   console.log('\n[3] Orari, chiusure, marchi');
   await a.click('#t-orari'); await pausa(200);
+  ok((await a.$$eval('#orariForm .o-aperto', (x) => x.filter((i) => i.checked).length)) === 5, 'il modulo parte dall’orario del negozio (5 giorni aperti), non da tutto chiuso');
   await a.click('#orariForm tr[data-g="1"] .o-aperto'); await a.click('#orariSalva'); await pausa(800);
   ok((await a.$eval('#avvisoTxt', (e) => e.textContent)).includes('Orari salvati'), 'lunedì aperto: orari salvati');
   const fra = new Date(Date.now() + 5 * 86400000).toISOString().slice(0, 10);
@@ -117,6 +118,7 @@ try {
   ok(await p.$eval('#marchiBanda', (e) => !e.hidden), 'home: fascia marchi');
   ok((await p.$eval('#listaOrari', (e) => e.innerText)).includes('inventario'), 'home: la chiusura è annunciata');
   ok((await p.$eval('#piedeOrari', (e) => e.innerText)).toLowerCase().includes('lunedì'), 'piede: orari aggiornati');
+  ok(/Martedì\s*9:30–12:30 \/ 15:30–19:30/.test(await p.$eval('#listaOrari', (e) => e.innerText)), 'aprire il lunedì non chiude gli altri giorni');
   await p.goto(H + '/selezione/', { waitUntil: 'networkidle0' }); await pausa(1200);
   ok((await p.$$eval('.pezzo', (x) => x.length)) === 2, 'Selezione: i due pezzi');
 
@@ -143,7 +145,7 @@ try {
   ok(await a.$eval('#pannello', (e) => !e.hidden), 'si entra con la password nuova');
   await a.click('#esci'); await pausa(500);
   await a.click('#vaiRecupero'); await a.click('#rManda'); await pausa(500);
-  ok((await a.$eval('#rErr', (e) => e.textContent)).includes('Senza database'), '«Password dimenticata?»: spiega che senza database il link non parte');
+  ok(await a.$eval('#rFatto', (e) => !e.hidden) && await a.$eval('#rErr', (e) => e.hidden), '«Password dimenticata?»: fa come se l’email partisse');
 
   console.log('\n[7] Telefono e pagine');
   const m = await pagina({ width: 390, height: 844, isMobile: true, hasTouch: true });

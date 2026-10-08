@@ -19,7 +19,7 @@ niente Node sul server, niente servizi esterni.
 > con `npm run dev` su localhost:4321, senza PHP né MySQL. L'accesso usa utente e password di
 > `.locale/negozio-mysql.json` (o dei secret `MAS_DEV_*`): nella pagina va solo l'impronta
 > PBKDF2 della password. I moduli Contatti e Perizie avvisano che il messaggio non parte;
-> «Password dimenticata?» spiega che senza database il link via email non c'è.
+> «Password dimenticata?» fa come se l'email partisse (versione di prova), ma nessun link arriva.
 > Il backend PHP qui sotto è rimasto com'era: con `SENZA_DATABASE = false` si torna al database.
 > Collaudo di questa modalità: `npm run mas:prova-locale`.
 
