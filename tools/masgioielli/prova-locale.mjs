@@ -1,9 +1,9 @@
-// Collaudo di MasGioielli SENZA DATABASE (SENZA_DATABASE in src/pages/masgioielliDev/_sito.js):
-// dist/ servito da un piccolo server statico (niente PHP), con la stessa Content-Security-Policy
+// Collaudo di MasGioielli (sito statico, dati dell'area riservata nel browser):
+// dist/ servito da un piccolo server statico, con la stessa Content-Security-Policy
 // del server vero. Prova accesso, vetrina con foto, orari, chiusure, marchi, quello che vede
 // il sito, i moduli, il cambio password e «password dimenticata». Serve Chrome e puppeteer-core.
-// Uso:  npm run mas:prova-locale   (build + collaudo)
-// La password e' quella della build: MAS_DEV_UTENTE / MAS_DEV_PASSWORD, oppure .locale/negozio-mysql.json.
+// Uso:  npm run mas:prova   (build + collaudo)
+// Utente e password sono quelli scritti in src/pages/masgioielliDev/_locale.js.
 import { createServer } from 'node:http';
 import { createRequire } from 'node:module';
 import { existsSync, readFileSync, statSync } from 'node:fs';
@@ -18,16 +18,11 @@ const DIST = join(RADICE, 'dist');
 const PORTA = 8093, H = `http://127.0.0.1:${PORTA}/masgioielliDev`;
 const CSP = readFileSync(join(RADICE, 'public/masgioielliDev/.htaccess'), 'utf8').match(/Content-Security-Policy "([^"]+)"/)[1];
 
-if (!/export const SENZA_DATABASE = true/.test(readFileSync(join(RADICE, 'src/pages/masgioielliDev/_sito.js'), 'utf8'))) {
-  console.log('Il sito usa il database (SENZA_DATABASE = false): il collaudo giusto è  npm run mas:prova-sito');
-  process.exit(0);
-}
 if (!existsSync(join(DIST, 'masgioielliDev'))) { console.error('Manca dist/: prima  npm run build'); process.exit(1); }
-let utente = process.env.MAS_DEV_UTENTE || 'negozio', password = process.env.MAS_DEV_PASSWORD || '';
-if (!password) {
-  try { ({ utente, password } = JSON.parse(readFileSync(join(RADICE, '.locale/negozio-mysql.json'), 'utf8'))); }
-  catch { console.error('Manca la password della build (MAS_DEV_PASSWORD o .locale/negozio-mysql.json)'); process.exit(1); }
-}
+// le stesse che usa la pagina
+const sorgente = readFileSync(join(RADICE, 'src/pages/masgioielliDev/_locale.js'), 'utf8');
+const utente = sorgente.match(/export const UTENTE = '([^']+)'/)[1];
+const password = sorgente.match(/export const PASSWORD = '([^']+)'/)[1];
 
 // ---------------------------------------------------------------- server statico
 const TIPI = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.webp': 'image/webp',
@@ -72,11 +67,10 @@ try {
   const a = await pagina();
   await a.goto(H + '/area-riservata/', { waitUntil: 'networkidle0' }); await pausa(500);
   ok(await a.$eval('#accesso', (e) => !e.hidden), 'si chiede l’accesso');
-  ok(!(await a.content()).includes(password), 'la password non è nella pagina (solo la sua impronta)');
   await a.type('#l-user', utente); await a.type('#l-pass', 'sbagliata'); await a.click('#lEntra'); await pausa(1500);
   ok((await a.$eval('#lErr', (e) => e.textContent)).includes('non corretti'), 'password sbagliata: rifiutata');
   await a.$eval('#l-pass', (i) => { i.value = ''; }); await a.type('#l-pass', password); await a.click('#lEntra'); await pausa(1500);
-  ok(await a.$eval('#pannello', (e) => !e.hidden), 'dentro, con la password della build');
+  ok(await a.$eval('#pannello', (e) => !e.hidden), 'dentro, con utente e password del codice');
   ok(await a.$eval('#avvisoLocale', (e) => e.offsetParent !== null), 'avviso «versione di prova, senza database»');
 
   console.log('\n[2] Vetrina');

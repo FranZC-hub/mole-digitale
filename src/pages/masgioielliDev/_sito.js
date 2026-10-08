@@ -1,17 +1,11 @@
 // Dati e funzioni comuni del sito MasGioielli.
-// I contenuti che il negozio cambia da solo (selezione, orari, chiusure, marchi) arrivano
-// da /api/dati.php (o, senza database, dal browser: _locale.js); quelli qui sotto sono i
-// valori di partenza usati nell'HTML statico,
-// cosi' la pagina e' completa anche prima che l'API risponda (o se non risponde).
+// I contenuti che il negozio cambia da solo (selezione, orari, chiusure, marchi) stanno nel
+// browser (localStorage, _locale.js); quelli qui sotto sono i valori di partenza usati
+// nell'HTML statico, cosi' la pagina e' completa anche prima di leggerli.
 
 // Il sito vive in una sottocartella di moledigitale.it (versione reale, in sviluppo):
 // tutti gli indirizzi interni partono da qui.
 export const BASE = '/masgioielliDev/';
-
-// PER ORA SENZA DATABASE: i dati che il negozio cambia restano nel browser (localStorage,
-// _locale.js) e il sito gira su localhost senza PHP ne' MySQL. Il backend PHP e' rimasto in
-// public/masgioielliDev/api/: con `false` si torna al database, senza toccare altro.
-export const SENZA_DATABASE = true;
 
 export const INFO = {
   nome: 'MasGioielli',
@@ -37,15 +31,13 @@ export const INFO = {
   recensioniUrl: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('MasGioielli Corso Trapani 146 Torino'),
 };
 
-// ---------------------------------------------------------------- dati dall'API
-// Una sola richiesta per pagina, condivisa da tutte le parti che ne hanno bisogno.
+// ---------------------------------------------------------------- dati del negozio
+// Letti una volta per pagina, condivisi da tutte le parti che ne hanno bisogno.
 let promessa = null;
 let DATI = null;
 export function caricaDati() {
   if (!promessa) {
-    promessa = (SENZA_DATABASE
-      ? import('./_locale.js').then((m) => m.datiLocali())
-      : fetch(BASE + 'api/dati.php', { headers: { Accept: 'application/json' } }).then((r) => (r.ok ? r.json() : null)))
+    promessa = import('./_locale.js').then((m) => m.datiLocali())
       .catch(() => null)
       .then((d) => { DATI = d && typeof d === 'object' ? d : null; return DATI; });
   }
@@ -69,7 +61,7 @@ export const SETTIMANA = [1, 2, 3, 4, 5, 6, 0];
 export const fmt = (h) => `${Math.floor(h)}:${String(Math.round((h - Math.floor(h)) * 60)).padStart(2, '0')}`;
 
 const fasciaOk = (f) => Array.isArray(f) && f.length === 2 && f.every((x) => typeof x === 'number' && x >= 0 && x <= 24) && f[0] < f[1];
-/** Gli orari in vigore: quelli del database se ci sono e sono validi, altrimenti quelli di partenza. */
+/** Gli orari in vigore: quelli salvati dal negozio se ci sono e sono validi, altrimenti quelli di partenza. */
 export function orariAttivi(dati = DATI) {
   const o = dati?.orari;
   if (!o || typeof o !== 'object') return ORARI;
@@ -165,7 +157,6 @@ export function renderOrari(listEl, statoEl, dati = DATI) {
 }
 
 // ---------------------------------------------------------------- selezione e marchi
-// Devono coincidere con quelle ammesse da api/lib/base.php
 export const CATEGORIE = ['Anelli', 'Collane', 'Orecchini', 'Bracciali', 'Orologi', 'Argenteria', 'Altro'];
 export const REPARTI = ['Gioielleria', 'Orologeria', 'Argenteria', 'Pelletteria', 'Altro'];
 
@@ -204,17 +195,10 @@ const LS = 'mas-desideri';
 export const leggiLista = () => { try { return JSON.parse(localStorage.getItem(LS) || '[]').filter((x) => x && x.id); } catch { return []; } };
 export const scriviLista = (a) => salva(LS, JSON.stringify(a));
 
-/** Invio dei moduli Contatti e Perizie a /api/messaggio.php. */
-export async function inviaMessaggio(dati) {
-  // senza server non parte nessuna email: meglio dirlo che fingere di averla mandata
-  if (SENZA_DATABASE) return { ok: false, errore: `Questa è la versione di prova, senza server: il messaggio non parte. Scriveteci su WhatsApp al ${INFO.waLabel} o chiamate lo ${INFO.tel}.` };
-  try {
-    const r = await fetch(BASE + 'api/messaggio.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dati) });
-    const d = await r.json().catch(() => ({}));
-    return r.ok ? { ok: true } : { ok: false, errore: d.errore || 'Non siamo riusciti a inviare il messaggio.' };
-  } catch {
-    return { ok: false, errore: 'Connessione assente: riprovate fra poco, oppure chiamateci.' };
-  }
+/** Moduli Contatti e Perizie: senza server non parte nessuna email, e meglio dirlo che
+ *  fingere di averla mandata. */
+export async function inviaMessaggio() {
+  return { ok: false, errore: `Questa è la versione di prova, senza server: il messaggio non parte. Scriveteci su WhatsApp al ${INFO.waLabel} o chiamate lo ${INFO.tel}.` };
 }
 
 // Modale accessibile: Escape, focus intrappolato, sfondo inerte.

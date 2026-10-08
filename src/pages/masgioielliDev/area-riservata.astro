@@ -1,39 +1,15 @@
 ---
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { createHash, pbkdf2Sync } from 'node:crypto';
 import Layout from './_Layout.astro';
-import { BASE, REPARTI, CATEGORIE, GIORNI, SETTIMANA, SENZA_DATABASE } from './_sito.js';
-
-// Senza database l'accesso si controlla nel browser (_locale.js): nella pagina va solo
-// l'impronta PBKDF2 della password, mai la password (il repository e' pubblico). Si legge
-// in build come fa /demoClientiDev/: dai secret MAS_DEV_UTENTE / MAS_DEV_PASSWORD, oppure
-// in locale da .locale/negozio-mysql.json.
-function accessoLocale() {
-  if (!SENZA_DATABASE) return null;
-  let utente = process.env.MAS_DEV_UTENTE || 'negozio', password = process.env.MAS_DEV_PASSWORD || '';
-  if (!password) {
-    try { ({ utente, password } = JSON.parse(readFileSync(join(process.cwd(), '.locale/negozio-mysql.json'), 'utf8'))); }
-    catch { return null; }
-  }
-  const giri = 300000, sale = createHash('sha256').update('masgioielliDev:' + utente).digest('hex').slice(0, 32);
-  return { utente, sale, giri, impronta: pbkdf2Sync(password, sale, giri, 32, 'sha256').toString('hex') };
-}
-const accesso = accessoLocale();
+import { BASE, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_sito.js';
 // Area riservata del negozio: vetrina (selezione del momento), orari con chiusure
-// straordinarie, marchi trattati. I messaggi dei moduli arrivano per email (la copia nel
-// database non si mostra qui).
-// I dati stanno nel database (api/*.php): l'accesso e' una sessione sul server, ogni
-// modifica porta il token CSRF. Questa pagina non e' indicizzata e non e' nel menu.
-// Per ora SENZA_DATABASE: le stesse chiamate le serve _locale.js, con i dati nel browser.
-// Password dimenticata: link per email valido un'ora (api/recupero.php); il link riporta qui
-// con #recupero=<codice>.
+// straordinarie, marchi trattati. Come nella bozza, i dati restano nel browser e utente e
+// password sono scritti in _locale.js: quello che si cambia qui lo vede solo questo dispositivo.
+// Questa pagina non e' indicizzata e non e' nel menu.
 ---
 <Layout title="Area riservata" active="Riservata" noindex desc="Area riservata del negozio.">
 
-  {/* ACCESSO: entrare; se la password non si ricorda, chiedere il link per email;
-       dal link, sceglierne una nuova (api/recupero.php) */}
-  <section class="accesso adm" id="accesso" data-accesso-locale={accesso ? JSON.stringify(accesso) : undefined} hidden>
+  {/* ACCESSO: entrare; «Password dimenticata?» fa come se mandasse il link per email */}
+  <section class="accesso adm" id="accesso" hidden>
     <div class="acc-scheda">
       <div class="acc-foto" aria-hidden="true">
         <img src={BASE + 'img/sala.webp'} alt="" width="419" height="627" />
@@ -78,24 +54,6 @@ const accesso = accessoLocale();
           <button type="button" class="acc-link" data-torna>← Torna all’accesso</button>
         </div>
 
-        <div class="acc-passo" id="passoNuova" hidden>
-          <span class="occhiello">Nuova password</span>
-          <h1>Scegliete <span class="it oro">la nuova password</span></h1>
-          <p class="acc-d" id="nPer"></p>
-          <form class="modulo acc-form" id="nuovaForm" novalidate>
-            {/* il nome utente, per i gestori di password: cosi' salvano quella nuova al posto giusto */}
-            <input type="text" id="n-user" class="sr-only" autocomplete="username" tabindex="-1" aria-hidden="true" readonly />
-            <div class="campo">
-              <label for="n-pass">Nuova password <small>(almeno 10 caratteri)</small></label>
-              <span class="pw-campo"><input type="password" id="n-pass" autocomplete="new-password" minlength="10" required /><button type="button" class="pw-mostra" aria-controls="n-pass">Mostra</button></span>
-              <small class="maiuscole" hidden>Il blocco maiuscole è attivo</small>
-            </div>
-            <label>Ripetetela<input type="password" id="n-ripeti" autocomplete="new-password" required /></label>
-            <p class="errore" id="nErr" role="alert" hidden></p>
-            <button type="submit" class="btn btn-pieno" id="nSalva">Salva la nuova password</button>
-          </form>
-          <button type="button" class="acc-link" data-torna>← Torna all’accesso</button>
-        </div>
       </div>
     </div>
     <a class="acc-sito" href={BASE}>← Torna al sito</a>
@@ -116,9 +74,7 @@ const accesso = accessoLocale();
           <button type="button" id="esci" class="adm-link">Esci</button>
         </div>
       </header>
-      {SENZA_DATABASE && (
-        <p class="adm-locale" id="avvisoLocale"><b>Versione di prova, senza database.</b> Quello che cambiate qui resta su questo dispositivo: sul sito lo vedete solo da qui, non da altri telefoni o computer.</p>
-      )}
+      <p class="adm-locale" id="avvisoLocale"><b>Versione di prova, senza database.</b> Quello che cambiate qui resta su questo dispositivo: sul sito lo vedete solo da qui, non da altri telefoni o computer.</p>
 
       <div class="schede" role="tablist" aria-label="Sezioni del pannello">
         <button type="button" role="tab" id="t-vetrina" aria-controls="p-vetrina" aria-selected="true"><span class="s-t">Vetrina</span><span class="s-d" id="sVetrina">&nbsp;</span></button>
@@ -392,7 +348,7 @@ const accesso = accessoLocale();
     .avviso-adm.mostra{opacity:1;transform:translate(-50%,0);pointer-events:auto}
     .avviso-adm button{background:none;border:0;color:var(--oro-c);font:inherit;font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.78rem;cursor:pointer;padding:.5rem 0;min-height:44px}
 
-    /* in attesa della risposta del server */
+    /* mentre si caricano i dati */
     /* stessa altezza dell'accesso: quando compare il modulo la pagina non salta (CLS) */
     .accesso,.caricamento{min-height:calc(100vh - 120px)}
     .caricamento{padding:calc(var(--tastata) + 4rem) 0 8rem;text-align:center;color:var(--grigio);font-family:var(--disp);font-style:italic;font-size:1.3rem}
@@ -442,31 +398,16 @@ const accesso = accessoLocale();
 
 
   <script>
-    import { BASE, esc, GIORNI, periodo, isoGiorno, renderOrari, CATEGORIE, SENZA_DATABASE } from './_sito.js';
-    import { apiLocale, configuraAccesso } from './_locale.js';
+    import { BASE, esc, GIORNI, periodo, isoGiorno, renderOrari, CATEGORIE } from './_sito.js';
+    import { apiLocale } from './_locale.js';
     const $ = (s) => document.querySelector(s);
 
-    /* ---------------- chiamate all'API ---------------- */
-    // senza database le stesse chiamate le serve il browser (_locale.js)
-    if (SENZA_DATABASE) { try { configuraAccesso(JSON.parse($('#accesso').dataset.accessoLocale || 'null')); } catch { configuraAccesso(null); } }
-    let CSRF = '';
-    async function api(percorso, { json, form, metodo } = {}) {
-      if (SENZA_DATABASE) {
-        try { return await apiLocale(percorso, { json, form, metodo }); } catch (err) {
-          if (err.stato === 401 && percorso !== 'accesso.php') mostraAccesso('La sessione è scaduta: rientrate.');
-          throw err;
-        }
+    /* ---------------- richieste: le serve il browser (_locale.js) ---------------- */
+    async function api(percorso, opzioni = {}) {
+      try { return await apiLocale(percorso, opzioni); } catch (err) {
+        if (err.stato === 401 && percorso !== 'accesso') mostraAccesso('La sessione è scaduta: rientrate.');
+        throw err;
       }
-      const opz = { method: metodo || (json || form ? 'POST' : 'GET'), headers: { Accept: 'application/json' }, credentials: 'same-origin' };
-      if (json) { opz.headers['Content-Type'] = 'application/json'; opz.body = JSON.stringify(json); }
-      if (form) opz.body = form;
-      if (opz.method !== 'GET') opz.headers['X-CSRF-Token'] = CSRF;
-      let r;
-      try { r = await fetch(BASE + 'api/' + percorso, opz); } catch { throw new Error('Connessione assente: riprovate fra poco.'); }
-      const d = await r.json().catch(() => ({}));
-      if (r.status === 401 && percorso !== 'accesso.php') { mostraAccesso('La sessione è scaduta: rientrate.'); throw new Error(d.errore || 'Accesso scaduto'); }
-      if (!r.ok) throw Object.assign(new Error(d.errore || 'Qualcosa non ha funzionato: riprovate.'), { stato: r.status });
-      return d;
     }
     // durante una richiesta il pulsante non si puo' ripremere
     async function occupato(bottone, fn) {
@@ -493,7 +434,7 @@ const accesso = accessoLocale();
     });
 
     /* ---------------- accesso, password dimenticata, nuova password ---------------- */
-    const PASSI = { entra: '#passoEntra', recupero: '#passoRecupero', nuova: '#passoNuova' };
+    const PASSI = { entra: '#passoEntra', recupero: '#passoRecupero' };
     const passo = (k, fuoco) => {
       Object.entries(PASSI).forEach(([n, sel]) => { $(sel).hidden = n !== k; });
       $('#caricamento').hidden = true; $('#pannello').hidden = true; $('#accesso').hidden = false;
@@ -526,8 +467,7 @@ const accesso = accessoLocale();
       if (!utente || !password) return erroreIn($('#lErr'), 'Scrivete nome utente e password.', utente ? $('#l-pass') : $('#l-user'));
       occupato($('#lEntra'), async () => {
         try {
-          const d = await api('accesso.php', { json: { utente, password } });
-          CSRF = d.csrf;
+          const d = await api('accesso', { json: { utente, password } });
           $('#l-pass').value = ''; $('#lErr').hidden = true; $('#lOk').hidden = true;
           await avvia();
           window.scrollTo({ top: 0 });
@@ -535,7 +475,7 @@ const accesso = accessoLocale();
       });
     });
 
-    // password dimenticata: il link arriva all'email del negozio (api/recupero.php)
+    // password dimenticata: senza server non parte nessuna email, si fa come se partisse
     const apriRecupero = (msg = '') => {
       $('#recForm').hidden = false; $('#rFatto').hidden = true;
       $('#rErr').textContent = msg; $('#rErr').hidden = !msg;
@@ -549,41 +489,16 @@ const accesso = accessoLocale();
       if (!utente) return erroreIn($('#rErr'), 'Scrivete il nome utente.', $('#r-user'));
       occupato($('#rManda'), async () => {
         try {
-          await api('recupero.php', { json: { azione: 'richiesta', utente } });
+          await api('recupero', { json: { azione: 'richiesta', utente } });
           $('#rErr').hidden = true; $('#recForm').hidden = true; $('#rFatto').hidden = false; $('#rFatto').focus();
         } catch (err) { erroreIn($('#rErr'), err.message); }
       });
     });
 
-    // dal link dell'email: …/area-riservata/#recupero=<codice>
-    let codiceRecupero = '';
-    const apriNuova = (utente) => {
-      $('#n-user').value = utente;
-      $('#nPer').textContent = `Per l’utente «${utente}». Appena salvata, entrate con quella nuova.`;
-      passo('nuova', '#n-pass');
-    };
-    $('#nuovaForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const password = $('#n-pass').value;
-      if (password.length < 10) return erroreIn($('#nErr'), 'La nuova password deve avere almeno 10 caratteri.', $('#n-pass'));
-      if (password !== $('#n-ripeti').value) return erroreIn($('#nErr'), 'Le due password non coincidono.', $('#n-ripeti'));
-      occupato($('#nSalva'), async () => {
-        try {
-          const d = await api('recupero.php', { json: { azione: 'nuova', codice: codiceRecupero, password } });
-          codiceRecupero = ''; e.target.reset(); $('#nErr').hidden = true;
-          $('#l-user').value = d.utente; $('#l-pass').value = '';
-          mostraAccesso();
-          $('#lOk').textContent = 'Password cambiata: entrate con quella nuova.'; $('#lOk').hidden = false;
-        } catch (err) {
-          if (err.stato === 410) apriRecupero(err.message); else erroreIn($('#nErr'), err.message);
-        }
-      });
-    });
     $('#esci').addEventListener('click', async () => {
       if (sporco && !confirm('Ci sono modifiche agli orari non salvate. Uscire lo stesso?')) return;
       sporco = false;
-      try { await api('accesso.php', { metodo: 'DELETE' }); } catch { /* si esce comunque */ }
-      CSRF = '';
+      try { await api('accesso', { metodo: 'DELETE' }); } catch { /* si esce comunque */ }
       mostraAccesso();
       window.scrollTo({ top: 0 });
     });
@@ -611,7 +526,7 @@ const accesso = accessoLocale();
       });
     });
 
-    /* ---------------- stato caricato dal server ---------------- */
+    /* ---------------- dati del negozio (dal browser) ---------------- */
     let pezzi = [], orari = null, chiusure = [], marchi = [];
     const riepilogo = () => {
       $('#sVetrina').textContent = `${pezzi.length} ${pezzi.length === 1 ? 'pezzo' : 'pezzi'} in vetrina`;
@@ -641,7 +556,7 @@ const accesso = accessoLocale();
       for (const sel of [].concat(fuoco || [])) { const el = document.querySelector(sel + ':not(:disabled)'); if (el) { el.focus(); break; } }
       riepilogo();
     };
-    const ordina = (ids) => api('pezzi.php', { json: { azione: 'ordina', ordine: ids } }).then((d) => { pezzi = d.pezzi; });
+    const ordina = (ids) => api('pezzi', { json: { azione: 'ordina', ordine: ids } }).then((d) => { pezzi = d.pezzi; });
     const sposta = async (da, a) => {
       if (a < 0 || a >= pezzi.length) return;
       const ids = pezzi.map((x) => x.id);
@@ -658,7 +573,7 @@ const accesso = accessoLocale();
       else if (b.dataset.mod !== undefined) apriPezzo(pezzi.find((x) => x.id === +b.dataset.mod));
       else if (b.dataset.via !== undefined) occupato(b, async () => {
         const i = +b.dataset.via, tolto = pezzi[i];
-        const d = await api('pezzi.php', { json: { azione: 'elimina', id: tolto.id } });
+        const d = await api('pezzi', { json: { azione: 'elimina', id: tolto.id } });
         pezzi = d.pezzi;
         if (tolto.id === pezzoInModifica) chiudiPezzo();
         renderPezzi();
@@ -666,7 +581,7 @@ const accesso = accessoLocale();
           // si ricrea con la stessa foto e si rimette al suo posto
           const f = new FormData();
           Object.entries({ azione: 'crea', nome: tolto.nome, categoria: tolto.cat, materiale: tolto.materiale || '', descrizione: tolto.desc || '', immagine: tolto.img }).forEach(([k, v]) => f.append(k, v));
-          const c = await api('pezzi.php', { form: f });
+          const c = await api('pezzi', { form: f });
           const nuovo = c.pezzi.find((x) => !pezzi.some((y) => y.id === x.id));
           const ids = c.pezzi.map((x) => x.id).filter((id) => id !== nuovo.id);
           ids.splice(i, 0, nuovo.id);
@@ -678,7 +593,7 @@ const accesso = accessoLocale();
     });
 
     // La foto del telefono pesa diversi MB: la riduco a 1600 px sul lato lungo.
-    // Il canvas toglie anche i dati nascosti (EXIF, posizione GPS); il server la ricodifica comunque.
+    // Il canvas toglie anche i dati nascosti (EXIF, posizione GPS).
     const riduci = (file) => new Promise((ok, ko) => {
       const img = new Image();
       img.onload = () => {
@@ -743,7 +658,7 @@ const accesso = accessoLocale();
       const nuovo = !pezzoInModifica;
       occupato($('#pezzoSalva'), async () => {
         try {
-          const d = await api('pezzi.php', { form: f });
+          const d = await api('pezzi', { form: f });
           pezzi = d.pezzi;
           chiudiPezzo();
           avviso(nuovo ? `«${nome}» è in vetrina` : 'Modifiche salvate: il sito è già aggiornato');
@@ -821,7 +736,7 @@ const accesso = accessoLocale();
       oErr.hidden = true;
       occupato($('#orariSalva'), async () => {
         try {
-          const d = await api('orari.php', { json: { azione: 'settimana', orari: nuovi } });
+          const d = await api('orari', { json: { azione: 'settimana', orari: nuovi } });
           orari = d.orari; chiusure = d.chiusure;
           segnaSporco(false); riepilogo();
           $('#oStato').textContent = '✓ Salvati';
@@ -857,7 +772,7 @@ const accesso = accessoLocale();
       cErr.hidden = true;
       occupato(e.target.querySelector('button'), async () => {
         try {
-          const d = await api('orari.php', { json: { azione: 'chiusura', dal, al, motivo } });
+          const d = await api('orari', { json: { azione: 'chiusura', dal, al, motivo } });
           chiusure = d.chiusure; renderChiusure();
           e.target.reset();
           avviso(`Chiusura aggiunta: ${periodo({ dal, al })}`);
@@ -868,10 +783,10 @@ const accesso = accessoLocale();
       const b = e.target.closest('[data-chiu]'); if (!b) return;
       const tolta = chiusure.find((c) => c.id === +b.dataset.chiu);
       occupato(b, async () => {
-        const d = await api('orari.php', { json: { azione: 'elimina-chiusura', id: tolta.id } });
+        const d = await api('orari', { json: { azione: 'elimina-chiusura', id: tolta.id } });
         chiusure = d.chiusure; renderChiusure();
         avviso(`Chiusura ${periodo(tolta)} tolta`, async () => {
-          const r = await api('orari.php', { json: { azione: 'chiusura', dal: tolta.dal, al: tolta.al, motivo: tolta.motivo } });
+          const r = await api('orari', { json: { azione: 'chiusura', dal: tolta.dal, al: tolta.al, motivo: tolta.motivo } });
           chiusure = r.chiusure; renderChiusure(); avviso('Chiusura rimessa');
         });
       }).catch(sbaglio);
@@ -910,12 +825,12 @@ const accesso = accessoLocale();
       if (b.dataset.bmod) apriMarchio(marchi.find((m) => m.id === +b.dataset.bmod));
       if (b.dataset.bvia) occupato(b, async () => {
         const i = marchi.findIndex((m) => m.id === +b.dataset.bvia), tolto = marchi[i];
-        const d = await api('marchi.php', { json: { azione: 'elimina', id: tolto.id } });
+        const d = await api('marchi', { json: { azione: 'elimina', id: tolto.id } });
         marchi = d.marchi;
         if (tolto.id === marchioInModifica) chiudiMarchio();
         renderMarchi();
         avviso(`«${tolto.nome}» tolto dalla home`, async () => {
-          const r = await api('marchi.php', { json: { azione: 'ripristina', nome: tolto.nome, reparto: tolto.reparto, nota: tolto.nota || '', posizione: i } });
+          const r = await api('marchi', { json: { azione: 'ripristina', nome: tolto.nome, reparto: tolto.reparto, nota: tolto.nota || '', posizione: i } });
           marchi = r.marchi; renderMarchi(); avviso('Marchio rimesso');
         });
       }).catch(sbaglio);
@@ -928,7 +843,7 @@ const accesso = accessoLocale();
       const nuovo = !marchioInModifica;
       occupato($('#salva'), async () => {
         try {
-          const d = await api('marchi.php', { json: nuovo ? { azione: 'crea', ...dati } : { azione: 'modifica', id: marchioInModifica, ...dati } });
+          const d = await api('marchi', { json: nuovo ? { azione: 'crea', ...dati } : { azione: 'modifica', id: marchioInModifica, ...dati } });
           marchi = d.marchi; chiudiMarchio();
           avviso(nuovo ? `«${nome}» aggiunto alla home` : 'Modifiche salvate');
         } catch (err) { $('#bErr').textContent = err.message; $('#bErr').hidden = false; }
@@ -944,7 +859,7 @@ const accesso = accessoLocale();
       if (nuova !== $('#pw-ripeti').value) { err.textContent = 'Le due password nuove non coincidono.'; err.hidden = false; return; }
       occupato(e.target.querySelector('button'), async () => {
         try {
-          await api('accesso.php', { json: { azione: 'password', attuale: $('#pw-attuale').value, nuova } });
+          await api('accesso', { json: { azione: 'password', attuale: $('#pw-attuale').value, nuova } });
           e.target.reset(); err.hidden = true; $('#password').open = false;
           avviso('Password cambiata');
         } catch (x) { err.textContent = x.message; err.hidden = false; }
@@ -953,7 +868,7 @@ const accesso = accessoLocale();
 
     /* ---------------- avvio ---------------- */
     async function avvia() {
-      const [p, o, m] = await Promise.all([api('pezzi.php'), api('orari.php'), api('marchi.php')]);
+      const [p, o, m] = await Promise.all([api('pezzi'), api('orari'), api('marchi')]);
       pezzi = p.pezzi; orari = o.orari; chiusure = o.chiusure; marchi = m.marchi;
       $('#caricamento').hidden = true; $('#accesso').hidden = true; $('#pannello').hidden = false;
       renderPezzi(); riempiOrari(); renderChiusure(); renderMarchi();
@@ -961,20 +876,10 @@ const accesso = accessoLocale();
       if (!SCHEDE.includes(k)) { try { k = sessionStorage.getItem('mas-scheda'); } catch { k = null; } }
       apriScheda(SCHEDE.includes(k) ? k : 'vetrina');
     }
-    // il codice del link si toglie subito dall'indirizzo (cronologia, schermate): resta solo qui
-    const daLink = location.hash.startsWith('#recupero=') ? location.hash.slice(10) : null;
-    if (daLink !== null) history.replaceState(null, '', location.pathname + location.search);
     (async () => {
-      if (daLink !== null) {
-        if (!/^[a-f0-9]{64}$/.test(daLink)) return apriRecupero('Il link non è completo: apritelo direttamente dall’email, oppure chiedetene uno nuovo qui sotto.');
-        codiceRecupero = daLink;
-        try { apriNuova((await api('recupero.php', { json: { azione: 'verifica', codice: daLink } })).utente); }
-        catch (err) { apriRecupero(err.message); }
-        return;
-      }
       try {
-        const s = await api('accesso.php');
-        if (s.collegato) { CSRF = s.csrf; await avvia(); } else mostraAccesso();
+        const s = await api('accesso');
+        if (s.collegato) await avvia(); else mostraAccesso();
       } catch (err) { mostraAccesso(err.message); }
     })();
   </script>

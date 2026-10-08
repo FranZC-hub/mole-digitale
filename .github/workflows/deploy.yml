@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       full_resync:
-        description: "Re-sync COMPLETO: svuota la cartella del sito sul server e la ricarica. Restano solo i dati SOPRA la cartella pubblica (mail-config.php, leads.csv, stats.csv, masgioielli-dati/). Usalo se il sito mostra asset mancanti/rotti dopo un deploy."
+        description: "Re-sync COMPLETO: svuota la cartella del sito sul server e la ricarica. Restano solo i dati SOPRA la cartella pubblica (mail-config.php, leads.csv, stats.csv). Usalo se il sito mostra asset mancanti/rotti dopo un deploy."
         type: boolean
         default: false
 
@@ -38,29 +38,11 @@ jobs:
         # giuste della piattaforma al volo (il lock resta comunque come riferimento).
         run: npm install --no-audit --no-fund
 
-      - name: PHP 8.3 (come sugli hosting), per il collaudo di MasGioielli
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.3'
-          extensions: pdo_sqlite, pdo_mysql, gd
-          coverage: none
-
-      - name: Collaudo dell'API di MasGioielli (blocca il deploy se qualcosa non va)
-        run: node tools/masgioielli/prova-api.mjs
-
       - name: Build del sito (genera dist/)
         run: npm run build
-        env:
-          # Credenziali dell'area riservata di MasGioielli, mostrate solo in /demoClientiDev/
-          # (pagina privata): stanno nei secret, mai nel repository, che e' pubblico.
-          MAS_DEV_UTENTE: ${{ secrets.MAS_DEV_UTENTE }}
-          MAS_DEV_PASSWORD: ${{ secrets.MAS_DEV_PASSWORD }}
 
       - name: Verifica link interni (blocca il deploy se rotti)
         run: node tools/check-links.mjs
-
-      - name: "MasGioielli: API completa, nessuna credenziale in dist/"
-        run: node tools/masgioielli/controlla.mjs
 
       - name: Carica dist/ su Aruba via FTP
         if: env.HAS_FTP == 'true'
@@ -82,8 +64,7 @@ jobs:
           # Con "full_resync" SVUOTA tutta la cartella del sito, ANCHE i file in "exclude"
           # (così fa l'action: "Deletes ALL contents of server-dir, even items in excluded").
           # Per questo i dati che devono restare stanno SOPRA la cartella pubblica:
-          # mail-config.php, leads.csv, stats*.csv e masgioielli-dati/ (configurazione e foto
-          # della versione reale di MasGioielli).
+          # mail-config.php, leads.csv, stats*.csv.
           dangerous-clean-slate: ${{ github.event.inputs.full_resync == 'true' }}
           # Verbose: aiuta a capire cosa carica/cancella se qualcosa va storto.
           log-level: verbose
@@ -96,10 +77,6 @@ jobs:
             leads.csv
             stats.csv
             stats-*.csv
-            # MasGioielli, se un giorno configurazione o foto stessero nella cartella pubblica
-            # (di norma sono in masgioielli-dati/, sopra): il deploy normale non le tocca
-            masgioielliDev/api/config.php
-            masgioielliDev/uploads/pezzi/**
             # Subset dei font che il sito (in italiano) non usa mai: grazie a unicode-range
             # il browser non li richiede nemmeno, quindi non caricarli fa solo risparmiare
             # ~500 KB di upload. Se un giorno servisse un'altra lingua, togli queste righe.

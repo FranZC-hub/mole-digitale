@@ -7,13 +7,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "mas:server": "node tools/masgioielli/server-locale.mjs",
-    "mas:server:mysql": "node tools/masgioielli/server-locale.mjs --mysql",
-    "mas:esempio": "node tools/masgioielli/server-locale.mjs --mysql --esempio --build",
-    "mas:prova-api": "node tools/masgioielli/prova-api.mjs",
-    "mas:prova-sito": "astro build && node tools/masgioielli/prova-sito.mjs",
-    "mas:prova-locale": "astro build && node tools/masgioielli/prova-locale.mjs",
-    "mas:controlla": "node tools/masgioielli/controlla.mjs"
+    "mas:prova": "astro build && node tools/masgioielli/prova-locale.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.18",

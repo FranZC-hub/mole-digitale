@@ -1,9 +1,0 @@
-# Le credenziali e l'esempio di configurazione non si aprono dal browser
-<FilesMatch "^config(\.esempio)?\.php$">
-  Require all denied
-</FilesMatch>
-
-# le risposte dell'API non vanno indicizzate
-<IfModule mod_headers.c>
-  Header always set X-Robots-Tag "noindex"
-</IfModule>

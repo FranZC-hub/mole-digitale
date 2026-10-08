@@ -2,8 +2,8 @@
 import Layout from '../../layouts/Layout.astro';
 import { CLIENTI } from '../../data/clienti.js';
 
-// PAGINA PRIVATA — le versioni REALI dei siti clienti, in sviluppo: database, area riservata
-// con password vera, messaggi via email. Ogni progetto nasce come bozza in /demoClienti/;
+// PAGINA PRIVATA — le versioni REALI dei siti clienti, in sviluppo: pagine definitive e area
+// riservata con password. Ogni progetto nasce come bozza in /demoClienti/;
 // quando il cliente dice si', la versione reale cresce qui prima di andare sul suo dominio.
 // Come /demoClienti: non collegata dal sito, noindex, fuori dalla sitemap (astro.config.mjs).
 // Elenca TUTTI i clienti: chi non ha ancora la versione reale compare con la sola bozza.
@@ -11,19 +11,8 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 
-// Credenziali dell'area riservata: mai nel codice (il repository e' pubblico). Si leggono qui,
-// durante la build: dai secret di GitHub (es. MAS_DEV_PASSWORD) per il sito online, oppure in
-// locale dal database d'esempio creato da `npm run mas:esempio`.
-function credenziali(a) {
-  const pass = process.env[a.env + '_PASSWORD'];
-  if (pass) return { user: process.env[a.env + '_UTENTE'] || 'negozio', pass, nota: '' };
-  try {
-    const j = JSON.parse(readFileSync(join(process.cwd(), a.locale), 'utf8'));
-    return { user: j.utente, pass: j.password, nota: 'database d’esempio in locale' };
-  } catch {
-    return null;
-  }
-}
+// Credenziali dell'area riservata: quelle scritte nel progetto (src/data/clienti.js).
+const credenziali = (a) => (a.user && a.pass ? { user: a.user, pass: a.pass, nota: '' } : null);
 
 // Checklist: si parte dalle voci ✅/⬜ di docs/<cliente>/PRODUZIONE.md, sezione per sezione (le
 // righe rientrate continuano la voce sopra). Sulla pagina si spunta e si modifica (resta nel
@@ -76,19 +65,19 @@ const soloBozza = CLIENTI.filter((c) => !c.dev);
 ---
 <Layout
   title="Versioni reali dei clienti — pagina privata | Mole Digitale"
-  description="Pagina privata: i siti dei clienti in sviluppo, con database e area riservata."
+  description="Pagina privata: i siti dei clienti in sviluppo, con le loro aree riservate."
   noindex={true}
 >
   <section class="section" style="padding-top:8rem;">
     <div class="section-head" data-reveal>
       <span class="kicker">Riservato · sviluppo</span>
       <h1>I siti dei clienti, <span class="grad">quelli veri</span>.</h1>
-      <p class="section-lead">Qui i siti funzionano davvero: database, area riservata con password, messaggi che arrivano per email. Ogni progetto parte come bozza in <a class="in-testo" href="/demoClienti/">/demoClienti</a>; quando il cliente dice sì, cresce qui prima di andare sul suo dominio.</p>
+      <p class="section-lead">Qui crescono i siti veri: le pagine definitive e l’area riservata con password. Ogni progetto parte come bozza in <a class="in-testo" href="/demoClienti/">/demoClienti</a>; quando il cliente dice sì, cresce qui prima di andare sul suo dominio.</p>
     </div>
 
     <div class="avviso glass" data-reveal>
       <b>Questa pagina è privata, e qui i dati sono veri.</b>
-      <p>Non è collegata dal sito, non è nella sitemap ed è marcata <code>noindex</code>, come anche le versioni qui sotto. Ma qui ci sono le <b>password delle aree riservate vere</b>: chi ha questo link entra e può cambiare i loro siti. Non mandarla a nessuno: a un cliente manda il link del suo sito. Le password non sono nel codice (il repository è pubblico): la pagina le prende dal server quando viene pubblicata.</p>
+      <p>Non è collegata dal sito, non è nella sitemap ed è marcata <code>noindex</code>, come anche le versioni qui sotto. Ma qui ci sono le <b>password delle aree riservate vere</b>: chi ha questo link entra nelle loro aree riservate. Non mandarla a nessuno: a un cliente manda il link del suo sito. Come nelle bozze, queste password sono scritte nel codice (il repository è pubblico): non usarle per nient’altro.</p>
     </div>
 
     <div class="clienti">

@@ -1,4 +1,5 @@
-# MasGioielli, versione reale in sviluppo dentro moledigitale.it/masgioielliDev/
+# MasGioielli, versione in sviluppo dentro moledigitale.it/masgioielliDev/ (sito statico:
+# i dati dell'area riservata restano nel browser, nessun PHP)
 #
 # Si AGGIUNGE al .htaccess del sito principale (HTTPS, HSTS, nosniff, cache, compressione
 # restano quelli): qui solo cio' che questo sito ha di diverso.
@@ -17,7 +18,7 @@ ErrorDocument 404 /masgioielliDev/404/index.html
 <IfModule mod_headers.c>
   # Versione in sviluppo: fuori da Google anche se qualcuno trovasse il link
   Header always set X-Robots-Tag "noindex, nofollow"
-  # CSP propria, piu' stretta di quella del sito principale (niente script in linea) e con
-  # le immagini blob: che servono all'anteprima delle foto nell'area riservata.
+  # CSP propria, piu' stretta di quella del sito principale (niente script in linea), con le
+  # immagini blob: e data: delle foto caricate dall'area riservata (salvate nel browser).
   Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
 </IfModule>

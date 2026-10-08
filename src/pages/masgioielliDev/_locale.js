@@ -1,11 +1,8 @@
-// MasGioielli SENZA DATABASE (per ora, vedi SENZA_DATABASE in _sito.js).
-// Fa le veci delle API PHP di api/: stesse domande, stesse risposte, stessi errori, ma i dati
-// restano in QUESTO browser (localStorage). Il negozio vede le sue modifiche solo sul
-// dispositivo da cui le fa: serve a provare il sito su localhost senza PHP ne' MySQL.
-// Il backend PHP e' rimasto in public/masgioielliDev/api/: per tornarci basta l'interruttore.
-//
-// L'accesso si controlla qui: nella pagina c'e' solo l'impronta PBKDF2 della password
-// (scritta in build da area-riservata.astro), mai la password.
+// MasGioielli senza database, come la bozza: quello che il negozio cambia dall'area riservata
+// (selezione, orari, chiusure, marchi) resta in QUESTO browser (localStorage), e il sito lo
+// legge da qui. Il negozio vede le sue modifiche solo sul dispositivo da cui le fa.
+// L'area riservata parla con questo modulo come parlerebbe con un server (apiLocale), il
+// sito ne legge i dati con datiLocali().
 import { CATEGORIE, REPARTI, ORARI } from './_sito.js';
 
 const P = 'masdev:';   // le chiavi della bozza /demoMasGioielli/ cominciano con "mas-": niente scontri
@@ -25,7 +22,7 @@ const nuovoId = () => { const n = (leggi('id', 0) || 0) + 1; scrivi('id', n); re
 const adesso = () => new Date().toISOString();
 const ieri = () => { const d = new Date(Date.now() - 86400000); return d.toISOString().slice(0, 10); };
 
-// ---------------------------------------------------------------- controlli (come api/lib/base.php)
+// ---------------------------------------------------------------- controlli sui campi
 const testo = (v, campo, max, obbligatorio = false, righe = false) => {
   if (v == null) v = '';
   if (typeof v !== 'string' && typeof v !== 'number') errore(`Campo «${campo}» non valido`, 422);
@@ -46,26 +43,27 @@ const dataIso = (v, campo) => {
 };
 
 // ---------------------------------------------------------------- accesso
-let ACCESSO = null;   // { utente, sale, giri, impronta } dalla build
-export const configuraAccesso = (a) => { ACCESSO = a && a.utente && a.impronta ? a : null; };
+// Come nella bozza, utente e password stanno qui nel codice: senza server proteggono solo i
+// dati di chi apre il pannello, che restano nel suo browser. Il repository e' pubblico:
+// questa password non va usata per nient'altro.
+export const UTENTE = 'admin';
+export const PASSWORD = 'DnwR-YvkQ-bpPV-FkxJ';
 
+// La password cambiata dal pannello vale solo su questo dispositivo (come tutto il resto) e
+// si salva come impronta PBKDF2, non in chiaro.
+const GIRI = 300000;
 const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
-async function impronta(password, sale, giri) {
+async function impronta(password, sale) {
   if (!crypto?.subtle) errore('Aprite l’area riservata da un indirizzo https', 503);
   const enc = new TextEncoder();
   const chiave = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
-  return hex(await crypto.subtle.deriveBits({ name: 'PBKDF2', salt: enc.encode(sale), iterations: giri, hash: 'SHA-256' }, chiave, 256));
+  return hex(await crypto.subtle.deriveBits({ name: 'PBKDF2', salt: enc.encode(sale), iterations: GIRI, hash: 'SHA-256' }, chiave, 256));
 }
-// la password cambiata da qui vale solo su questo dispositivo (come tutto il resto)
-const credenziali = () => {
-  const cambiata = leggi('password', null);
-  return cambiata && ACCESSO && cambiata.utente === ACCESSO.utente ? cambiata : ACCESSO;
-};
 async function passwordGiusta(utente, password) {
-  const c = credenziali();
-  if (!c) errore('Accesso non configurato: manca la password della versione in sviluppo', 503);
-  const calcolata = await impronta(password, c.sale, c.giri);
-  return utente === c.utente && calcolata === c.impronta;
+  if (utente !== UTENTE) return false;
+  const cambiata = leggi('password', null);
+  if (cambiata && cambiata.utente === UTENTE && cambiata.impronta) return (await impronta(password, cambiata.sale)) === cambiata.impronta;
+  return password === PASSWORD;
 }
 const collegato = () => { try { return sessionStorage.getItem(SESSIONE); } catch { return null; } };
 const richiediAccesso = () => collegato() || errore('Accesso scaduto: rientrate nell’area riservata', 401);
@@ -80,7 +78,7 @@ async function accesso(metodo, d) {
     if (nuova.length > 200) errore('La nuova password è troppo lunga', 422);
     if (!(await passwordGiusta(u, typeof d.attuale === 'string' ? d.attuale : ''))) errore('La password attuale non è corretta', 403);
     const sale = hex(crypto.getRandomValues(new Uint8Array(16)));
-    scrivi('password', { utente: u, sale, giri: ACCESSO.giri, impronta: await impronta(nuova, sale, ACCESSO.giri) });
+    scrivi('password', { utente: u, sale, impronta: await impronta(nuova, sale) });
     return { ok: true };
   }
   const utente = testo(d.utente, 'utente', 60);
@@ -233,17 +231,16 @@ async function marchi(metodo, d) {
 }
 
 // ---------------------------------------------------------------- password dimenticata
-// Senza server non parte nessuna email: si fa come se partisse (versione di prova), cosi'
-// il percorso si vede tutto. Il link vero arriva con il database (api/recupero.php).
+// Senza server non parte nessuna email: si fa come se partisse, cosi' il percorso si vede tutto.
 async function recupero(metodo, d) {
   if (d.azione === 'richiesta') { testo(d.utente, 'nome utente', 60, true); return { ok: true }; }
-  return errore('Questo link non vale più: è scaduto o è già stato usato. Chiedetene uno nuovo qui sotto.', 410);
+  return errore('Azione non valida');
 }
 
 // ---------------------------------------------------------------- ingresso
-const PERCORSI = { 'accesso.php': accesso, 'pezzi.php': selezione, 'orari.php': orari, 'marchi.php': marchi, 'recupero.php': recupero };
+const PERCORSI = { accesso, pezzi: selezione, orari, marchi, recupero };
 
-/** Come fetch(BASE + 'api/' + percorso) con le stesse opzioni dell'area riservata. */
+/** Le richieste dell'area riservata: apiLocale('pezzi', { json | form, metodo }). */
 export async function apiLocale(percorso, { json, form, metodo } = {}) {
   const m = metodo || (json || form ? 'POST' : 'GET');
   const d = json || (form ? Object.fromEntries(form.entries()) : {});
@@ -251,7 +248,7 @@ export async function apiLocale(percorso, { json, form, metodo } = {}) {
   return f(m, d);
 }
 
-/** Quello che restituirebbe api/dati.php: per le pagine del sito. */
+/** I dati che le pagine del sito mostrano (selezione, orari, chiusure, marchi). */
 export function datiLocali() {
   const o = statoOrari();
   return {

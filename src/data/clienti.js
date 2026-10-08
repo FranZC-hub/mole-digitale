@@ -1,8 +1,9 @@
 // Progetti per clienti reali: li usano le due pagine private
 //   /demoClienti/     le bozze da far vedere (dati nel browser, nessun server)
-//   /demoClientiDev/  le versioni reali in sviluppo (database, area riservata vera, email)
+//   /demoClientiDev/  le versioni reali in sviluppo (pagine definitive, area riservata)
 // Un progetto nasce come bozza; quando il cliente dice si', la versione reale cresce in
 // /demoClientiDev/ (campo `dev`) prima di andare sul suo dominio.
+import { UTENTE as MAS_UTENTE, PASSWORD as MAS_PASSWORD } from '../pages/masgioielliDev/_locale.js';
 
 export const CLIENTI = [
   {
@@ -54,11 +55,10 @@ export const CLIENTI = [
     dev: {
       url: '/masgioielliDev/',
       stato: 'Versione reale in sviluppo',
-      // per ora senza database (SENZA_DATABASE in src/pages/masgioielliDev/_sito.js)
-      tecnica: 'Pagine statiche · per ora senza database: i dati restano nel browser',
+      tecnica: 'Pagine statiche · area riservata con i dati nel browser, come la bozza',
       dentro: [
         'Le pagine della bozza approvata, senza più nulla da bozza: niente note per il titolare, niente dati inventati',
-        'Per ora senza database: quello che il negozio cambia dall’area riservata resta su quel dispositivo (il backend PHP + MySQL è pronto, si riaccende con un interruttore)',
+        'Senza database, come la bozza: quello che il negozio cambia dall’area riservata resta su quel dispositivo',
         'Area riservata con accesso protetto: selezione con le foto dal telefono, orari, chiusure straordinarie, marchi',
         'I moduli Contatti e Perizie, senza server, avvisano che il messaggio non parte e indicano WhatsApp e telefono',
         'Fuori da Google finché è in sviluppo; quando è pronto si sposta su masgioielli.it',
@@ -72,11 +72,8 @@ export const CLIENTI = [
         { t: 'Contatti', u: '/masgioielliDev/contatti/' },
         { t: 'Privacy', u: '/masgioielliDev/privacy/' },
       ],
-      // Le credenziali NON stanno qui (il repository e' pubblico): /demoClientiDev/ le legge
-      // durante la build da MAS_DEV_UTENTE / MAS_DEV_PASSWORD (secret di GitHub, per il sito
-      // online) oppure, in locale, da .locale/negozio-mysql.json. Senza database l'area riservata
-      // usa le stesse credenziali (nella pagina va solo l'impronta della password).
-      accesso: { t: 'Area riservata', u: '/masgioielliDev/area-riservata/', env: 'MAS_DEV', locale: '.locale/negozio-mysql.json' },
+      // utente e password sono quelli scritti nell'area riservata (masgioielliDev/_locale.js)
+      accesso: { t: 'Area riservata', u: '/masgioielliDev/area-riservata/', user: MAS_UTENTE, pass: MAS_PASSWORD },
       // la checklist della pagina viene da qui: per spuntare una voce, ⬜ → ✅ nel documento
       checklist: 'docs/masgioielli/PRODUZIONE.md',
     },
