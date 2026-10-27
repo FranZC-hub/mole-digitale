@@ -5,7 +5,7 @@
 // sito ne legge i dati con datiLocali().
 import { CATEGORIE, REPARTI, ORARI } from './_sito.js';
 
-const P = 'masdev:';   // le chiavi della bozza /demoMasGioielli/ cominciano con "mas-": niente scontri
+const P = 'masdev:';   // diverse da quelle della vecchia bozza ("mas-", tolta a ottobre 2026): niente scontri
 const SESSIONE = P + 'sessione';
 const errore = (msg, stato = 400) => { throw Object.assign(new Error(msg), { stato }); };
 

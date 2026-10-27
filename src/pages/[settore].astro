@@ -282,8 +282,8 @@ const inclusoBy = {
 // FAQ per settore (nome interpolato) + dati strutturati FAQPage
 const faqs = [
   { q: `Quanto costa un sito per ${d.h1b}?`, a: group === 'shop'
-      ? `Si parte da €490 una tantum per il sito Essenziale (onepage). Per ${d.h1b} la scelta tipica è il sito Attività a €790 come vetrina con ${inclusoBy.shop} — oppure, se vuoi vendere online, l'e-commerce completo da €1.200 con carrello e pagamenti. Poi un canone di €29/mese per hosting, dominio, SSL e assistenza. Prima bozza gratis, prezzi IVA esclusa.`
-      : `Si parte da €490 una tantum per il sito Essenziale (onepage); il pacchetto più scelto per ${d.h1b} è il sito Attività a €790, con ${inclusoBy[group]}. Poi un canone di €29/mese per hosting, dominio, SSL e assistenza. Prima bozza gratis, prezzi IVA esclusa.` },
+      ? `Dipende da cosa ti serve. Per ${d.h1b} la scelta tipica è il sito Attività come vetrina con ${inclusoBy.shop} — oppure, se vuoi vendere online, un e-commerce completo con carrello e pagamenti. Ti mandiamo un preventivo su misura entro 24 ore, gratis e senza impegno: dentro trovi la creazione del sito (una tantum) e il canone mensile per hosting, dominio, SSL e assistenza. La prima bozza è gratis.`
+      : `Dipende da cosa ti serve: il pacchetto più scelto per ${d.h1b} è il sito Attività, con ${inclusoBy[group]}. Ti mandiamo un preventivo su misura entro 24 ore, gratis e senza impegno: dentro trovi la creazione del sito (una tantum) e il canone mensile per hosting, dominio, SSL e assistenza. La prima bozza è gratis.` },
   { q: 'In quanto tempo è pronto?', a: 'In media 7 giorni lavorativi da quando abbiamo foto e testi. Con il brief guidato su moledigitale.it/inizia raccogliamo tutto in una volta e partiamo subito.' },
   { q: 'Devo avere già foto e testi?', a: 'No. Se non li hai, i testi li scriviamo noi (pensati per farti scegliere dai clienti) e per le foto possiamo organizzare uno shooting a Torino. Si parte anche da una semplice chiacchierata.' },
   { q: 'Verrò trovato su Google?', a: `Il sito nasce ottimizzato per le ricerche locali (es. «${d.h1b.replace(' a Torino', '')} vicino a me») e includiamo la scheda Google Business. I risultati SEO crescono nelle settimane: ti diciamo sempre cosa aspettarti, senza promesse magiche.` },
@@ -336,15 +336,15 @@ const faqSchemaSettore = {
       <span class="land-shot-cap"><b>{d.demoName}</b> — un esempio reale di come può essere il tuo sito · <i>apri la demo →</i></span>
     </a>
 
-    <!-- Prezzi chiari -->
+    <!-- Pacchetti, senza prezzi: la cifra arriva col preventivo -->
     <div class="land-price" data-reveal>
-      <h2>Quanto costa, <span class="grad">senza sorprese</span>.</h2>
+      <h2>Quanto costa? <span class="grad">Te lo diciamo prima</span>.</h2>
       <div class="land-price-grid">
-        <div class="land-price-card glass"><b>Essenziale</b><span class="lp-p">€490</span><span class="lp-d">onepage · contatti, mappa, WhatsApp</span></div>
-        <div class="land-price-card glass lp-hot"><b>Attività</b><span class="lp-p">€790</span><span class="lp-d">fino a 6 pagine · prenotazioni, SEO locale, scheda Google</span></div>
-        <div class="land-price-card glass"><b>Poi</b><span class="lp-p">€29<i>/mese</i></span><span class="lp-d">hosting, dominio, SSL e assistenza</span></div>
+        <a class="land-price-card glass" href="/preventivo?progetto=essenziale"><b>Essenziale</b><span class="lp-p lp-tx">su preventivo</span><span class="lp-d">onepage · contatti, mappa, WhatsApp</span></a>
+        <a class="land-price-card glass lp-hot" href="/preventivo?progetto=attivita"><b>Attività</b><span class="lp-p lp-tx">su preventivo</span><span class="lp-d">fino a 6 pagine · prenotazioni, SEO locale, scheda Google</span></a>
+        <div class="land-price-card glass"><b>Poi</b><span class="lp-p lp-tx">canone mensile</span><span class="lp-d">hosting, dominio, SSL e assistenza</span></div>
       </div>
-      <p class="lp-note">Prima bozza gratis, nessun anticipo · prezzi IVA esclusa.</p>
+      <p class="lp-note"><a href="/preventivo">Chiedi il preventivo</a>: gratis, entro 24 ore. Prima bozza gratis, nessun anticipo.</p>
     </div>
 
     {d.widget && (
@@ -390,6 +390,9 @@ const faqSchemaSettore = {
     .land-price-card b { display:block; font-family:'Space Grotesk Variable','Space Grotesk'; margin-bottom:.3rem; }
     .lp-p { display:block; font-family:'Space Grotesk Variable','Space Grotesk'; font-size:1.9rem; font-weight:700; background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
     .lp-p i { font-style:normal; font-size:.9rem; }
+    .lp-tx { font-size:1.4rem; padding:.25rem 0; }
+    a.land-price-card { display:block; color:inherit; text-decoration:none; transition:border-color .2s, transform .2s; }
+    a.land-price-card:hover { border-color:rgba(124,92,255,.6); transform:translateY(-3px); }
     .lp-d { color:var(--muted); font-size:.85rem; }
     .lp-hot { border-color:rgba(124,92,255,.5); }
     .lp-note { color:var(--muted); font-size:.92rem; margin-top:1rem; }

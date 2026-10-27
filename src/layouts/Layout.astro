@@ -58,10 +58,12 @@ const businessSchema = {
   areaServed: { '@type': 'City', name: 'Torino' },
   address: { '@type': 'PostalAddress', addressLocality: 'Torino', addressRegion: 'TO', addressCountry: 'IT' },
   geo: { '@type': 'GeoCoordinates', latitude: 45.0703, longitude: 7.6869 },
+  // I pacchetti senza prezzi: sul sito non ci sono cifre, arrivano col preventivo (/preventivo)
   makesOffer: [
-    { '@type': 'Offer', name: 'Sito Essenziale', price: '490', priceCurrency: 'EUR', priceSpecification: { '@type': 'PriceSpecification', price: '490', priceCurrency: 'EUR', valueAddedTaxIncluded: false } },
-    { '@type': 'Offer', name: 'Sito Attività', price: '790', priceCurrency: 'EUR', priceSpecification: { '@type': 'PriceSpecification', price: '790', priceCurrency: 'EUR', valueAddedTaxIncluded: false } },
-    { '@type': 'Offer', name: 'Hosting & dominio (canone mensile)', price: '29', priceCurrency: 'EUR', priceSpecification: { '@type': 'PriceSpecification', price: '29', priceCurrency: 'EUR', valueAddedTaxIncluded: false } },
+    { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Sito Essenziale' } },
+    { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Sito Attività' } },
+    { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Sito su misura' } },
+    { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Hosting & dominio (canone mensile)' } },
   ],
 };
 
@@ -71,7 +73,7 @@ const faqSchema = {
   mainEntity: [
     { '@type': 'Question', name: 'Quanto tempo ci vuole davvero?', acceptedAnswer: { '@type': 'Answer', text: "In media 7 giorni lavorativi per un sito completo. Per l'onepage Essenziale anche 5. Dipende da quanto velocemente ci mandi foto e testi — ma su quello ti diamo una mano." } },
     { '@type': 'Question', name: 'Devo avere già le foto e i testi?', acceptedAnswer: { '@type': 'Answer', text: 'No. Se non li hai, ti aiutiamo noi a scrivere i testi e possiamo organizzare uno shooting foto a Torino a parte. Partiamo anche solo da una chiacchierata.' } },
-    { '@type': 'Question', name: 'Il prezzo è davvero tutto lì?', acceptedAnswer: { '@type': 'Answer', text: 'Sì, te lo diciamo prima. Paghi una tantum la creazione, poi un canone di 29€/mese + IVA per hosting, dominio, SSL e assistenza. Le modifiche al sito sono un servizio a parte, con piccole cifre dette sempre prima. Tutti i prezzi sono IVA esclusa.' } },
+    { '@type': 'Question', name: 'Come funziona il prezzo?', acceptedAnswer: { '@type': 'Answer', text: 'Ti mandiamo un preventivo su misura, gratis e senza impegno, prima di iniziare: dentro trovi la creazione del sito (una tantum) e il canone mensile per hosting, dominio, SSL e assistenza tecnica. Le modifiche al sito sono un servizio a parte, con piccole cifre dette sempre prima — nessuna sorpresa.' } },
     { '@type': 'Question', name: 'Lavorate solo a Torino?', acceptedAnswer: { '@type': 'Answer', text: 'Partiamo da Torino e provincia perché ci piace incontrare di persona gli esercenti. Ma lavoriamo benissimo anche a distanza, quindi se sei fuori scrivici lo stesso.' } },
     { '@type': 'Question', name: 'E dopo, se voglio cambiare qualcosa?', acceptedAnswer: { '@type': 'Answer', text: 'Ci scrivi e lo facciamo noi: ogni modifica ha una piccola cifra chiara, detta sempre prima di partire. Niente sorprese in fattura.' } },
   ],
@@ -96,7 +98,6 @@ const serviceSchema = {
   provider: { '@type': 'ProfessionalService', name: 'Mole Digitale', url: Astro.site?.href },
   areaServed: { '@type': 'City', name: 'Torino' },
   description: 'Creazione e restyling di siti web moderni, veloci e ottimizzati per Google, per ristoranti, negozi e attività di Torino e provincia.',
-  offers: { '@type': 'Offer', priceCurrency: 'EUR', price: '490', priceSpecification: { '@type': 'PriceSpecification', price: '490', priceCurrency: 'EUR', valueAddedTaxIncluded: false } },
 };
 
 // Breadcrumb: Home > pagina corrente (solo nelle pagine interne)
@@ -254,7 +255,7 @@ const articleSchema = article ? {
     </a>
     <nav class="nav-links" aria-label="Principale">
       <a href="/#servizi">Servizi</a>
-      <a href="/#prezzi">Prezzi</a>
+      <a href="/#prezzi">Pacchetti</a>
       <a href="/demo" class={isActive('/demo') ? 'active' : undefined} aria-current={isActive('/demo') ? 'page' : undefined}>Esempi</a>
       <a href="/blog" class={isActive('/blog') ? 'active' : undefined} aria-current={isActive('/blog') ? 'page' : undefined}>Blog</a>
       <a href="/chi-siamo" class={isActive('/chi-siamo') ? 'active' : undefined} aria-current={isActive('/chi-siamo') ? 'page' : undefined}>Chi siamo</a>
@@ -292,8 +293,9 @@ const articleSchema = article ? {
       <div class="footer-col">
         <h2>Sito</h2>
         <a href="/#servizi">Servizi</a>
-        <a href="/#prezzi">Prezzi</a>
+        <a href="/#prezzi">Pacchetti</a>
         <a href="/inizia">Inizia da qui</a>
+        <a href="/preventivo">Preventivo gratuito</a>
         <a href="/demo">Demo</a>
         <a href="/blog">Blog</a>
         <a href="/chi-siamo">Chi siamo</a>

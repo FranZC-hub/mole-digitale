@@ -8,8 +8,8 @@ quel dispositivo, non i clienti (vedi `PRODUZIONE.md`).
 
 Vive **dentro il sito di Mole Digitale**, in `https://www.moledigitale.it/masgioielliDev/`,
 finché non è pronto per masgioielli.it. È fuori da Google (`noindex`, fuori dalla sitemap).
-La raccolta di tutti i progetti in sviluppo è `/demoClientiDev/`; la bozza vista dal cliente
-resta in `/demoMasGioielli/`.
+La raccolta di tutti i progetti in sviluppo è `/demoClientiDev/`. La bozza `/demoMasGioielli/`
+è stata tolta il 27 ottobre 2026: i suoi indirizzi portano qui (redirect in `public/.htaccess`).
 
 Sono solo file statici: va su qualsiasi hosting con Apache e `.htaccess`, senza PHP né database.
 

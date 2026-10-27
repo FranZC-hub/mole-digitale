@@ -5,20 +5,20 @@ import { BASE, INFO, orariInRiga } from './_sito.js';
 // Nessuna cifra inventata (niente quotazioni né "miglior prezzo garantito"): solo
 // come funziona, cosa serve per legge e l'alternativa onesta del laboratorio.
 const passi = [
-  { n: 'I', t: 'Portateci l’oro', d: 'Catenine spezzate, orecchini spaiati, fedi che non portate più, anche con pietre: va bene tutto, in qualsiasi stato.' },
+  { n: 'I', t: 'Portate il vostro oro', d: 'Qualsiasi gioiello che non usate più, anche se danneggiato.' },
   { n: 'II', t: 'Titolo e peso, davanti a voi', d: 'Verifichiamo la caratura di ogni pezzo e lo pesiamo sulla bilancia sotto i vostri occhi. Niente passa dietro il banco.' },
-  { n: 'III', t: 'Una proposta chiara', d: 'Calcolata sulla quotazione dell’oro del giorno. Decidete voi, con calma: se non vi convince, ve lo riportate a casa.' },
-  { n: 'IV', t: 'Il pagamento', d: 'Con documento d’identità e codice fiscale, come chiede la legge. Sopra i 500 € il pagamento è tracciabile.' },
+  { n: 'III', t: 'Una proposta chiara', d: 'Calcolata sulla quotazione dell’oro della giornata. Svilupperemo una proposta trasparente e senza impegno.' },
+  { n: 'IV', t: 'Il pagamento', d: 'Tramite bonifico bancario o contanti, entro i limiti imposti dalla normativa vigente.' },
 ];
 const WA_ORO = `https://wa.me/${INFO.wa}?text=${encodeURIComponent(`Buongiorno ${INFO.nome}! Avrei dell’oro usato da far valutare: quando posso passare?`)}`;
 ---
 <Layout title="Compro oro" active="Compro oro" desc={`Compro oro a Torino in Corso Trapani: valutazione dell’oro usato in negozio, davanti a voi, sulla quotazione del giorno. ${INFO.nome}, dal ${INFO.fondata}.`}>
 
   <section class="testa-pagina">
-    <div class="misura stretta intro centro a">
+    <div class="misura stretta intro centro">
       <span class="occhiello centro">Compro oro</span>
       <h1>Il vostro oro usato,<br/><span class="it oro">valutato con onestà</span></h1>
-      <p>Lo pesiamo e lo valutiamo in negozio, davanti a voi, sulla quotazione del giorno. La valutazione è gratuita e non vi impegna a nulla.</p>
+      <p>Siamo operatori compro oro regolarmente iscritti all’OAM (n° {INFO.oam}). Pesiamo e valutiamo in negozio il vostro oro, sulla base della quotazione della giornata. La valutazione è sempre gratuita e trasparente.</p>
     </div>
   </section>
 
@@ -42,7 +42,7 @@ const WA_ORO = `https://wa.me/${INFO.wa}?text=${encodeURIComponent(`Buongiorno $
         <p class="prima-t">Non tutto<br/><span class="it prima-oro">va venduto.</span></p>
       </div>
       <div class="a">
-        <p>Un gioiello di famiglia rotto, spesso, si ripara. E con l’oro che avete in un cassetto si può fare un pezzo nuovo, che vi rappresenta: lo disegniamo e lo realizziamo nel nostro laboratorio. Ve lo diciamo sempre, prima di fare una proposta d’acquisto.</p>
+        <p>Un gioiello di famiglia rotto, spesso, si può riparare, mentre un gioiello che non indossate si può modificare in un modello nuovo che vi rappresenta: lo disegniamo insieme e lo realizziamo in laboratorio.</p>
         <ul class="prima-lista">
           <li><a href={BASE + 'atelier/'}>Riparazioni e trasformazioni in laboratorio</a></li>
           <li><a href={BASE + 'perizie/'}>State dividendo un’eredità? Prima serve una perizia</a></li>
@@ -59,7 +59,7 @@ const WA_ORO = `https://wa.me/${INFO.wa}?text=${encodeURIComponent(`Buongiorno $
         <h2 class="serve-h2">Due documenti,<br/><span class="it oro">e l’oro.</span></h2>
         <ul class="serve-lista">
           <li><b>Documento d’identità</b> valido</li>
-          <li><b>Codice fiscale</b> (va bene la tessera sanitaria)</li>
+          <li><b>Codice fiscale</b> (è sufficiente anche quello riportato sulla carta d’identità elettronica)</li>
         </ul>
         <p class="serve-legge">Li chiede la legge a tutti i compro oro (D.Lgs. 92/2017), per garantire che ogni acquisto sia tracciato e regolare.{INFO.oam && <> Iscrizione al Registro degli operatori compro oro n. {INFO.oam}.</>}</p>
       </div>

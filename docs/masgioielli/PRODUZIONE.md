@@ -1,6 +1,6 @@
 # MasGioielli — cosa manca
 
-Stato all'8 ottobre 2026. ✅ fatto · ⬜ da fare · 👤 serve qualcosa dal negozio
+Stato al 27 ottobre 2026. ✅ fatto · ⬜ da fare · 👤 serve qualcosa dal negozio
 
 Due tappe: prima la **versione in sviluppo** dentro moledigitale.it (`/masgioielliDev/`, su
 Aruba), poi il **passaggio a masgioielli.it**. Il sito è statico, come la bozza: l'area
@@ -16,6 +16,9 @@ riservata salva i dati nel browser di chi la usa (localStorage), senza database.
 - ✅ «Password dimenticata?» fa come se mandasse l'email (senza server non parte nulla)
 - ✅ Moduli Contatti e Perizie: senza server non inviano, lo dicono e indicano WhatsApp e telefono
 - ✅ Logo nuovo dal PDF del negozio (ottobre 2026), anche nell'anteprima per i social
+- ✅ Testi rivisti dal negozio (file «Testi sito», 27 ottobre 2026) applicati a home, selezione,
+  atelier, compro oro, perizie e contatti: c'è Alessandro nella storia del negozio, il numero
+  OAM nel compro oro, tolta la possibilità di ricevere a negozio chiuso
 - ✅ Collaudo nel browser con la CSP del server (`npm run mas:prova`): accesso, vetrina con foto,
   orari, chiusure, marchi, quello che mostra il sito, moduli, password, pagine al telefono
 - ✅ Fuori da Google finché è in sviluppo: `noindex` nelle pagine, `X-Robots-Tag`, fuori dalla sitemap
@@ -59,17 +62,16 @@ riservata salva i dati nel browser di chi la usa (localStorage), senza database.
 - ⬜ **Foto della home**: quella grande in apertura è d'archivio (`img/apertura-provvisoria.webp`)
 - ⬜ **I pezzi della Selezione** (la sezione resta nascosta finché è vuota)
 - ⬜ **I marchi che trattano davvero** (nelle loro foto si vedono Salvatore Arzani e Giorgio Visconti)
-- ⬜ **Numero di iscrizione al Registro OAM** per il Compro oro (`INFO.oam` in `_sito.js`)
+- ✅ **Numero di iscrizione al Registro OAM** per il Compro oro (`INFO.oam` in `_sito.js`):
+  «OCO4628» come scritto dal negozio; da confermare se la terza lettera è una O o uno zero
 - ⬜ **Voto e numero di recensioni Google** aggiornati (oggi «4,9 · 200», dal vecchio sito)
 - ⬜ **Ragione sociale** per privacy e piede (oggi c'è solo «MasGioielli» e la P.IVA)
 - ⬜ **Staff**: nomi, ruoli e foto delle persone oltre al titolare
 - ⬜ **Foto originali** di Elisa Miglietti in alta risoluzione e conferma del diritto d'uso
-- ⬜ **Testi da far confermare**, scritti da noi per la bozza:
-  «la prima stima verbale è sempre gratuita», «possiamo ricevervi a negozio chiuso»,
-  «zona San Paolo, si parcheggia davanti», «di solito rispondiamo in giornata»,
-  e i testi che Alessandro voleva rivedere
-- ⬜ Conferme già chieste: il 338 538 6701 come WhatsApp, la perizia in banca per le cassette
-  di sicurezza
+- ✅ **Testi rivisti dal negozio** (27 ottobre 2026): confermati «stima verbale gratuita» e
+  «di solito rispondiamo in giornata», tolti «possiamo ricevervi a negozio chiuso» e la perizia
+  in banca. Resta da confermare «zona San Paolo, si parcheggia davanti» (home e Contatti)
+- ⬜ Conferma già chiesta: il 338 538 6701 come WhatsApp
 - ⬜ **Informativa privacy** da far rileggere al loro consulente
 - ⬜ **Moduli Contatti e Perizie**: se li vogliono funzionanti serve un server che spedisca le
   email (e l'indirizzo a cui mandarle, es. info@masgioielli.it)

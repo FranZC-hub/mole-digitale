@@ -5,23 +5,23 @@ import { BASE, INFO } from './_sito.js';
 // tono sobrio, nessuna pressione commerciale, riservatezza in primo piano.
 const casi = [
   { t: 'Successioni', d: 'La valutazione dei gioielli da inserire nella dichiarazione di successione, con un documento chiaro da consegnare al notaio o al commercialista.' },
-  { t: 'Divisioni ereditarie', d: 'Quando i beni vanno divisi tra più eredi serve un valore terzo e imparziale, uguale per tutti. Ce ne occupiamo noi.' },
-  { t: 'Cassette di sicurezza', d: 'Siamo presenti all’apertura e redigiamo l’inventario con la stima pezzo per pezzo, anche alla presenza del notaio.' },
-  { t: 'Assicurazione', d: 'Per assicurare un pezzo di valore serve una stima aggiornata: senza, in caso di furto o perdita il rimborso diventa un problema.' },
+  { t: 'Divisioni ereditarie', d: 'Quando i beni vanno divisi tra più eredi serve una valutazione seria e imparziale.' },
+  { t: 'Cassette di sicurezza', d: 'Siamo presenti all’apertura e redigiamo l’inventario con la stima del valore.' },
+  { t: 'Assicurazione', d: 'Per assicurare un bene di valore serve una stima aggiornata: in caso di furto l’assicurazione la chiederà per il rimborso.' },
 ];
 const passi = [
-  { n: 'I', t: 'Ci sentiamo', d: 'Ci dite di cosa si tratta e quanti pezzi sono, anche solo per messaggio. Vi diciamo subito se serve davvero una perizia o basta una stima verbale — gratuita.' },
-  { n: 'II', t: 'Guardiamo i pezzi', d: 'In negozio, oppure in banca all’apertura della cassetta di sicurezza. Pesiamo, misuriamo le pietre e fotografiamo tutto davanti a voi.' },
-  { n: 'III', t: 'Vi consegniamo il documento', d: 'Una perizia scritta e firmata, con foto e valore di ogni pezzo: pronta per il notaio, il commercialista o l’assicurazione.' },
+  { n: 'I', t: 'Ci contattate', d: 'Ci raccontate di cosa si tratta e quanti oggetti sono, anche solo per messaggio. Vi diciamo subito se serve davvero una perizia o basta una stima verbale — gratuita.' },
+  { n: 'II', t: 'Guardiamo i beni', d: 'Pesiamo, misuriamo le pietre e vi comunichiamo il valore, tutto davanti a voi.' },
+  { n: 'III', t: 'Vi consegniamo il documento', d: 'Una perizia scritta e firmata, con dettaglio e valore di ogni bene: pronta per il notaio, il commercialista o l’assicurazione.' },
 ];
 ---
 <Layout title="Perizie e valutazioni" active="Perizie" desc={`Perizie e valutazioni di gioielli e orologi a Torino: successioni, divisioni ereditarie, cassette di sicurezza e assicurazioni. ${INFO.nome}, dal ${INFO.fondata}, con la massima discrezione.`}>
 
   <section class="testa-pagina">
-    <div class="misura stretta intro centro a">
+    <div class="misura stretta intro centro">
       <span class="occhiello centro">Perizie e valutazioni</span>
       <h1>Sapere quanto vale,<br/><span class="it oro">con discrezione</span></h1>
-      <p>Dal {INFO.fondata} mettiamo l’esperienza del banco al servizio di chi ha bisogno di una valutazione seria: per una successione, una divisione tra eredi, o semplicemente per sapere.</p>
+      <p>Dal {INFO.fondata} offriamo la nostra esperienza al servizio di chi ha bisogno di una valutazione seria: per una successione, una divisione tra eredi o per esigenze assicurative.</p>
     </div>
   </section>
 
@@ -29,8 +29,8 @@ const passi = [
   <section class="scuro banda riserbo">
     <div class="misura stretta a">
       <span class="occhiello centro riserbo-occ">Il nostro impegno</span>
-      <p class="riserbo-t">«Quello che ci portate <span class="it riserbo-oro">resta tra noi.</span>»</p>
-      <p class="riserbo-d">Non chiediamo perché. Non ne parliamo con nessuno. Non vi chiameremo per vendervi qualcosa. Se preferite, vi riceviamo fuori orario, a negozio chiuso.</p>
+      <p class="riserbo-t">Discrezione e <span class="it riserbo-oro">riservatezza</span></p>
+      <p class="riserbo-d">Comprendiamo la delicatezza del momento e gestiamo con la massima discrezione la valutazione dei vostri preziosi.</p>
     </div>
   </section>
 
@@ -39,7 +39,7 @@ const passi = [
     <div class="misura">
       <div class="intro a">
         <span class="occhiello">Quando serve</span>
-        <h2>Quattro casi<br/>in cui vi serviamo.</h2>
+        <h2>Quattro casi<br/>in cui possiamo aiutarvi.</h2>
       </div>
       <h3 class="sr-only">Quando serve una perizia</h3>
       <div class="casi">
@@ -76,7 +76,6 @@ const passi = [
         <ul class="rich-punti">
           <li>La prima stima verbale è <b>sempre gratuita</b></li>
           <li>Il costo della perizia scritta ve lo diciamo <b>prima</b> di iniziare</li>
-          <li>Possiamo ricevervi <b>a negozio chiuso</b>, su appuntamento</li>
         </ul>
         <p class="rich-tel">Preferite parlarne a voce? <a href={'tel:' + INFO.telHref}>{INFO.tel}</a></p>
       </div>
@@ -114,6 +113,7 @@ const passi = [
           <span>Ho letto l’<a href={BASE + 'privacy/'}>informativa privacy</a> e acconsento al trattamento dei dati per essere ricontattato.</span>
         </label>
         <p class="trappola" aria-hidden="true"><label>Sito web<input type="text" id="q-sito" tabindex="-1" autocomplete="off" /></label></p>
+        <noscript><p class="nota">Per inviare il modulo serve JavaScript, che in questo browser è spento: scriveteci su <a href={'https://wa.me/' + INFO.wa} target="_blank" rel="noopener" class="link-testo">WhatsApp</a> o chiamate il <a href={'tel:' + INFO.telHref} class="link-testo">{INFO.tel}</a>.</p></noscript>
         <button type="submit" class="btn btn-pieno">Invia la richiesta</button>
         <p class="esito" id="perOk" role="status" aria-live="polite"></p>
       </form>
@@ -159,7 +159,7 @@ const passi = [
     .rich-tel a{color:var(--oro);border-bottom:1px solid var(--oro)}
     .rich-riga{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
     .rich-riga>*{min-width:0}
-    .modulo small{letter-spacing:0;text-transform:none;font-weight:400;color:var(--grigio)}
+    .modulo small{font-size:.78rem;letter-spacing:0;text-transform:none;font-weight:400;color:var(--grigio)}
 
     @media (max-width:900px){
       .casi{grid-template-columns:1fr}

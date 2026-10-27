@@ -32,4 +32,4 @@ Il modulo giusto cambia con il mestiere:
 
 ## Quanto costa?
 
-Meno di quel che pensi: le prenotazioni sono incluse nel nostro pacchetto Attività (€790 una tantum) e puoi vederle funzionare in tutte le [demo](/demo). Se vuoi un numero preciso per il tuo caso, [scrivici](/#contatti) — e la prima bozza del sito è gratis.
+Meno di quel che pensi: le prenotazioni sono incluse nel nostro pacchetto Attività e puoi vederle funzionare in tutte le [demo](/demo). Se vuoi un numero preciso per il tuo caso, [chiedi un preventivo](/preventivo) — è gratis, e anche la prima bozza del sito.

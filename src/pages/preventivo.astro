@@ -1,0 +1,230 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Preventivo guidato SENZA prezzi: il cliente sceglie cosa gli serve, la cifra la
+// prepariamo noi e la mandiamo entro 24 ore. Invia allo stesso endpoint del form
+// contatti (/contact.php): con JavaScript le scelte viaggiano già impacchettate nel
+// messaggio, senza JavaScript arrivano campo per campo e le ricompone contact.php.
+// La pagina si può aprire con un pacchetto già scelto: /preventivo?progetto=attivita
+const PROGETTI = [
+  { k: 'essenziale', v: 'Essenziale', d: 'Una pagina sola: chi sei, cosa fai, contatti, mappa e WhatsApp' },
+  { k: 'attivita', v: 'Attività', d: 'Fino a 6 pagine: menu o catalogo, prenotazioni, galleria e SEO locale', tag: 'il più scelto' },
+  { k: 'negozio', v: 'Negozio online', d: 'Shop con carrello, schede prodotto e pagamenti online' },
+  { k: 'su-misura', v: 'Su misura', d: 'Area riservata, gestionale, integrazioni: quando serve qualcosa di specifico' },
+  { k: 'non-so', v: 'Non so ancora', d: 'Nessun problema: te lo consigliamo noi in base alle risposte' },
+];
+const FUNZIONI = ['Prenotazioni o appuntamenti', 'Menu o catalogo digitale', 'Galleria di foto', 'Blog o notizie',
+  'Newsletter', 'Moduli di richiesta (preventivi, iscrizioni…)', 'Area riservata per i clienti', 'Sito in più lingue'];
+const PRODOTTI = ['Fino a 20', 'Fino a 50', 'Fino a 200', 'Più di 200'];
+const NEGOZIO = ['Spedizioni con corriere', 'Codici sconto e promozioni'];
+const CONTENUTI = ['Logo nuovo o da rinfrescare', 'Testi scritti da noi', 'Servizio fotografico'];
+const VISIBILITA = ['Scheda Google Business (Maps)', 'Posizionamento su Google (SEO locale)', 'Recensioni Google sul sito', 'Collegamento a Instagram e Facebook'];
+const TEMPI = ['Il prima possibile', 'Entro un mese', 'Entro 2-3 mesi', 'Nessuna fretta'];
+---
+<Layout
+  title="Preventivo gratuito per il tuo sito | Mole Digitale"
+  description="Scegli cosa ti serve nel sito: tipo di sito, funzioni, grafica e visibilità su Google. Ti mandiamo un preventivo su misura entro 24 ore, gratis e senza impegno."
+>
+  <section class="section" style="padding-top:8rem;">
+    <div class="section-head" data-reveal>
+      <span class="kicker">Preventivo gratuito</span>
+      <h1>Dicci cosa ti serve. <span class="grad">Il preventivo lo facciamo noi.</span></h1>
+      <p class="section-lead">Spunta quello che vorresti nel sito: bastano 2 minuti e non serve sapere niente di tecnico. Entro 24 ore ti mandiamo un <b>preventivo su misura</b>, gratis e senza impegno.</p>
+    </div>
+
+    <!-- action/method: se il JavaScript non parte, la richiesta arriva comunque
+         a contact.php con un invio classico (nessun lead perso). -->
+    <form class="prev glass" id="prevForm" action="/contact.php" method="post" data-reveal>
+      <fieldset>
+        <legend>1 · Che sito ti serve?</legend>
+        <div class="scelte">
+          {PROGETTI.map((p) => (
+            <label class="scelta">
+              <input type="radio" name="progetto" value={p.v} data-k={p.k} checked={p.k === 'non-so'} />
+              <span><b>{p.v}</b>{p.tag && <i class="scelta-tag">{p.tag}</i>}<small>{p.d}</small></span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>2 · Cosa deve fare il sito?</legend>
+        <p class="prev-sub">Scegli pure più di una cosa, o nessuna.</p>
+        <div class="checks">
+          {FUNZIONI.map((f) => <label><input type="checkbox" name="funzioni[]" value={f} /> {f}</label>)}
+        </div>
+      </fieldset>
+
+      <fieldset id="prevNegozio">
+        <legend>3 · Il negozio online</legend>
+        <p class="prev-sub" id="prevNegozioNota">Solo se vuoi vendere online.</p>
+        <p class="prev-sub">Quanti prodotti, più o meno?</p>
+        <div class="checks">
+          {PRODOTTI.map((p) => <label><input type="radio" name="prodotti" value={p} /> {p}</label>)}
+        </div>
+        <div class="checks">
+          {NEGOZIO.map((n) => <label><input type="checkbox" name="ecommerce[]" value={n} /> {n}</label>)}
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="num">4</span> · Grafica e contenuti</legend>
+        <div class="checks">
+          {CONTENUTI.map((c) => <label><input type="checkbox" name="contenuti[]" value={c} /> {c}</label>)}
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="num">5</span> · Farsi trovare</legend>
+        <div class="checks">
+          {VISIBILITA.map((v) => <label><input type="checkbox" name="visibilita[]" value={v} /> {v}</label>)}
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="num">6</span> · Tempi e dettagli</legend>
+        <p class="prev-sub">Quando ti servirebbe?</p>
+        <div class="checks">
+          {TEMPI.map((t) => <label><input type="radio" name="tempi" value={t} /> {t}</label>)}
+        </div>
+        <div class="field"><input type="text" id="p-sito" name="sito" placeholder=" " /><label for="p-sito">Hai già un sito? Scrivi l’indirizzo</label></div>
+        <div class="field"><textarea id="p-note" name="messaggio" rows="3" placeholder=" "></textarea><label for="p-note">Qualcosa da aggiungere? (facoltativo)</label></div>
+      </fieldset>
+
+      <!-- Riepilogo delle scelte (al posto del totale: qui non ci sono prezzi). Solo con JavaScript. -->
+      <div class="prev-riep" id="prevRiep" hidden aria-live="polite">
+        <span class="kicker">Il tuo progetto</span>
+        <ul id="prevLista"></ul>
+        <p>Su queste scelte prepariamo il preventivo e te lo mandiamo noi: gratis e senza impegno, prima bozza compresa.</p>
+      </div>
+
+      <fieldset>
+        <legend><span class="num">7</span> · I tuoi contatti</legend>
+        <div class="field"><input type="text" id="p-nome" name="nome" required placeholder=" " autocomplete="name" /><label for="p-nome">Il tuo nome *</label></div>
+        <div class="field"><input type="text" id="p-attivita" name="attivita" required placeholder=" " autocomplete="organization" /><label for="p-attivita">Nome dell’attività *</label></div>
+        <div class="field"><input type="text" id="p-telefono" name="telefono" required placeholder=" " autocomplete="tel" /><label for="p-telefono">Telefono o email *</label></div>
+      </fieldset>
+
+      <div class="hp" aria-hidden="true"><label>Non compilare<input type="text" name="website" tabindex="-1" autocomplete="off" /></label></div>
+
+      <label class="consent">
+        <input type="checkbox" id="p-privacy" required />
+        <span>Ho letto l'<a href="/privacy" target="_blank" rel="noopener">informativa privacy</a> e acconsento al trattamento dei miei dati per ricevere il preventivo.</span>
+      </label>
+
+      <button type="submit" class="btn btn-primary btn-lg btn-block btn-magnetic">Richiedi il preventivo gratuito →</button>
+      <p class="form-feedback" id="prevFeedback" aria-live="polite"></p>
+      <p class="prev-note">Preferisci parlarne? <a href="https://wa.me/393662102203?text=Ciao!%20Vorrei%20un%20preventivo%20per%20il%20mio%20sito" target="_blank" rel="noopener">Scrivici su WhatsApp</a> e facciamo tutto a voce.</p>
+    </form>
+  </section>
+
+  <style>
+    .prev { max-width:720px; margin:0 auto; padding:clamp(1.6rem,4vw,2.5rem); display:flex; flex-direction:column; gap:1.5rem; }
+    /* senza questa, il display:flex qui sotto vincerebbe sull'attributo hidden */
+    .prev [hidden] { display:none; }
+    .prev fieldset { border:1px solid var(--border); border-radius:var(--radius-sm); padding:1.2rem 1.3rem 1.4rem; display:flex; flex-direction:column; gap:1rem; min-inline-size:0; }
+    .prev legend { font-family:'Space Grotesk Variable','Space Grotesk'; font-weight:600; padding:0 .5rem; color:var(--c2); font-size:.95rem; }
+    .prev-sub { color:var(--muted); font-size:.92rem; }
+    .prev-sub + .checks { margin-top:-.4rem; }
+    /* tipo di sito: schede da scegliere, quella scelta si accende */
+    .scelte { display:grid; gap:.6rem; }
+    .scelta { display:flex; gap:.8rem; align-items:flex-start; padding:.85rem 1rem; border:1px solid var(--border); border-radius:var(--radius-sm); cursor:pointer; transition:border-color .2s, background-color .2s; }
+    .scelta:hover { border-color:rgba(255,255,255,.22); }
+    .scelta:has(input:checked) { border-color:var(--c1); background:rgba(124,92,255,.10); }
+    .scelta:has(input:focus-visible) { box-shadow:0 0 0 4px rgba(124,92,255,.25); }
+    .scelta input { width:18px; height:18px; margin-top:.2rem; flex:none; accent-color:var(--c1); cursor:pointer; }
+    .scelta b { font-weight:600; }
+    .scelta small { display:block; color:var(--muted); font-size:.88rem; line-height:1.45; margin-top:.15rem; }
+    .scelta-tag { font-style:normal; font-size:.7rem; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--c2); border:1px solid currentColor; border-radius:99px; padding:.05rem .45rem; margin-left:.5rem; vertical-align:.12em; }
+    .checks { display:grid; grid-template-columns:1fr 1fr; gap:.6rem; }
+    .checks label { display:flex; align-items:center; gap:.55rem; font-size:.95rem; color:var(--muted); cursor:pointer; }
+    .checks input { width:18px; height:18px; accent-color:var(--c1); flex:none; cursor:pointer; }
+    .checks label:has(input:checked) { color:var(--text); }
+    .prev-riep { border:1px dashed rgba(124,92,255,.45); border-radius:var(--radius-sm); padding:1.1rem 1.3rem; background:rgba(124,92,255,.06); display:flex; flex-direction:column; gap:.6rem; }
+    .prev-riep .kicker { align-self:flex-start; margin-bottom:.2rem; }
+    .prev-riep ul { list-style:none; display:flex; flex-direction:column; gap:.35rem; font-size:.93rem; }
+    .prev-riep li b { color:var(--c2); font-weight:600; }
+    .prev-riep p { color:var(--muted-2); font-size:.88rem; }
+    .prev-note { text-align:center; color:var(--muted-2); font-size:.9rem; }
+    .prev-note a { color:var(--c2); text-decoration:underline; }
+    @media (max-width:560px) { .checks { grid-template-columns:1fr; } }
+  </style>
+
+  <script>
+    const pf = document.getElementById('prevForm') as HTMLFormElement;
+    const pfb = document.getElementById('prevFeedback')!;
+    const negozio = document.getElementById('prevNegozio')!;
+    const riep = document.getElementById('prevRiep')!;
+    const lista = document.getElementById('prevLista')!;
+    const valore = (nome: string) => (pf.querySelector(`input[name="${nome}"]:checked`) as HTMLInputElement | null)?.value || '';
+    const valori = (nome: string) => [...pf.querySelectorAll<HTMLInputElement>(`input[name="${nome}"]:checked`)].map((c) => c.value);
+    const testo = (id: string) => (document.getElementById(id) as HTMLInputElement).value.trim();
+
+    // Con JavaScript il blocco del negozio compare solo per chi sceglie «Negozio online»,
+    // e i numeri dei passi si adeguano (senza JavaScript restano tutti visibili).
+    const numeri = [...pf.querySelectorAll('legend .num')];
+    const conNegozio = () => valore('progetto') === 'Negozio online';
+    const aggiorna = () => {
+      const shop = conNegozio();
+      negozio.hidden = !shop;
+      numeri.forEach((n, i) => { n.textContent = String(i + (shop ? 4 : 3)); });
+
+      // righe del riepilogo (le stesse che arrivano a noi nel messaggio)
+      const righe: [string, string][] = [['Sito', valore('progetto')]];
+      const f = valori('funzioni[]'); if (f.length) righe.push(['Funzioni', f.join(', ')]);
+      if (shop) {
+        const s = [valore('prodotti') && valore('prodotti').toLowerCase() + ' prodotti', ...valori('ecommerce[]')].filter(Boolean);
+        if (s.length) righe.push(['Negozio', s.join(', ')]);
+      }
+      const c = valori('contenuti[]'); if (c.length) righe.push(['Grafica e contenuti', c.join(', ')]);
+      const v = valori('visibilita[]'); if (v.length) righe.push(['Farsi trovare', v.join(', ')]);
+      if (valore('tempi')) righe.push(['Tempi', valore('tempi')]);
+      lista.replaceChildren(...righe.map(([k, t]) => {
+        const li = document.createElement('li');
+        const b = document.createElement('b'); b.textContent = k + ': ';
+        li.append(b, t);
+        return li;
+      }));
+      return righe;
+    };
+
+    // pacchetto già scelto dal link (es. dalla sezione prezzi della home)
+    const scelto = new URLSearchParams(location.search).get('progetto');
+    const radio = scelto && pf.querySelector<HTMLInputElement>(`input[name="progetto"][data-k="${CSS.escape(scelto)}"]`);
+    if (radio) radio.checked = true;
+
+    riep.hidden = false;
+    (document.getElementById('prevNegozioNota')!).hidden = true;
+    aggiorna();
+    pf.addEventListener('change', aggiorna);
+
+    pf.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!(document.getElementById('p-privacy') as HTMLInputElement).checked) { pfb.classList.add('ko'); pfb.textContent = 'Devi accettare la privacy per inviare.'; return; }
+      const righe = aggiorna();
+      if (testo('p-sito')) righe.push(['Sito attuale', testo('p-sito')]);
+      if (testo('p-note')) righe.push(['Note', testo('p-note')]);
+      const messaggio = '— PREVENTIVO DAL SITO —\n' + righe.map(([k, t]) => `${k}: ${t}`).join('\n');
+      const btn = pf.querySelector('button[type=submit]') as HTMLButtonElement;
+      const etichetta = btn.innerHTML;
+      btn.disabled = true; btn.setAttribute('aria-busy', 'true'); btn.innerHTML = '<span class="btn-spin" aria-hidden="true"></span> Invio…';
+      pfb.classList.remove('ok', 'ko'); pfb.textContent = 'Invio in corso…';
+      try {
+        const res = await fetch('/contact.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nome: testo('p-nome'), attivita: testo('p-attivita'), telefono: testo('p-telefono'), messaggio, website: (pf.elements.namedItem('website') as HTMLInputElement).value }),
+        });
+        const out = await res.json().catch(() => ({}));
+        if (res.ok && out.ok) {
+          pfb.classList.add('ok'); pfb.textContent = '✅ Richiesta ricevuta! Ti mandiamo il preventivo entro 24 ore.';
+          pf.reset(); aggiorna();
+        } else throw new Error();
+      } catch {
+        pfb.classList.add('ko'); pfb.textContent = '⚠️ Invio non riuscito. Riprova, oppure scrivici su WhatsApp qui sotto.';
+      } finally {
+        btn.disabled = false; btn.removeAttribute('aria-busy'); btn.innerHTML = etichetta;
+      }
+    });
+  </script>
+</Layout>

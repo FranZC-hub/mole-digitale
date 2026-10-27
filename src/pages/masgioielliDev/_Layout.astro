@@ -180,7 +180,9 @@ const schema = {
     .it{font-style:italic}
     .oro{color:var(--oro)}
     /* etichettina in maiuscoletto spaziato, preceduta da un filo */
-    .occhiello{display:inline-flex;align-items:center;gap:.9rem;font-family:var(--sans);font-size:.68rem;font-weight:500;letter-spacing:.28em;text-transform:uppercase;color:var(--oro)}
+    /* etichette maiuscole (occhielli, titoletti del piede, etichette dei moduli): 12 px, non meno,
+       con la spaziatura un po' più stretta perché le righe restino lunghe come prima */
+    .occhiello{display:inline-flex;align-items:center;gap:.9rem;font-family:var(--sans);font-size:.75rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--oro)}
     .occhiello::before{content:'';width:34px;height:1px;background:var(--oro);opacity:.6}
     .occhiello.centro::after{content:'';width:34px;height:1px;background:var(--oro);opacity:.6}
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
@@ -196,7 +198,7 @@ const schema = {
     .marchio-logo{display:block;width:230px;height:auto;transition:width .35s var(--e)}
     .testata.compatta .marchio-logo{width:170px}
     .marchio-nome{font-family:var(--disp);font-size:1.95rem;font-weight:500;letter-spacing:.2em;text-indent:.2em;text-transform:uppercase;line-height:1;transition:font-size .35s var(--e),letter-spacing .35s var(--e)}
-    .marchio-sotto{font-size:.56rem;font-weight:500;letter-spacing:.34em;text-indent:.34em;text-transform:uppercase;color:var(--oro);line-height:1;transition:opacity .3s,max-height .35s var(--e);max-height:1.2em;overflow:hidden}
+    .marchio-sotto{font-size:.7rem;font-weight:500;letter-spacing:.26em;text-indent:.26em;text-transform:uppercase;color:var(--oro);line-height:1;transition:opacity .3s,max-height .35s var(--e);max-height:1.2em;overflow:hidden}
     .testata-dx{grid-column:3;justify-self:end;display:inline-flex;align-items:center;gap:1.1rem}
     .testata-tel{font-size:.78rem;letter-spacing:.1em;color:var(--grafite)}
     .testata-tel:hover{color:var(--oro)}
@@ -252,15 +254,19 @@ const schema = {
 
     /* moduli: campi a filo, niente riquadri */
     .modulo{display:flex;flex-direction:column;gap:1.5rem}
-    .modulo label{display:flex;flex-direction:column;gap:.5rem;font-size:.66rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--grigio)}
+    .modulo label{display:flex;flex-direction:column;gap:.5rem;font-size:.75rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--grigio)}
     .modulo input,.modulo select,.modulo textarea{width:100%;min-width:0;padding:.6rem 0;border:0;border-bottom:1px solid var(--filo);background:transparent;color:var(--inchiostro);font-family:var(--sans);font-size:1rem;border-radius:0}
     .modulo textarea{resize:vertical}
     .modulo input:focus,.modulo select:focus,.modulo textarea:focus{outline:0;border-bottom-color:var(--oro)}
     .modulo select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--oro) 50%),linear-gradient(135deg,var(--oro) 50%,transparent 50%);background-position:calc(100% - 12px) calc(50% + 1px),calc(100% - 7px) calc(50% + 1px);background-size:5px 5px,5px 5px;background-repeat:no-repeat;cursor:pointer}
     .nota{font-size:.78rem;line-height:1.6;color:var(--grigio);letter-spacing:0;text-transform:none;font-weight:400}
+    .nota .link-testo{border-bottom:1px solid var(--oro);color:var(--grafite)}
     /* .modulo davanti: senza, vinceva «.modulo label» e il consenso usciva in maiuscoletto minuscolo */
     .modulo .consenso{flex-direction:row;align-items:flex-start;gap:.7rem;font-size:.82rem;letter-spacing:0;text-transform:none;font-weight:400;color:var(--grafite);line-height:1.6}
     .modulo .consenso input{flex:none;width:18px;height:18px;padding:0;accent-color:var(--oro);margin-top:.2rem}
+    /* «.modulo input:focus» toglie il contorno ai campi (che hanno il filetto sotto): la casella
+       non ha filetto, senza questa regola dalla tastiera non si vedeva quando era selezionata */
+    .modulo .consenso input:focus-visible{outline:1px solid var(--oro);outline-offset:3px}
     .consenso a{border-bottom:1px solid var(--oro)}
     .esito{display:none;border-left:2px solid var(--oro);padding:.9rem 1.1rem;background:var(--carta);font-size:.95rem}
     .esito.esito-ko{border-left-color:#a4442c;color:#7d2f1d}
@@ -293,7 +299,7 @@ const schema = {
     /* chiusura (footer) */
     .chiusura{background:var(--scuro);color:#b7ada0;margin-top:0}
     .chiusura-in{max-width:1220px;margin:0 auto;padding:clamp(3.5rem,7vw,5.5rem) clamp(1.2rem,5vw,3.2rem) 2.6rem;display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:2.5rem;font-size:.92rem}
-    .chiusura h2{font-family:var(--sans);font-size:.66rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--oro-c);margin-bottom:1rem}
+    .chiusura h2{font-family:var(--sans);font-size:.75rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--oro-c);margin-bottom:1rem}
     .chiusura p{margin-bottom:.2rem}
     .chiusura a:hover{color:var(--avorio)}
     .chiusura-nome img{display:block;width:220px;height:auto}
@@ -322,6 +328,13 @@ const schema = {
     }
     .a.vista{opacity:1;transform:none}
     @media (prefers-reduced-motion:reduce){.a{opacity:1;transform:none;transition:none}}
+    /* L'introduzione in cima alle pagine interne entra con un'animazione CSS che parte al primo
+       disegno, non con la comparsa allo scroll (.a): quella aspetta il JavaScript, e su un telefono
+       lento titolo e testo restavano invisibili fino a 2 s (sono quello che Google misura, LCP).
+       Parte da .01 e non da 0: per il browser è già visibile, quindi conta subito. */
+    .testa-pagina .intro{animation:entra 1s var(--e) both}
+    @keyframes entra{from{opacity:.01;transform:translateY(22px)}}
+    @media (prefers-reduced-motion:reduce){.testa-pagina .intro{animation:none}}
 
     /* ---------- stampa ----------
        Capita davvero: si stampa la misura dell'anello, la lista dei pezzi o gli
@@ -356,6 +369,17 @@ const schema = {
       .chiusura-in{grid-template-columns:1fr;gap:2rem}
       .chiusura-legale{flex-direction:column;gap:.4rem}
     }
+    /* Senza JavaScript il pulsante del menu non fa nulla: sugli schermi stretti il menu resta
+       visibile nella testata, che torna nel flusso della pagina (non fissa) perché così è più
+       alta e non deve coprire niente, comunque vadano a capo le voci. */
+    @media (max-width:900px) and (scripting: none){
+      :root{--tastata:0px}
+      .testata{position:relative}
+      .menu-btn{display:none}
+      .menu{display:flex;flex-direction:row;flex-wrap:wrap;justify-content:center;gap:.9rem 1.4rem;padding:.9rem 1rem 1.1rem}
+    }
+    /* senza JavaScript i moduli non possono partire: niente pulsante, c'è l'avviso <noscript> */
+    @media (scripting: none){ .modulo [type="submit"]{display:none} }
   </style>
 
   <script>
@@ -369,15 +393,16 @@ const schema = {
 
     const testata = document.getElementById('testata');
     const btn = document.getElementById('menuBtn');
-    btn.addEventListener('click', () => {
-      const aperta = testata.classList.toggle('aperta');
+    // il nome del pulsante segue lo stato: a menu aperto i lettori di schermo leggono «Chiudi il menu»
+    const menu = (aperta) => {
+      testata.classList.toggle('aperta', aperta);
       btn.setAttribute('aria-expanded', String(aperta));
-    });
-    document.querySelectorAll('.menu a').forEach((a) => a.addEventListener('click', () => {
-      testata.classList.remove('aperta'); btn.setAttribute('aria-expanded', 'false');
-    }));
+      btn.setAttribute('aria-label', aperta ? 'Chiudi il menu' : 'Apri il menu');
+    };
+    btn.addEventListener('click', () => menu(!testata.classList.contains('aperta')));
+    document.querySelectorAll('.menu a').forEach((a) => a.addEventListener('click', () => menu(false)));
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') { testata.classList.remove('aperta'); btn.setAttribute('aria-expanded', 'false'); }
+      if (e.key === 'Escape' && testata.classList.contains('aperta')) { menu(false); btn.focus(); }
     });
     // la testata si compatta appena si scorre
     const compatta = () => testata.classList.toggle('compatta', window.scrollY > 40);

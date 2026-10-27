@@ -8,7 +8,8 @@ import { CLIENTI } from '../../data/clienti.js';
 // Le demo generiche di settore stanno invece in /demo, quelle sono pubbliche.
 
 // I dati stanno in src/data/clienti.js, condivisi con /demoClientiDev/ (versioni reali).
-const clienti = CLIENTI;
+// Qui solo chi ha ancora una bozza: chi ha solo la versione reale sta in /demoClientiDev/.
+const clienti = CLIENTI.filter((c) => c.url);
 ---
 <Layout
   title="Bozze clienti — pagina privata | Mole Digitale"
@@ -41,7 +42,7 @@ const clienti = CLIENTI;
 
           <p class="cl-pitch">{c.pitch}</p>
           {c.dev && (
-            <p class="cl-dev">C’è anche la <a href="/demoClientiDev/">versione reale in sviluppo</a>, con database e area riservata vera.</p>
+            <p class="cl-dev">C’è anche la <a href="/demoClientiDev/">versione reale in sviluppo</a>.</p>
           )}
 
           <h3 class="cl-h3">Cosa c’è dentro</h3>

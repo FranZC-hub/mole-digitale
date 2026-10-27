@@ -35,8 +35,11 @@ if (!reduced) {
     tl.fromTo('.hero-title .word',
         { opacity: 0, y: 28 },
         { opacity: 1, y: 0, stagger: 0.05, duration: 0.7 }, 0.1)
+      // Il sottotitolo è l'elemento più grande della prima schermata (quello che Google misura
+      // come LCP): da opacità 0 contava solo a fine animazione, dopo l'arrivo di GSAP (2,1 s su
+      // telefono lento). Partendo già leggibile conta subito; l'effetto resta quasi lo stesso.
       .fromTo(fadeEls,
-        { opacity: 0, y: 24 },
+        { opacity: 0.35, y: 24 },
         { opacity: 1, y: 0, stagger: 0.12, duration: 0.8 }, 0.45)
       .fromTo('.hero-visual',
         { opacity: 0, x: 40, rotateY: -15 },
@@ -217,13 +220,30 @@ if (compare && after && handle) {
   };
   const startDrag = () => { dragging = true; compare.style.cursor = 'grabbing'; if (lenis) lenis.stop(); };
   const stopDrag = () => { if (!dragging) return; dragging = false; compare.style.cursor = 'ew-resize'; if (lenis) lenis.start(); };
-  const move = (e) => { if (!dragging) return; if (e.cancelable) e.preventDefault(); setPos(e.touches ? e.touches[0].clientX : e.clientX); };
+  const move = (e) => { if (!dragging) return; if (e.cancelable) e.preventDefault(); setPos(e.clientX); };
   compare.addEventListener('mousedown', (e) => { startDrag(); setPos(e.clientX); });
-  compare.addEventListener('touchstart', (e) => { if (e.cancelable) e.preventDefault(); startDrag(); setPos(e.touches[0].clientX); }, { passive: false });
   addEventListener('mousemove', move);
-  addEventListener('touchmove', move, { passive: false });
   addEventListener('mouseup', stopDrag);
-  addEventListener('touchend', stopDrag);
+
+  // Touch: si decide la direzione dopo pochi pixel. In orizzontale si trascina lo slider,
+  // in verticale si lascia scorrere la pagina (prima il dito sullo slider la bloccava).
+  // Un tocco senza trascinare sposta la maniglia lì.
+  let tx = null, ty = 0, asse = null;
+  compare.addEventListener('touchstart', (e) => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; asse = null; }, { passive: true });
+  compare.addEventListener('touchmove', (e) => {
+    if (tx === null) return;
+    const t = e.touches[0];
+    if (!asse) {
+      const dx = Math.abs(t.clientX - tx), dy = Math.abs(t.clientY - ty);
+      if (dx < 6 && dy < 6) return;
+      asse = dx > dy ? 'x' : 'y';
+      if (asse === 'x') startDrag();
+    }
+    if (asse === 'x') { if (e.cancelable) e.preventDefault(); setPos(t.clientX); }
+  }, { passive: false });
+  const fineTocco = () => { if (asse === 'x') stopDrag(); else if (asse === null && tx !== null) setPos(tx); tx = null; asse = null; };
+  compare.addEventListener('touchend', fineTocco);
+  compare.addEventListener('touchcancel', () => { if (asse === 'x') stopDrag(); tx = null; asse = null; });
 
   compare.addEventListener('keydown', (e) => {
     const steps = { ArrowLeft: -5, ArrowRight: 5, ArrowDown: -5, ArrowUp: 5, Home: -100, End: 100 };
@@ -267,11 +287,6 @@ try {
 const form = document.getElementById('contactForm');
 const feedback = document.getElementById('formFeedback');
 if (form) {
-  // Se si arriva dal preventivo (/?prev=...), precompila il messaggio con la configurazione scelta
-  const prevCfg = new URLSearchParams(location.search).get('prev');
-  if (prevCfg && form.messaggio && !form.messaggio.value) {
-    form.messaggio.value = 'Dal preventivo online: ' + prevCfg;
-  }
   const setError = (name, msg) => {
     const field = form[name];
     const errEl = document.getElementById('err-' + name);

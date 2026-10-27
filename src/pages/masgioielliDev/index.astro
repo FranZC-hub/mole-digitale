@@ -5,9 +5,9 @@ const ORARI = orariSettimana();          // reso lato server: leggibile anche se
 const WA = `https://wa.me/${INFO.wa}`;
 const WA_LAB = `https://wa.me/${INFO.wa}?text=${encodeURIComponent(`Buongiorno ${INFO.nome}! Vorrei un parere su un lavoro in laboratorio: vi mando una foto del pezzo.`)}`;
 const mestieri = [
-  { n: '01', t: 'Gioielleria', d: 'Oro, argento e pietre scelti uno a uno. Il classico che dura e il pezzo che non si vede altrove.', href: 'selezione/' },
+  { n: '01', t: 'Gioielleria', d: 'Oro, argento e pietre scelti uno a uno, il classico che non tramonta e il gioiello che non si vede altrove.', href: 'selezione/' },
   { n: '02', t: 'Orologeria', d: 'Vendita, revisione e restauro: dal solo tempo al cronografo, fino alla pendoleria d’epoca.', href: 'selezione/?cat=Orologi' },
-  { n: '03', t: 'Atelier', d: 'Creazioni su misura, trasformazioni e riparazioni. Il banco è dietro il negozio, non altrove.', href: 'atelier/' },
+  { n: '03', t: 'Atelier', d: 'Creazioni su misura, trasformazioni e riparazioni. Oltre trent’anni di esperienza e maestria artigianale.', href: 'atelier/' },
   { n: '04', t: 'Perizie', d: 'Valutazioni per successioni, divisioni ereditarie e cassette di sicurezza. Con discrezione.', href: 'perizie/' },
   { n: '05', t: 'Compro oro', d: 'Il vostro oro usato, pesato e valutato davanti a voi sulla quotazione del giorno.', href: 'compro-oro/' },
 ];
@@ -24,8 +24,8 @@ const negozio = [
   <section class="apertura">
     <div class="apertura-testo">
       <span class="occhiello">Torino · dal {INFO.fondata}</span>
-      <h1>Un gioiello<br/>non si compra.<br/><span class="it oro">Si sceglie.</span></h1>
-      <p>Dal {INFO.fondata}, in Corso Trapani, lavoriamo l’oro come si faceva una volta: a mano, un pezzo alla volta. Vendiamo, creiamo, ripariamo e valutiamo — sempre guardandoci negli occhi.</p>
+      <h1>Passione ed esperienza<br/>al servizio del cliente.<br/><span class="it oro">Da oltre 30 anni.</span></h1>
+      <p>Dal {INFO.fondata}, in Corso Trapani, mettiamo la nostra esperienza e la nostra passione al servizio del cliente, perché crediamo fortemente nel valore del rapporto umano.</p>
       <div class="apertura-azioni">
         <a href={BASE + 'selezione/'} class="btn">In vetrina ora</a>
         <a href={WA} target="_blank" rel="noopener" class="link-filo">Scrivici su WhatsApp</a>
@@ -85,7 +85,8 @@ const negozio = [
         </figure>
         <div class="neg-testo a">
           <p class="neg-lead">{INFO.fondatore} si appassiona presto all’orologeria: nel 1986, a sedici anni, si diploma alla Scuola Orologiai di Torino.</p>
-          <p>Dopo gli anni nei laboratori e una lunga collaborazione con uno storico negozio torinese, il {INFO.inaugurazione} apre MasGioielli al {INFO.via.replace('Corso Trapani ', '')} di Corso Trapani. Da allora, con il suo staff, è il punto di riferimento del quartiere per gioielli, orologi e lavori di laboratorio.</p>
+          <p>Dopo gli anni nei laboratori e una lunga collaborazione con uno storico negozio torinese, il {INFO.inaugurazione} inaugura MAS Gioielli al 146/B di Corso Trapani. Da allora, con il suo staff, è il punto di riferimento del quartiere per gioielli, orologi e lavori di laboratorio.</p>
+          <p>Da diversi anni Alessandro, nipote di Massimo, lo affianca nella gestione del negozio, per dare continuità ad una realtà che ha fatto della continua ricerca di miglioramento uno dei suoi obiettivi principali.</p>
           <h3 class="neg-h3">Le persone</h3>
           <ul class="persone">
             <li class="persona">
@@ -140,14 +141,14 @@ const negozio = [
       <div class="a">
         <span class="occhiello">L’atelier</span>
         <blockquote class="atelier-q">
-          «Quello che gli altri<br/>mandano via,<br/><span class="it atelier-oro">noi lo facciamo qui.»</span>
+          «Quello che per voi<br/>ha valore,<br/><span class="it atelier-oro">lo ha anche per noi.»</span>
         </blockquote>
       </div>
       <div class="atelier-testo a">
-        <p>Una maglia che si è spezzata, un anello da stringere, l’orologio del nonno fermo da vent’anni. Il banco è dietro il negozio: guardiamo il pezzo insieme e vi diciamo subito cosa si può fare, e quanto costa.</p>
+        <p>Una maglia che si è spezzata, un anello da stringere, un orologio di famiglia fermo da tempo. Il laboratorio è a vostra disposizione, guardiamo il gioiello insieme e vi comunichiamo cosa si può fare e il relativo costo.</p>
         <ul class="atelier-lista">
-          <li>Creazioni su misura, dal disegno al pezzo finito</li>
-          <li>Riparazioni, saldature, misure e rimonta di pietre</li>
+          <li>Creazioni su misura, dal disegno al gioiello finito</li>
+          <li>Riparazioni, lucidature, saldature, messe a misura</li>
           <li>Orologeria e pendoleria, anche d’epoca</li>
         </ul>
         <div class="atelier-azioni">
@@ -224,7 +225,8 @@ const negozio = [
       padding-top:calc(var(--tastata) + clamp(2.5rem,7vw,5.5rem));padding-bottom:clamp(3rem,7vw,5.5rem)}
     .apertura>*{min-width:0}
     .apertura-testo{padding-left:clamp(1.2rem,5vw,3.2rem);max-width:44rem;justify-self:end;width:100%}
-    .apertura h1{font-size:clamp(2.9rem,7vw,5.6rem);margin:1.6rem 0 0}
+    /* titolo lungo (testi del negozio, ottobre 2026): misurato per stare su tre righe con i pulsanti sopra la piega */
+    .apertura h1{font-size:clamp(2.4rem,4.6vw,4.4rem);margin:1.6rem 0 0}
     .apertura-testo>p{color:var(--grafite);font-size:1.05rem;max-width:46ch;margin-top:1.7rem}
     .apertura-azioni{display:flex;align-items:center;gap:2rem;flex-wrap:wrap;margin-top:2.4rem}
     .apertura-foto{position:relative}
@@ -261,7 +263,7 @@ const negozio = [
     .neg-grande img{width:100%;height:auto;aspect-ratio:2/3;object-fit:cover}
     .neg-testo>p{color:var(--grafite);max-width:54ch;margin-top:1rem}
     .neg-testo>p.neg-lead{font-family:var(--disp);font-size:clamp(1.4rem,2.5vw,1.85rem);line-height:1.3;color:var(--inchiostro);margin-top:0}
-    .neg-h3{font-family:var(--sans);font-size:.66rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--oro);margin:clamp(2rem,4vw,2.8rem) 0 1rem}
+    .neg-h3{font-family:var(--sans);font-size:.75rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--oro);margin:clamp(2rem,4vw,2.8rem) 0 1rem}
     .persone{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,210px));gap:1.4rem}
     .persona img{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;object-position:78% 30%}
     .persona p{margin-top:.8rem}
@@ -270,7 +272,7 @@ const negozio = [
     .neg-riga{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1rem,2.4vw,2rem);margin-top:clamp(2.5rem,5vw,4rem)}
     .neg-riga>*{min-width:0}
     .neg-riga img{width:100%;height:auto;aspect-ratio:3/2;object-fit:cover}
-    .neg-riga figcaption{margin-top:.7rem;font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--oro)}
+    .neg-riga figcaption{margin-top:.7rem;font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;color:var(--oro)}
     .coll-agg{margin-top:1rem;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--grigio)}
 
     /* ---------- compro oro ---------- */
@@ -294,7 +296,7 @@ const negozio = [
     .rail{align-items:flex-start}
     /* passo sfalsato: da' ritmo editoriale invece di una fila piatta */
     .coll-azioni{display:flex;align-items:center;gap:2rem}
-    .coll-scorri{display:inline-flex;align-items:center;gap:.5rem;font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--grigio)}
+    .coll-scorri{display:inline-flex;align-items:center;gap:.5rem;font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;color:var(--grigio)}
     .coll-fr{display:inline-block;animation:scorri 2.6s var(--e) infinite}
     @keyframes scorri{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
     @media (prefers-reduced-motion:reduce){.coll-fr{animation:none}}
@@ -311,11 +313,11 @@ const negozio = [
     :global(.rail-foto){overflow:hidden;background:var(--avorio-2)}
     :global(.rail-foto img){width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;transition:transform 1.1s var(--e)}
     :global(.rail-el:hover .rail-foto img){transform:scale(1.04)}
-    :global(.rail-cat){font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--oro);margin-top:1.1rem}
+    :global(.rail-cat){font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;color:var(--oro);margin-top:1.1rem}
     :global(.rail-nome){font-family:var(--disp);font-size:1.5rem;line-height:1.2;margin-top:.3rem}
     :global(.marca){text-align:center}
     :global(.marca-nome){display:block;font-family:var(--disp);font-size:clamp(1.5rem,2.8vw,2.1rem);line-height:1.1;letter-spacing:.04em}
-    :global(.marca-rep){display:block;font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;color:var(--oro);margin-top:.35rem}
+    :global(.marca-rep){display:block;font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;color:var(--oro);margin-top:.35rem}
 
     /* ---------- marchi ---------- */
     .marchi-banda{padding-block:clamp(3rem,6vw,4.5rem);border-top:1px solid var(--filo)}
@@ -361,7 +363,7 @@ const negozio = [
     .visita-in h2{font-size:clamp(2rem,4.4vw,3.2rem);margin:1.4rem 0 0}
     .visita-p{color:var(--grafite);margin:1.4rem 0 2.2rem;max-width:48ch}
     .visita-azioni{display:flex;align-items:center;gap:2rem;flex-wrap:wrap}
-    .visita-h3{font-family:var(--sans);font-size:.66rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--oro);margin-bottom:1rem}
+    .visita-h3{font-family:var(--sans);font-size:.75rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--oro);margin-bottom:1rem}
 
     @media (max-width:980px){
       .apertura{grid-template-columns:1fr;gap:2.5rem;padding-top:calc(var(--tastata) + 2rem)}

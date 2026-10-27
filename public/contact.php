@@ -110,6 +110,31 @@ if ($brief) {
   $messaggio = mb_substr(trim($messaggio . "\n\n— BRIEF DAL SITO —\n" . implode("\n", $brief)), 0, 3000);
 }
 
+// Preventivo di /preventivo inviato SENZA JavaScript: stesso discorso. Le voci a scelta
+// multipla arrivano come array (funzioni[], ecommerce[], contenuti[], visibilita[]).
+$prevCampi = [
+  'progetto'   => 'Sito',
+  'funzioni'   => 'Funzioni',
+  'prodotti'   => 'Prodotti',
+  'ecommerce'  => 'Negozio',
+  'contenuti'  => 'Grafica e contenuti',
+  'visibilita' => 'Farsi trovare',
+  'tempi'      => 'Tempi',
+  'sito'       => 'Sito attuale',
+];
+$prev = [];
+foreach ($prevCampi as $campo => $etichetta) {
+  $v = $data[$campo] ?? '';
+  if (is_array($v)) {
+    $v = implode(', ', array_slice(array_map(fn($o) => mb_substr(trim((string) $o), 0, 80), array_filter($v, 'is_scalar')), 0, 12));
+  }
+  $v = is_scalar($v) ? trim((string) $v) : '';
+  if ($v !== '') { $prev[] = "$etichetta: " . mb_substr($v, 0, 300); }
+}
+if ($prev) {
+  $messaggio = mb_substr(trim($messaggio . "\n\n— PREVENTIVO DAL SITO —\n" . implode("\n", $prev)), 0, 3000);
+}
+
 // Un bot ha compilato il campo nascosto: rispondiamo "ok" senza inviare.
 if ($website !== '') { finish(200, true, 'Grazie!', $isJson); }
 

@@ -2,7 +2,9 @@
 //   /demoClienti/     le bozze da far vedere (dati nel browser, nessun server)
 //   /demoClientiDev/  le versioni reali in sviluppo (pagine definitive, area riservata)
 // Un progetto nasce come bozza; quando il cliente dice si', la versione reale cresce in
-// /demoClientiDev/ (campo `dev`) prima di andare sul suo dominio.
+// /demoClientiDev/ (campo `dev`) prima di andare sul suo dominio. Quando la versione reale
+// ha superato la bozza, la bozza si toglie: restano solo `dev` e i dati del cliente
+// (niente `url`), e il progetto compare solo in /demoClientiDev/ (es. MasGioielli).
 import { UTENTE as MAS_UTENTE, PASSWORD as MAS_PASSWORD } from '../pages/masgioielliDev/_locale.js';
 
 export const CLIENTI = [
@@ -34,28 +36,12 @@ export const CLIENTI = [
     nome: 'MasGioielli',
     settore: 'Gioielleria e laboratorio orafo',
     dove: 'Corso Trapani 146/b, Torino',
-    url: '/demoMasGioielli/',
-    stato: 'Modifiche dell’incontro applicate, con il logo vettoriale',
-    pitch: 'Gioielleria dal 1996. Il sito è costruito attorno alle due cose che valgono davvero: il laboratorio e le perizie.',
-    dentro: [
-      'Logo, foto del negozio, del laboratorio e del titolare: quelle vere, dal loro sito attuale',
-      'Selezione del momento senza prezzi, che il negozio aggiorna da solo (foto dal telefono, nome, descrizione)',
-      'Nuova pagina Compro oro; perizie per successioni e divisioni ereditarie',
-      'Area riservata: selezione in vetrina, orari di apertura e marchi trattati',
-    ],
-    pagine: [
-      { t: 'Home', u: '/demoMasGioielli/' },
-      { t: 'Selezione', u: '/demoMasGioielli/vetrina/' },
-      { t: 'Atelier', u: '/demoMasGioielli/laboratorio/' },
-      { t: 'Compro oro', u: '/demoMasGioielli/compro-oro/' },
-      { t: 'Perizie', u: '/demoMasGioielli/perizie/' },
-      { t: 'Contatti', u: '/demoMasGioielli/contatti/' },
-    ],
-    accesso: { t: 'Area riservata', u: '/demoMasGioielli/riservata/', user: 'masgioielli', pass: 'trapani146' },
+    // bozza /demoMasGioielli/ tolta il 27 ottobre 2026: la versione reale l'aveva superata
+    // (i suoi indirizzi portano qui, vedi public/.htaccess)
     dev: {
       url: '/masgioielliDev/',
-      stato: 'Versione reale in sviluppo',
-      tecnica: 'Pagine statiche · area riservata con i dati nel browser, come la bozza',
+      stato: 'Versione reale in sviluppo · testi del negozio applicati',
+      tecnica: 'Pagine statiche · area riservata con i dati nel browser',
       dentro: [
         'Le pagine della bozza approvata, senza più nulla da bozza: niente note per il titolare, niente dati inventati',
         'Senza database, come la bozza: quello che il negozio cambia dall’area riservata resta su quel dispositivo',

@@ -5,12 +5,12 @@ import { BASE, INFO, orariInRiga } from './_sito.js';
 // Preventivo guidato e calibro della misura dell'anello tolti su richiesta del negozio:
 // il preventivo lo fanno col pezzo in mano.
 const lavori = [
-  { n: '01', t: 'Creazioni su misura', d: 'Dal disegno al pezzo finito. Portateci un’idea, una foto o un gioiello di famiglia da reinterpretare.' },
-  { n: '02', t: 'Trasformazioni', d: 'Un gioiello che non mettete più può tornare a vivere in un’altra forma, con le stesse pietre.' },
-  { n: '03', t: 'Riparazioni', d: 'Saldature, cambio misura, rimonta di pietre, chiusure, catene spezzate, lucidature.' },
-  { n: '04', t: 'Orologeria', d: 'Pile, cinturini, accorciatura bracciali, revisioni complete e prove di impermeabilità.' },
+  { n: '01', t: 'Creazioni su misura', d: 'Dal disegno al gioiello finito. Tutto comincia da un’idea, una foto o un gioiello di famiglia da reinterpretare.' },
+  { n: '02', t: 'Trasformazioni', d: 'Un gioiello che non indossate più può tornare a vivere in un’altra forma.' },
+  { n: '03', t: 'Riparazioni', d: 'Saldature, cambio misura, chiusure, riparazioni, lucidature.' },
+  { n: '04', t: 'Orologeria', d: 'Sostituzione pile e cinturini, regolazione bracciali, revisioni complete e prove di impermeabilità.' },
   { n: '05', t: 'Pendoleria', d: 'Orologi da tasca, sveglie e pendoli d’epoca: revisione della meccanica e restauro.' },
-  { n: '06', t: 'Manutenzione', d: 'Pulizia a ultrasuoni, lucidatura e controllo delle griffe: il pezzo torna come nuovo.' },
+  { n: '06', t: 'Manutenzione', d: 'Pulizia a ultrasuoni, lucidatura e controllo delle griffe: il gioiello torna come nuovo.' },
 ];
 // fotografie del laboratorio del negozio (dal sito attuale, di Elisa Miglietti)
 const scatti = [
@@ -24,10 +24,10 @@ const WA_LAB = `https://wa.me/${INFO.wa}?text=${encodeURIComponent(`Buongiorno $
 <Layout title="Atelier" active="Atelier" desc={`Il laboratorio artigianale di ${INFO.nome} a Torino: creazioni su misura, riparazioni, trasformazioni, orologeria e pendoleria. Preventivo gratuito in negozio.`}>
 
   <section class="testa-pagina">
-    <div class="misura stretta intro centro a">
+    <div class="misura stretta intro centro">
       <span class="occhiello centro">L’atelier</span>
       <h1>Qui il gioiello<br/><span class="it oro">nasce e rinasce</span></h1>
-      <p>Il banco è dietro il negozio. Non mandiamo via niente: quello che si può salvare, lo salviamo noi — con le mani, come si è sempre fatto.</p>
+      <p>I nostri tecnici lavorano unendo le tecniche più moderne con la maestria artigianale della tradizione orafa.</p>
     </div>
   </section>
 
@@ -67,7 +67,7 @@ const WA_LAB = `https://wa.me/${INFO.wa}?text=${encodeURIComponent(`Buongiorno $
       <div class="a">
         <span class="occhiello">Preventivo</span>
         <h2 class="prev-h2">Lo guardiamo<br/><span class="it prev-oro">insieme.</span></h2>
-        <p class="prev-p">Portateci il pezzo: vi diciamo subito cosa si può fare, quanto costa e quanto tempo serve. Il preventivo è gratuito e senza impegno. Se preferite, mandateci prima una foto.</p>
+        <p class="prev-p">Portateci il gioiello, vi diciamo cosa si può fare, quanto costa e quanto tempo serve. Il preventivo è gratuito e senza impegno.</p>
       </div>
       <div class="prev-azioni a">
         <a class="btn btn-chiaro btn-pieno" id="labWa" href={WA_LAB} target="_blank" rel="noopener">Mandateci una foto su WhatsApp</a>

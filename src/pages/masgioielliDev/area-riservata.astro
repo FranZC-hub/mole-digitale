@@ -230,7 +230,7 @@ import { BASE, LOGO_CHIARO, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_sit
     .acc-foto::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(21,18,14,0) 35%,rgba(21,18,14,.85))}
     .acc-foto-tx{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:clamp(1.6rem,3vw,2.4rem)}
     .acc-logo{width:190px;height:auto;margin-bottom:.9rem}
-    .acc-foto-tx p{font-size:.64rem;font-weight:500;letter-spacing:.26em;text-transform:uppercase;color:var(--oro-c)}
+    .acc-foto-tx p{font-size:.75rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--oro-c)}
     .acc-corpo{padding:clamp(2rem,5vw,3.6rem) clamp(1.4rem,5vw,3.6rem);display:flex;flex-direction:column;justify-content:center}
     .acc-passo{display:flex;flex-direction:column;align-items:flex-start}
     .acc-passo h1{font-size:clamp(2.2rem,3.6vw,2.9rem);margin-top:.9rem}
@@ -293,7 +293,8 @@ import { BASE, LOGO_CHIARO, REPARTI, CATEGORIE, GIORNI, SETTIMANA } from './_sit
     .campi{display:grid;gap:1.1rem}
     .foto-campo{display:grid;gap:.6rem}
     .foto-vuota,.z-anteprima{width:100%;aspect-ratio:4/5;object-fit:cover;border:1px solid var(--filo);background:var(--avorio-2)}
-    .foto-vuota{display:grid;place-items:center;color:var(--grigio);font-size:.85rem}
+    /* grafite e non grigio: sul fondo avorio-2 il grigio arrivava a 4,27:1, sotto il minimo di 4,5 */
+    .foto-vuota{display:grid;place-items:center;color:var(--grafite);font-size:.85rem}
     .foto-scegli{position:relative;display:flex !important;align-items:center;justify-content:center;min-height:46px;border:1px solid var(--inchiostro);cursor:pointer;font-size:.74rem !important;letter-spacing:.16em !important;text-transform:uppercase !important}
     .foto-scegli:hover{background:var(--inchiostro);color:var(--avorio) !important}
     .foto-scegli input{position:absolute;inset:0;opacity:0;cursor:pointer}

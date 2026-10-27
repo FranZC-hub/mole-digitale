@@ -17,8 +17,8 @@ export const INFO = {
   fondata: 1996,
   fondatore: 'Massimo Mussa',
   inaugurazione: '16 marzo 1996',
-  // Registro degli operatori compro oro (OAM): DA INSERIRE prima della pubblicazione
-  oam: '',
+  // Registro degli operatori compro oro (OAM), come scritto dal negozio (testi di ottobre 2026)
+  oam: 'OCO4628',
   via: 'Corso Trapani 146/b',
   citta: 'Torino',
   cap: '10141',

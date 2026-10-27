@@ -56,6 +56,18 @@ ErrorDocument 404 /404.html
   </FilesMatch>
 </IfModule>
 
+# --- Bozza di MasGioielli tolta (27 ottobre 2026): la versione reale l'ha superata ---
+# I vecchi indirizzi (il negozio ha quelli) portano alla pagina corrispondente in /masgioielliDev/.
+# Vale anche se sul server la cartella /demoMasGioielli/ fosse ancora lì. Prima le regole precise,
+# poi quella generale: vince la prima che corrisponde.
+<IfModule mod_alias.c>
+  RedirectMatch 301 ^/demoMasGioielli/vetrina/?$ /masgioielliDev/selezione/
+  RedirectMatch 301 ^/demoMasGioielli/laboratorio/?$ /masgioielliDev/atelier/
+  RedirectMatch 301 ^/demoMasGioielli/riservata/?$ /masgioielliDev/area-riservata/
+  RedirectMatch 301 ^/demoMasGioielli/(compro-oro|perizie|contatti|privacy)/?$ /masgioielliDev/$1/
+  RedirectMatch 301 ^/demoMasGioielli(/.*)?$ /masgioielliDev/
+</IfModule>
+
 # --- Compressione (riduce di ~70% HTML/CSS/JS in trasferimento) ---
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml

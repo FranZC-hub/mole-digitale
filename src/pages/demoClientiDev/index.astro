@@ -93,7 +93,7 @@ const soloBozza = CLIENTI.filter((c) => !c.dev);
             <a href={c.dev.url} class="btn btn-primary cl-apri">Apri il sito →</a>
           </header>
 
-          <h3 class="cl-h3">Cosa c’è in più rispetto alla bozza</h3>
+          <h3 class="cl-h3">{c.url ? 'Cosa c’è in più rispetto alla bozza' : 'Cosa c’è dentro'}</h3>
           <ul class="cl-dentro">
             {c.dev.dentro.map((d) => <li>{d}</li>)}
           </ul>
@@ -167,7 +167,7 @@ const soloBozza = CLIENTI.filter((c) => !c.dev);
               )}
             </div>
             <div class="cl-azioni">
-              <a href={c.url} class="btn btn-ghost">La bozza</a>
+              {c.url && <a href={c.url} class="btn btn-ghost">La bozza</a>}
               <a href={c.dev.accesso.u} class="btn btn-ghost">Apri →</a>
             </div>
           </div>

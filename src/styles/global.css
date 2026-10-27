@@ -384,7 +384,8 @@ main:focus { outline: none; }
 }
 /* touch-action:none su TUTTI i figli: se il dito parte su immagine/tag/handle
    (non sul contenitore) il browser non deve scrollare la pagina durante il drag */
-.compare, .compare * { touch-action:none; }
+/* pan-y: sul telefono il dito in verticale scorre la pagina, in orizzontale muove lo slider (main.js) */
+.compare, .compare * { touch-action:pan-y; }
 .compare-img { position:absolute; inset:0; }
 .compare-img.after { width:50%; overflow:hidden; border-right:2px solid #fff; }
 /* Immagini reali nello slider Prima/Dopo (--cw = larghezza reale del box, da JS) */

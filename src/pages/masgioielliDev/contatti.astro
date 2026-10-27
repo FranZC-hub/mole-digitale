@@ -8,10 +8,10 @@ const MAPPA = `https://www.google.com/maps/search/?api=1&query=${encodeURICompon
 <Layout title="Contatti e orari" active="Contatti" desc={`Dove siamo e come contattarci: ${INFO.via}, ${INFO.citta}. Telefono ${INFO.tel}, WhatsApp ${INFO.waLabel}. Aperti da martedì a sabato.`}>
 
   <section class="testa-pagina">
-    <div class="misura stretta intro centro a">
+    <div class="misura stretta intro centro">
       <span class="occhiello centro">Vieni a trovarci</span>
       <h1>Ci trovate in<br/><span class="it oro">Corso Trapani</span></h1>
-      <p>Il modo migliore per scegliere un gioiello resta guardarlo dal vivo. Passate quando volete — o scriveteci prima, così vi prepariamo quello che vi interessa.</p>
+      <p>Il modo migliore per scegliere un gioiello resta guardarlo dal vivo. Passate a trovarci, il nostro staff sarà lieto di accogliervi e accompagnarvi nell’esperienza d’acquisto.</p>
     </div>
   </section>
 
@@ -67,7 +67,7 @@ const MAPPA = `https://www.google.com/maps/search/?api=1&query=${encodeURICompon
       <div class="a">
         <span class="occhiello">Scriveteci</span>
         <h2 class="scrivi-h2">Raccontateci<br/><span class="it oro">cosa vi serve.</span></h2>
-        <p class="scrivi-p">Un’informazione su un pezzo, una riparazione, una creazione su misura, una valutazione o dell’oro da vendere: rispondiamo noi, di solito in giornata.</p>
+        <p class="scrivi-p">Un’informazione su un gioiello, una riparazione, una creazione su misura o una valutazione: rispondiamo noi, di solito in giornata.</p>
       </div>
       <form class="modulo a" id="contForm">
         <label>Il vostro nome<input type="text" id="c-nome" required autocomplete="name" /></label>
@@ -88,6 +88,7 @@ const MAPPA = `https://www.google.com/maps/search/?api=1&query=${encodeURICompon
           <span>Ho letto l’<a href={BASE + 'privacy/'}>informativa privacy</a> e acconsento al trattamento dei dati.</span>
         </label>
         <p class="trappola" aria-hidden="true"><label>Sito web<input type="text" id="c-sito" tabindex="-1" autocomplete="off" /></label></p>
+        <noscript><p class="nota">Per inviare il modulo serve JavaScript, che in questo browser è spento: scriveteci su <a href={WA} target="_blank" rel="noopener" class="link-testo">WhatsApp</a> o chiamate il <a href={'tel:' + INFO.telHref} class="link-testo">{INFO.tel}</a>.</p></noscript>
         <button type="submit" class="btn btn-pieno">Invia il messaggio</button>
         <p class="esito" id="contOk" role="status" aria-live="polite"></p>
       </form>
@@ -104,7 +105,7 @@ const MAPPA = `https://www.google.com/maps/search/?api=1&query=${encodeURICompon
     .modo{display:flex;flex-direction:column;gap:.45rem;padding:clamp(1.6rem,3vw,2.2rem) clamp(1rem,2.5vw,2rem);border-top:1px solid var(--filo);border-bottom:1px solid var(--filo);border-left:1px solid var(--filo);transition:background .3s var(--e)}
     .modo:last-child{border-right:1px solid var(--filo)}
     .modo:hover{background:var(--carta)}
-    .modo-et{font-size:.64rem;letter-spacing:.24em;text-transform:uppercase;color:var(--oro)}
+    .modo-et{font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:var(--oro)}
     .modo-v{font-family:var(--disp);font-size:clamp(1.5rem,2.8vw,2rem);line-height:1.2}
     .modo-mail{font-size:clamp(1.1rem,2vw,1.4rem);word-break:break-word}
     .modo-d{font-size:.85rem;color:var(--grigio)}
@@ -116,7 +117,7 @@ const MAPPA = `https://www.google.com/maps/search/?api=1&query=${encodeURICompon
     .dove-p{color:var(--grafite);margin:1.3rem 0 1.5rem;max-width:44ch}
     .dove-stato{margin-bottom:2rem}
     .dove-azioni{display:flex;align-items:center;gap:2rem;flex-wrap:wrap}
-    .dove-h3{font-family:var(--sans);font-size:.66rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--oro);margin-bottom:1rem}
+    .dove-h3{font-family:var(--sans);font-size:.75rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--oro);margin-bottom:1rem}
 
     /* scrivici */
     .scrivi-banda{padding-top:0}

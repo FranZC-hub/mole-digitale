@@ -12,7 +12,13 @@ const MAPS_EMBED = 'https://www.google.com/maps?q=' + encodeURIComponent(Q) + '&
 
     <div class="dgrid">
       <div class="dmap r">
-        <iframe class="dmap-frame" src={MAPS_EMBED} loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mappa: Farmacia dell'Ausiliatrice, Corso Principe Oddone 28, Torino"></iframe>
+        {/* La mappa di Google si carica solo con un clic: prima, nessuna richiesta a Google (niente
+             cookie o dati di navigazione senza consenso). Senza JavaScript il pulsante apre Google Maps. */}
+        <div class="dmap-frame dmap-ph" id="dMap" data-embed={MAPS_EMBED}>
+          <span class="dmap-pin" aria-hidden="true">📍</span>
+          <a class="fbtn fbtn-cel" id="dMapBtn" href={MAPS} target="_blank" rel="noopener">Mostra la mappa</a>
+          <p class="dmap-nota">La mappa è di Google: caricandola, Google può impostare cookie propri. <a href="../privacy/">Privacy</a></p>
+        </div>
         <div class="dmap-info">
           <div><b>Corso Principe Oddone, 28</b><span>10152 Torino (TO)</span></div>
           <a href={MAPS} target="_blank" rel="noopener" class="fbtn fbtn-cel">Apri in Google Maps →</a>
@@ -40,6 +46,12 @@ const MAPS_EMBED = 'https://www.google.com/maps?q=' + encodeURIComponent(Q) + '&
     .dgrid>*{min-width:0}
     .dmap{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--soft)}
     .dmap-frame{width:100%;height:300px;border:0;display:block;filter:saturate(1.05)}
+    /* riquadro al posto della mappa finché non si chiede di caricarla: stessa misura, niente salti */
+    .dmap-ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.9rem;padding:1.4rem;text-align:center;
+      background-image:repeating-linear-gradient(0deg,transparent 0 38px,var(--line) 38px 39px),repeating-linear-gradient(90deg,transparent 0 38px,var(--line) 38px 39px),linear-gradient(135deg,var(--bg2),var(--bg))}
+    .dmap-pin{font-size:2rem;line-height:1}
+    .dmap-nota{font-size:.8rem;color:var(--muted);max-width:30ch}
+    .dmap-nota a{color:var(--cel-d);text-decoration:underline}
     .dmap-info{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:1.1rem 1.3rem}
     .dmap-info b{font-size:1.15rem;font-family:var(--disp);display:block}
     .dmap-info span{color:var(--muted)}
@@ -54,5 +66,25 @@ const MAPS_EMBED = 'https://www.google.com/maps?q=' + encodeURIComponent(Q) + '&
   <script>
     import { renderHours } from './_shared.js';
     renderHours(document.getElementById('dHours'), null);
+
+    // Mappa su richiesta: il link diventa un pulsante che mette la mappa al posto del riquadro
+    const box = document.getElementById('dMap');
+    const link = document.getElementById('dMapBtn');
+    if (box && link) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = link.className;
+      btn.textContent = link.textContent;
+      link.replaceWith(btn);
+      btn.addEventListener('click', () => {
+        const mappa = document.createElement('iframe');
+        mappa.className = 'dmap-frame';
+        mappa.src = box.dataset.embed || '';
+        mappa.title = 'Mappa: Farmacia dell’Ausiliatrice, Corso Principe Oddone 28, Torino';
+        mappa.referrerPolicy = 'no-referrer-when-downgrade';
+        box.replaceWith(mappa);
+        mappa.focus();
+      });
+    }
   </script>
 </Layout>
