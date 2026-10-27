@@ -139,7 +139,9 @@ if (navTargets.length) {
       }
     });
   }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
-  navTargets.forEach((s) => spy.observe(s));
+  // tutte le sezioni, non solo quelle del menu: passando su FAQ o contatti la voce si spegne
+  // (prima restava accesa «Pacchetti» fino in fondo alla pagina)
+  document.querySelectorAll('main section[id]').forEach((s) => spy.observe(s));
 }
 
 /* ---------- FAQ accordion ---------- */

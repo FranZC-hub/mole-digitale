@@ -260,6 +260,8 @@ const articleSchema = article ? {
       <a href="/blog" class={isActive('/blog') ? 'active' : undefined} aria-current={isActive('/blog') ? 'page' : undefined}>Blog</a>
       <a href="/chi-siamo" class={isActive('/chi-siamo') ? 'active' : undefined} aria-current={isActive('/chi-siamo') ? 'page' : undefined}>Chi siamo</a>
     </nav>
+    {/* solo su computer (nascosto sotto i 980 px): sul telefono c'è già la barra in basso */}
+    <a href="/preventivo" class="btn btn-primary nav-cta">Preventivo gratuito</a>
     <button class="nav-toggle" aria-label="Apri menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
