@@ -80,12 +80,13 @@ const scorciatoie = ['bar', 'ristorante', 'parrucchiere', 'dentista'];
     </div>
 
     <div class="port-grid" id="portGrid">
-      {demos.map((dm) => (
+      {demos.map((dm, i) => (
         <a class="port-card glass" href={dm.url} data-reveal data-tilt
            data-forte={`${dm.name} ${dm.cat}`}
            data-cerca={`${dm.name} ${dm.cat} ${dm.desc} ${dm.cerca}`}>
           <div class="port-thumb">
-            <img class="port-img" src={`/img/thumbs/${dm.k}.webp`} alt={`Anteprima del sito demo ${dm.name}`} loading="lazy" width="760" height="475" />
+            {/* le prime due sono nella prima schermata: subito, la prima con priorità (era lei a frenare l'apertura) */}
+            <img class="port-img" src={`/img/thumbs/${dm.k}.webp`} alt={`Anteprima del sito demo ${dm.name}`} loading={i < 2 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : undefined} width="760" height="475" />
             <span class="port-go">Apri la demo →</span>
           </div>
           <div class="port-cap"><b>{dm.name}</b><span>{dm.cat} · {dm.desc}</span></div>

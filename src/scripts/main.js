@@ -1,15 +1,11 @@
 /* =========================================================
    Mole Digitale — main.js (Astro + Vite bundle)
-   Lenis (smooth scroll) + GSAP (hero/parallax) + interazioni
+   Lenis (smooth scroll) + interazioni. L'animazione d'apertura con GSAP
+   è in hero.js e la carica solo la home.
    ========================================================= */
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
-import { gsap } from 'gsap';
 import { azione } from './azione.js';
-
-// ScrollTrigger (~21 KB) serve solo al parallasse dell'hero: lo carico a richiesta
-// nelle poche pagine che hanno un hero, non su tutto il sito.
-let ScrollTrigger = null;
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const finePointer = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
@@ -21,41 +17,14 @@ if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 const nav = document.getElementById('nav');
 const setNav = (y) => nav && nav.classList.toggle('scrolled', y > 30);
 
-/* ---------- Lenis (smooth scroll) + GSAP (solo se movimento consentito) ---------- */
+/* ---------- Lenis (smooth scroll, solo se movimento consentito) ---------- */
 let lenis = null;
 if (!reduced) {
   lenis = new Lenis({ lerp: 0.1, smoothWheel: true, wheelMultiplier: 1 });
   const raf = (time) => { lenis.raf(time); requestAnimationFrame(raf); };
   requestAnimationFrame(raf);
-  lenis.on('scroll', ({ scroll }) => { setNav(scroll); ScrollTrigger?.update(); });
+  lenis.on('scroll', ({ scroll }) => setNav(scroll));
 
-  /* --- Hero: entrata cinematografica con GSAP (solo nelle pagine con hero) --- */
-  if (document.querySelector('.hero-title')) {
-    const fadeEls = gsap.utils.toArray('.hero-fade').filter((el) => !el.classList.contains('hero-visual'));
-    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-    tl.fromTo('.hero-title .word',
-        { opacity: 0, y: 28 },
-        { opacity: 1, y: 0, stagger: 0.05, duration: 0.7 }, 0.1)
-      // Il sottotitolo è l'elemento più grande della prima schermata (quello che Google misura
-      // come LCP): da opacità 0 contava solo a fine animazione, dopo l'arrivo di GSAP (2,1 s su
-      // telefono lento). Partendo già leggibile conta subito; l'effetto resta quasi lo stesso.
-      .fromTo(fadeEls,
-        { opacity: 0.35, y: 24 },
-        { opacity: 1, y: 0, stagger: 0.12, duration: 0.8 }, 0.45)
-      .fromTo('.hero-visual',
-        { opacity: 0, x: 40, rotateY: -15 },
-        { opacity: 1, x: 0, rotateY: 0, duration: 1.1 }, 0.4);
-
-    // Parallasse del mockup hero: carico ScrollTrigger solo adesso (import dinamico)
-    import('gsap/ScrollTrigger').then((m) => {
-      ScrollTrigger = m.ScrollTrigger;
-      gsap.registerPlugin(ScrollTrigger);
-      gsap.to('.hero-visual', {
-        yPercent: -10, ease: 'none',
-        scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
-      });
-    });
-  }
   // Il parallasse del watermark nel footer ora e' in CSS nativo (scroll.css).
 } else {
   window.addEventListener('scroll', () => setNav(window.scrollY), { passive: true });
