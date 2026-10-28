@@ -9,7 +9,6 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
-const fmt = post.data.date.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
 
 // Tempo di lettura (~200 parole/min sul corpo markdown)
 const words = post.body.split(/\s+/).filter(Boolean).length;
@@ -21,10 +20,11 @@ const related = (await getCollection('blog'))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, 2);
 ---
-<Layout title={post.data.title} description={post.data.description} image={post.data.og} article={{ datePublished: post.data.date.toISOString() }}>
+<Layout title={post.data.title} description={post.data.description} image={post.data.og} article={{ datePublished: post.data.date.toISOString(), dateModified: post.data.updated?.toISOString() }}>
   <article class="section blog-article" style="padding-top:8rem;">
-    <a href="/blog/" class="blog-back" data-reveal>← Tutti gli articoli</a>
-    <time class="kicker" datetime={post.data.date.toISOString().slice(0, 10)} data-reveal>{fmt} · ⏱ {readMin} min di lettura</time>
+    <a href="/blog/" class="blog-back" data-reveal>← Tutte le guide</a>
+    {/* niente data visibile: sono guide che non invecchiano (la data resta nei dati strutturati) */}
+    <span class="kicker" data-reveal>Guida · {readMin} min di lettura</span>
     <h1 data-reveal>{post.data.title}</h1>
     <div class="prose" data-reveal>
       <Content />
@@ -35,12 +35,11 @@ const related = (await getCollection('blog'))
     </div>
 
     {related.length > 0 && (
-      <aside class="blog-related" aria-label="Da leggere dopo" data-reveal>
-        <h2>Da leggere dopo</h2>
+      <aside class="blog-related" aria-label="Altre guide" data-reveal>
+        <h2>Altre guide</h2>
         <div class="blog-related-grid">
           {related.map((p) => (
             <a class="glass" href={`/blog/${p.id}/`}>
-              <time>{p.data.date.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' })}</time>
               <b>{p.data.title}</b>
               <span>{p.data.description}</span>
             </a>

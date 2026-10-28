@@ -73,6 +73,7 @@ import Layout from '../layouts/Layout.astro';
   </style>
 
   <script>
+    import { azione } from '../scripts/azione.js';
     const bf = document.getElementById('briefForm');
     const bfb = document.getElementById('briefFeedback');
     bf.addEventListener('submit', async (e) => {
@@ -98,7 +99,7 @@ import Layout from '../layouts/Layout.astro';
           body: JSON.stringify({ nome: v('b-nome'), attivita: v('b-attivita'), telefono: v('b-telefono'), messaggio, website: bf.website.value }),
         });
         const out = await res.json().catch(() => ({}));
-        if (res.ok && out.ok) { bfb.classList.add('ok'); bfb.textContent = '✅ Brief ricevuto! Ti ricontattiamo entro 24 ore con la prima proposta.'; bf.reset(); }
+        if (res.ok && out.ok) { bfb.classList.add('ok'); bfb.textContent = '✅ Brief ricevuto! Ti ricontattiamo entro 24 ore con la prima proposta.'; azione('richiesta-brief'); bf.reset(); }
         else throw new Error();
       } catch {
         bfb.classList.add('ko'); bfb.textContent = '⚠️ Invio non riuscito. Riprova, oppure scrivici su WhatsApp qui sotto.';

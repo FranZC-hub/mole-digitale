@@ -1,0 +1,109 @@
+---
+import Layout from '../layouts/Layout.astro';
+// La scheda Google Business: fa già parte dei nostri siti («Google & mappe» in home), ma non
+// aveva una pagina. Le ricerche ci sono, e tante («scheda google business», «creare»,
+// «rivendicare», «sospesa»…): questa pagina è il servizio, la guida nel blog è il come si fa.
+const cosa = [
+  { h: 'Creazione o recupero', p: 'Se la scheda non c’è la creiamo; se c’è ma non è tua (l’ha aperta qualcun altro, o Google da solo) la rivendichiamo.' },
+  { h: 'Verifica', p: 'Ti guidiamo nella verifica che Google chiede per dimostrare che l’attività è tua: oggi spesso è un breve video.' },
+  { h: 'Categorie e servizi giusti', p: 'La categoria principale decide per quali ricerche compari: va scelta con cura, poi si aggiungono servizi e prodotti.' },
+  { h: 'Orari sempre veri', p: 'Compresi festivi e chiusure: niente clienti davanti alla saracinesca, niente recensioni arrabbiate.' },
+  { h: 'Foto che fanno scegliere', p: 'Insegna, interno, prodotti, persone: le schede con foto vere ricevono più richieste di indicazioni e più clic.' },
+  { h: 'Recensioni', p: 'Un modo semplice per chiederle a tutti i clienti, e le risposte giuste, anche a quelle negative.' },
+  { h: 'Collegata al sito', p: 'Sito, prenotazioni, menu, WhatsApp: la scheda porta al posto giusto, e il sito rafforza la scheda.' },
+];
+const errori = [
+  { h: 'Parole in più nel nome', p: '«Pizzeria Da Mario – pizza napoletana Torino centro»: è contro le regole di Google e porta alla sospensione.' },
+  { h: 'Schede doppie', p: 'Due schede per la stessa attività si fanno concorrenza e confondono i clienti.' },
+  { h: 'Categoria troppo generica', p: '«Negozio» invece di «Negozio di biciclette»: compari per meno ricerche.' },
+  { h: 'Recensioni senza risposta', p: 'Chi legge guarda anche come rispondi: una risposta educata vale più di una stella in più.' },
+  { h: 'Indirizzo nascosto quando non va', p: 'Si nasconde solo se i clienti non vengono da te. Se hai un negozio o uno studio, l’indirizzo va mostrato.' },
+  { h: 'Informazioni vecchie', p: 'Numero cambiato, orari estivi mai tolti, foto di dieci anni fa: la scheda va curata come una vetrina.' },
+];
+const domande = [
+  { q: 'La scheda Google Business è a pagamento?', a: 'No: la scheda è gratuita, Google non la fa pagare. Si paga, se lo affidi a qualcuno, il lavoro per impostarla bene e tenerla curata.' },
+  { q: 'È inclusa nei vostri siti?', a: 'Sì: quando facciamo il sito impostiamo anche la scheda e la colleghiamo al sito. Se hai già un sito e ti interessa solo la scheda, scrivici e vediamo insieme cosa serve.' },
+  { q: 'Quanto ci vuole per comparire su Maps?', a: 'La verifica può richiedere da qualche giorno a qualche settimana. Dopo, la posizione dipende da tre cose: quanto la scheda corrisponde a quello che si cerca, quanto sei vicino a chi cerca e quanto sei conosciuto (recensioni, citazioni, sito).' },
+  { q: 'Posso nascondere l’indirizzo?', a: 'Solo se i clienti non vengono nella tua sede, per esempio se lavori a domicilio: in quel caso si indica la zona servita. Se ricevi clienti, l’indirizzo va mostrato.' },
+  { q: 'La mia scheda è stata sospesa: cosa si fa?', a: 'Prima si capisce il motivo (spesso nome, indirizzo o categoria non in regola), si corregge, e poi si chiede a Google di riesaminarla con le prove che l’attività è vera.' },
+];
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: domande.map((d) => ({ '@type': 'Question', name: d.q, acceptedAnswer: { '@type': 'Answer', text: d.a } })),
+};
+---
+<Layout
+  title="Scheda Google Business a Torino — Mole Digitale"
+  description="Creiamo, verifichiamo e curiamo la scheda Google Business della tua attività di Torino: categorie, orari, foto, recensioni e collegamento al sito."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <section class="section" style="padding-top:8rem;">
+    <nav class="briciole" aria-label="Sei qui">
+      <a href="/">Home</a><span aria-hidden="true">›</span><span aria-current="page">Scheda Google Business</span>
+    </nav>
+    <div class="section-head" data-reveal>
+      <span class="kicker">Scheda Google Business</span>
+      <h1 style="font-size:clamp(2.2rem,5vw,3.4rem); line-height:1.1;">Scheda Google Business <span class="grad">fatta bene</span>, per la tua attività di Torino.</h1>
+      <p class="section-lead">Quando qualcuno cerca «pizzeria vicino a me» o «parrucchiere San Salvario», la prima cosa che vede spesso non è un sito: è la scheda su Google Maps. Orari, foto, recensioni, telefono. Se è incompleta o sbagliata, il cliente sceglie un altro.</p>
+      <div style="margin-top:1.6rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <a href="/preventivo/" class="btn btn-primary btn-magnetic">Chiedi il preventivo</a>
+        <a href="/blog/scheda-google-business-guida/" class="btn btn-ghost">Leggi la guida →</a>
+      </div>
+    </div>
+
+    <div class="gb-blocco" data-reveal>
+      <h2>Cosa facciamo</h2>
+      <ul class="gb-griglia">
+        {cosa.map((c) => <li class="prob-card"><h3>{c.h}</h3><p>{c.p}</p></li>)}
+      </ul>
+    </div>
+
+    <div class="gb-blocco" data-reveal>
+      <h2>Gli errori che vediamo più spesso</h2>
+      <ul class="gb-griglia gb-errori">
+        {errori.map((c) => <li><h3>{c.h}</h3><p>{c.p}</p></li>)}
+      </ul>
+    </div>
+
+    <div class="gb-blocco" data-reveal>
+      <h2>Domande frequenti</h2>
+      <div class="faq-list">
+        {domande.map((d, i) => (
+          <details class="faq-item" open={i === 0}>
+            <summary>{d.q}<span class="chev">+</span></summary>
+            <p>{d.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+
+    <p class="gb-nota" data-reveal>La scheda rende di più se porta a un sito veloce e chiaro: guarda cosa facciamo per <a href="/siti-web-torino/">ogni tipo di attività</a>, o come <a href="/restyling-siti-web-torino/">rifacciamo i siti che hai già</a>.</p>
+
+    <div class="cta-card glass" data-reveal style="margin-top:3rem; text-align:center; display:block;">
+      <h2 style="font-size:clamp(1.6rem,3.5vw,2.4rem); margin-bottom:1rem;">Vuoi che ci pensiamo noi?</h2>
+      <p style="color:var(--muted); margin-bottom:1.6rem;">Dicci il nome della tua attività: guardiamo com’è la scheda oggi e ti diciamo cosa sistemare.</p>
+      <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <a href={'https://wa.me/393662102203?text=' + encodeURIComponent('Ciao! Vorrei sistemare la scheda Google della mia attività: ')} target="_blank" rel="noopener" class="btn btn-ghost">Scrivici su WhatsApp</a>
+        <a href="/preventivo/" class="btn btn-primary btn-magnetic">Chiedi il preventivo</a>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .briciole { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:.2rem .5rem; margin:0 auto 1.6rem; font-size:.88rem; color:var(--muted-2); }
+    .briciole a { color:var(--muted); text-decoration:underline; text-decoration-color:rgba(184,184,208,.35); text-underline-offset:3px; }
+    .briciole a:hover { color:var(--c2); }
+    .briciole [aria-current] { color:var(--text); }
+    .gb-blocco { max-width:980px; margin:3.5rem auto 0; }
+    .gb-blocco > h2 { font-size:clamp(1.5rem,3.5vw,2.2rem); text-align:center; margin-bottom:1.4rem; }
+    .gb-griglia { list-style:none; display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+    .gb-griglia h3 { font-size:1.1rem; margin-bottom:.4rem; }
+    .gb-errori li { padding:1.2rem 1.3rem; border-left:3px solid var(--warning); background:var(--surface); border-radius:var(--radius-sm); }
+    .gb-errori p, .gb-griglia p { color:var(--muted); font-size:.94rem; }
+    .gb-nota { color:var(--muted); max-width:760px; margin:3rem auto 0; text-align:center; }
+    .gb-nota a { color:var(--c2); text-decoration:underline; text-underline-offset:3px; }
+    @media (max-width:900px){ .gb-griglia { grid-template-columns:repeat(2,1fr); } }
+    @media (max-width:640px){ .gb-griglia { grid-template-columns:1fr; } }
+  </style>
+</Layout>

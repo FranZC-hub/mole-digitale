@@ -4,7 +4,7 @@ import { getCollection } from 'astro:content';
 export async function GET(context) {
   const posts = (await getCollection('blog')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
   return rss({
-    title: 'Mole Digitale — Blog',
+    title: 'Mole Digitale — Guide',
     description: 'Guide su siti web, Google e presenza online per gli esercenti di Torino.',
     site: context.site,
     items: posts.map((p) => ({

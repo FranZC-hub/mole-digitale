@@ -1,9 +1,18 @@
 ---
 import Layout from '../layouts/Layout.astro';
+// Chi siamo: per Google, per l'intelligenza artificiale e per i clienti conta sapere chi c'è
+// dietro. DA AGGIUNGERE appena possibile (non inventarli): nome e foto di chi lavora ai siti,
+// due righe di storia, e la partita IVA (va anche nel piede, è obbligatoria in home page).
+const servizi = [
+  { h: 'Siti nuovi', p: 'Per chi un sito non ce l’ha: una pagina o qualche pagina, pensate per il tuo settore.', href: '/siti-web-torino/', link: 'I siti per settore' },
+  { h: 'Restyling', p: 'Per chi ce l’ha ma è vecchio: lo rifacciamo tenendo dominio, contenuti e posizioni su Google.', href: '/restyling-siti-web-torino/', link: 'Come rifacciamo un sito' },
+  { h: 'Scheda Google', p: 'La scheda su Maps impostata e collegata al sito: è lì che ti trova chi cerca «vicino a me».', href: '/scheda-google-business-torino/', link: 'La scheda Google' },
+  { h: 'Assistenza', p: 'Hosting, dominio, sicurezza e backup a canone fisso. Le modifiche le facciamo noi, col prezzo detto prima.', href: '/preventivo/', link: 'Chiedi il preventivo' },
+];
 ---
 <Layout
   title="Chi siamo — Mole Digitale, siti web per esercenti a Torino"
-  description="Chi c'è dietro Mole Digitale: facciamo siti web moderni per gli esercenti di Torino, a prezzi onesti e senza giri di parole."
+  description="Chi c'è dietro Mole Digitale: facciamo e rifacciamo siti web per gli esercenti di Torino, veloci, accessibili e trovati su Google, a prezzi onesti."
 >
   <section class="section" style="padding-top:8rem;">
     <div class="section-head" data-reveal>
@@ -22,6 +31,34 @@ import Layout from '../layouts/Layout.astro';
         <h3>Come lavoriamo</h3>
         <p>Partiamo da una chiacchierata — di persona a Torino, o in videochiamata. Ti facciamo vedere una bozza in 48 ore, la rifiniamo insieme, e in pochi giorni sei online.</p>
         <p>Niente sorprese in fattura: il prezzo è chiaro fin dall'inizio. Creiamo il sito e poi all'hosting, al dominio e all'assistenza pensiamo noi, a canone fisso.</p>
+      </div>
+    </div>
+
+    <h2 class="cs-h2" data-reveal>Cosa facciamo, in concreto</h2>
+    <ul class="cs-servizi">
+      {servizi.map((s) => (
+        <li class="glass" data-reveal>
+          <h3>{s.h}</h3>
+          <p>{s.p}</p>
+          <a href={s.href}>{s.link} →</a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="about-grid cs-due">
+      <div data-reveal>
+        <h2 class="cs-h2 cs-sx">Come sono fatti i nostri siti</h2>
+        <ul class="spunte cs-lista">
+          <li><b>Veloci</b>: pagine leggere che si aprono subito, anche dal telefono con poca rete</li>
+          <li><b>Accessibili</b>: controllati con le regole internazionali WCAG, leggibili da tutti</li>
+          <li><b>Sicuri e senza manutenzione</b>: niente plugin da aggiornare, HTTPS e backup sempre attivi</li>
+          <li><b>Pronti per Google</b>: SEO locale, dati strutturati e scheda Google collegata, di serie</li>
+        </ul>
+      </div>
+      <div data-reveal>
+        <h2 class="cs-h2 cs-sx">Dove lavoriamo</h2>
+        <p>Siamo di Torino e lavoriamo con le attività della città e della provincia: ci piace incontrare di persona chi ha un negozio, uno studio o un locale, vedere dove lavora e capire chi sono i suoi clienti.</p>
+        <p>Lavoriamo bene anche a distanza: se la tua attività è fuori Torino, una videochiamata basta per cominciare.</p>
       </div>
     </div>
 
@@ -50,7 +87,20 @@ import Layout from '../layouts/Layout.astro';
     .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:2.5rem; max-width:980px; margin:0 auto; }
     .about-grid h3 { font-size:1.4rem; margin-bottom:.8rem; }
     .about-grid p { color:var(--muted); margin-bottom:1rem; }
+    .cs-h2 { font-size:clamp(1.5rem,3.5vw,2.2rem); text-align:center; margin:3.5rem 0 1.4rem; }
+    .cs-sx { text-align:left; margin-top:0; }
+    .cs-servizi { list-style:none; display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; max-width:1100px; margin:0 auto; }
+    .cs-servizi li { padding:1.4rem 1.3rem; display:flex; flex-direction:column; }
+    .cs-servizi h3 { font-size:1.2rem; margin-bottom:.5rem; }
+    .cs-servizi p { color:var(--muted); font-size:.93rem; margin-bottom:1rem; }
+    .cs-servizi a { margin-top:auto; color:var(--c2); font-weight:600; font-size:.92rem; }
+    .cs-due { margin-top:3.5rem; }
+    .cs-lista { list-style:none; display:grid; gap:.7rem; }
+    .cs-lista li { color:var(--muted); }
+    .cs-lista b { color:var(--text); font-weight:600; }
     .values { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; margin-top:3.5rem; }
+    @media (max-width:980px){ .cs-servizi { grid-template-columns:repeat(2,1fr); } }
     @media (max-width:820px){ .about-grid, .values { grid-template-columns:1fr; } }
+    @media (max-width:560px){ .cs-servizi { grid-template-columns:1fr; } }
   </style>
 </Layout>

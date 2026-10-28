@@ -1,0 +1,145 @@
+---
+import Layout from '../layouts/Layout.astro';
+// Restyling: il cuore dell'offerta («il tuo sito, rifatto come si deve») e una ricerca vera
+// («restyling siti web torino», dai suggerimenti di Google). La home punta a «realizzazione»:
+// questa pagina presidia chi un sito ce l'ha già e vuole rifarlo.
+const segnali = [
+  { h: 'Dal telefono si legge male', p: 'Bisogna ingrandire, i bottoni sono minuscoli, il menu non si apre. È da lì che arriva la maggior parte di chi ti cerca.' },
+  { h: 'Ci mette troppo ad aprirsi', p: 'Ogni secondo in più fa tornare indietro qualcuno, e Google lo nota.' },
+  { h: 'Le informazioni non sono più vere', p: 'Orari, prezzi, servizi, foto: se aggiornarli è un’impresa, prima o poi restano vecchi.' },
+  { h: 'Menu o listino in PDF', p: 'Da telefono si apre male, Google lo legge peggio. Meglio una pagina vera.' },
+  { h: 'Su Google non compari', p: 'Oppure compare una pagina con informazioni sbagliate, che nessuno sa più come cambiare.' },
+  { h: 'Chi l’ha fatto non risponde più', p: 'Niente accessi, niente modifiche, nessuno che sappia come è fatto. Succede spesso.' },
+];
+const passi = [
+  { h: 'Guardiamo il sito che hai', p: 'Ci mandi l’indirizzo: controlliamo velocità, versione da telefono, Google e contenuti, e ti diciamo cosa cambieremmo. Gratis e senza impegno.' },
+  { h: 'Prima bozza in 48 ore', p: 'Vedi il sito nuovo su un indirizzo di prova, mentre il vecchio resta online come se niente fosse.' },
+  { h: 'Trasloco dei contenuti', p: 'Portiamo testi e foto buone, riscriviamo quelli che non funzionano e prepariamo la mappa: ogni vecchio indirizzo verso la sua pagina nuova.' },
+  { h: 'Il passaggio', p: 'Pubblichiamo il nuovo sito, attiviamo i reindirizzamenti e inviamo la sitemap a Google. Nessun giorno offline.' },
+  { h: 'Le settimane dopo', p: 'Controlliamo che Google trovi tutto e sistemiamo subito eventuali indirizzi persi per strada.' },
+];
+const domande = [
+  { q: 'Perdo le posizioni che ho su Google?', a: 'Se il passaggio è fatto bene, no: ogni vecchia pagina viene reindirizzata alla nuova corrispondente con un 301, la sitemap viene inviata a Google e controlliamo gli errori nelle settimane successive. Un sito più veloce e più chiaro ha, anzi, più carte da giocare.' },
+  { q: 'Posso tenere il dominio e le email?', a: 'Sì. Il dominio resta tuo e l’indirizzo che i clienti conoscono non cambia. Facciamo in modo che le caselle email continuino a funzionare: se serve spostarle, ce ne occupiamo noi.' },
+  { q: 'Il vecchio sito resta online durante il lavoro?', a: 'Sì, fino al giorno del passaggio. Il sito nuovo lo vedi prima su un indirizzo di prova, e si cambia solo quando ti va bene.' },
+  { q: 'Il mio sito è su WordPress, Wix o simili: si può rifare?', a: 'Sì, da qualunque piattaforma. Portiamo testi e foto nel sito nuovo, che è leggero e veloce e non ha plugin da tenere aggiornati.' },
+  { q: 'Quanto tempo ci vuole?', a: 'La prima bozza in 48 ore, il sito completo in circa 7 giorni lavorativi da quando abbiamo i contenuti.' },
+  { q: 'Quanto costa un restyling?', a: 'Rientra negli stessi pacchetti di un sito nuovo: dipende da quante pagine e funzioni servono. Mandaci l’indirizzo del sito attuale e ti facciamo un preventivo gratis entro 24 ore.' },
+];
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: domande.map((d) => ({ '@type': 'Question', name: d.q, acceptedAnswer: { '@type': 'Answer', text: d.a } })),
+};
+const WA = 'https://wa.me/393662102203?text=' + encodeURIComponent('Ciao! Vorrei rifare il sito della mia attività. Questo è l’indirizzo attuale: ');
+---
+<Layout
+  title="Restyling siti web a Torino — Mole Digitale"
+  description="Il tuo sito è vecchio, lento o non si legge dal telefono? Lo rifacciamo moderno, a Torino, tenendo dominio, contenuti e posizioni su Google. Prima bozza gratis."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <section class="section" style="padding-top:8rem;">
+    <nav class="briciole" aria-label="Sei qui">
+      <a href="/">Home</a><span aria-hidden="true">›</span><span aria-current="page">Restyling del sito</span>
+    </nav>
+    <div class="section-head" data-reveal>
+      <span class="kicker">Restyling del sito</span>
+      <h1 style="font-size:clamp(2.2rem,5vw,3.4rem); line-height:1.1;">Restyling siti web a Torino: <span class="grad">rifacciamo il tuo sito</span>, senza perdere niente.</h1>
+      <p class="section-lead">Hai già un sito ma sembra di dieci anni fa, è lento o dal telefono non si legge? Lo rifacciamo da capo, moderno e veloce, tenendo quello che funziona: il dominio, i contenuti buoni e le posizioni che hai su Google.</p>
+      <div style="margin-top:1.6rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <a href="/preventivo/" class="btn btn-primary btn-magnetic">Mandaci il tuo sito</a>
+        <a href="/#prima-dopo" class="btn btn-ghost">Guarda un prima/dopo →</a>
+      </div>
+    </div>
+
+    <div class="rs-blocco" data-reveal>
+      <h2>Quando è il momento di rifarlo</h2>
+      <p class="rs-lead">Se ti riconosci in due o tre di questi punti, il sito ti sta facendo perdere clienti.</p>
+      <ul class="rs-griglia">
+        {segnali.map((s) => <li class="prob-card"><h3>{s.h}</h3><p>{s.p}</p></li>)}
+      </ul>
+    </div>
+
+    <div class="rs-blocco rs-due" data-reveal>
+      <div class="glass rs-col">
+        <h2>Cosa teniamo</h2>
+        <ul class="spunte">
+          <li>Il <b>dominio</b>: l’indirizzo che i clienti conoscono non cambia</li>
+          <li>Le <b>email</b>, che continuano a funzionare</li>
+          <li>I <b>contenuti buoni</b>: testi, foto, recensioni</li>
+          <li>Le <b>posizioni su Google</b>, con un reindirizzamento per ogni vecchio indirizzo</li>
+        </ul>
+      </div>
+      <div class="glass rs-col">
+        <h2>Cosa cambiamo</h2>
+        <ul class="spunte">
+          <li>Grafica e struttura, pensate prima di tutto per il telefono</li>
+          <li>Velocità: pagine leggere, che si aprono subito</li>
+          <li>Testi che fanno scegliere te, con le parole che la gente cerca</li>
+          <li>Contatti a un tocco, prenotazioni e scheda Google collegata</li>
+          <li>Accessibilità: controllata con le regole internazionali WCAG</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="rs-blocco" data-reveal>
+      <h2>Come funziona il passaggio</h2>
+      <ol class="rs-passi">
+        {passi.map((p, i) => <li><span class="rs-n" aria-hidden="true">{i + 1}</span><div><h3>{p.h}</h3><p>{p.p}</p></div></li>)}
+      </ol>
+      <p class="rs-nota">Vuoi sapere nel dettaglio cosa serve per non perdere niente? Leggi la guida <a href="/blog/rifare-sito-senza-perdere-posizioni-google/">rifare il sito senza perdere le posizioni su Google</a>.</p>
+    </div>
+
+    <div class="rs-blocco" data-reveal>
+      <h2>Domande frequenti</h2>
+      <div class="faq-list">
+        {domande.map((d, i) => (
+          <details class="faq-item" open={i === 0}>
+            <summary>{d.q}<span class="chev">+</span></summary>
+            <p>{d.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+
+    <p class="rs-nota rs-centro" data-reveal>Lavoriamo per <a href="/siti-web-torino/">ogni tipo di attività</a>, e insieme al sito sistemiamo anche la <a href="/scheda-google-business-torino/">scheda Google Business</a>.</p>
+
+    <div class="cta-card glass" data-reveal style="margin-top:3rem; text-align:center; display:block;">
+      <h2 style="font-size:clamp(1.6rem,3.5vw,2.4rem); margin-bottom:1rem;">Mandaci l’indirizzo del tuo sito.</h2>
+      <p style="color:var(--muted); margin-bottom:1.6rem;">Ti diciamo cosa cambieremmo e ti mandiamo una prima bozza gratis. Nessun anticipo, nessun impegno.</p>
+      <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <a href={WA} target="_blank" rel="noopener" class="btn btn-ghost">Scrivici su WhatsApp</a>
+        <a href="/preventivo/" class="btn btn-primary btn-magnetic">Chiedi il preventivo</a>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .briciole { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:.2rem .5rem; margin:0 auto 1.6rem; font-size:.88rem; color:var(--muted-2); }
+    .briciole a { color:var(--muted); text-decoration:underline; text-decoration-color:rgba(184,184,208,.35); text-underline-offset:3px; }
+    .briciole a:hover { color:var(--c2); }
+    .briciole [aria-current] { color:var(--text); }
+    .rs-blocco { max-width:980px; margin:3.5rem auto 0; }
+    .rs-blocco > h2 { font-size:clamp(1.5rem,3.5vw,2.2rem); text-align:center; margin-bottom:.8rem; }
+    .rs-lead { color:var(--muted); text-align:center; margin-bottom:1.4rem; }
+    .rs-griglia { list-style:none; display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+    .rs-griglia h3 { font-size:1.1rem; margin-bottom:.4rem; }
+    .rs-due { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    .rs-col { padding:1.6rem 1.7rem; }
+    .rs-col h2 { font-size:1.4rem; margin-bottom:1rem; }
+    .rs-col ul { list-style:none; display:grid; gap:.6rem; }
+    .rs-col li { color:var(--muted); }
+    .rs-col b { color:var(--text); font-weight:600; }
+    .rs-passi { list-style:none; display:grid; gap:1rem; max-width:760px; margin:1.4rem auto 0; }
+    .rs-passi li { display:flex; gap:1rem; align-items:flex-start; padding:1.1rem 1.2rem; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); }
+    .rs-n { flex:none; width:2rem; height:2rem; border-radius:50%; display:grid; place-items:center; background:var(--grad-soft); border:1px solid var(--border); color:var(--c2); font-family:'Space Grotesk Variable','Space Grotesk'; font-weight:700; }
+    .rs-passi h3 { font-size:1.12rem; margin-bottom:.25rem; }
+    .rs-passi p { color:var(--muted); font-size:.95rem; }
+    .rs-nota { color:var(--muted); max-width:760px; margin:1.4rem auto 0; }
+    .rs-nota a { color:var(--c2); text-decoration:underline; text-underline-offset:3px; }
+    .rs-centro { text-align:center; margin-top:3rem; }
+    .rs-blocco .faq-list { margin-top:1.4rem; }
+    @media (max-width:900px){ .rs-griglia { grid-template-columns:repeat(2,1fr); } }
+    @media (max-width:640px){ .rs-griglia, .rs-due { grid-template-columns:1fr; } }
+  </style>
+</Layout>

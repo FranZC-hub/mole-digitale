@@ -5,6 +5,7 @@
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
 import { gsap } from 'gsap';
+import { azione } from './azione.js';
 
 // ScrollTrigger (~21 KB) serve solo al parallasse dell'hero: lo carico a richiesta
 // nelle poche pagine che hanno un hero, non su tutto il sito.
@@ -285,6 +286,18 @@ try {
   }
 } catch (_) {}
 
+/* ---------- Le azioni che contano: WhatsApp, telefono, email ----------
+   Le visite da sole non dicono quanti ti hanno contattato: la maggior parte dei contatti
+   passa da questi tre link, non dal modulo. Contati in /stats.php, sotto «Azioni». */
+document.addEventListener('click', (ev) => {
+  const a = ev.target instanceof Element ? ev.target.closest('a[href]') : null;
+  if (!a) return;
+  const h = a.getAttribute('href') || '';
+  if (h.startsWith('https://wa.me/')) azione('whatsapp');
+  else if (h.startsWith('tel:')) azione('telefono');
+  else if (h.startsWith('mailto:')) azione('email');
+});
+
 /* ---------- Form contatti (invio email via /contact.php) ---------- */
 const form = document.getElementById('contactForm');
 const feedback = document.getElementById('formFeedback');
@@ -340,6 +353,7 @@ if (form) {
         feedback.classList.add('ok');
         feedback.textContent = '✅ Grazie! Abbiamo ricevuto la tua richiesta: ti rispondiamo entro 24 ore.';
         try { if (window.clarity) window.clarity('event', 'form_inviato'); } catch (_) {}
+        azione('richiesta-contatti');
         form.reset();
       } else {
         throw new Error(out.error || 'Errore');

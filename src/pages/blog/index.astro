@@ -3,23 +3,21 @@ import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('blog')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
-const fmt = (d) => d.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
 ---
-<Layout title="Blog — guide e consigli | Mole Digitale" description="Guide pratiche su siti web, Google e presenza online per gli esercenti di Torino.">
+<Layout title="Guide su siti web e Google per attività | Mole Digitale" description="Guide pratiche per gli esercenti di Torino: siti vetrina, scheda Google Business, restyling, costi e prenotazioni online, spiegati senza giri di parole.">
   <section class="section" style="padding-top:8rem;">
     <div class="section-head" data-reveal>
-      <span class="kicker">Blog</span>
-      <h1>Guide e consigli, <span class="grad">senza giri di parole</span>.</h1>
+      <span class="kicker">Guide</span>
+      <h1>Guide pratiche, <span class="grad">senza giri di parole</span>.</h1>
       <p class="section-lead">Cose utili su siti web, Google e presenza online — spiegate semplici.</p>
     </div>
-    <h2 class="sr-only">Tutti gli articoli</h2>
+    <h2 class="sr-only">Tutte le guide</h2>
     <div class="blog-list">
       {posts.map((p) => (
         <a class="blog-card glass" href={`/blog/${p.id}/`} data-reveal>
-          <time datetime={p.data.date.toISOString().slice(0, 10)}>{fmt(p.data.date)}</time>
           <h3>{p.data.title}</h3>
           <p>{p.data.description}</p>
-          <span class="blog-more">Leggi l'articolo →</span>
+          <span class="blog-more">Leggi la guida →</span>
         </a>
       ))}
     </div>

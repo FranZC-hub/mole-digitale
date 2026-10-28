@@ -151,6 +151,7 @@ const TEMPI = ['Il prima possibile', 'Entro un mese', 'Entro 2-3 mesi', 'Nessuna
   </style>
 
   <script>
+    import { azione } from '../scripts/azione.js';
     const pf = document.getElementById('prevForm') as HTMLFormElement;
     const pfb = document.getElementById('prevFeedback')!;
     const negozio = document.getElementById('prevNegozio')!;
@@ -218,6 +219,7 @@ const TEMPI = ['Il prima possibile', 'Entro un mese', 'Entro 2-3 mesi', 'Nessuna
         const out = await res.json().catch(() => ({}));
         if (res.ok && out.ok) {
           pfb.classList.add('ok'); pfb.textContent = '✅ Richiesta ricevuta! Ti mandiamo il preventivo entro 24 ore.';
+          azione('richiesta-preventivo');
           pf.reset(); aggiorna();
         } else throw new Error();
       } catch {

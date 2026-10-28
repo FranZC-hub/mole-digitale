@@ -116,7 +116,7 @@ const isHome = Astro.url.pathname === '/';
 const pageName = title.replace(/\s*[—|·]\s*Mole Digitale.*$/i, '').trim();
 const livelli = [
   { name: 'Home', item: SITO },
-  ...(article ? [{ name: 'Blog', item: new URL('/blog/', Astro.site).href }] : []),
+  ...(article ? [{ name: 'Guide', item: new URL('/blog/', Astro.site).href }] : []),
   ...briciole.map((b) => ({ name: b.name, item: new URL(b.url, Astro.site).href })),
   { name: pageName, item: canonical.href },
 ];
@@ -184,7 +184,7 @@ const articleSchema = article ? {
   <link rel="alternate icon" href="/favicon.ico" sizes="32x32 48x48" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="manifest" href="/site.webmanifest" />
-  <link rel="alternate" type="application/rss+xml" title="Mole Digitale — Blog" href="/rss.xml" />
+  <link rel="alternate" type="application/rss+xml" title="Mole Digitale — Guide" href="/rss.xml" />
 
   <!-- Analytics privacy-friendly (attivo solo se è impostato il token) -->
   {cfAnalyticsToken && (
@@ -271,7 +271,7 @@ const articleSchema = article ? {
       <a href="/#servizi">Servizi</a>
       <a href="/#prezzi">Pacchetti</a>
       <a href="/demo/" class={isActive('/demo') ? 'active' : undefined} aria-current={isActive('/demo') ? 'page' : undefined}>Esempi</a>
-      <a href="/blog/" class={isActive('/blog') ? 'active' : undefined} aria-current={isActive('/blog') ? 'page' : undefined}>Blog</a>
+      <a href="/blog/" class={isActive('/blog') ? 'active' : undefined} aria-current={isActive('/blog') ? 'page' : undefined}>Guide</a>
       <a href="/chi-siamo/" class={isActive('/chi-siamo') ? 'active' : undefined} aria-current={isActive('/chi-siamo') ? 'page' : undefined}>Chi siamo</a>
     </nav>
     {/* solo su computer (nascosto sotto i 980 px): sul telefono c'è già la barra in basso */}
@@ -309,11 +309,13 @@ const articleSchema = article ? {
       <div class="footer-col">
         <h2>Sito</h2>
         <a href="/#servizi">Servizi</a>
+        <a href="/restyling-siti-web-torino/">Restyling del sito</a>
+        <a href="/scheda-google-business-torino/">Scheda Google</a>
         <a href="/#prezzi">Pacchetti</a>
         <a href="/inizia/">Inizia da qui</a>
         <a href="/preventivo/">Preventivo gratuito</a>
         <a href="/demo/">Demo</a>
-        <a href="/blog/">Blog</a>
+        <a href="/blog/">Guide</a>
         <a href="/chi-siamo/">Chi siamo</a>
         <a href="/#faq">FAQ</a>
       </div>

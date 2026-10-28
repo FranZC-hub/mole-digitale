@@ -764,3 +764,7 @@ h1 .grad { background-size:200% auto; animation: gradShift 6s linear infinite; }
   /* Meno backdrop-filter impilati = scroll più fluido su telefoni economici */
   .glass, .btn-ghost, .floating-badge, .eyebrow { backdrop-filter:none; }
 }
+
+/* Link «approfondisci» in fondo alle schede dei servizi (home) */
+.serv-link { display:inline-block; margin-top:1.1rem; color:var(--c2); font-weight:600; font-size:.92rem; position:relative; z-index:2; }
+.serv-link:hover { text-decoration:underline; text-underline-offset:3px; }
