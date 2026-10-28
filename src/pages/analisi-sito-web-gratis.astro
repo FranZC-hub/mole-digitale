@@ -1,0 +1,155 @@
+---
+import Layout from '../layouts/Layout.astro';
+// Analisi gratuita del sito: risponde a ricerche frequenti («analisi sito web gratis», «analisi
+// sito web online gratis») fatte da chi un sito ce l'ha già, cioè il cliente del restyling.
+// Non è uno strumento automatico: il sito lo guarda una persona e risponde con cosa migliorare.
+// Il modulo va a /contact.php come gli altri; senza JavaScript i campi arrivano separati e
+// contact.php li ricompone (richiesta=analisi).
+const controlli = [
+  { h: 'Il telefono', p: 'Si legge senza ingrandire? I bottoni si toccano bene? Il menu si apre? È da lì che arriva la maggior parte di chi ti cerca.' },
+  { h: 'La velocità', p: 'Quanto ci mette ad aprirsi con la rete del telefono, e cosa lo rallenta: foto troppo pesanti, componenti inutili.' },
+  { h: 'Google', p: 'Se il sito compare, con quale titolo e descrizione, se Google riesce a leggerlo tutto e se ci sono errori che lo frenano.' },
+  { h: 'La scheda Google', p: 'Se c’è, se è completa e se dice le stesse cose del sito: orari, telefono, indirizzo.' },
+  { h: 'Contatti e contenuti', p: 'Si capisce subito cosa fai e dove sei? Chiamarti o scriverti è a un tocco? Orari e prezzi sono aggiornati?' },
+  { h: 'Sicurezza e accessibilità', p: 'Il lucchetto HTTPS, e se il sito è leggibile da tutti, anche da chi usa un lettore di schermo.' },
+];
+const domande = [
+  { q: 'È davvero gratis?', a: 'Sì, e senza impegno. Guardiamo il tuo sito e ti diciamo cosa migliorare: se poi vuoi che lo facciamo noi te lo proponiamo, altrimenti i consigli restano tuoi.' },
+  { q: 'Cosa ricevo, esattamente?', a: 'Un messaggio, per email o WhatsApp, con le cose più importanti da sistemare, spiegate in parole semplici e in ordine di importanza. Niente rapporti di trenta pagine.' },
+  { q: 'In quanto tempo?', a: 'Di solito entro 48 ore lavorative dalla richiesta.' },
+  { q: 'Il mio sito è su Wix, WordPress o simili: va bene lo stesso?', a: 'Sì: guardiamo il sito come lo vedono i tuoi clienti e Google, qualunque sia la piattaforma.' },
+  { q: 'E se il sito non ce l’ho ancora?', a: 'Allora non c’è niente da analizzare, ma c’è di meglio: una prima bozza gratis del sito nuovo, in 48 ore.' },
+];
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: domande.map((d) => ({ '@type': 'Question', name: d.q, acceptedAnswer: { '@type': 'Answer', text: d.a } })),
+};
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Analisi gratuita del sito web',
+  serviceType: 'Analisi di siti web',
+  description: 'Controllo gratuito del sito di un’attività: telefono, velocità, Google, scheda Google, contatti, sicurezza e accessibilità, con i consigli più importanti in parole semplici.',
+  provider: { '@type': 'ProfessionalService', '@id': 'https://www.moledigitale.it/#azienda', name: 'Mole Digitale' },
+  areaServed: { '@type': 'City', name: 'Torino' },
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+};
+---
+<Layout
+  title="Analisi sito web gratis per attività — Mole Digitale"
+  description="Mandaci l’indirizzo del tuo sito: lo guardiamo da telefono, controlliamo velocità, Google e scheda Google, e ti diciamo cosa migliorare. Gratis e senza impegno."
+  image="/og/analisi-sito-web-gratis.png"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <section class="section" style="padding-top:8rem;">
+    <nav class="briciole" aria-label="Sei qui">
+      <a href="/">Home</a><span aria-hidden="true">›</span><span aria-current="page">Analisi gratuita del sito</span>
+    </nav>
+    <div class="section-head" data-reveal>
+      <span class="kicker">Analisi gratuita</span>
+      <h1 style="font-size:clamp(2.2rem,5vw,3.4rem); line-height:1.1;">Analisi del sito web, <span class="grad">gratis</span>: ti diciamo cosa migliorare.</h1>
+      <p class="section-lead">Mandaci l’indirizzo del tuo sito. Lo guardiamo come lo vedono i tuoi clienti e Google, e ti rispondiamo con le cose più importanti da sistemare, in parole semplici. Lo guarda una persona, non un programma.</p>
+      <div style="margin-top:1.6rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <a href="#richiesta" class="btn btn-primary btn-magnetic">Richiedi l’analisi</a>
+      </div>
+    </div>
+
+    <div class="an-blocco" data-reveal>
+      <h2>Cosa controlliamo</h2>
+      <ul class="an-griglia">
+        {controlli.map((c) => <li class="prob-card"><h3>{c.h}</h3><p>{c.p}</p></li>)}
+      </ul>
+    </div>
+
+    <div class="an-blocco an-form-in" id="richiesta">
+      <div data-reveal>
+        <h2 class="an-sx">Richiedi l’analisi</h2>
+        <p class="an-p">Ti rispondiamo di solito entro 48 ore lavorative, per email o WhatsApp. Nessun impegno: i consigli restano tuoi anche se decidi di fare da solo.</p>
+        <p class="an-p">Vuoi intanto sapere cosa guardare? Leggi <a href="/blog/perche-il-sito-non-compare-su-google/">perché il sito non compare su Google</a> e <a href="/blog/rifare-sito-senza-perdere-posizioni-google/">come si rifà un sito senza perdere le posizioni</a>.</p>
+      </div>
+      <!-- Senza JavaScript il modulo funziona lo stesso: invio classico a contact.php -->
+      <form class="cta-form glass an-form" id="anForm" action="/contact.php" method="post" data-reveal>
+        <input type="hidden" name="richiesta" value="analisi" />
+        <div class="field"><input type="url" id="a-sito" name="sito" required placeholder=" " inputmode="url" /><label for="a-sito">Indirizzo del tuo sito *</label></div>
+        <div class="field"><input type="text" id="a-nome" name="nome" required placeholder=" " autocomplete="name" /><label for="a-nome">Il tuo nome *</label></div>
+        <div class="field"><input type="text" id="a-attivita" name="attivita" required placeholder=" " autocomplete="organization" /><label for="a-attivita">Nome dell’attività *</label></div>
+        <div class="field"><input type="text" id="a-telefono" name="telefono" required placeholder=" " autocomplete="tel" /><label for="a-telefono">Telefono o email *</label></div>
+        <div class="field"><textarea id="a-note" name="messaggio" rows="3" placeholder=" "></textarea><label for="a-note">C’è qualcosa che ti preoccupa? (facoltativo)</label></div>
+        <div class="hp" aria-hidden="true"><label>Non compilare<input type="text" name="website" tabindex="-1" autocomplete="off" /></label></div>
+        <label class="consent">
+          <input type="checkbox" id="a-privacy" required />
+          <span>Ho letto l’<a href="/privacy/" target="_blank" rel="noopener">informativa privacy</a> e acconsento al trattamento dei miei dati per ricevere l’analisi.</span>
+        </label>
+        <button type="submit" class="btn btn-primary btn-block btn-lg btn-magnetic">Richiedi l’analisi gratuita →</button>
+        <p class="form-feedback" id="anFeedback" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+
+    <div class="an-blocco" data-reveal>
+      <h2>Domande frequenti</h2>
+      <div class="faq-list">
+        {domande.map((d, i) => (
+          <details class="faq-item" open={i === 0}>
+            <summary>{d.q}<span class="chev">+</span></summary>
+            <p>{d.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+
+    <p class="an-nota" data-reveal>Se dall’analisi viene fuori che conviene rifarlo, guarda come lavoriamo nei <a href="/restyling-siti-web-torino/">restyling</a>: il vecchio sito resta online fino al passaggio e le posizioni su Google si mantengono.</p>
+  </section>
+
+  <style>
+    .an-blocco { max-width:980px; margin:3.5rem auto 0; }
+    .an-blocco > h2, .an-blocco h2 { font-size:clamp(1.5rem,3.5vw,2.2rem); text-align:center; margin-bottom:1.4rem; }
+    .an-blocco h2.an-sx { text-align:left; margin-bottom:1rem; }
+    .an-griglia { list-style:none; display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+    .an-griglia h3 { font-size:1.1rem; margin-bottom:.4rem; }
+    .an-form-in { display:grid; grid-template-columns:.9fr 1.1fr; gap:2.5rem; align-items:start; scroll-margin-top:100px; }
+    .an-form-in > * { min-width:0; }
+    .an-p { color:var(--muted); margin-bottom:1rem; }
+    .an-p a, .an-nota a { color:var(--c2); text-decoration:underline; text-underline-offset:3px; }
+    .an-form { padding:clamp(1.4rem,3vw,2rem); }
+    .an-nota { color:var(--muted); max-width:760px; margin:3rem auto 0; text-align:center; }
+    @media (max-width:900px){ .an-griglia { grid-template-columns:repeat(2,1fr); } .an-form-in { grid-template-columns:1fr; } }
+    @media (max-width:600px){ .an-griglia { grid-template-columns:1fr; } }
+  </style>
+
+  <script>
+    import { azione } from '../scripts/azione.js';
+    const af = document.getElementById('anForm') as HTMLFormElement;
+    const afb = document.getElementById('anFeedback')!;
+    const testo = (id: string) => (document.getElementById(id) as HTMLInputElement).value.trim();
+    af.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      afb.classList.remove('ok', 'ko');
+      if (!af.checkValidity()) { af.reportValidity(); return; }
+      const righe = ['— ANALISI GRATUITA DEL SITO —', `Sito: ${testo('a-sito')}`];
+      if (testo('a-note')) righe.push(`Note: ${testo('a-note')}`);
+      const btn = af.querySelector('button[type=submit]') as HTMLButtonElement;
+      const etichetta = btn.innerHTML;
+      btn.disabled = true; btn.setAttribute('aria-busy', 'true'); btn.innerHTML = '<span class="btn-spin" aria-hidden="true"></span> Invio…';
+      afb.textContent = 'Invio in corso…';
+      try {
+        const res = await fetch('/contact.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nome: testo('a-nome'), attivita: testo('a-attivita'), telefono: testo('a-telefono'), messaggio: righe.join('\n'), website: (af.elements.namedItem('website') as HTMLInputElement).value }),
+        });
+        const out = await res.json().catch(() => ({}));
+        if (res.ok && out.ok) {
+          afb.classList.add('ok'); afb.textContent = '✅ Richiesta ricevuta! Ti mandiamo l’analisi di solito entro 48 ore lavorative.';
+          azione('richiesta-analisi');
+          af.reset();
+        } else throw new Error();
+      } catch {
+        afb.classList.add('ko'); afb.textContent = 'Non siamo riusciti a inviare la richiesta. Scrivici su WhatsApp al 366 210 2203 o a info@moledigitale.it.';
+      } finally {
+        btn.disabled = false; btn.removeAttribute('aria-busy'); btn.innerHTML = etichetta;
+      }
+    });
+  </script>
+</Layout>

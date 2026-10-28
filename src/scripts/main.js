@@ -280,8 +280,10 @@ if (compare && after && handle) {
 /* ---------- Statistiche first-party (niente cookie, niente IP: solo pagina+giorno+provenienza) ---------- */
 try {
   if (!navigator.webdriver && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+    // provenienza: il sito esterno, «interno» se si arriva da un'altra pagina del sito,
+    // vuota se diretta (così nel report la navigazione interna non si mescola alle dirette)
     let ref = '';
-    try { const u = new URL(document.referrer); if (u.host !== location.host) ref = u.host; } catch (_) {}
+    try { const u = new URL(document.referrer); ref = u.host === location.host ? 'interno' : u.host; } catch (_) {}
     fetch('/stats.php?p=' + encodeURIComponent(location.pathname) + '&r=' + encodeURIComponent(ref), { keepalive: true }).catch(() => {});
   }
 } catch (_) {}

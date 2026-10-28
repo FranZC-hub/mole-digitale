@@ -245,6 +245,7 @@ export const GRUPPI = [
 // il resto era uguale in tutte e 20: per Google erano quasi fotocopie). Per ogni settore:
 //   etichetta  il nome nella pagina che li raccoglie e nei link tra settori
 //   cercano    come cercano e come scelgono i clienti di quel settore
+//   esempio    una scena tipica, dichiaratamente ipotetica («Immagina…»): non sono clienti veri
 //   checklist  cosa non deve mancare sul sito, specifico del settore
 //   domanda    la domanda che fanno davvero, aggiunta alle FAQ della pagina
 //   domanda2   una seconda domanda tipica del settore (le FAQ generiche erano uguali su tutte e 20)
@@ -254,6 +255,7 @@ const DETTAGLI = {
   'siti-web-ristoranti-torino': {
     etichetta: 'Ristoranti e pizzerie', gruppo: 'ristorazione',
     cercano: 'Chi cerca dove mangiare decide in pochi minuti, quasi sempre dal telefono: «ristorante piemontese San Salvario», «pizzeria aperta ora», «dove mangiare vicino a Porta Nuova». Guarda le foto dei piatti, controlla menu e prezzi, legge due recensioni e prenota. Se il menu è un PDF illeggibile o gli orari sono sbagliati, passa al locale dopo.',
+    esempio: "Immagina una trattoria in Borgo San Paolo. Sabato pomeriggio una coppia cerca «trattoria piemontese vicino a me»: trova la scheda Google, apre il sito, vede il menu con i prezzi e le foto dei tajarin, sceglie le 20:30 e prenota in tre tocchi. Il titolare trova la prenotazione sul telefono, senza aver risposto a nessuna chiamata.",
     checklist: [
       { h: 'Il menu in pagina, non in PDF', p: 'Leggibile dal telefono, con i prezzi, e aggiornabile in un minuto quando cambia un piatto.' },
       { h: 'Gli allergeni', p: 'Indicati nel menu o con un modo chiaro per chiederli: è un obbligo, e i clienti li cercano.' },
@@ -266,6 +268,7 @@ const DETTAGLI = {
   'siti-web-ristoranti-giapponesi-torino': {
     etichetta: 'Ristoranti giapponesi e sushi', gruppo: 'ristorazione',
     cercano: 'Per il sushi si cerca soprattutto la formula: «sushi all you can eat Torino», «sushi da asporto», «ristorante giapponese tradizionale». Contano il menu con le foto, il prezzo della formula a pranzo e a cena, le regole del «giapponese a volontà» e la possibilità di ordinare da asporto senza passare dalle app.',
+    esempio: "Immagina un ristorante giapponese a Vanchiglia. Un gruppo di amici cerca «sushi all you can eat Torino» alle sette di sera: sul sito trova il prezzo della formula cena, le regole, le foto dei piatti e il bottone per l’asporto. Due di loro ordinano da portare via, gli altri prenotano un tavolo per sei.",
     checklist: [
       { h: 'Il menu con le foto', p: 'Nel sushi si ordina con gli occhi: ogni piatto con la sua immagine.' },
       { h: 'Formule e prezzi chiari', p: 'Pranzo, cena, weekend, bambini: niente sorprese al conto.' },
@@ -278,6 +281,7 @@ const DETTAGLI = {
   'siti-web-bar-torino': {
     etichetta: 'Bar e caffetterie', gruppo: 'ristorazione',
     cercano: 'Al bar si arriva quasi sempre a piedi e all’ultimo momento: «bar colazione vicino a me», «aperitivo Vanchiglia», «bar aperto domenica». La scelta si fa sulla scheda Google e sul sito, in pochi secondi: orari giusti, una foto che invoglia e il listino. Il resto lo fa la posizione.',
+    esempio: "Immagina un bar in Crocetta. Una mattina d’agosto qualcuno cerca «bar aperto vicino a me»: il sito e la scheda dicono che sei aperto anche ad agosto, con gli orari giusti. Vede la foto delle brioche e del dehors, e attraversa la strada. Senza quell’informazione sarebbe andato dove era sicuro di trovare aperto.",
     checklist: [
       { h: 'Orari sempre giusti', p: 'Anche festivi e chiusure per ferie: niente clienti davanti alla saracinesca.' },
       { h: 'Colazione, pranzo, aperitivo', p: 'Cosa offri in ogni momento della giornata, con i prezzi principali.' },
@@ -290,6 +294,7 @@ const DETTAGLI = {
   'siti-web-pasticcerie-torino': {
     etichetta: 'Pasticcerie', gruppo: 'ristorazione',
     cercano: 'Le ricerche hanno quasi sempre una data: «torta di compleanno Torino», «pasticceria per matrimonio», «colomba artigianale». Chi ordina vuole vedere le torte già fatte, capire con quanto anticipo prenotare e quanto costa al chilo. Il sito che risponde a queste tre domande riceve l’ordine.',
+    esempio: "Immagina una pasticceria in Santa Rita. Una mamma cerca «torta di compleanno Torino» due settimane prima della festa: sul sito vede le torte già fatte, il prezzo al chilo e il modulo per ordinare con gusto, numero di persone e data di ritiro. L’ordine arriva per iscritto, e in negozio basta confermare.",
     checklist: [
       { h: 'La galleria delle torte su ordinazione', p: 'Compleanni, cerimonie, cake design: si sceglie guardando.' },
       { h: 'La richiesta d’ordine con la data', p: 'Gusto, numero di persone, giorno di ritiro: arriva tutto per iscritto.' },
@@ -302,6 +307,7 @@ const DETTAGLI = {
   'siti-web-parrucchieri-torino': {
     etichetta: 'Parrucchieri', gruppo: 'bellezza',
     cercano: 'Chi cambia parrucchiere cerca su Google «parrucchiere Crocetta» o «colore capelli Torino», poi guarda Instagram e il sito per capire lo stile. Decide guardando i lavori, i prezzi indicativi e quanto è facile prenotare. Chi può fissare l’appuntamento la sera, senza chiamare, prenota da chi lo permette.',
+    esempio: "Immagina un salone in San Salvario. Alle dieci di sera una cliente nuova cerca «colore capelli San Salvario», guarda la galleria dei lavori, vede da che prezzo parte un colore e prenota martedì alle 15 con la stessa stilista delle foto. La mattina dopo, in salone, l’appuntamento è già in agenda.",
     checklist: [
       { h: 'Il listino con i «a partire da»', p: 'Taglio, piega, colore, trattamenti: i prezzi indicativi tolgono l’imbarazzo di chiedere.' },
       { h: 'Una prenotazione che conosce le durate', p: 'Un colore non dura quanto una piega: l’agenda propone solo gli orari giusti.' },
@@ -314,6 +320,7 @@ const DETTAGLI = {
   'siti-web-estetiste-torino': {
     etichetta: 'Centri estetici', gruppo: 'bellezza',
     cercano: 'Chi cerca un centro estetico confronta: «pulizia viso Torino», «laminazione ciglia Cit Turin», «epilazione laser prezzi». Legge i trattamenti, guarda l’ambiente e le recensioni, e prenota dove è più semplice. Spesso la sera, a centro chiuso: se si può prenotare solo per telefono, la cliente va altrove.',
+    esempio: "Immagina un centro estetico in Cit Turin. Una cliente cerca «laminazione ciglia Torino» la domenica sera: sul sito trova il trattamento con durata e prezzo, le foto delle cabine e la prenotazione online. Prenota per giovedì e, già che c’è, guarda i buoni regalo per il compleanno di un’amica.",
     checklist: [
       { h: 'Trattamenti con durata e prezzo', p: 'Una scheda per ogni trattamento: cos’è, quanto dura, quanto costa.' },
       { h: 'La prenotazione online', p: 'Con le durate giuste: meno buchi in agenda, meno telefonate.' },
@@ -326,6 +333,7 @@ const DETTAGLI = {
   'siti-web-nail-studio-torino': {
     etichetta: 'Nail studio', gruppo: 'bellezza',
     cercano: 'Le unghie si scelgono con gli occhi: «nail art Torino», «ricostruzione unghie Barriera di Milano», «semipermanente vicino a me», e poi dritte su Instagram. Il sito serve a chiudere: listino chiaro, galleria dei lavori e una prenotazione che sa quanto dura un refill rispetto a una ricostruzione.',
+    esempio: "Immagina un nail studio in Barriera di Milano. Una ragazza vede una foto su Instagram, cerca il nome dello studio su Google e arriva al sito: listino chiaro, galleria divisa per stili, prenotazione con l’onicotecnica che ha fatto quel lavoro. Sceglie un refill con nail art, e il sabato è già in agenda.",
     checklist: [
       { h: 'La galleria nail art', p: 'I lavori migliori, divisi per stile: si prenota indicando quello che piace.' },
       { h: 'Il listino dei servizi', p: 'Semipermanente, ricostruzione, refill, nail art: prezzi e durate.' },
@@ -338,6 +346,7 @@ const DETTAGLI = {
   'siti-web-centri-massaggi-torino': {
     etichetta: 'Centri massaggi e benessere', gruppo: 'bellezza',
     cercano: 'Chi cerca un massaggio guarda tre cose: il tipo («massaggio decontratturante Torino», «massaggio di coppia»), la durata e il prezzo. Poi le foto dell’ambiente, per capire se è il posto giusto in cui rilassarsi. La prenotazione arriva spesso la sera, o all’ultimo momento per un regalo.',
+    esempio: "Immagina un centro benessere in Borgo Po. Prima di San Valentino qualcuno cerca «massaggio di coppia Torino»: sul sito trova il massaggio di coppia con durata e prezzo, le foto della stanza e i buoni regalo. Ne compra uno da regalare, e chi lo riceve prenota online il giorno dopo.",
     checklist: [
       { h: 'Massaggi con durata e prezzo', p: '30, 50, 80 minuti: tutto chiaro prima di prenotare.' },
       { h: 'La prenotazione online', p: 'Con l’operatore preferito, se il cliente lo desidera.' },
@@ -350,6 +359,7 @@ const DETTAGLI = {
   'siti-web-profumerie-torino': {
     etichetta: 'Profumerie', gruppo: 'bellezza',
     cercano: 'Chi cerca una profumeria a Torino sa già cosa vuole, o vuole essere consigliato: «profumeria artistica Torino», «profumi di nicchia Torino». Cerca le marche che tratti, l’atmosfera del negozio e un modo per chiedere un consiglio o un campione. Il sito porta in negozio chi non vuole comprare un profumo alla cieca online.',
+    esempio: "Immagina una profumeria artistica in centro. Un cliente cerca una fragranza di nicchia che online non trova da nessuna parte: sul sito vede che trattate quella maison, prenota una consulenza di mezz’ora per sabato e ci va. Esce con il profumo che cercava e con un secondo flacone da regalare.",
     checklist: [
       { h: 'Le marche e le collezioni', p: 'Molti cercano per maison: elencarle ti fa trovare.' },
       { h: 'La consulenza su appuntamento', p: 'Mezz’ora dedicata per trovare la fragranza giusta, prenotata dal sito.' },
@@ -362,6 +372,7 @@ const DETTAGLI = {
   'siti-web-dentisti-torino': {
     etichetta: 'Dentisti e studi odontoiatrici', gruppo: 'salute',
     cercano: 'Il dentista si cerca in due modi: con calma («dentista Santa Rita», «impianti dentali Torino») o con urgenza («dentista urgenze sabato Torino»). Nel primo caso si confrontano studio, trattamenti e recensioni; nel secondo vince chi mostra subito come farsi ricevere. Il sito deve servire a entrambi.',
+    esempio: "Immagina uno studio dentistico in Santa Rita. Un paziente con un dente che fa male cerca «dentista urgenze Torino» il sabato mattina: il sito mostra in alto il numero per le urgenze e gli orari in cui lo studio risponde. Un altro, con calma, legge come si svolge un impianto e prenota la prima visita online.",
     checklist: [
       { h: 'Trattamenti spiegati', p: 'Igiene, impianti, ortodonzia, estetica: cosa sono e come si svolgono, senza gergo.' },
       { h: 'La prima visita prenotabile', p: 'In due tocchi, con i giorni disponibili.' },
@@ -375,6 +386,7 @@ const DETTAGLI = {
     etichetta: 'Osteopati', gruppo: 'salute',
     metaDesc: 'Siti web per osteopati a Torino: per chi è indicata l’osteopatia, come lavori e la prima seduta prenotabile online. Fatti trovare da chi cerca.',
     cercano: 'Chi ha mal di schiena cerca «osteopata Torino», «osteopata per neonati», «osteopata sportivo». Prima di prenotare vuole capire se l’osteopatia fa per lui, come si svolge una seduta e chi è il professionista: formazione, approccio, recensioni. Un sito che spiega bene trasforma il dubbio in un appuntamento.',
+    esempio: "Immagina uno studio di osteopatia a Mirafiori. Una neomamma cerca «osteopata per neonati Torino»: sul sito trova per chi è indicata l’osteopatia pediatrica, come si svolge la seduta e chi è il professionista. Senza dover telefonare per chiedere tutto, prenota la prima seduta online.",
     checklist: [
       { h: 'Per chi è indicata', p: 'Adulti, sportivi, gravidanza, neonati: chi si riconosce, prenota.' },
       { h: 'Come si svolge una seduta', p: 'Durata, cosa portare, cosa aspettarsi: meno ansia, più prenotazioni.' },
@@ -387,6 +399,7 @@ const DETTAGLI = {
   'siti-web-veterinari-torino': {
     etichetta: 'Veterinari e ambulatori', gruppo: 'salute',
     cercano: 'Per gli animali si cerca in due momenti: con calma («veterinario per gatti Torino», «vaccini cane») o con l’ansia («veterinario urgenze notte Torino»). Nel secondo caso servono subito telefono e orari di reperibilità; nel primo, i servizi, le specie trattate e la possibilità di prenotare una visita.',
+    esempio: "Immagina un ambulatorio veterinario in Aurora. Di notte un proprietario cerca «veterinario urgenze Torino» con il gatto che sta male: il sito mostra subito il numero di reperibilità. Il giorno dopo un’altra cliente, con calma, prenota online il richiamo del vaccino del cane, senza occupare il telefono.",
     checklist: [
       { h: 'Le urgenze in alto', p: 'Numero e orari di reperibilità visibili subito, anche da telefono.' },
       { h: 'Servizi e specie trattate', p: 'Cani e gatti, ma anche esotici? Dillo: chi ha un coniglio cerca proprio quello.' },
@@ -399,6 +412,7 @@ const DETTAGLI = {
   'siti-web-farmacie-torino': {
     etichetta: 'Farmacie', gruppo: 'salute',
     cercano: 'La farmacia si cerca quasi sempre per un bisogno preciso: «farmacia di turno Torino», «farmacia aperta ora», «ECG in farmacia», «prenotazione CUP in farmacia». Contano orari e turni corretti, i servizi in chiaro e la possibilità di prenotarli. È il tipo di ricerca in cui chi risponde meglio vince subito.',
+    esempio: "Immagina una farmacia in San Donato. Una signora cerca «farmacia di turno Torino» la domenica: il sito dice se siete di turno e fino a che ora. Un altro cliente legge che fate l’ECG in farmacia e lo prenota per giovedì, e intanto mette da parte due prodotti delle offerte del mese da ritirare.",
     checklist: [
       { h: 'Turni e orari aggiornati', p: 'Con la pausa pranzo e i giorni di turno: è la prima cosa che si cerca.' },
       { h: 'I servizi prenotabili', p: 'ECG, holter, autoanalisi, tamponi, CUP: ognuno con la sua pagina e la prenotazione.' },
@@ -411,6 +425,7 @@ const DETTAGLI = {
   'siti-web-negozi-torino': {
     etichetta: 'Negozi', gruppo: 'negozi',
     cercano: 'Prima di uscire di casa si controlla: «negozio scarpe bambino Torino», «ferramenta aperta sabato», «dove comprare… vicino a me». Chi cerca vuole sapere se hai quello che serve, se sei aperto e come arrivare. Un sito con i prodotti principali e gli orari giusti porta in negozio chi altrimenti comprerebbe online.',
+    esempio: "Immagina un negozio di articoli per la casa in Borgo Vittoria. Un cliente cerca «pentole in ghisa Torino»: sul sito trova la marca che cerca tra quelle che trattate, vede che siete aperti il sabato pomeriggio e prenota il pezzo con «ordina e ritira». Passa a prenderlo e, già che c’è, compra anche altro.",
     checklist: [
       { h: 'La vetrina dei prodotti', p: 'Le categorie e i pezzi forti, con le foto: non serve mettere tutto il magazzino.' },
       { h: 'Ordina e ritira', p: 'Il cliente prenota online e passa a prendere: comodo per lui, vendita sicura per te.' },
@@ -423,6 +438,7 @@ const DETTAGLI = {
   'siti-web-gioiellerie-torino': {
     etichetta: 'Gioiellerie e laboratori orafi', gruppo: 'negozi',
     cercano: 'In gioielleria si entra per fiducia, e oggi la fiducia si costruisce prima, online: «gioielleria Torino fedi», «riparazione orologi Torino», «compro oro Torino». Chi cerca vuole vedere lo stile delle collezioni, capire i servizi di laboratorio e sapere da quanti anni esistete. Le recensioni fanno il resto.',
+    esempio: "Immagina una gioielleria di quartiere aperta da trent’anni. Una coppia cerca «fedi nuziali Torino»: sul sito vede lo stile delle collezioni, i servizi del laboratorio e da quanti anni esiste il negozio. Chiede un appuntamento per provare le fedi, e nello stesso giorno un’altra cliente porta a riparare l’orologio del nonno.",
     checklist: [
       { h: 'Le collezioni in vetrina', p: 'Una selezione di pezzi, aggiornabile dal negozio, per far venire voglia di entrare.' },
       { h: 'Laboratorio e riparazioni', p: 'Saldature, misure, orologi: i servizi spiegati, con i tempi.' },
@@ -435,6 +451,7 @@ const DETTAGLI = {
   'siti-web-officine-torino': {
     etichetta: 'Officine e autoriparazioni', gruppo: 'servizi',
     cercano: 'Quando si accende una spia si cerca «officina vicino a me» o «tagliando Torino Lingotto», e si sceglie in fretta, spesso con l’auto ferma. Contano tre cose: le recensioni, la chiarezza su servizi e marche trattate, e poter chiedere un preventivo senza perdere mezza mattina al telefono.',
+    esempio: "Immagina un’officina al Lingotto. Una mattina a una cliente si accende la spia del motore: cerca «officina vicino a me», trova la scheda con le recensioni, apre il sito e manda modello, targa e problema dal modulo. In pausa pranzo il meccanico risponde con un preventivo e le dà appuntamento per il giorno dopo.",
     checklist: [
       { h: 'Servizi e marche trattate', p: 'Tagliandi, freni, gomme, climatizzatore, diagnosi: chi cerca vede subito se fai al caso suo.' },
       { h: 'La richiesta di preventivo', p: 'Modello, targa e problema in un modulo: rispondi quando hai le mani libere.' },
@@ -447,6 +464,7 @@ const DETTAGLI = {
   'siti-web-lavanderie-torino': {
     etichetta: 'Lavanderie e tintorie', gruppo: 'servizi',
     cercano: 'Le ricerche sono pratiche: «lavanderia vicino a me», «lavaggio piumoni Torino», «tintoria abito da sposa», «lavanderia self service aperta». Chi cerca vuole sapere cosa lavi, quanto costa, in quanto tempo è pronto e se ritiri a domicilio. Se il sito lo dice, il cliente arriva già deciso.',
+    esempio: "Immagina una lavanderia a Pozzo Strada. A fine stagione una famiglia cerca «lavaggio piumoni Torino»: sul sito trova il prezzo per piumone, i tempi di consegna e il ritiro a domicilio. Prenota il ritiro per venerdì sera, e quando i piumoni sono pronti riceve un messaggio.",
     checklist: [
       { h: 'Il listino per capo', p: 'Camicie, piumoni, tende, capi delicati: prezzi chiari evitano domande al banco.' },
       { h: 'I tempi di consegna', p: 'In giornata, in 48 ore: dillo per ogni servizio.' },
@@ -460,6 +478,7 @@ const DETTAGLI = {
     etichetta: 'Agenzie di viaggio', gruppo: 'servizi',
     metaDesc: 'Siti web per agenzie viaggi a Torino: le vostre mete in vetrina, preventivi su misura e un motivo in più per scegliere voi invece del portale.',
     cercano: 'Chi va in agenzia invece che su un portale cerca qualcosa in più: «viaggio di nozze agenzia Torino», «crociera con agenzia», «tour del Giappone organizzato». Vuole capire se conoscete davvero quella meta, vedere proposte concrete e chiedere un preventivo su misura senza impegno.',
+    esempio: "Immagina un’agenzia di viaggi in centro. Una coppia cerca «viaggio di nozze agenzia Torino»: sul sito trova le proposte per le mete che l’agenzia conosce davvero, con periodo migliore e durata. Compila il modulo con date e budget e riceve una proposta su misura, invece di perdersi tra cento offerte online.",
     checklist: [
       { h: 'Le vostre specialità', p: 'Viaggi di nozze, gruppi, le mete che conoscete davvero: è il motivo per cui si sceglie un’agenzia.' },
       { h: 'Proposte con periodo e durata', p: 'Idee concrete da cui partire, aggiornate di stagione in stagione.' },
@@ -472,6 +491,7 @@ const DETTAGLI = {
   'siti-web-hotel-torino': {
     etichetta: 'Hotel e B&B', gruppo: 'servizi',
     cercano: 'Chi prenota un alloggio a Torino passa quasi sempre da un portale, poi cerca il nome della struttura su Google per vedere il sito. Se lì trova belle foto, la posizione chiara e la possibilità di prenotare direttamente, magari con un piccolo vantaggio, la prenotazione arriva a te senza commissione.',
+    esempio: "Immagina un B&B vicino a Porta Susa. Un ospite trova la camera su un portale, poi cerca il nome del B&B su Google: sul sito vede le stesse camere, la posizione a due passi dalla stazione e un prezzo migliore per chi prenota direttamente. Prenota dal sito, e il B&B non paga la commissione.",
     checklist: [
       { h: 'La prenotazione diretta', p: 'Con il motore di prenotazione o una richiesta di disponibilità: ogni prenotazione diretta è una commissione risparmiata.' },
       { h: 'Camere con foto e servizi', p: 'Una pagina per tipologia, con letti, metri quadri e dotazioni.' },
@@ -485,6 +505,7 @@ const DETTAGLI = {
     etichetta: 'Educatori e addestratori cinofili', gruppo: 'servizi',
     metaDesc: 'Siti web per addestratori ed educatori cinofili a Torino: percorsi chiari, lezione di prova prenotabile e il tuo metodo raccontato bene.',
     cercano: 'Chi ha un cucciolo nuovo o un cane difficile cerca «educatore cinofilo Torino», «corso per cuccioli», «cane che tira al guinzaglio». Prima di affidare il proprio cane vuole capire il metodo, vedere il campo e leggere le esperienze di altri proprietari. La lezione di prova è il passo che fa decidere.',
+    esempio: "Immagina un educatore cinofilo con il campo alle porte di Torino. Una famiglia con un cucciolo nuovo cerca «corso cuccioli Torino»: sul sito trova il metodo spiegato, le foto del campo, i percorsi e la lezione di prova prenotabile. Prenota per sabato mattina e, dopo la prova, si iscrive al corso.",
     checklist: [
       { h: 'Il tuo metodo', p: 'Gentile, a rinforzo positivo, come lavori: è la prima cosa che si chiede.' },
       { h: 'Percorsi per esigenza', p: 'Cuccioli, educazione di base, problemi di comportamento, sport.' },

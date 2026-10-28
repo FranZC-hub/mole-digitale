@@ -11,6 +11,8 @@ og: "/og/blog-sito-ristorante.png"
 
 Chi cerca dove mangiare decide in fretta, quasi sempre dal telefono: cerca, guarda due o tre locali, apre le foto, controlla il menu e i prezzi, legge qualche recensione e prenota. Tutto in pochi minuti. Il sito deve rispondere a queste domande **prima** che il cliente passi al locale successivo.
 
+<figure><img src="/img/thumbs/ristorante.webp" alt="Home page della demo Trattoria del Sole: foto dei piatti, bottoni per prenotare e vedere il menu" width="760" height="475" loading="lazy" decoding="async" /><figcaption>La demo Trattoria del Sole: foto vere dei piatti, menu e prenotazione a un tocco.</figcaption></figure>
+
 ## Le cose che non devono mancare
 
 1. **Il menu in pagina, non in PDF.** Leggibile dal telefono, con i prezzi, e facile da aggiornare quando cambia un piatto. Il PDF si apre male e Google lo considera poco.

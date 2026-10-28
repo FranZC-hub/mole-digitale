@@ -17,7 +17,33 @@ if (isset($_GET['key'])) {
   $goodKey = is_array($config) && !empty($config['STATS_KEY']) && hash_equals((string) $config['STATS_KEY'], (string) $_GET['key']);
   if (!$goodKey) { http_response_code(403); exit('Accesso negato.'); }
 
-  $days = []; $pages = []; $refs = []; $azioni = []; $tot = 0;
+  // Periodo: ultimi 7 / 30 / 90 giorni, oppure tutto. Le date nel file sono AAAA-MM-GG,
+  // quindi il confronto tra stringhe basta.
+  $scelte = ['7' => '7 giorni', '30' => '30 giorni', '90' => '90 giorni', 'tutto' => 'Tutto'];
+  $periodo = (string) ($_GET['giorni'] ?? '30');
+  if (!isset($scelte[$periodo])) { $periodo = '30'; }
+  $dal = $periodo === 'tutto' ? '' : date('Y-m-d', strtotime('-' . ((int) $periodo - 1) . ' days'));
+
+  // Le azioni che sono un contatto vero. Le altre (es. «lista-inviata» nelle demo) restano a parte.
+  $contatti = [
+    'whatsapp' => 'Clic su WhatsApp', 'telefono' => 'Clic sul numero di telefono', 'email' => 'Clic sull’email',
+    'richiesta-contatti' => 'Modulo contatti inviato', 'richiesta-preventivo' => 'Preventivo richiesto',
+    'richiesta-brief' => 'Brief inviato (Inizia da qui)', 'richiesta-analisi' => 'Analisi gratuita richiesta',
+  ];
+  // Provenienza raggruppata. «interno» = navigazione da una pagina all'altra del sito (dal 28/10/2026;
+  // prima finiva tra le vuote insieme alle visite dirette).
+  $gruppo = function ($r) {
+    if ($r === 'interno') { return 'Dal sito stesso (pagina dopo pagina)'; }
+    if ($r === '') { return 'Dirette (link salvato, scritto a mano, app di messaggi)'; }
+    if (preg_match('/(^|\.)google\./', $r)) { return 'Google'; }
+    if (preg_match('/chatgpt|openai|perplexity|copilot|gemini|claude/', $r)) { return 'Assistenti con intelligenza artificiale'; }
+    if (preg_match('/(^|\.)bing\.com$|duckduckgo|ecosia|yahoo|qwant|yandex/', $r)) { return 'Altri motori di ricerca'; }
+    if (preg_match('/facebook|instagram|linkedin|(^|\.)t\.co$|twitter|x\.com|tiktok|whatsapp|telegram/', $r)) { return 'Social e messaggi'; }
+    return 'Altri siti (directory, link)';
+  };
+
+  $giorni = []; $pagine = []; $prov = []; $gruppi = []; $azioni = []; $altre = []; $contPag = [];
+  $viste = 0; $nContatti = 0; $esterne = 0;
   if (is_file($FILE)) {
     foreach (file($FILE, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
       // escape esplicito: dalle PHP piu' recenti l'impostazione predefinita e'
@@ -26,34 +52,73 @@ if (isset($_GET['key'])) {
       $c = str_getcsv($line, ',', '"', '');
       if (count($c) < 3) { continue; }
       [$d, $p, $r] = $c;
+      if ($dal !== '' && $d < $dal) { continue; }
       $e = $c[3] ?? '';                       // 4a colonna: assente nelle righe vecchie
       if ($e !== '') {                        // e' un'azione, non una visita
-        $azioni[$e] = ($azioni[$e] ?? 0) + 1;
+        if (isset($contatti[$e])) {
+          $azioni[$e] = ($azioni[$e] ?? 0) + 1;
+          $contPag[$p] = ($contPag[$p] ?? 0) + 1;
+          $nContatti++;
+        } else {
+          $altre[$e] = ($altre[$e] ?? 0) + 1;
+        }
         continue;
       }
-      $tot++;
-      $days[$d]  = ($days[$d]  ?? 0) + 1;
-      $pages[$p] = ($pages[$p] ?? 0) + 1;
-      if ($r !== '') { $refs[$r] = ($refs[$r] ?? 0) + 1; }
+      $viste++;
+      $giorni[$d] = ($giorni[$d] ?? 0) + 1;
+      $pagine[$p] = ($pagine[$p] ?? 0) + 1;
+      $g = $gruppo($r);
+      $gruppi[$g] = ($gruppi[$g] ?? 0) + 1;
+      if ($r !== '' && $r !== 'interno') { $prov[$r] = ($prov[$r] ?? 0) + 1; $esterne++; }
     }
   }
-  krsort($days); arsort($pages); arsort($refs); arsort($azioni);
-  $days = array_slice($days, 0, 30, true);
-  $pages = array_slice($pages, 0, 20, true);
-  $refs = array_slice($refs, 0, 15, true);
+  krsort($giorni); arsort($pagine); arsort($prov); arsort($gruppi); arsort($azioni); arsort($altre); arsort($contPag);
+  $pagine = array_slice($pagine, 0, 25, true);
+  $prov = array_slice($prov, 0, 15, true);
 
   header('Content-Type: text/html; charset=utf-8');
   header('X-Robots-Tag: noindex');
-  $row = fn($k, $v) => '<tr><td>' . htmlspecialchars($k) . '</td><td class="n">' . $v . '</td></tr>';
+  $h = fn($s) => htmlspecialchars((string) $s, ENT_QUOTES, 'UTF-8');
+  $tab = function (array $righe, string $vuoto, array $intest) use ($h) {
+    if (!$righe) { return '<p class="vuoto">' . $h($vuoto) . '</p>'; }
+    $out = '<table><tr>' . implode('', array_map(fn($t) => '<th>' . $h($t) . '</th>', $intest)) . '</tr>';
+    foreach ($righe as $r) {
+      $out .= '<tr><td>' . $h($r[0]) . '</td>';
+      foreach (array_slice($r, 1) as $v) { $out .= '<td class="n">' . $h($v) . '</td>'; }
+      $out .= '</tr>';
+    }
+    return $out . '</table>';
+  };
+  $perc = fn($a, $b) => $b ? number_format(100 * $a / $b, 1, ',', '') . '%' : '—';
+
+  $menu = '';
+  foreach ($scelte as $k => $t) {
+    $menu .= $k === $periodo ? '<b>' . $h($t) . '</b>' : '<a href="?key=' . rawurlencode((string) $_GET['key']) . '&amp;giorni=' . $k . '">' . $h($t) . '</a>';
+  }
+
   echo '<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-     . '<title>Statistiche — Mole Digitale</title><style>body{font-family:system-ui,sans-serif;background:#0b0f1a;color:#e7ecf3;max-width:720px;margin:0 auto;padding:2rem 1rem}'
-     . 'h1{font-size:1.4rem}h2{font-size:1.05rem;margin-top:2rem;color:#22d3ee}table{width:100%;border-collapse:collapse;font-size:.92rem}'
-     . 'td{padding:.45rem .6rem;border-bottom:1px solid #243049}.n{text-align:right;font-variant-numeric:tabular-nums;color:#22d3ee;font-weight:700}</style></head><body>'
-     . '<h1>📊 Statistiche del sito <small style="color:#aab4c5">(' . $tot . ' visite totali registrate)</small></h1>'
-     . '<h2>Visite per giorno (ultimi 30)</h2><table>' . implode('', array_map($row, array_keys($days), $days)) . '</table>'
-     . '<h2>Pagine più viste</h2><table>' . implode('', array_map($row, array_keys($pages), $pages)) . '</table>'
-     . '<h2>Da dove arrivano</h2><table>' . ($refs ? implode('', array_map($row, array_keys($refs), $refs)) : '<tr><td>Solo visite dirette finora</td></tr>') . '</table>'
-     . '<h2>Azioni dei visitatori</h2><table>' . ($azioni ? implode('', array_map($row, array_keys($azioni), $azioni)) : '<tr><td>Nessuna azione registrata finora</td></tr>') . '</table>'
+     . '<title>Statistiche — Mole Digitale</title><style>body{font-family:system-ui,sans-serif;background:#0b0f1a;color:#e7ecf3;max-width:780px;margin:0 auto;padding:2rem 1rem;line-height:1.5}'
+     . 'h1{font-size:1.4rem}h2{font-size:1.05rem;margin-top:2.2rem;color:#22d3ee}table{width:100%;border-collapse:collapse;font-size:.92rem}'
+     . 'th{text-align:left;color:#aab4c5;font-weight:600;font-size:.82rem;padding:.4rem .6rem;border-bottom:1px solid #3a4866}th+th{text-align:right}'
+     . 'td{padding:.45rem .6rem;border-bottom:1px solid #243049;word-break:break-word}.n{text-align:right;font-variant-numeric:tabular-nums;color:#22d3ee;font-weight:700;white-space:nowrap}'
+     . '.periodo{display:flex;gap:1rem;flex-wrap:wrap;margin:.6rem 0 1.4rem}.periodo a{color:#aab4c5}.periodo b{color:#fff}'
+     . '.box{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.8rem}.box div{background:#131a2b;border:1px solid #243049;border-radius:12px;padding:1rem}'
+     . '.box b{display:block;font-size:1.6rem;color:#22d3ee}.box span{color:#aab4c5;font-size:.85rem}.vuoto,.nota{color:#aab4c5;font-size:.88rem}</style></head><body>'
+     . '<h1>📊 Statistiche del sito</h1><p class="periodo">' . $menu . '</p>'
+     . '<div class="box">'
+     . '<div><b>' . $viste . '</b><span>pagine viste</span></div>'
+     . '<div><b>' . $nContatti . '</b><span>contatti (WhatsApp, telefono, email, moduli)</span></div>'
+     . '<div><b>' . $perc($nContatti, $viste) . '</b><span>contatti ogni 100 pagine viste</span></div>'
+     . '<div><b>' . $esterne . '</b><span>visite arrivate da altri siti</span></div>'
+     . '</div>'
+     . '<h2>I contatti, per tipo</h2>' . $tab(array_map(fn($k, $v) => [$contatti[$k], $v], array_keys($azioni), $azioni), 'Nessun contatto registrato nel periodo.', ['Azione', 'Volte'])
+     . '<h2>Le pagine da cui partono i contatti</h2>' . $tab(array_map(fn($k, $v) => [$k, $v], array_keys($contPag), $contPag), 'Nessun contatto registrato nel periodo.', ['Pagina', 'Contatti'])
+     . '<h2>Da dove arrivano le visite</h2>' . $tab(array_map(fn($k, $v) => [$k, $v, $perc($v, $viste)], array_keys($gruppi), $gruppi), 'Nessuna visita nel periodo.', ['Provenienza', 'Pagine viste', 'Quota'])
+     . '<h2>Siti di provenienza, in dettaglio</h2>' . $tab(array_map(fn($k, $v) => [$k, $v], array_keys($prov), $prov), 'Nessuna visita da altri siti nel periodo.', ['Sito', 'Visite'])
+     . '<h2>Pagine più viste</h2>' . $tab(array_map(fn($k, $v) => [$k, $v, $contPag[$k] ?? 0], array_keys($pagine), $pagine), 'Nessuna visita nel periodo.', ['Pagina', 'Viste', 'Contatti'])
+     . '<h2>Pagine viste per giorno</h2>' . $tab(array_map(fn($k, $v) => [$k, $v], array_keys($giorni), $giorni), 'Nessuna visita nel periodo.', ['Giorno', 'Viste'])
+     . ($altre ? '<h2>Altre azioni (demo e bozze)</h2>' . $tab(array_map(fn($k, $v) => [$k, $v], array_keys($altre), $altre), '', ['Azione', 'Volte']) : '')
+     . '<p class="nota">Conteggio senza cookie e senza dati personali: «pagine viste» non sono persone diverse. I bot noti sono esclusi.</p>'
      . '</body></html>';
   exit;
 }

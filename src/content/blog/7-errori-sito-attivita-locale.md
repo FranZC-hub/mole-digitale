@@ -15,6 +15,8 @@ Il classico. Il cliente è sul telefono, tocca "Menu", si scarica un PDF pensato
 
 Sembra banale, ma un cliente davanti alla saracinesca abbassata è un cliente perso — e arrabbiato. Gli orari devono essere in evidenza, aggiornati, e coerenti con la scheda Google. Nelle nostre demo, come quella della [farmacia](/demo/farmacia/), l'orario mostra addirittura "aperta/chiusa **adesso**", calcolato in automatico.
 
+<figure><img src="/img/thumbs/farmacia.webp" alt="Home page della demo di una farmacia, con gli orari e l'indicazione aperta o chiusa in evidenza" width="760" height="475" loading="lazy" decoding="async" /><figcaption>Orari sempre giusti: nella demo della farmacia «aperta ora / chiusa ora» è calcolato sul momento.</figcaption></figure>
+
 ## 3. Niente WhatsApp
 
 A Torino le attività locali ricevono più richieste su WhatsApp che via email. Se il tuo sito non ha un pulsante WhatsApp sempre visibile, stai chiedendo al cliente di faticare. È la modifica con il miglior rapporto costo/beneficio in assoluto.

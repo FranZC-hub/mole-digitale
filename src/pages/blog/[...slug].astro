@@ -59,6 +59,9 @@ const related = (await getCollection('blog'))
     .prose :global(a) { color:var(--c2); border-bottom:1px solid rgba(34,211,238,.4); }
     .prose :global(strong) { color:var(--text); }
     .prose :global(hr) { border:0; border-top:1px solid var(--border); margin:2rem 0; }
+    .prose :global(figure) { margin:1.8rem 0 2rem; }
+    .prose :global(figure img) { width:100%; height:auto; border-radius:12px; border:1px solid var(--border); }
+    .prose :global(figcaption) { color:var(--muted-2); font-size:.86rem; margin-top:.6rem; text-align:center; }
     .blog-cta { text-align:center; margin-top:3rem; padding-top:2rem; border-top:1px solid var(--border); }
     .blog-cta p { color:var(--muted); margin-bottom:1rem; }
     .blog-related { margin-top:3rem; }

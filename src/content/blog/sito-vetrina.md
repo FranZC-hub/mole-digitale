@@ -45,6 +45,8 @@ Un sito di **una sola pagina** è veloce da fare e va benissimo per partire: tut
 
 Per farti un'idea di come può essere, guarda le nostre demo: una [trattoria](/demo/ristorante/) con menu e prenotazione del tavolo, un [salone](/demo/salone/) con gli appuntamenti online, un'[officina](/demo/officina/) con la richiesta di preventivo. Sono tutti siti vetrina: nessuno vende online, tutti portano contatti.
 
+<figure><img src="/img/thumbs/officina.webp" alt="Home page della demo di un'officina: servizi, recensioni e richiesta di preventivo in prima pagina" width="760" height="475" loading="lazy" decoding="async" /><figcaption>Un sito vetrina che porta contatti: la demo di un’officina, con servizi e richiesta di preventivo in evidenza.</figcaption></figure>
+
 ## Gli errori più comuni
 
 - **Il menu o il listino in PDF**: da telefono si legge male e Google lo considera poco.

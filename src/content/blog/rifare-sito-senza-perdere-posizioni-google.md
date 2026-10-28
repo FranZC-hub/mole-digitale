@@ -7,6 +7,8 @@ og: "/og/blog-rifare-sito.png"
 
 Il sito è vecchio e va rifatto. Ma c'è una paura che frena molti titolari: «E se poi su Google spariamo?». È una paura fondata: un restyling fatto in fretta può davvero far perdere visite. La buona notizia è che si evita, seguendo pochi passaggi precisi.
 
+<figure><img src="/img/guide/prima-dopo.webp" alt="Lo stesso locale prima e dopo il restyling: a sinistra un sito vecchio e disordinato, a destra il sito nuovo e moderno" width="1212" height="375" loading="lazy" decoding="async" /><figcaption>Lo stesso locale prima e dopo il restyling (è una demo, ma i problemi del «prima» sono quelli che vediamo ogni giorno).</figcaption></figure>
+
 ## Perché si rischia di perdere posizioni
 
 Google ricorda gli **indirizzi** delle tue pagine (per esempio `tuosito.it/menu.html`). Se nel sito nuovo quella pagina diventa `tuosito.it/menu/` e nessuno glielo dice, Google trova una pagina che non esiste più, e chi arriva da Google trova un errore. Le cause più frequenti:

@@ -94,6 +94,8 @@ const faqSchemaSettore = {
     <div class="land-cercano" data-reveal>
       <h2>Come ti cercano i clienti</h2>
       <p>{d.cercano}</p>
+      <h3 class="land-esempio-h">Un esempio, in pratica</h3>
+      <p class="land-esempio">{d.esempio}</p>
     </div>
 
     <div class="land-check" data-reveal>
@@ -212,6 +214,8 @@ const faqSchemaSettore = {
     .land-cercano { max-width:760px; margin:3.5rem auto 0; text-align:center; }
     .land-cercano h2, .land-check h2, .land-vicini h2 { font-size:clamp(1.5rem,3.5vw,2.2rem); margin-bottom:1rem; }
     .land-cercano p { color:var(--muted); font-size:1.06rem; }
+    .land-esempio-h { font-size:1.15rem; margin:1.8rem 0 .6rem; color:var(--c2); }
+    .land-cercano .land-esempio { text-align:left; padding:1.2rem 1.4rem; background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--c2); border-radius:var(--radius-sm); }
     .land-check { max-width:960px; margin:3.5rem auto 0; text-align:center; }
     .land-check-grid { list-style:none; display:grid; grid-template-columns:repeat(2,1fr); gap:1rem; text-align:left; margin-top:1.4rem; }
     .land-check-grid li { position:relative; padding:1.2rem 1.3rem 1.2rem 3.6rem; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); }

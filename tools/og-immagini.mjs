@@ -20,6 +20,11 @@ const IMMAGINI = [
   { file: 'blog-rifare-sito', r1: 'Rifare il sito', r2: 'senza perdere Google.', sotto: 'La checklist del passaggio' },
   { file: 'blog-costo-annuale', r1: 'Quanto costa', r2: 'un sito all’anno?', sotto: 'Dominio, hosting, assistenza: cosa controllare' },
   { file: 'blog-sito-ristorante', r1: 'Il sito del', r2: 'ristorante.', sotto: 'Cosa deve avere per riempire i tavoli' },
+  { file: 'analisi-sito-web-gratis', r1: 'Analisi del sito,', r2: 'gratis.', sotto: 'Ti diciamo cosa migliorare, in parole semplici' },
+  { file: 'blog-non-compare-google', r1: 'Il sito non compare', r2: 'su Google?', sotto: 'Le cause più comuni e come si risolvono' },
+  { file: 'blog-menu-qr', r1: 'Menu con QR code,', r2: 'fatto bene.', sotto: 'Per ristoranti, bar e pizzerie' },
+  { file: 'blog-sito-gratis', r1: 'Sito web gratis:', r2: 'i costi nascosti.', sotto: 'Cosa offre davvero e quando conviene' },
+  { file: 'blog-dominio', r1: 'Il dominio', r2: 'del tuo sito.', sotto: 'Cos’è, come sceglierlo, a chi intestarlo' },
 ];
 
 const CHROME = 'C:/Program Files/Google/Chrome/Application/chrome.exe';

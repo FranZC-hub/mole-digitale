@@ -24,6 +24,8 @@ Il modulo giusto cambia con il mestiere:
 - **Ristoranti** — data, ora, coperti. E il menu a portata di pollice, perché si prenota *dopo* aver visto cosa si mangia. Ne parliamo nella pagina dei [siti per ristoranti](/siti-web-ristoranti-torino/).
 - **Veterinari** — qui conta distinguere l'urgenza dalla routine: nella [demo dell'ambulatorio](/demo/animali/) c'è un triage che indirizza subito ("chiama ora" vs "prenota con calma"). Vedi anche i [siti per veterinari](/siti-web-veterinari-torino/).
 
+<figure><img src="/img/thumbs/salone.webp" alt="Home page della demo Salone Aurora, con il bottone per prenotare l'appuntamento" width="760" height="475" loading="lazy" decoding="async" /><figcaption>La demo Salone Aurora: si sceglie servizio, giorno e ora, senza telefonare.</figcaption></figure>
+
 ## I tre dettagli che fanno la differenza
 
 1. **Poche domande.** Ogni campo in più fa perdere qualcuno. Chiedi solo ciò che ti serve per richiamare.

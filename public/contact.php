@@ -110,6 +110,15 @@ if ($brief) {
   $messaggio = mb_substr(trim($messaggio . "\n\n— BRIEF DAL SITO —\n" . implode("\n", $brief)), 0, 3000);
 }
 
+// Analisi gratuita (/analisi-sito-web-gratis/) inviata SENZA JavaScript: il sito da guardare
+// arriva in un campo a parte. Lo metto in cima al messaggio e lo tolgo dai campi del preventivo,
+// che altrimenti lo ripeterebbe come «Sito attuale» sotto un'intestazione sbagliata.
+if (($data['richiesta'] ?? '') === 'analisi') {
+  $sitoAnalisi = mb_substr(trim((string) ($data['sito'] ?? '')), 0, 300);
+  $messaggio = mb_substr(trim("— ANALISI GRATUITA DEL SITO —\nSito: $sitoAnalisi\n" . $messaggio), 0, 3000);
+  unset($data['sito']);
+}
+
 // Preventivo di /preventivo inviato SENZA JavaScript: stesso discorso. Le voci a scelta
 // multipla arrivano come array (funzioni[], ecommerce[], contenuti[], visibilita[]).
 $prevCampi = [

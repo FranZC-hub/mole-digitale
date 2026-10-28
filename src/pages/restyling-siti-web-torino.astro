@@ -65,7 +65,7 @@ const WA = 'https://wa.me/393662102203?text=' + encodeURIComponent('Ciao! Vorrei
 
     <div class="rs-blocco" data-reveal>
       <h2>Quando è il momento di rifarlo</h2>
-      <p class="rs-lead">Se ti riconosci in due o tre di questi punti, il sito ti sta facendo perdere clienti.</p>
+      <p class="rs-lead">Se ti riconosci in due o tre di questi punti, il sito ti sta facendo perdere clienti. Non sei sicuro? Chiedi l’<a href="/analisi-sito-web-gratis/">analisi gratuita del sito</a>.</p>
       <ul class="rs-griglia">
         {segnali.map((s) => <li class="prob-card"><h3>{s.h}</h3><p>{s.p}</p></li>)}
       </ul>
@@ -129,6 +129,7 @@ const WA = 'https://wa.me/393662102203?text=' + encodeURIComponent('Ciao! Vorrei
     .rs-blocco { max-width:980px; margin:3.5rem auto 0; }
     .rs-blocco > h2 { font-size:clamp(1.5rem,3.5vw,2.2rem); text-align:center; margin-bottom:.8rem; }
     .rs-lead { color:var(--muted); text-align:center; margin-bottom:1.4rem; }
+    .rs-lead a { color:var(--c2); text-decoration:underline; text-underline-offset:3px; }
     .rs-griglia { list-style:none; display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
     .rs-griglia h3 { font-size:1.1rem; margin-bottom:.4rem; }
     .rs-due { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
