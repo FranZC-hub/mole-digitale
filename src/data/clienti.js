@@ -85,4 +85,28 @@ export const CLIENTI = [
     ],
     accesso: { t: 'Pannello di gestione', u: '/demoElWarike/gestione/', user: 'warike', pass: 'frejus52' },
   },
+  {
+    nome: 'PuntoPane',
+    settore: 'Laboratorio di panificazione · ingrosso',
+    dove: 'Torino',
+    url: '/demoPuntoPane/',
+    stato: 'Bozza da mostrare',
+    pitch: 'Un laboratorio che fa pane a lievito madre con farine bio e rifornisce ristoranti, bar, hotel e negozi. Hanno chiesto un sito essenziale: il sito presenta il laboratorio, mostra i prodotti e porta richieste di listino.',
+    dentro: [
+      'Catalogo con foto e filtri: chi compra spunta «Mi interessa» e i prodotti arrivano già scelti nella richiesta',
+      'Pagina per ristoranti, bar, hotel e negozi: cosa portano a ciascuno e come si comincia',
+      'Richiesta del listino pensata per l’ingrosso (attività, zona, prodotti, quantità): apre l’email già scritta',
+      'Nessun pannello di gestione: hanno chiesto un sito semplice e a costo contenuto',
+      'Mancano foto vere, indirizzo del laboratorio e condizioni di fornitura: le foto sono a licenza libera',
+    ],
+    pagine: [
+      { t: 'Home', u: '/demoPuntoPane/' },
+      { t: 'Prodotti', u: '/demoPuntoPane/prodotti/' },
+      { t: 'Il laboratorio', u: '/demoPuntoPane/laboratorio/' },
+      { t: 'Ingrosso', u: '/demoPuntoPane/ingrosso/' },
+      { t: 'Contatti', u: '/demoPuntoPane/contatti/' },
+      { t: 'Privacy', u: '/demoPuntoPane/privacy/' },
+    ],
+    // niente `accesso`: questa bozza non ha un'area riservata
+  },
 ];

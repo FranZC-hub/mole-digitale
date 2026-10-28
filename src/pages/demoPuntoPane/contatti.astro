@@ -1,0 +1,277 @@
+---
+import Layout from './_Layout.astro';
+import { BASE, INFO, PRODOTTI, SETTORI } from './_shared.js';
+// Contatti e richiesta del listino. Nella bozza non c'è un server: il modulo prepara l'email
+// già scritta e la apre nel programma di posta (con il testo da copiare, se non si apre).
+// Nella versione vera la richiesta arriverà direttamente nella casella di PuntoPane.
+const tipi = [...SETTORI.map((s) => s.t), 'Catering ed eventi', 'Altro'];
+---
+<Layout title="Contatti e listino" active="Contatti" desc={`Contatti di ${INFO.nome}, laboratorio di panificazione a Torino: richiedete il listino per la fornitura di pane a ristoranti, bar, hotel e negozi.`}>
+
+  <section class="primo testa">
+    <div class="misura">
+      <span class="occhiello">Contatti</span>
+      <h1>Chiedeteci il listino.</h1>
+      <p class="sez-p">Diteci che attività avete e cosa vi serve: vi rispondiamo con prezzi, pezzature e giorni di consegna. Se preferite, scriveteci o chiamateci direttamente.</p>
+    </div>
+  </section>
+
+  <section class="corpo">
+    <div class="misura corpo-in">
+      <aside class="recapiti" aria-label="Recapiti">
+        <a class="recapito" href={'mailto:' + INFO.email}>
+          <span class="rec-et">Email</span>
+          <span class="rec-v">{INFO.email}</span>
+          <span class="rec-n">Listino, ordini e informazioni</span>
+        </a>
+        <a class="recapito" href={'tel:' + INFO.telHref}>
+          <span class="rec-et">Telefono</span>
+          <span class="rec-v">{INFO.tel}</span>
+          <span class="rec-n">Per parlare con il laboratorio</span>
+        </a>
+        <a class="recapito" href={INFO.instagram} target="_blank" rel="noopener">
+          <span class="rec-et">Instagram</span>
+          <span class="rec-v">@puntopane_</span>
+          <span class="rec-n">Il pane di ogni giorno, in foto</span>
+        </a>
+        <div class="recapito">
+          <span class="rec-et">Il laboratorio</span>
+          <span class="rec-v">{INFO.citta}</span>
+          <span class="rec-n">{INFO.nome} · {INFO.societa}</span>
+        </div>
+        <div class="promemoria">
+          <b>Per PuntoPane:</b> il telefono viene dalla vostra pagina Facebook; Gambero Rosso riporta invece 011 1971 5951. Quale mettiamo? E l’indirizzo del laboratorio: online troviamo San Mauro e via Canonico Tancredi 21. Ci dite quello giusto e gli orari in cui vi si può chiamare?
+        </div>
+      </aside>
+
+      <div class="richiesta" id="richiesta">
+        <h2>Richiesta del listino</h2>
+        <p class="rich-p">Due minuti. I campi con l’asterisco servono per rispondervi.</p>
+
+        <form class="modulo" id="richForm" novalidate>
+          <fieldset>
+            <legend>La vostra attività</legend>
+            <label>Nome dell’attività *
+              <input type="text" id="f-attivita" required autocomplete="organization" aria-describedby="e-attivita" />
+              <span class="errore" id="e-attivita" hidden>Scrivete il nome dell’attività.</span>
+            </label>
+            <label>Tipo di attività *
+              <select id="f-tipo" required aria-describedby="e-tipo">
+                <option value="">Scegliete…</option>
+                {tipi.map((t) => <option>{t}</option>)}
+              </select>
+              <span class="errore" id="e-tipo" hidden>Scegliete il tipo di attività.</span>
+            </label>
+            <label><span>Dove si trova <small>(via o quartiere, comune)</small></span>
+              <input type="text" id="f-zona" autocomplete="street-address" />
+            </label>
+          </fieldset>
+
+          <fieldset>
+            <legend><span>Cosa vi interessa <small>(facoltativo)</small></span></legend>
+            <div class="scelte">
+              {PRODOTTI.map((p) => (
+                <label class="chip"><input type="checkbox" name="prodotti" value={p.id} /><span>{p.nome}</span></label>
+              ))}
+            </div>
+            <label><span>Quantità indicative <small>(facoltativo)</small></span>
+              <textarea id="f-quantita" rows="2" placeholder="Es. 40 panini al giorno, 3 teglie di focaccia il venerdì"></textarea>
+            </label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Chi siete</legend>
+            <label>Nome e cognome *
+              <input type="text" id="f-nome" required autocomplete="name" aria-describedby="e-nome" />
+              <span class="errore" id="e-nome" hidden>Scrivete il vostro nome.</span>
+            </label>
+            <div class="riga2">
+              <label>Email *
+                <input type="email" id="f-email" required autocomplete="email" aria-describedby="e-email" />
+                <span class="errore" id="e-email" hidden>Scrivete un’email valida: vi mandiamo lì il listino.</span>
+              </label>
+              <label><span>Telefono <small>(facoltativo)</small></span>
+                <input type="tel" id="f-tel" autocomplete="tel" />
+              </label>
+            </div>
+            <label><span>Altro da dirci? <small>(facoltativo)</small></span>
+              <textarea id="f-note" rows="3"></textarea>
+            </label>
+          </fieldset>
+
+          <label class="consenso">
+            <input type="checkbox" id="f-privacy" required aria-describedby="e-privacy" />
+            <span>Ho letto l’<a href={BASE + 'privacy/'}>informativa privacy</a> e acconsento al trattamento dei miei dati per ricevere il listino ed essere ricontattato.</span>
+          </label>
+          <span class="errore" id="e-privacy" hidden>Serve il consenso per potervi rispondere.</span>
+
+          <noscript><p class="nota-no">Per preparare la richiesta da qui serve JavaScript, che in questo browser è spento: scriveteci a <a href={'mailto:' + INFO.email}>{INFO.email}</a>.</p></noscript>
+          <button type="submit" class="btn btn-crosta invia">Prepara la richiesta</button>
+          <p class="nota-invio">Si apre il vostro programma di posta con la richiesta già scritta: vi basta premere Invia.</p>
+        </form>
+
+        <div class="pronta" id="pronta" hidden tabindex="-1">
+          <span class="pronta-punto" aria-hidden="true"></span>
+          <h3>La richiesta è pronta.</h3>
+          <p>Si è aperto il programma di posta con il messaggio già scritto: premete Invia e vi rispondiamo con il listino. Se non si è aperto, copiate il testo qui sotto e mandatelo a <b>{INFO.email}</b>.</p>
+          <pre id="testoRich"></pre>
+          <div class="pronta-az">
+            <button type="button" class="btn btn-bordo" id="copia">Copia il testo</button>
+            <a class="btn btn-crosta" id="riapri" href={'mailto:' + INFO.email}>Apri di nuovo l’email</a>
+          </div>
+          <p class="copiato" id="copiato" role="status" aria-live="polite"></p>
+          <button type="button" class="link-nuova" id="nuova">Prepara un’altra richiesta</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .testa{padding-bottom:clamp(2rem,4vw,3rem)}
+    h1{font-size:clamp(2.6rem,6vw,4.6rem);margin-top:.8rem}
+
+    .corpo{padding-bottom:clamp(4rem,8vw,6rem)}
+    .corpo-in{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(2rem,5vw,4rem);align-items:start}
+    .corpo-in>*{min-width:0}
+    .recapiti{display:grid;gap:.9rem;position:sticky;top:calc(var(--flag) + var(--testata) + 1.5rem)}
+    .recapito{display:grid;gap:.15rem;padding:1.1rem 1.2rem;background:var(--carta);border:1px solid var(--filo);border-radius:14px;transition:border-color .2s}
+    a.recapito:hover{border-color:var(--crosta)}
+    .rec-et{font-family:var(--disp);font-weight:600;font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;color:var(--crosta)}
+    .rec-v{font-family:var(--disp);font-weight:600;font-size:1.25rem;color:var(--inchiostro);overflow-wrap:anywhere}
+    .rec-n{font-size:.9rem;color:var(--muto)}
+    .recapiti .promemoria{margin:0}
+
+    .richiesta{background:var(--carta);border:1px solid var(--filo);border-radius:18px;padding:clamp(1.4rem,4vw,2.4rem)}
+    .richiesta h2{font-size:clamp(1.8rem,3.4vw,2.4rem)}
+    .rich-p{color:var(--muto);margin:.4rem 0 1.6rem}
+    fieldset{border:0;display:grid;gap:1rem;padding:1.4rem 0 .4rem;border-top:1px solid var(--filo)}
+    fieldset:first-of-type{border-top:0;padding-top:0}
+    legend{font-family:var(--disp);font-size:1.15rem !important;font-weight:600;color:var(--inchiostro);margin-bottom:.9rem;padding:0}
+    .riga2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .riga2>*{min-width:0}
+    .scelte{display:flex;flex-wrap:wrap;gap:.5rem}
+    .chip{position:relative;display:inline-flex !important;cursor:pointer}
+    .chip input{position:absolute;opacity:0;width:1px;height:1px}
+    .chip span{display:inline-flex;align-items:center;min-height:40px;padding:.4rem .9rem;border:1.5px solid var(--filo);border-radius:999px;background:var(--farina);font-weight:600;font-size:.88rem;color:var(--testo);transition:background .2s,border-color .2s,color .2s}
+    .chip:hover span{border-color:var(--crosta)}
+    .chip input:checked + span{background:var(--crosta);border-color:var(--crosta);color:#fff}
+    .chip input:checked + span::before{content:'✓';margin-right:.4rem}
+    .chip input:focus-visible + span{outline:2px solid var(--crosta);outline-offset:2px}
+    .consenso{display:flex !important;gap:.7rem;align-items:flex-start;font-weight:500 !important;font-size:.88rem !important;color:var(--testo) !important;margin-top:.6rem;cursor:pointer}
+    .consenso input{width:20px !important;height:20px;flex:none;margin-top:.15rem;accent-color:var(--crosta)}
+    .consenso a{color:var(--crosta);text-decoration:underline}
+    .invia{width:100%;margin-top:.6rem}
+    .nota-invio,.nota-no{font-size:.86rem;color:var(--muto);text-align:center}
+    .nota-no a{color:var(--crosta);text-decoration:underline}
+    @media (scripting:none){ .invia,.nota-invio{display:none} }
+
+    .pronta{text-align:left}
+    .pronta:focus{outline:none}
+    .pronta-punto{display:block;width:2.6rem;height:2.6rem;border-radius:50%;background:var(--crosta);margin-bottom:1rem}
+    .pronta h3{font-size:clamp(1.8rem,3.4vw,2.4rem)}
+    .pronta p{color:var(--muto);margin-top:.6rem}
+    .pronta pre{margin-top:1.2rem;padding:1rem 1.1rem;background:var(--farina);border:1px dashed var(--kraft-2);border-radius:12px;font-family:var(--sans);font-size:.88rem;line-height:1.55;white-space:pre-wrap;color:var(--testo);max-height:340px;overflow:auto}
+    .pronta-az{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.2rem}
+    .copiato{min-height:1.4em;font-size:.88rem;color:var(--crosta);font-weight:600}
+    .link-nuova{background:none;border:0;padding:.6rem 0;margin-top:.4rem;font:inherit;font-weight:600;color:var(--crosta);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+
+    @media (max-width:980px){
+      .corpo-in{grid-template-columns:1fr}
+      .recapiti{position:static;grid-template-columns:1fr 1fr}
+      .recapiti .promemoria{grid-column:1/-1}
+    }
+    @media (max-width:640px){
+      .recapiti,.riga2{grid-template-columns:1fr}
+    }
+  </style>
+
+  <script>
+    import { INFO, PRODOTTI, leggiRichiesta, scriviRichiesta } from './_shared.js';
+
+    const form = document.getElementById('richForm');
+    const pronta = document.getElementById('pronta');
+    const intro = document.querySelector('.rich-p');
+    const caselle = [...form.querySelectorAll('input[name="prodotti"]')];
+    const v = (id) => document.getElementById(id).value.trim();
+
+    // i prodotti spuntati nel catalogo arrivano già scelti
+    const scelti = leggiRichiesta();
+    caselle.forEach((c) => { c.checked = scelti.includes(c.value); });
+    caselle.forEach((c) => c.addEventListener('change', () => scriviRichiesta(caselle.filter((x) => x.checked).map((x) => x.value))));
+
+    const obbligatori = [
+      ['f-attivita', (x) => x.value.trim() !== ''],
+      ['f-tipo', (x) => x.value !== ''],
+      ['f-nome', (x) => x.value.trim() !== ''],
+      ['f-email', (x) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(x.value.trim())],
+      ['f-privacy', (x) => x.checked],
+    ];
+    const controlla = () => {
+      let primo = null;
+      obbligatori.forEach(([id, ok]) => {
+        const el = document.getElementById(id), err = document.getElementById('e-' + id.slice(2));
+        const bene = ok(el);
+        el.setAttribute('aria-invalid', String(!bene));
+        err.hidden = bene;
+        if (!bene && !primo) primo = el;
+      });
+      if (primo) primo.focus();
+      return !primo;
+    };
+    // un campo corretto perde subito il rosso, senza aspettare il prossimo invio
+    obbligatori.forEach(([id, ok]) => {
+      const el = document.getElementById(id);
+      el.addEventListener(el.type === 'checkbox' || el.tagName === 'SELECT' ? 'change' : 'input', () => {
+        if (el.getAttribute('aria-invalid') === 'true' && ok(el)) { el.setAttribute('aria-invalid', 'false'); document.getElementById('e-' + id.slice(2)).hidden = true; }
+      });
+    });
+
+    let link = '';
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!controlla()) return;
+      const prodotti = caselle.filter((c) => c.checked).map((c) => PRODOTTI.find((p) => p.id === c.value).nome);
+      // null = riga facoltativa lasciata vuota; '' = riga bianca tra un blocco e l'altro
+      const se = (id, et) => (v(id) ? `${et}: ${v(id)}` : null);
+      const testo = [
+        'Richiesta del listino dal sito',
+        '',
+        `Attività: ${v('f-attivita')} (${v('f-tipo')})`,
+        se('f-zona', 'Dove si trova'),
+        '',
+        prodotti.length ? 'Prodotti che ci interessano:\n' + prodotti.map((p) => '- ' + p).join('\n') : 'Prodotti: da vedere insieme',
+        se('f-quantita', 'Quantità indicative'),
+        '',
+        `Referente: ${v('f-nome')}`,
+        `Email: ${v('f-email')}`,
+        se('f-tel', 'Telefono'),
+        v('f-note') ? '' : null,
+        se('f-note', 'Note'),
+      ].filter((r) => r !== null).join('\n');
+      const oggetto = `Richiesta listino — ${v('f-attivita')}`;
+      link = `mailto:${INFO.email}?subject=${encodeURIComponent(oggetto)}&body=${encodeURIComponent(testo.replace(/\n/g, '\r\n'))}`;
+      // solo textContent: quello che scrive il cliente non diventa mai codice
+      document.getElementById('testoRich').textContent = `A: ${INFO.email}\nOggetto: ${oggetto}\n\n${testo}`;
+      document.getElementById('riapri').href = link;
+      form.hidden = true;
+      intro.hidden = true;
+      pronta.hidden = false;
+      pronta.focus();
+      scriviRichiesta([]);
+      location.href = link;
+    });
+
+    document.getElementById('copia').addEventListener('click', async () => {
+      const esito = document.getElementById('copiato');
+      try { await navigator.clipboard.writeText(document.getElementById('testoRich').textContent); esito.textContent = 'Testo copiato.'; }
+      catch { esito.textContent = 'Non riesco a copiare da qui: selezionate il testo e copiatelo a mano.'; }
+    });
+    document.getElementById('nuova').addEventListener('click', () => {
+      form.reset();
+      pronta.hidden = true;
+      form.hidden = false;
+      intro.hidden = false;
+      document.getElementById('f-attivita').focus();
+    });
+  </script>
+</Layout>

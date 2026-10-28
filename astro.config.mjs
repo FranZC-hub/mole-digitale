@@ -14,7 +14,7 @@ export default defineConfig({
   vite: { build: { assetsInlineLimit: (file) => (/\.(woff2?|ttf|otf)$/i.test(file) ? false : undefined) } },
   // Sitemap: dentro solo le pagine che vogliamo su Google.
   // Fuori: le singole demo (/demo/bar/, /demo/sushi/…), le bozze dei clienti
-  // (/demoFarmaciaAusiliatrice/, /demoElWarike/, /demoClienti/), le versioni reali in sviluppo
+  // (/demoFarmaciaAusiliatrice/, /demoElWarike/, /demoPuntoPane/, /demoClienti/), le versioni reali in sviluppo
   // (/demoClientiDev/ e i siti /<cliente>Dev/, es. /masgioielliDev/) e le pagine di servizio.
   // La galleria /demo/ resta indicizzabile.
   integrations: [

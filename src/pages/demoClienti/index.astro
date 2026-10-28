@@ -55,13 +55,15 @@ const clienti = CLIENTI.filter((c) => c.url);
             {c.pagine.map((p) => <a href={p.u}>{p.t}</a>)}
           </nav>
 
-          <div class="cl-accesso">
-            <div>
-              <span class="cl-acc-et">{c.accesso.t}</span>
-              <p class="cl-acc-cred">utente <code>{c.accesso.user}</code> · password <code>{c.accesso.pass}</code></p>
+          {c.accesso && (
+            <div class="cl-accesso">
+              <div>
+                <span class="cl-acc-et">{c.accesso.t}</span>
+                <p class="cl-acc-cred">utente <code>{c.accesso.user}</code> · password <code>{c.accesso.pass}</code></p>
+              </div>
+              <a href={c.accesso.u} class="btn btn-ghost">Apri →</a>
             </div>
-            <a href={c.accesso.u} class="btn btn-ghost">Apri →</a>
-          </div>
+          )}
         </article>
       ))}
     </div>

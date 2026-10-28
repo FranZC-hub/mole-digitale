@@ -1,0 +1,157 @@
+---
+import Layout from './_Layout.astro';
+import { BASE, PRODOTTI, CATEGORIE, foto } from './_shared.js';
+// Catalogo per categoria. Chi compra all'ingrosso spunta «Mi interessa» sui prodotti che vuole
+// nel listino: la scelta resta nel browser e arriva già pronta nel modulo dei Contatti.
+---
+<Layout title="Prodotti" active="Prodotti" desc="I prodotti del laboratorio PuntoPane di Torino: pane a lievito madre, pani speciali, focacce, grissini, brioche e biscotti. Per ristoranti, bar, hotel e negozi.">
+
+  <section class="primo testa">
+    <div class="misura">
+      <span class="occhiello">I prodotti</span>
+      <h1>Cosa sforniamo.</h1>
+      <p class="sez-p">Pane, pani speciali, focacce e prodotti per la colazione, tutti con lievito madre e farine biologiche. <span class="solo-js">Spuntate quelli che vi interessano: li ritrovate già scelti nella richiesta del listino.</span></p>
+    </div>
+  </section>
+
+  <section class="catalogo" aria-label="Catalogo">
+    <div class="misura">
+      <div class="filtri" role="group" aria-label="Mostra solo una categoria">
+        <button type="button" class="filtro" data-cat="" aria-pressed="true">Tutti</button>
+        {CATEGORIE.map((c) => <button type="button" class="filtro" data-cat={c.id} aria-pressed="false">{c.t}</button>)}
+      </div>
+      <p class="sr-only" id="esitoFiltro" role="status" aria-live="polite"></p>
+
+      {CATEGORIE.map((c) => (
+        <section class="cat" data-cat={c.id} aria-labelledby={'cat-' + c.id}>
+          <h2 id={'cat-' + c.id} class="cat-h2">{c.t}</h2>
+          <ul class="griglia">
+            {PRODOTTI.filter((p) => p.cat === c.id).map((p) => {
+              const f = foto(p.id);
+              return (
+                <li id={p.id} class="scheda">
+                  <div class="foto scheda-foto">
+                    <img src={f.src} srcset={f.srcset} sizes="(max-width:640px) 92vw, (max-width:980px) 45vw, 370px" width="960" height="720" alt={p.alt} loading="lazy" />
+                    {p.stagione && <span class="stagione">Per {p.stagione}</span>}
+                  </div>
+                  <div class="scheda-c">
+                    <h3>{p.nome}</h3>
+                    <p class="scheda-d">{p.desc}</p>
+                    <p class="scheda-per"><span>Ideale per</span> {p.per.join(' · ')}</p>
+                    <label class="aggiungi">
+                      <input type="checkbox" data-id={p.id} />
+                      <span class="ag-segno" aria-hidden="true"></span>
+                      <span>Mi interessa<span class="sr-only">: {p.nome}</span></span>
+                    </label>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ))}
+
+      <div class="promemoria">
+        <b>Per PuntoPane:</b> questo assortimento è un esempio, costruito su quello che raccontate online (pane a lievito madre, pan frutto, brioche, biscotti, panettone). Mandateci la vostra lista vera con le pezzature: ogni prodotto avrà la sua foto e, se volete, il peso e i formati disponibili.
+      </div>
+    </div>
+  </section>
+
+  <div class="barra-rich" id="barraRich" hidden>
+    <p role="status" aria-live="polite"><span class="br-punto" aria-hidden="true"></span><span id="nSel">0 prodotti</span> nella richiesta</p>
+    <a href={BASE + 'contatti/#richiesta'} class="btn btn-crosta">Richiedi il listino <span aria-hidden="true">→</span></a>
+  </div>
+
+  <style>
+    .testa{padding-bottom:clamp(1.6rem,3vw,2.4rem)}
+    h1{font-size:clamp(2.6rem,6vw,4.6rem);margin-top:.8rem}
+    .solo-js{display:none}
+    :global(.js) .solo-js{display:inline}
+
+    .catalogo{padding-bottom:clamp(4rem,8vw,6rem)}
+    .filtri{display:flex;flex-wrap:wrap;gap:.5rem;position:sticky;top:calc(var(--flag) + var(--testata));z-index:20;background:var(--farina);padding:.8rem 0;border-bottom:1px solid var(--filo)}
+    .filtro{min-height:44px;padding:.55rem 1.1rem;border-radius:999px;border:1.5px solid var(--kraft-2);background:var(--carta);font-family:var(--disp);font-weight:500;font-size:.98rem;color:var(--testo);cursor:pointer;transition:background .2s,border-color .2s,color .2s}
+    .filtro:hover{border-color:var(--crosta);color:var(--crosta)}
+    .filtro[aria-pressed="true"]{background:var(--inchiostro);border-color:var(--inchiostro);color:var(--farina)}
+
+    .cat{margin-top:clamp(2.2rem,4vw,3rem)}
+    .cat-h2{font-size:clamp(1.7rem,3vw,2.2rem);display:flex;align-items:center;gap:.8rem}
+    .cat-h2::after{content:'';flex:1;height:1px;background:var(--filo)}
+    .griglia{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1rem,2.4vw,1.8rem);margin-top:1.4rem}
+    .scheda{display:flex;flex-direction:column;background:var(--carta);border:1px solid var(--filo);border-radius:16px;overflow:hidden;transition:border-color .2s,box-shadow .2s}
+    .scheda.scelta{border-color:var(--crosta);box-shadow:0 0 0 1px var(--crosta)}
+    .scheda-foto{position:relative;aspect-ratio:4/3;border-radius:0}
+    .stagione{position:absolute;top:.8rem;left:.8rem;background:var(--inchiostro);color:var(--farina);font-family:var(--disp);font-weight:600;font-size:.8rem;letter-spacing:.06em;padding:.3rem .7rem;border-radius:999px}
+    .scheda-c{display:flex;flex-direction:column;flex:1;padding:1.2rem 1.3rem 1.3rem}
+    .scheda h3{font-size:1.35rem}
+    .scheda-d{color:var(--muto);font-size:.94rem;margin-top:.45rem}
+    .scheda-per{font-size:.84rem;color:var(--testo);margin-top:.8rem}
+    .scheda-per span{font-family:var(--disp);font-weight:600;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--crosta);margin-right:.35rem}
+
+    /* «Mi interessa»: una casella vera, vestita da bottone. Senza JavaScript non serve e non si vede */
+    .aggiungi{display:none;align-items:center;gap:.6rem;margin-top:auto;padding-top:1.1rem;cursor:pointer;font-family:var(--disp);font-weight:600;color:var(--inchiostro);position:relative}
+    :global(.js) .aggiungi{display:flex}
+    .aggiungi input{position:absolute;opacity:0;width:1px;height:1px}
+    .ag-segno{width:26px;height:26px;border-radius:50%;border:2px solid var(--kraft-2);background:var(--farina);display:grid;place-items:center;transition:background .2s,border-color .2s}
+    .ag-segno::after{content:'';width:10px;height:6px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translate(1px,-1px);opacity:0}
+    .aggiungi:hover .ag-segno{border-color:var(--crosta)}
+    .aggiungi input:checked + .ag-segno{background:var(--crosta);border-color:var(--crosta)}
+    .aggiungi input:checked + .ag-segno::after{opacity:1}
+    .aggiungi input:focus-visible + .ag-segno{outline:2px solid var(--crosta);outline-offset:3px}
+    /* l'area di tocco copre tutta la riga, non solo il pallino */
+    .aggiungi::before{content:'';position:absolute;inset:.6rem -.4rem -.4rem}
+
+    .barra-rich{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:150;display:flex;align-items:center;gap:1.2rem;padding:.6rem .6rem .6rem 1.2rem;background:var(--inchiostro);color:var(--farina);border-radius:14px;box-shadow:0 18px 40px -12px rgba(42,30,22,.55);max-width:calc(100% - 2rem)}
+    .barra-rich p{display:flex;align-items:center;gap:.55rem;font-family:var(--disp);font-weight:500;white-space:nowrap}
+    .br-punto{width:.7rem;height:.7rem;border-radius:50%;background:var(--grano)}
+
+    @media (max-width:980px){ .griglia{grid-template-columns:repeat(2,1fr)} }
+    @media (max-width:640px){
+      .griglia{grid-template-columns:1fr}
+      .barra-rich{bottom:84px;left:.8rem;right:.8rem;transform:none;max-width:none;justify-content:space-between}
+      .barra-rich .btn{padding:.6rem 1rem}
+      .filtri{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 calc(-1 * clamp(1.1rem,4vw,2.4rem));padding-left:clamp(1.1rem,4vw,2.4rem);padding-right:clamp(1.1rem,4vw,2.4rem)}
+      .filtro{flex:none}
+    }
+  </style>
+
+  <script>
+    import { CATEGORIE, leggiRichiesta, scriviRichiesta } from './_shared.js';
+
+    // filtri per categoria (anche da ?cat=, così funzionano i link del piede)
+    const filtri = [...document.querySelectorAll('.filtro')];
+    const sezioni = [...document.querySelectorAll('.cat')];
+    const esito = document.getElementById('esitoFiltro');
+    const filtra = (cat, annuncia) => {
+      filtri.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.cat === cat)));
+      sezioni.forEach((s) => { s.hidden = !!cat && s.dataset.cat !== cat; });
+      const u = new URL(location.href);
+      if (cat) u.searchParams.set('cat', cat); else u.searchParams.delete('cat');
+      history.replaceState(null, '', u);
+      if (annuncia) {
+        const n = document.querySelectorAll('.cat:not([hidden]) .scheda').length;
+        esito.textContent = `${n} ${n === 1 ? 'prodotto' : 'prodotti'}`;
+      }
+    };
+    filtri.forEach((b) => b.addEventListener('click', () => filtra(b.dataset.cat, true)));
+    const iniziale = new URLSearchParams(location.search).get('cat');
+    if (iniziale && CATEGORIE.some((c) => c.id === iniziale) && !location.hash) filtra(iniziale, false);
+
+    // «Mi interessa»
+    let scelti = leggiRichiesta();
+    const caselle = [...document.querySelectorAll('.aggiungi input')];
+    const barra = document.getElementById('barraRich');
+    const nSel = document.getElementById('nSel');
+    const aggiorna = () => {
+      caselle.forEach((c) => { c.checked = scelti.includes(c.dataset.id); c.closest('.scheda').classList.toggle('scelta', c.checked); });
+      nSel.textContent = `${scelti.length} ${scelti.length === 1 ? 'prodotto' : 'prodotti'}`;
+      barra.hidden = scelti.length === 0;
+    };
+    caselle.forEach((c) => c.addEventListener('change', () => {
+      scelti = c.checked ? [...new Set([...scelti, c.dataset.id])] : scelti.filter((x) => x !== c.dataset.id);
+      scriviRichiesta(scelti);
+      aggiorna();
+    }));
+    aggiorna();
+  </script>
+</Layout>

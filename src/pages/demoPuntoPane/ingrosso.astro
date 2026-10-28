@@ -1,0 +1,171 @@
+---
+import Layout from './_Layout.astro';
+import { BASE, PRODOTTI, SETTORI, foto } from './_shared.js';
+// La pagina che conta di più per loro: chi servono, cosa offrono, come si comincia.
+// Condizioni (zone, giorni, ordine minimo, assaggio) DA CONFERMARE: vedi il promemoria in fondo.
+const carrello = foto('carrello');
+const cestino = foto('cestino', 1200, 600);
+const nome = (id) => PRODOTTI.find((p) => p.id === id).nome;
+const servizio = [
+  { t: 'Consegne nei giorni concordati', d: 'Decidiamo insieme giorni e orari, in base al vostro servizio.' },
+  { t: 'Ordini che cambiano con voi', d: 'Si parte da un ordine fisso e lo si aggiusta quando serve: una settimana piena, un giorno di chiusura, un evento.' },
+  { t: 'Pezzature su misura', d: 'Il panino della grandezza giusta per il vostro piatto, la focaccia nella teglia che vi serve.' },
+  { t: 'Un contatto diretto', d: 'Scrivete o chiamate direttamente il laboratorio, senza intermediari.' },
+];
+const passi = [
+  { t: 'La richiesta', d: 'Ci dite che attività avete, cosa vi interessa e in che quantità, più o meno.' },
+  { t: 'Listino e assaggio', d: 'Vi mandiamo il listino e vi facciamo assaggiare i prodotti che vi interessano.' },
+  { t: 'Il primo ordine', d: 'Fissiamo l’ordine di partenza e i giorni di consegna.' },
+  { t: 'Si parte', d: 'Il pane arriva fresco nei giorni stabiliti. Se qualcosa cambia, ci sentiamo e lo sistemiamo.' },
+];
+const domande = [
+  { q: 'In quali zone consegnate?', a: 'A Torino e nei comuni vicini. Scriveteci dove si trova la vostra attività: vi diciamo subito se ci arriviamo e in quali giorni.' },
+  { q: 'C’è un ordine minimo?', a: 'Dipende dalla zona e da quante volte alla settimana consegniamo: lo trovate nel listino che vi mandiamo.' },
+  { q: 'Posso cambiare l’ordine?', a: 'Sì: si parte da un ordine fisso e lo si modifica quando serve, avvisandoci per tempo.' },
+  { q: 'Fate prodotti su misura?', a: 'Pezzature, formati e alcuni impasti si possono concordare. Diteci cosa vi serve e vediamo insieme.' },
+  { q: 'Posso assaggiare prima di ordinare?', a: 'Certo: insieme al listino vi proponiamo un assaggio dei prodotti che vi interessano.' },
+];
+---
+<Layout title="Fornitura all’ingrosso" active="Ingrosso" desc="Fornitura all’ingrosso di pane e prodotti da forno a Torino: PuntoPane rifornisce ristoranti, bar, hotel e negozi con pane a lievito madre, focacce, grissini e brioche.">
+
+  <section class="primo testa">
+    <div class="misura testa-in">
+      <div>
+        <span class="occhiello">Fornitura all’ingrosso</span>
+        <h1>Pane fresco per ristoranti, bar, hotel <span class="em">e negozi.</span></h1>
+        <p class="sez-p">La maggior parte del nostro pane non finisce su un bancone, ma sui tavoli dei nostri clienti. Prepariamo quello che serve alla vostra attività, e ve lo portiamo.</p>
+        <div class="testa-cta">
+          <a href={BASE + 'contatti/#richiesta'} class="btn btn-crosta">Richiedi il listino</a>
+          <a href="#come" class="btn btn-bordo">Come si comincia</a>
+        </div>
+      </div>
+      <div class="foto testa-foto">
+        <img src={carrello.src} srcset={carrello.srcset} sizes="(max-width:980px) 92vw, 440px" width="960" height="1200" alt="Carrello di pane appena sfornato davanti al forno del laboratorio" fetchpriority="high" />
+      </div>
+    </div>
+  </section>
+
+  <section class="kraft banda" aria-labelledby="per-chi">
+    <div class="misura">
+      <div class="rv">
+        <span class="occhiello">Per chi lavoriamo</span>
+        <h2 id="per-chi" class="sez-h2">Cosa vi portiamo, attività per attività.</h2>
+      </div>
+      <ul class="settori">
+        {SETTORI.map((s) => (
+          <li class="settore rv">
+            <h3>{s.t}</h3>
+            <p>{s.d}</p>
+            <p class="consigliati"><span>Di solito prendono</span></p>
+            <ul class="cons-lista">
+              {s.prodotti.map((id) => <li><a href={`${BASE}prodotti/#${id}`}>{nome(id)}</a></li>)}
+            </ul>
+          </li>
+        ))}
+      </ul>
+      <p class="altre rv">Catering, mense, circoli, eventi? Scriveteci lo stesso: se possiamo farlo, lo facciamo.</p>
+    </div>
+  </section>
+
+  <section class="banda">
+    <div class="misura serv-in">
+      <div class="foto serv-foto rv">
+        <img src={cestino.src} srcset={cestino.srcset} sizes="(max-width:980px) 92vw, 520px" width="1200" height="900" alt="Cestino del pane su un tavolo apparecchiato" loading="lazy" />
+      </div>
+      <div>
+        <span class="occhiello rv">Il servizio</span>
+        <h2 class="sez-h2 rv">Un fornitore che si adatta a voi.</h2>
+        <ul class="servizio">
+          {servizio.map((s) => <li class="rv"><h3>{s.t}</h3><p>{s.d}</p></li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="banda scuro" id="come" aria-labelledby="come-h">
+    <div class="misura">
+      <div class="rv">
+        <span class="occhiello">Come si comincia</span>
+        <h2 id="come-h" class="sez-h2">Dalla prima email al primo cestino.</h2>
+      </div>
+      <ol class="passi">
+        {passi.map((p, i) => <li class="rv"><span class="passo-n" aria-hidden="true">{i + 1}</span><h3>{p.t}</h3><p>{p.d}</p></li>)}
+      </ol>
+      <a href={BASE + 'contatti/#richiesta'} class="btn btn-chiaro rv">Comincia dalla richiesta</a>
+    </div>
+  </section>
+
+  <section class="banda" aria-labelledby="faq-h">
+    <div class="misura stretta">
+      <span class="occhiello">Domande frequenti</span>
+      <h2 id="faq-h" class="sez-h2">Prima di cominciare.</h2>
+      <div class="faq">
+        {domande.map((d) => (
+          <details>
+            <summary>{d.q}<span class="piu" aria-hidden="true"></span></summary>
+            <p>{d.a}</p>
+          </details>
+        ))}
+      </div>
+      <div class="promemoria">
+        <b>Per PuntoPane:</b> queste risposte sono una proposta. Le sistemiamo con le vostre condizioni vere: zone e giorni di consegna, ordine minimo, se fate l’assaggio, come si modifica un ordine.
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .testa{padding-bottom:clamp(3rem,6vw,5rem)}
+    .testa-in{display:grid;grid-template-columns:1.25fr .75fr;gap:clamp(2rem,6vw,5rem);align-items:center}
+    .testa-in>*{min-width:0}
+    h1{font-size:clamp(2.5rem,5.2vw,4.3rem);margin-top:.8rem}
+    .em{color:var(--crosta)}
+    .testa-cta{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:2rem}
+    .testa-foto{aspect-ratio:4/5;box-shadow:0 30px 60px -30px rgba(42,30,22,.45)}
+
+    .settori{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-top:clamp(2rem,4vw,2.8rem)}
+    .settore{background:var(--carta);border:1px solid var(--kraft-2);border-radius:16px;padding:1.5rem 1.3rem;display:flex;flex-direction:column}
+    .settore h3{font-size:1.4rem}
+    .settore>p:first-of-type{color:var(--muto);font-size:.94rem;margin-top:.5rem}
+    .consigliati{margin-top:auto;padding-top:1.1rem}
+    .consigliati span{font-family:var(--disp);font-weight:600;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--crosta)}
+    .cons-lista{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.55rem}
+    .cons-lista a{display:inline-flex;align-items:center;min-height:32px;padding:.2rem .7rem;border-radius:999px;background:var(--farina);border:1px solid var(--filo);font-size:.85rem;font-weight:600;color:var(--inchiostro);transition:border-color .2s,color .2s}
+    .cons-lista a:hover{border-color:var(--crosta);color:var(--crosta)}
+    .altre{margin-top:1.6rem;color:var(--testo)}
+
+    .serv-in{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(2rem,6vw,5rem);align-items:center}
+    .serv-in>*{min-width:0}
+    .serv-foto{aspect-ratio:4/3}
+    .servizio{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem 2rem;margin-top:2rem}
+    .servizio li{border-top:2px solid var(--inchiostro);padding-top:.9rem}
+    .servizio h3{font-size:1.2rem}
+    .servizio p{color:var(--muto);font-size:.94rem;margin-top:.35rem}
+
+    .passi{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(1.4rem,3vw,2.4rem);margin:clamp(2.6rem,5vw,3.4rem) 0 2.6rem}
+    .passi li{position:relative;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.18)}
+    .passo-n{position:absolute;top:-1.15rem;left:0;width:2.3rem;height:2.3rem;border-radius:50%;background:var(--grano);color:var(--inchiostro);display:grid;place-items:center;font-family:var(--disp);font-weight:700}
+    .passi h3{font-size:1.35rem;margin-top:.8rem}
+    .passi p{color:#cbbba6;margin-top:.4rem;font-size:.95rem}
+
+    .faq{margin-top:2rem;border-top:1px solid var(--filo)}
+    .faq details{border-bottom:1px solid var(--filo)}
+    .faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1.15rem 0;font-family:var(--disp);font-weight:600;font-size:1.2rem;color:var(--inchiostro)}
+    .faq summary::-webkit-details-marker{display:none}
+    .piu{position:relative;flex:none;width:28px;height:28px;border-radius:50%;background:var(--kraft)}
+    .piu::before,.piu::after{content:'';position:absolute;left:50%;top:50%;width:12px;height:2px;background:var(--crosta);transform:translate(-50%,-50%);transition:transform .25s var(--e)}
+    .piu::after{transform:translate(-50%,-50%) rotate(90deg)}
+    .faq details[open] .piu::after{transform:translate(-50%,-50%) rotate(0)}
+    .faq details p{color:var(--muto);padding:0 0 1.2rem;max-width:62ch}
+
+    @media (max-width:980px){
+      .testa-in,.serv-in{grid-template-columns:1fr}
+      .testa-foto{aspect-ratio:3/2}
+      .settori{grid-template-columns:repeat(2,1fr)}
+      .passi{grid-template-columns:repeat(2,1fr);row-gap:2.8rem}
+    }
+    @media (max-width:640px){
+      .settori,.servizio,.passi{grid-template-columns:1fr}
+      .testa-cta .btn{flex:1 1 auto}
+    }
+  </style>
+</Layout>

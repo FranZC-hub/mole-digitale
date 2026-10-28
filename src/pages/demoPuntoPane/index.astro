@@ -1,0 +1,238 @@
+---
+import Layout from './_Layout.astro';
+import { BASE, PRODOTTI, SETTORI, PUNTI, foto } from './_shared.js';
+// Home: chi siamo in due righe, cosa facciamo, per chi lo facciamo, come si comincia.
+// Chi la apre è quasi sempre un ristoratore o un barista che valuta un fornitore: tutto porta al listino.
+const vetrina = ['pagnotta', 'focaccia', 'grissini', 'panini', 'brioche', 'integrale'].map((id) => PRODOTTI.find((p) => p.id === id));
+const hero = foto('hero', 1600, 800);
+const impasto = foto('impasto', 1200, 600);
+const teglia = foto('teglia');
+const passi = [
+  { t: 'Ci scrivete', d: 'Tipo di attività, prodotti che vi interessano, quantità indicative: bastano due righe.' },
+  { t: 'Listino e assaggio', d: 'Vi mandiamo il listino e, se volete, vi facciamo assaggiare i prodotti prima di cominciare.' },
+  { t: 'Consegne regolari', d: 'Concordiamo giorni e quantità. Il pane arriva fresco, voi pensate al servizio.' },
+];
+---
+<Layout title="Home" active="Home">
+
+  <section class="apertura primo">
+    <div class="misura apertura-in">
+      <div class="ap-testo">
+        <span class="occhiello">Laboratorio di panificazione · Torino</span>
+        <h1>Il pane del nostro laboratorio, <span class="ap-em">sulla tavola dei vostri clienti.</span></h1>
+        <p class="ap-p">Pane a lievito madre, focacce, grissini e prodotti per la colazione, con farine biologiche macinate a pietra. Li prepariamo per ristoranti, bar, hotel e negozi di Torino.</p>
+        <div class="ap-cta">
+          <a href={BASE + 'contatti/#richiesta'} class="btn btn-crosta">Richiedi il listino</a>
+          <a href={BASE + 'prodotti/'} class="btn btn-bordo">Guarda i prodotti</a>
+        </div>
+      </div>
+      <div class="ap-foto">
+        <div class="foto">
+          <img src={hero.src} srcset={hero.srcset} sizes="(max-width:980px) 92vw, 640px" width="1600" height="1067" alt="Pagnotte appena sfornate sugli scaffali di legno del laboratorio" fetchpriority="high" />
+        </div>
+        {/* il «punto» del nome diventa un bollo, come quelli stampati sui sacchi della farina */}
+        <svg class="bollo" viewBox="0 0 200 200" aria-hidden="true">
+          <defs><path id="bollo-giro" d="M100,100 m-72,0 a72,72 0 1,1 144,0 a72,72 0 1,1 -144,0" /></defs>
+          <circle cx="100" cy="100" r="98" class="b-fondo" />
+          <circle cx="100" cy="100" r="90" class="b-filo" />
+          <g class="b-testo"><text><textPath href="#bollo-giro" textLength="448" lengthAdjust="spacing">LIEVITO MADRE · FARINE BIO · LUNGA FERMENTAZIONE ·</textPath></text></g>
+          <circle cx="100" cy="100" r="26" class="b-punto" />
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="kraft punti" aria-labelledby="punti-h">
+    <h2 id="punti-h" class="sr-only">Come facciamo il pane</h2>
+    <ol class="misura punti-in">
+      {PUNTI.map((p, i) => (
+        <li class="rv"><span class="punto-n" aria-hidden="true">{i + 1}</span><div><h3>{p.t}</h3><p>{p.d}</p></div></li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="banda">
+    <div class="misura chi-in">
+      <div class="foto chi-foto rv">
+        <img src={impasto.src} srcset={impasto.srcset} sizes="(max-width:980px) 92vw, 560px" width="1200" height="900" alt="Mani che lavorano l’impasto su un banco infarinato" loading="lazy" />
+      </div>
+      <div class="rv">
+        <span class="occhiello">Chi siamo</span>
+        <h2 class="sez-h2">Un laboratorio, non una catena.</h2>
+        <p class="sez-p">PuntoPane è il laboratorio di panificazione di Cammino S.r.l., a Torino. Impastiamo con lievito madre e farine biologiche, lasciamo all’impasto il tempo di fermentare e cuociamo per chi il pane lo serve ogni giorno: ristoranti, bar, hotel e negozi.</p>
+        <p class="sez-p">Pochi ingredienti, scelti bene, e il tempo che serve. È tutto qui il nostro modo di lavorare.</p>
+        <a href={BASE + 'laboratorio/'} class="link-freccia">Entra nel laboratorio <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="banda vetrina-banda">
+    <div class="misura">
+      <div class="testa-sez rv">
+        <div>
+          <span class="occhiello">I prodotti</span>
+          <h2 class="sez-h2">Dal pane di tutti i giorni alla colazione.</h2>
+        </div>
+        <a href={BASE + 'prodotti/'} class="btn btn-bordo">Tutti i prodotti</a>
+      </div>
+      <ul class="vetrina">
+        {vetrina.map((p) => {
+          const f = foto(p.id);
+          return (
+            <li class="rv">
+              <a href={`${BASE}prodotti/#${p.id}`} class="prod">
+                <span class="foto prod-foto"><img src={f.src} srcset={f.srcset} sizes="(max-width:640px) 46vw, (max-width:980px) 45vw, 380px" width="960" height="720" alt={p.alt} loading="lazy" /></span>
+                <span class="prod-nome">{p.nome}</span>
+                <span class="prod-d">{p.desc}</span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  </section>
+
+  <section class="banda scuro">
+    <div class="misura ingr-in">
+      <div>
+        <span class="occhiello rv">Fornitura all’ingrosso</span>
+        <h2 class="sez-h2 rv">Il pane per la vostra attività, senza pensieri.</h2>
+        <p class="sez-p rv">Prepariamo ogni prodotto nelle quantità e nelle pezzature che vi servono, e ve lo portiamo fresco nei giorni che decidiamo insieme.</p>
+        <ul class="settori">
+          {SETTORI.map((s) => (
+            <li class="rv"><h3>{s.t}</h3><p>{s.d}</p></li>
+          ))}
+        </ul>
+        <a href={BASE + 'ingrosso/'} class="btn btn-chiaro rv">Come funziona la fornitura</a>
+      </div>
+      <div class="foto ingr-foto rv">
+        <img src={teglia.src} srcset={teglia.srcset} sizes="(max-width:980px) 92vw, 460px" width="960" height="1200" alt="Teglie di baguette appena sfornate su un carrello del laboratorio" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
+  <section class="banda">
+    <div class="misura">
+      <div class="rv">
+        <span class="occhiello">Come si comincia</span>
+        <h2 class="sez-h2">Tre passaggi, poi ci pensa il forno.</h2>
+      </div>
+      <ol class="passi">
+        {passi.map((p, i) => (
+          <li class="rv"><span class="passo-n" aria-hidden="true">{i + 1}</span><h3>{p.t}</h3><p>{p.d}</p></li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="kraft chiusa">
+    <div class="misura chiusa-in rv">
+      <div>
+        <h2>Chiedeteci il listino.</h2>
+        <p>Diteci che attività avete e cosa vi serve: vi rispondiamo con prezzi, pezzature e giorni di consegna.</p>
+      </div>
+      <div class="chiusa-cta">
+        <a href={BASE + 'contatti/#richiesta'} class="btn btn-crosta">Richiedi il listino</a>
+        <a href={BASE + 'prodotti/'} class="btn btn-bordo">Scegli i prodotti</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="misura">
+    <div class="promemoria" style="margin-bottom:clamp(3rem,6vw,4.5rem)">
+      <b>Per PuntoPane — questa è una bozza.</b> Le foto sono prese da archivi a licenza libera e l’assortimento è un esempio. Per la versione vera ci servono:
+      <ul>
+        <li>le foto del laboratorio e dei vostri prodotti (anche fatte col telefono, le sistemiamo noi)</li>
+        <li>la lista dei prodotti, con le pezzature che proponete ai clienti</li>
+        <li>le zone e i giorni di consegna, ed eventuali ordini minimi</li>
+      </ul>
+    </div>
+  </div>
+
+  <style>
+    /* apertura */
+    .apertura{padding-bottom:clamp(3rem,6vw,5rem)}
+    .apertura-in{display:grid;grid-template-columns:1fr 1.05fr;gap:clamp(2rem,5vw,4.5rem);align-items:center}
+    .apertura-in>*{min-width:0}
+    h1{font-size:clamp(2.5rem,5.2vw,4.4rem);font-weight:600;margin-top:1rem;letter-spacing:-.025em}
+    .ap-em{color:var(--crosta)}
+    .ap-p{font-size:1.12rem;color:var(--muto);max-width:46ch;margin-top:1.3rem}
+    .ap-cta{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:2rem}
+    .ap-foto{position:relative}
+    .ap-foto .foto{aspect-ratio:3/2;box-shadow:0 30px 60px -30px rgba(42,30,22,.45)}
+    .bollo{position:absolute;left:-54px;bottom:-46px;width:clamp(120px,13vw,164px);height:auto;filter:drop-shadow(0 10px 18px rgba(42,30,22,.25))}
+    .b-fondo{fill:var(--crosta)}
+    .b-filo{fill:none;stroke:rgba(255,248,236,.35);stroke-width:1.2;stroke-dasharray:2 4}
+    .b-punto{fill:var(--farina)}
+    .b-testo text{font-family:var(--disp);font-size:15px;font-weight:600;fill:#fff8ec;letter-spacing:.06em}
+    .b-testo{transform-origin:100px 100px;animation:gira 40s linear infinite}
+    @keyframes gira{to{transform:rotate(360deg)}}
+
+    /* i tre punti fermi */
+    .punti{padding:clamp(2.2rem,4vw,3rem) 0}
+    .punti-in{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1.4rem,3vw,2.6rem)}
+    .punti-in li{display:flex;gap:1rem;align-items:flex-start}
+    .punto-n{flex:none;width:2.4rem;height:2.4rem;border-radius:50%;background:var(--inchiostro);color:var(--farina);display:grid;place-items:center;font-family:var(--disp);font-weight:600;font-size:1.05rem}
+    .punti h3{font-size:1.25rem}
+    .punti p{color:var(--testo);font-size:.95rem;margin-top:.3rem}
+
+    /* chi siamo */
+    .chi-in{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,6vw,5rem);align-items:center}
+    .chi-in>*{min-width:0}
+    .chi-foto{aspect-ratio:4/3}
+    .link-freccia{display:inline-flex;gap:.4rem;margin-top:1.6rem;font-family:var(--disp);font-weight:600;font-size:1.05rem;color:var(--crosta);border-bottom:2px solid currentColor;padding-bottom:.15rem}
+    .link-freccia span{transition:transform .2s var(--e)}
+    .link-freccia:hover span{transform:translateX(4px)}
+
+    /* vetrina */
+    .vetrina-banda{padding-top:0}
+    .testa-sez{display:flex;justify-content:space-between;align-items:flex-end;gap:1.5rem;flex-wrap:wrap}
+    .vetrina{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1rem,2.4vw,1.8rem);margin-top:clamp(2rem,4vw,2.8rem)}
+    .prod{display:flex;flex-direction:column;height:100%}
+    .prod-foto{aspect-ratio:4/3}
+    .prod-foto img{transition:transform .6s var(--e)}
+    .prod:hover .prod-foto img{transform:scale(1.04)}
+    .prod-nome{font-family:var(--disp);font-weight:600;font-size:1.3rem;color:var(--inchiostro);margin-top:.9rem;line-height:1.2}
+    .prod:hover .prod-nome{color:var(--crosta)}
+    .prod-d{color:var(--muto);font-size:.93rem;margin-top:.3rem}
+
+    /* ingrosso */
+    .ingr-in{display:grid;grid-template-columns:1.25fr .75fr;gap:clamp(2rem,6vw,5rem);align-items:center}
+    .ingr-in>*{min-width:0}
+    .settori{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem 2rem;margin:2.2rem 0 2.4rem}
+    .settori li{border-top:1px solid rgba(255,255,255,.14);padding-top:1rem}
+    .settori h3{font-size:1.2rem}
+    .settori p{color:#cbbba6;font-size:.93rem;margin-top:.35rem}
+    .ingr-foto{aspect-ratio:4/5}
+
+    /* passi */
+    .passi{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1.4rem,4vw,3rem);margin-top:clamp(2rem,4vw,3rem);counter-reset:p}
+    .passi li{position:relative;padding-top:1.4rem;border-top:2px solid var(--inchiostro)}
+    .passo-n{position:absolute;top:-1.15rem;left:0;width:2.3rem;height:2.3rem;border-radius:50%;background:var(--crosta);color:#fff;display:grid;place-items:center;font-family:var(--disp);font-weight:600}
+    .passi h3{font-size:1.45rem;margin-top:.8rem}
+    .passi p{color:var(--muto);margin-top:.4rem}
+
+    /* chiusura */
+    .chiusa{padding:clamp(2.8rem,6vw,4.2rem) 0}
+    .chiusa-in{display:flex;justify-content:space-between;align-items:center;gap:2rem;flex-wrap:wrap}
+    .chiusa h2{font-size:clamp(2rem,4vw,3rem)}
+    .chiusa p{color:var(--testo);margin-top:.5rem;max-width:52ch}
+    .chiusa-cta{display:flex;gap:.8rem;flex-wrap:wrap}
+
+    @media (max-width:980px){
+      .apertura-in,.chi-in,.ingr-in{grid-template-columns:1fr}
+      .bollo{left:auto;right:12px;bottom:-34px}
+      .punti-in,.passi{grid-template-columns:1fr}
+      .passi{gap:2.6rem}
+      .vetrina{grid-template-columns:repeat(2,1fr)}
+      .ingr-foto{aspect-ratio:3/2}
+    }
+    @media (max-width:640px){
+      .vetrina{gap:1.2rem .8rem}
+      .prod-nome{font-size:1.08rem}
+      .prod-d{display:none}
+      .settori{grid-template-columns:1fr}
+      .ap-cta .btn,.chiusa-cta .btn{flex:1 1 auto}
+    }
+  </style>
+</Layout>

@@ -1,0 +1,76 @@
+---
+import Layout from './_Layout.astro';
+import { INFO } from './_shared.js';
+// Le foto della bozza sono a licenza libera (Wikimedia Commons): CC BY e CC BY-SA chiedono
+// autore, licenza, fonte e l'indicazione delle modifiche. Via quando arrivano quelle del laboratorio.
+const CC = {
+  'CC0': 'https://creativecommons.org/publicdomain/zero/1.0/deed.it',
+  'CC BY 2.0': 'https://creativecommons.org/licenses/by/2.0/deed.it',
+  'CC BY 4.0': 'https://creativecommons.org/licenses/by/4.0/deed.it',
+  'CC BY-SA 2.0': 'https://creativecommons.org/licenses/by-sa/2.0/deed.it',
+  'CC BY-SA 4.0': 'https://creativecommons.org/licenses/by-sa/4.0/deed.it',
+};
+const C = 'https://commons.wikimedia.org/wiki/File:';
+const foto = [
+  { s: 'Pagnotte sugli scaffali (apertura)', a: 'Clark Young', l: 'CC0', f: 'Loaves_of_Bread_(Unsplash).jpg' },
+  { s: 'Mani che impastano', a: 'Shixart1985', l: 'CC BY 2.0', f: 'Baker_woman%27s_hands_kneading_bread_dough.jpg' },
+  { s: 'Pane nel forno', a: 'Jeremy Keith', l: 'CC BY 2.0', f: 'Bread_in_the_oven_(5959009561).jpg' },
+  { s: 'Carrello davanti al forno', a: 'Jarkko Laine', l: 'CC BY 2.0', f: 'Bakery_oven_bread,_2013.jpg' },
+  { s: 'Pagnotta a lievito madre', a: 'Tomascastelazo', l: 'CC BY-SA 4.0', f: 'Home_made_sour_dough_bread.jpg' },
+  { s: 'Fette di pane a lievito madre', a: 'Angel Ganev', l: 'CC BY 2.0', f: 'Slices_of_sourdough_bread.jpg' },
+  { s: 'Pane integrale', a: 'muffinn', l: 'CC BY 2.0', f: 'Wholemeal_tin_loaf_(8371640548).jpg' },
+  { s: 'Pane ai cereali e semi', a: 'Kim Cruickshanks', l: 'CC0', f: 'Bread_(Unsplash).jpg' },
+  { s: 'Pane in cassetta', a: 'Gpkp', l: 'CC BY-SA 4.0', f: 'Wheat_bread_(2026).jpg' },
+  { s: 'Filoni e baguette', a: 'Kathryn Cartwright, modificata da niedzielny leń', l: 'CC BY-SA 2.0', f: 'Baguettes.jpg' },
+  { s: 'Focaccia', a: 'Fred Benenson', l: 'CC BY-SA 4.0', f: 'Focaccia_with_Crumb.jpg' },
+  { s: 'Grissini', a: 'Francesca', l: 'CC BY 2.0', f: 'Making_Grissini_(2773259881).jpg' },
+  { s: 'Panini', a: 'Kerstin Riemer', l: 'CC0', f: 'Bread-rolls.jpg' },
+  { s: 'Brioche', a: 'Fitzhenrymort', l: 'CC BY-SA 4.0', f: 'Brioche_buns.jpg' },
+  { s: 'Pan frutto', a: 'Peachyeung316', l: 'CC BY-SA 4.0', f: 'A_Walnut_and_Raisin_Bread.jpg' },
+  { s: 'Biscotti', a: 'Mshuang2', l: 'CC0', f: 'Chocolate_chip_cookies_on_cutting_board.jpg' },
+  { s: 'Panettone', a: 'N i c o l a', l: 'CC BY 2.0', f: 'Panettone_-_Nicolettone_2017_-_IMG_7085_(31752542285).jpg' },
+  { s: 'Cestino del pane', a: 'JIP', l: 'CC BY-SA 4.0', f: 'Bread_basket_at_restaurant_Kappeli.jpg' },
+  { s: 'Teglie di baguette', a: 'Sarah Stierch (Missvain)', l: 'CC BY 4.0', f: 'Le_Croissant_French_Bakery_-_November_2023_-_Sarah_Stierch_05.jpg' },
+];
+---
+<Layout title="Privacy e crediti" desc={`Privacy e crediti fotografici del sito di ${INFO.nome}.`}>
+  <section class="primo banda-t">
+    <div class="misura stretta testo">
+      <span class="occhiello">Privacy</span>
+      <h1>Privacy e crediti</h1>
+
+      <h2>La richiesta del listino</h2>
+      <p>Quando ci chiedete il listino ci lasciate il nome dell’attività, il vostro nome, l’email ed eventualmente telefono, indirizzo e quantità. Li usiamo solo per rispondervi e, se diventate clienti, per gestire la fornitura. Non li cediamo a nessuno e non vi mandiamo pubblicità.</p>
+      <p>La richiesta parte dal vostro programma di posta, come una normale email: il sito non la conserva.</p>
+
+      <h2>Cosa resta nel vostro browser</h2>
+      <p>I prodotti che spuntate con «Mi interessa» restano salvati nel vostro browser, così li ritrovate nel modulo. Non arrivano a noi finché non ci mandate la richiesta, e potete toglierli quando volete.</p>
+
+      <h2>Cookie</h2>
+      <p>Il sito non usa cookie di profilazione né strumenti di tracciamento pubblicitario.</p>
+
+      <h2>Titolare</h2>
+      <p>{INFO.societa} ({INFO.nome}) — {INFO.citta} · <a href={'mailto:' + INFO.email}>{INFO.email}</a></p>
+      <p class="promemoria"><b>Da completare:</b> sede legale, partita IVA e un’informativa completa, che prepariamo insieme prima di andare online.</p>
+
+      <h2>Crediti fotografici</h2>
+      <p>Le foto di questa bozza vengono da Wikimedia Commons, a licenza libera, e verranno sostituite con quelle del laboratorio. Tutte sono state ritagliate e ridimensionate.</p>
+      <ul class="crediti">
+        {foto.map((x) => (
+          <li><b>{x.s}</b> — foto di {x.a}, <a href={C + x.f} target="_blank" rel="noopener">Wikimedia Commons</a>, {x.l === 'CC0' ? 'pubblico dominio' : 'licenza'} <a href={CC[x.l]} target="_blank" rel="noopener">{x.l}</a>.</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+  <style>
+    .banda-t{padding-bottom:clamp(4rem,8vw,6rem)}
+    .testo h1{font-size:clamp(2.4rem,5vw,3.6rem);margin:.8rem 0 1rem}
+    .testo h2{font-size:1.5rem;margin:2.2rem 0 .6rem}
+    .testo p{color:var(--muto);margin-top:.6rem}
+    .testo p a{color:var(--crosta);text-decoration:underline;text-underline-offset:3px}
+    .testo .promemoria{margin:1rem 0 0}
+    .crediti{margin:1rem 0 0 1.2rem;list-style:disc;color:var(--muto);display:grid;gap:.5rem;font-size:.94rem}
+    .crediti a{color:var(--crosta);text-decoration:underline;text-underline-offset:3px}
+    .crediti b{color:var(--inchiostro)}
+  </style>
+</Layout>

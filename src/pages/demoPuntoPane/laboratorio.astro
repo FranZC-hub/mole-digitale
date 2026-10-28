@@ -1,0 +1,121 @@
+---
+import Layout from './_Layout.astro';
+import { BASE, foto } from './_shared.js';
+// Il laboratorio: come nasce il pane, in quattro fasi, e i quattro ingredienti.
+// Gli ingredienti sono quelli che dichiarano loro (Instagram: «solo farine bio di alta qualità,
+// acqua, sale e lievito madre»). Le foto sono segnaposto finché non arrivano quelle vere.
+const fasi = [
+  { k: 'impasto', w: [1200, 600], t: 'L’impasto', d: 'Farina biologica macinata a pietra, acqua, sale e il nostro lievito madre. Si impasta con calma, perché la farina assorba l’acqua come deve.', alt: 'Mani che lavorano l’impasto su un banco infarinato' },
+  { k: 'mollica', w: [900, 450], t: 'La lunga fermentazione', d: 'Poi si aspetta. Il lievito madre lavora con i suoi tempi: è da qui che arrivano il profumo, la mollica alveolata e un pane che resta buono più a lungo.', alt: 'Fette di pane a lievito madre con la mollica piena di alveoli' },
+  { k: 'forno', w: [1200, 600], t: 'La cottura', d: 'Ogni prodotto ha la sua cottura: la pagnotta vuole una crosta spessa e croccante, la brioche una superficie morbida e lucida.', alt: 'Pagnotte che cuociono nel forno' },
+  { k: 'carrello', w: [960, 480], t: 'Pronto per voi', d: 'Dal forno ai carrelli, e dai carrelli alle consegne: il pane arriva nella vostra attività fresco, pronto per il servizio.', alt: 'Carrello di pane appena sfornato davanti al forno del laboratorio' },
+];
+const ingredienti = [
+  { t: 'Farina', d: 'Biologica, macinata a pietra: conserva il germe e il sapore del grano.' },
+  { t: 'Acqua', d: 'Tanta quanta la farina ne chiede, impasto per impasto.' },
+  { t: 'Sale', d: 'Il giusto, per dare sapore senza coprire quello del grano.' },
+  { t: 'Lievito madre', d: 'Vivo, rinfrescato con cura: fa crescere il pane senza fretta.' },
+];
+---
+<Layout title="Il laboratorio" active="Il laboratorio" desc="Il laboratorio di panificazione PuntoPane a Torino: lievito madre, farine biologiche macinate a pietra e lunga fermentazione. Come nasce il nostro pane.">
+
+  <section class="primo testa">
+    <div class="misura testa-in">
+      <div>
+        <span class="occhiello">Il laboratorio</span>
+        <h1>Il tempo è l’ingrediente <span class="em">che non si vede.</span></h1>
+      </div>
+      <p class="sez-p">Nel nostro laboratorio a Torino il pane si fa come si è sempre fatto: pochi ingredienti, scelti bene, e tutte le ore che servono perché l’impasto maturi. Poi lo portiamo a chi lo serve ai propri clienti.</p>
+    </div>
+  </section>
+
+  <section class="fasi-banda" aria-labelledby="fasi-h">
+    <div class="misura">
+      <h2 id="fasi-h" class="sr-only">Come nasce il nostro pane</h2>
+      <ol class="fasi">
+        {fasi.map((f, i) => {
+          const im = foto(f.k, f.w[0], f.w[1]);
+          return (
+            <li class="fase rv">
+              <div class="foto fase-foto"><img src={im.src} srcset={im.srcset} sizes="(max-width:980px) 92vw, 560px" width={f.w[0]} height={Math.round(f.w[0] * (f.k === 'carrello' ? 5 / 4 : f.k === 'mollica' ? 1 : 3 / 4))} alt={f.alt} loading={i === 0 ? 'eager' : 'lazy'} /></div>
+              <div class="fase-t">
+                <span class="fase-n" aria-hidden="true">{i + 1}</span>
+                <h3>{f.t}</h3>
+                <p>{f.d}</p>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  </section>
+
+  <section class="kraft banda ingr-banda">
+    <div class="misura">
+      <div class="rv">
+        <span class="occhiello">Gli ingredienti</span>
+        <h2 class="sez-h2">Quattro. Non ce ne servono altri.</h2>
+      </div>
+      <ul class="ingredienti">
+        {ingredienti.map((g) => <li class="rv"><h3>{g.t}</h3><p>{g.d}</p></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="banda">
+    <div class="misura stretta chiamata rv">
+      <h2>Lo vorreste nella vostra attività?</h2>
+      <p class="sez-p">Prepariamo pane e prodotti da forno per ristoranti, bar, hotel e negozi di Torino.</p>
+      <div class="chiamata-cta">
+        <a href={BASE + 'ingrosso/'} class="btn btn-crosta">Come funziona la fornitura</a>
+        <a href={BASE + 'prodotti/'} class="btn btn-bordo">Guarda i prodotti</a>
+      </div>
+    </div>
+    <div class="misura">
+      <div class="promemoria">
+        <b>Per PuntoPane:</b> qui vanno le vostre foto vere — il banco, il forno, le mani che lavorano, e se vi va le persone del laboratorio. E due righe sulla vostra storia: online risulta che avete cominciato nel 2019, e c’è un negozio in via Mazzini 54/d. Confermate? Il negozio è ancora aperto? Se sì, lo aggiungiamo al sito.
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .testa{padding-bottom:clamp(2.5rem,5vw,4rem)}
+    .testa-in{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(1.5rem,5vw,4rem);align-items:end}
+    .testa-in>*{min-width:0}
+    h1{font-size:clamp(2.6rem,5.6vw,4.6rem);margin-top:.8rem}
+    .em{color:var(--crosta)}
+
+    .fasi-banda{padding-bottom:clamp(4rem,8vw,6rem)}
+    .fasi{list-style:none;display:grid;gap:clamp(3rem,7vw,5.5rem)}
+    .fase{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,6vw,5rem);align-items:center}
+    .fase>*{min-width:0}
+    .fase:nth-child(even) .fase-foto{order:2}
+    .fase-foto{aspect-ratio:4/3}
+    .fase:nth-child(4) .fase-foto{aspect-ratio:4/5;max-height:560px;justify-self:center;width:min(100%,440px)}
+    .fase:nth-child(2) .fase-foto{aspect-ratio:1/1;max-width:480px;justify-self:center;width:100%}
+    .fase-n{display:grid;place-items:center;width:3.2rem;height:3.2rem;border-radius:50%;background:var(--crosta);color:#fff;font-family:var(--disp);font-weight:600;font-size:1.4rem}
+    .fase h3{font-size:clamp(1.8rem,3.4vw,2.6rem);margin-top:1.1rem}
+    .fase p{color:var(--muto);font-size:1.06rem;max-width:46ch;margin-top:.8rem}
+
+    .ingredienti{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-top:clamp(2rem,4vw,2.8rem)}
+    .ingredienti li{background:var(--carta);border-radius:14px;padding:1.4rem 1.3rem;border:1px solid var(--kraft-2)}
+    .ingredienti h3{font-size:1.45rem;display:flex;align-items:center;gap:.6rem}
+    .ingredienti h3::before{content:'';width:.6rem;height:.6rem;border-radius:50%;background:var(--crosta)}
+    .ingredienti p{color:var(--muto);font-size:.95rem;margin-top:.5rem}
+
+    .chiamata{text-align:center}
+    .chiamata h2{font-size:clamp(2rem,4vw,3rem)}
+    .chiamata .sez-p{margin:1rem auto 0}
+    .chiamata-cta{display:flex;justify-content:center;flex-wrap:wrap;gap:.8rem;margin-top:1.8rem}
+
+    @media (max-width:980px){
+      .testa-in,.fase{grid-template-columns:1fr}
+      .fase:nth-child(even) .fase-foto{order:0}
+      .ingredienti{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width:640px){
+      .ingredienti{grid-template-columns:1fr}
+      .fase:nth-child(4) .fase-foto{aspect-ratio:4/3;width:100%}
+    }
+  </style>
+</Layout>
