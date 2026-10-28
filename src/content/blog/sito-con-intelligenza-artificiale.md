@@ -2,6 +2,7 @@
 title: "Sito con l'intelligenza artificiale o da un professionista?"
 description: "Costruttori di siti con l'intelligenza artificiale: quando bastano, dove si fermano e cosa chiedersi prima di scegliere, per un'attività locale."
 date: 2026-10-28
+og: "/og/blog-sito-ia.png"
 ---
 
 Oggi basta scrivere «crea un sito per la mia pizzeria» e in pochi minuti un costruttore con l'intelligenza artificiale tira fuori un sito con testi, foto e colori. Gratis o quasi. Viene naturale chiedersi: perché pagare qualcuno?

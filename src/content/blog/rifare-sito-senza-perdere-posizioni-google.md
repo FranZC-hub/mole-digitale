@@ -2,6 +2,7 @@
 title: "Rifare il sito senza perdere le posizioni su Google"
 description: "Cosa fare quando si rifà il sito di un'attività per non perdere le posizioni su Google: mappa dei vecchi indirizzi, redirect 301, sitemap e controlli."
 date: 2026-10-28
+og: "/og/blog-rifare-sito.png"
 ---
 
 Il sito è vecchio e va rifatto. Ma c'è una paura che frena molti titolari: «E se poi su Google spariamo?». È una paura fondata: un restyling fatto in fretta può davvero far perdere visite. La buona notizia è che si evita, seguendo pochi passaggi precisi.

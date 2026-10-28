@@ -27,6 +27,15 @@ const domande = [
   { q: 'Posso nascondere l’indirizzo?', a: 'Solo se i clienti non vengono nella tua sede, per esempio se lavori a domicilio: in quel caso si indica la zona servita. Se ricevi clienti, l’indirizzo va mostrato.' },
   { q: 'La mia scheda è stata sospesa: cosa si fa?', a: 'Prima si capisce il motivo (spesso nome, indirizzo o categoria non in regola), si corregge, e poi si chiede a Google di riesaminarla con le prove che l’attività è vera.' },
 ];
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Scheda Google Business a Torino',
+  serviceType: 'Gestione scheda Google Business Profile',
+  description: 'Creazione, verifica e cura della scheda Google Business per attività di Torino, collegata al sito.',
+  provider: { '@type': 'ProfessionalService', '@id': 'https://www.moledigitale.it/#azienda', name: 'Mole Digitale' },
+  areaServed: { '@type': 'City', name: 'Torino' },
+};
 const faqSchema = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
@@ -35,9 +44,11 @@ const faqSchema = {
 ---
 <Layout
   title="Scheda Google Business a Torino — Mole Digitale"
+  image="/og/scheda-google-business-torino.png"
   description="Creiamo, verifichiamo e curiamo la scheda Google Business della tua attività di Torino: categorie, orari, foto, recensioni e collegamento al sito."
 >
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
   <section class="section" style="padding-top:8rem;">
     <nav class="briciole" aria-label="Sei qui">
       <a href="/">Home</a><span aria-hidden="true">›</span><span aria-current="page">Scheda Google Business</span>
@@ -91,10 +102,6 @@ const faqSchema = {
   </section>
 
   <style>
-    .briciole { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:.2rem .5rem; margin:0 auto 1.6rem; font-size:.88rem; color:var(--muted-2); }
-    .briciole a { color:var(--muted); text-decoration:underline; text-decoration-color:rgba(184,184,208,.35); text-underline-offset:3px; }
-    .briciole a:hover { color:var(--c2); }
-    .briciole [aria-current] { color:var(--text); }
     .gb-blocco { max-width:980px; margin:3.5rem auto 0; }
     .gb-blocco > h2 { font-size:clamp(1.5rem,3.5vw,2.2rem); text-align:center; margin-bottom:1.4rem; }
     .gb-griglia { list-style:none; display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }

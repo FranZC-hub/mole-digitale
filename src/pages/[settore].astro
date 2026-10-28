@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { SETTORI } from '../data/settori.js';
+import { getCollection } from 'astro:content';
 
 export function getStaticPaths() {
   return Object.keys(SETTORI).map((settore) => ({ params: { settore } }));
@@ -33,17 +34,29 @@ const inclusoBy = {
   base:   'prenotazioni, catalogo/listino, SEO locale e scheda Google',
 };
 
-// FAQ per settore (nome interpolato) + dati strutturati FAQPage
+// FAQ: due domande del settore (src/data/settori.js) e quattro comuni, tenute brevi:
+// erano il blocco di testo più ripetuto tra le 20 pagine.
 const faqs = [
   { q: `Quanto costa un sito per ${d.h1b}?`, a: group === 'shop'
-      ? `Dipende da cosa ti serve. Per ${d.h1b} la scelta tipica è il sito Attività come vetrina con ${inclusoBy.shop} — oppure, se vuoi vendere online, un e-commerce completo con carrello e pagamenti. Ti mandiamo un preventivo su misura entro 24 ore, gratis e senza impegno: dentro trovi la creazione del sito (una tantum) e il canone mensile per hosting, dominio, SSL e assistenza. La prima bozza è gratis.`
-      : `Dipende da cosa ti serve: il pacchetto più scelto per ${d.h1b} è il sito Attività, con ${inclusoBy[group]}. Ti mandiamo un preventivo su misura entro 24 ore, gratis e senza impegno: dentro trovi la creazione del sito (una tantum) e il canone mensile per hosting, dominio, SSL e assistenza. La prima bozza è gratis.` },
+      ? `Dipende da cosa ti serve: per ${d.h1b} di solito si parte dal sito Attività come vetrina, con ${inclusoBy.shop}, oppure da un e-commerce se vuoi vendere online. Il preventivo è gratis e arriva entro 24 ore, e anche la prima bozza è gratis.`
+      : `Dipende da cosa ti serve: per ${d.h1b} di solito si parte dal sito Attività, con ${inclusoBy[group]}. Il preventivo è gratis e arriva entro 24 ore, e anche la prima bozza è gratis.` },
   d.domanda,
-  { q: 'In quanto tempo è pronto?', a: 'In media 7 giorni lavorativi da quando abbiamo foto e testi. Con il brief guidato su moledigitale.it/inizia raccogliamo tutto in una volta e partiamo subito.' },
-  { q: 'Devo avere già foto e testi?', a: 'No. Se non li hai, i testi li scriviamo noi (pensati per farti scegliere dai clienti) e per le foto possiamo organizzare uno shooting a Torino. Si parte anche da una semplice chiacchierata.' },
-  { q: 'Verrò trovato su Google?', a: `Il sito nasce ottimizzato per le ricerche locali (es. «${d.h1b.replace(' a Torino', '')} vicino a me») e includiamo la scheda Google Business. I risultati SEO crescono nelle settimane: ti diciamo sempre cosa aspettarti, senza promesse magiche.` },
-  { q: 'E dopo la consegna?', a: 'Non sparisci in un cassetto: hosting, backup e assistenza sono nel canone. Le modifiche si fanno su richiesta a piccole cifre chiare, dette sempre prima.' },
+  d.domanda2,
+  { q: 'In quanto tempo è pronto?', a: 'La prima bozza in 48 ore, il sito completo in circa 7 giorni lavorativi da quando abbiamo foto e testi.' },
+  { q: 'Verrò trovato su Google?', a: `Il sito nasce ottimizzato per le ricerche locali (es. «${d.h1b.replace(' a Torino', '')} vicino a me») e includiamo la scheda Google Business. I risultati crescono nelle settimane: ti diciamo sempre cosa aspettarti, senza promesse magiche.` },
+  { q: 'E dopo la consegna?', a: 'Hosting, backup e assistenza sono nel canone; le modifiche le facciamo noi, con il prezzo detto prima.' },
 ];
+
+// Guide del blog da leggere, scelte per gruppo di settore (titoli presi dalle guide stesse)
+const GUIDE_PER_GRUPPO = {
+  ristorazione: ['sito-per-ristorante', 'scheda-google-business-guida', 'prenotazioni-online-attivita'],
+  bellezza: ['prenotazioni-online-attivita', 'scheda-google-business-guida', 'sito-vetrina'],
+  salute: ['prenotazioni-online-attivita', 'scheda-google-business-guida', '7-errori-sito-attivita-locale'],
+  negozi: ['sito-vetrina', 'scheda-google-business-guida', 'quanto-costa-un-sito-all-anno'],
+  servizi: ['sito-vetrina', 'scheda-google-business-guida', 'farsi-trovare-su-google'],
+};
+const tutteLeGuide = await getCollection('blog');
+const guide = GUIDE_PER_GRUPPO[d.gruppo].map((id) => tutteLeGuide.find((g) => g.id === id)).filter(Boolean);
 const faqSchemaSettore = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
@@ -100,7 +113,6 @@ const faqSchemaSettore = {
         <li>Contatto WhatsApp diretto in un tap</li>
         <li>HTTPS, backup e caricamento sotto il secondo</li>
       </ul>
-      <p>All'hosting, al dominio e all'assistenza pensiamo noi a canone fisso: tu pensi all'attività, al lato tecnico pensiamo noi.</p>
     </div>
 
     <!-- Anteprima della demo (screenshot reale) -->
@@ -136,6 +148,17 @@ const faqSchemaSettore = {
         ))}
       </div>
     </div>
+
+    {guide.length > 0 && (
+      <aside class="land-guide" aria-labelledby="guide-h" data-reveal>
+        <h2 id="guide-h">Da leggere prima di cominciare</h2>
+        <ul>
+          {guide.map((g) => (
+            <li><a href={`/blog/${g.id}/`}><b>{g.data.title}</b><span class="lg-vai">Leggi la guida →</span></a></li>
+          ))}
+        </ul>
+      </aside>
+    )}
 
     <nav class="land-vicini" aria-labelledby="vicini-h" data-reveal>
       <h2 id="vicini-h">Facciamo siti anche per</h2>
@@ -186,10 +209,6 @@ const faqSchemaSettore = {
     .land-incluso ul { list-style:none; display:inline-grid; gap:.6rem; text-align:left; margin:0 0 1.2rem; padding:0; }
     .land-incluso li { color:var(--muted); }
     .land-incluso p { color:var(--muted); }
-    .briciole { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:.2rem .5rem; margin:0 auto 1.6rem; font-size:.88rem; color:var(--muted-2); }
-    .briciole a { color:var(--muted); text-decoration:underline; text-decoration-color:rgba(184,184,208,.35); text-underline-offset:3px; }
-    .briciole a:hover { color:var(--c2); }
-    .briciole [aria-current] { color:var(--text); }
     .land-cercano { max-width:760px; margin:3.5rem auto 0; text-align:center; }
     .land-cercano h2, .land-check h2, .land-vicini h2 { font-size:clamp(1.5rem,3.5vw,2.2rem); margin-bottom:1rem; }
     .land-cercano p { color:var(--muted); font-size:1.06rem; }
@@ -199,11 +218,18 @@ const faqSchemaSettore = {
     .lc-n { position:absolute; left:1.1rem; top:1.15rem; width:1.8rem; height:1.8rem; border-radius:50%; display:grid; place-items:center; background:var(--grad-soft); border:1px solid var(--border); color:var(--c2); font-family:'Space Grotesk Variable','Space Grotesk'; font-weight:700; font-size:.85rem; }
     .land-check-grid h3 { font-size:1.08rem; margin-bottom:.3rem; }
     .land-check-grid p { color:var(--muted); font-size:.93rem; }
+    .land-guide { max-width:960px; margin:3.5rem auto 0; text-align:center; }
+    .land-guide h2 { font-size:clamp(1.5rem,3.5vw,2.2rem); margin-bottom:1.2rem; }
+    .land-guide ul { list-style:none; display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; text-align:left; }
+    .land-guide a { display:flex; flex-direction:column; height:100%; padding:1.2rem 1.3rem; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); transition:border-color .2s, transform .2s var(--ease); }
+    .land-guide a:hover { border-color:rgba(34,211,238,.45); transform:translateY(-3px); }
+    .land-guide b { font-family:'Space Grotesk Variable','Space Grotesk'; font-size:1.02rem; line-height:1.3; margin-bottom:.4rem; color:var(--text); }
+    .land-guide .lg-vai { margin-top:auto; color:var(--c2); font-size:.88rem; font-weight:600; }
     .land-vicini { max-width:760px; margin:3.5rem auto 0; text-align:center; }
     .land-vicini ul { list-style:none; display:flex; flex-wrap:wrap; justify-content:center; gap:.6rem; }
     .land-vicini a { display:inline-flex; align-items:center; min-height:44px; padding:.5rem 1.1rem; border-radius:999px; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:.95rem; transition:border-color .2s, color .2s; }
     .land-vicini a:hover { border-color:rgba(34,211,238,.5); color:var(--c2); }
     .land-vicini .lv-tutti { color:var(--c2); }
-    @media (max-width:780px){ .land-points, .land-price-grid, .land-check-grid { grid-template-columns:1fr; } }
+    @media (max-width:780px){ .land-points, .land-price-grid, .land-check-grid, .land-guide ul { grid-template-columns:1fr; } }
   </style>
 </Layout>

@@ -7,7 +7,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "mas:prova": "astro build && node tools/masgioielli/prova-locale.mjs"
+    "mas:prova": "astro build && node tools/masgioielli/prova-locale.mjs",
+    "indexnow": "node tools/indexnow.mjs",
+    "og": "node tools/og-immagini.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.18",

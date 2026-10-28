@@ -247,6 +247,7 @@ export const GRUPPI = [
 //   cercano    come cercano e come scelgono i clienti di quel settore
 //   checklist  cosa non deve mancare sul sito, specifico del settore
 //   domanda    la domanda che fanno davvero, aggiunta alle FAQ della pagina
+//   domanda2   una seconda domanda tipica del settore (le FAQ generiche erano uguali su tutte e 20)
 // Le note normative (allergeni, pubblicità sanitaria, CIN, farmaci online) sono di principio:
 // i dettagli si verificano col cliente quando si fa il sito.
 const DETTAGLI = {
@@ -260,6 +261,7 @@ const DETTAGLI = {
       { h: 'Foto vere del locale', p: 'Sala, dehors, piatti: è quello che fa scegliere te invece del vicino.' },
     ],
     domanda: { q: 'Posso cambiare il menu da solo?', a: 'Sì: il menu è una pagina del sito, non un file da rifare. Possiamo darti un piccolo pannello per aggiornare piatti e prezzi dal telefono, oppure ce lo mandi su WhatsApp e lo aggiorniamo noi.' },
+    domanda2: { q: "Posso avere il menu anche in inglese?", a: "Sì, ed è un aiuto concreto con i turisti che arrivano a Torino. I prezzi si cambiano una volta sola e valgono per entrambe le lingue; per i piatti nuovi basta mandarci la traduzione, o la facciamo noi." },
   },
   'siti-web-ristoranti-giapponesi-torino': {
     etichetta: 'Ristoranti giapponesi e sushi', gruppo: 'ristorazione',
@@ -271,6 +273,7 @@ const DETTAGLI = {
       { h: 'Gli allergeni piatto per piatto', p: 'Pesce crudo, sesamo, soia, glutine: chi ha un’allergia lo cerca prima di prenotare.' },
     ],
     domanda: { q: 'Posso ricevere ordini da asporto dal sito?', a: 'Sì: il cliente sceglie i piatti e l’orario di ritiro, l’ordine ti arriva su WhatsApp o per email. Ogni ordine che passa dal sito è un ordine senza le commissioni delle app di consegna.' },
+    domanda2: { q: "Posso spiegare le regole dell’all you can eat?", a: "Sì, ed è una delle cose più cercate: prezzo a pranzo e a cena, quanti piatti per ordine, cosa è escluso dalla formula, come funzionano gli avanzi. Scritto chiaro sul sito, evita discussioni al tavolo." },
   },
   'siti-web-bar-torino': {
     etichetta: 'Bar e caffetterie', gruppo: 'ristorazione',
@@ -282,6 +285,7 @@ const DETTAGLI = {
       { h: 'Eventi e partite', p: 'Serate, musica, maxischermo: una pagina che aggiorni quando serve.' },
     ],
     domanda: { q: 'Mi serve davvero un sito se ho la scheda Google?', a: 'La scheda ti fa trovare, il sito ti fa scegliere: menu, foto, eventi e prenotazioni per i gruppi stanno lì. E una scheda collegata a un sito curato è più completa agli occhi di Google e dei clienti.' },
+    domanda2: { q: "Posso far prenotare i tavoli per l’aperitivo o una festa?", a: "Sì: per gruppi e serate un modulo raccoglie giorno, ora e numero di persone, e ti arriva su WhatsApp. Per la colazione di tutti i giorni non serve: lì contano orari giusti e posizione." },
   },
   'siti-web-pasticcerie-torino': {
     etichetta: 'Pasticcerie', gruppo: 'ristorazione',
@@ -293,6 +297,7 @@ const DETTAGLI = {
       { h: 'Allergeni e intolleranze', p: 'Senza glutine, senza lattosio: se lo fai, dillo chiaramente.' },
     ],
     domanda: { q: 'Posso ricevere gli ordini delle torte dal sito?', a: 'Sì: un modulo raccoglie gusto, dimensioni, scritta e data di ritiro, e ti arriva per email o su WhatsApp. Tu confermi e chiedi l’eventuale acconto come fai oggi.' },
+    domanda2: { q: "Conviene mostrare i prezzi delle torte?", a: "Per le torte più richieste un prezzo al chilo o un «a partire da» aiuta chi deve decidere e toglie le telefonate fatte solo per chiedere quanto costa. Per il cake design su misura è meglio la richiesta di preventivo." },
   },
   'siti-web-parrucchieri-torino': {
     etichetta: 'Parrucchieri', gruppo: 'bellezza',
@@ -304,6 +309,7 @@ const DETTAGLI = {
       { h: 'Chi c’è nel salone', p: 'Le persone e le loro specialità: si sceglie anche chi ti mette le mani in testa.' },
     ],
     domanda: { q: 'Il sito si collega a Instagram?', a: 'Sì: dal sito un tocco porta al tuo profilo, e nella galleria mettiamo i lavori migliori che ci mandi. Così chi arriva da Google vede subito il tuo stile.' },
+    domanda2: { q: "Posso mostrare i prezzi senza vincolarmi?", a: "Sì, con un listino «a partire da»: il cliente si orienta prima di prenotare, e il prezzo finale lo definisci in salone in base a lunghezza e trattamento." },
   },
   'siti-web-estetiste-torino': {
     etichetta: 'Centri estetici', gruppo: 'bellezza',
@@ -315,6 +321,7 @@ const DETTAGLI = {
       { h: 'L’ambiente', p: 'Foto vere delle cabine e del centro: si sceglie anche dove ci si sente a proprio agio.' },
     ],
     domanda: { q: 'Posso vendere buoni regalo dal sito?', a: 'Sì: si può partire da una semplice richiesta con ritiro in istituto e, se serve, aggiungere il pagamento online. Sotto le feste è uno dei motivi per cui si visita il sito.' },
+    domanda2: { q: "Posso pubblicare le foto prima e dopo?", a: "Sì, con il consenso scritto della cliente, e senza viso riconoscibile se non serve. Le foto vere dei tuoi lavori e del centro convincono molto più di quelle di repertorio." },
   },
   'siti-web-nail-studio-torino': {
     etichetta: 'Nail studio', gruppo: 'bellezza',
@@ -326,6 +333,7 @@ const DETTAGLI = {
       { h: 'Il collegamento a Instagram', p: 'Per chi vuole vedere gli ultimi lavori.' },
     ],
     domanda: { q: 'Le clienti possono prenotare con la stessa onicotecnica?', a: 'Sì: ogni operatrice ha la sua agenda e la cliente sceglie con chi prenotare. Le abituali la ritrovano in un attimo.' },
+    domanda2: { q: "Posso mostrare i lavori fatti alle clienti?", a: "Sì, ed è il tuo biglietto da visita: basta il permesso della cliente, e di solito si vedono solo le mani. Una galleria divisa per stile fa prenotare chi cerca proprio quello." },
   },
   'siti-web-centri-massaggi-torino': {
     etichetta: 'Centri massaggi e benessere', gruppo: 'bellezza',
@@ -337,6 +345,7 @@ const DETTAGLI = {
       { h: 'Le parole giuste', p: 'Massaggi per il benessere, senza promesse sanitarie che non si possono fare.' },
     ],
     domanda: { q: 'Come gestisco le prenotazioni con più operatori?', a: 'Ogni operatore ha la sua agenda e i suoi massaggi: il cliente sceglie il trattamento e vede solo gli orari davvero liberi.' },
+    domanda2: { q: "Posso descrivere i benefici dei massaggi?", a: "Sì, parlando di benessere, relax e tensioni che si sciolgono. Effetti terapeutici e promesse di cura spettano ai professionisti sanitari: li evitiamo, anche per non avere problemi." },
   },
   'siti-web-profumerie-torino': {
     etichetta: 'Profumerie', gruppo: 'bellezza',
@@ -348,6 +357,7 @@ const DETTAGLI = {
       { h: 'Ordina e ritira', p: 'Il profumo prenotato online, ritirato in negozio già confezionato.' },
     ],
     domanda: { q: 'Ha senso un sito se le grandi catene vendono online?', a: 'Sì, se racconta quello che le catene non hanno: la selezione, il consiglio, le marche introvabili. È quello che porta da te chi cerca qualcosa di diverso.' },
+    domanda2: { q: "Posso vendere le fragranze online?", a: "Si può, con un piccolo catalogo e il ritiro in negozio o la spedizione. Molte profumerie partono da «prenota e ritira»: niente magazzino online da gestire, e il cliente viene in negozio, dove trova il consiglio." },
   },
   'siti-web-dentisti-torino': {
     etichetta: 'Dentisti e studi odontoiatrici', gruppo: 'salute',
@@ -359,6 +369,7 @@ const DETTAGLI = {
       { h: 'Un tono informativo', p: 'Le regole sulla pubblicità sanitaria chiedono contenuti informativi, non promozionali: li scriviamo così.' },
     ],
     domanda: { q: 'Posso pubblicare offerte e promozioni?', a: 'Le informazioni su servizi e modalità sì; offerte e toni promozionali vanno evitati, perché la comunicazione delle strutture sanitarie deve restare informativa. Impostiamo il sito tenendone conto fin dall’inizio.' },
+    domanda2: { q: "Posso mostrare i casi trattati?", a: "Solo con il consenso scritto del paziente, senza dati che lo rendano riconoscibile e con un tono informativo: si mostra cosa si può fare, senza promettere risultati." },
   },
   'siti-web-osteopati-torino': {
     etichetta: 'Osteopati', gruppo: 'salute',
@@ -371,6 +382,7 @@ const DETTAGLI = {
       { h: 'Niente promesse di guarigione', p: 'Un tono informativo è più credibile, e più corretto.' },
     ],
     domanda: { q: 'Posso far prenotare la prima seduta online?', a: 'Sì, con i tuoi orari e le durate giuste. Puoi anche chiedere due righe sul motivo della visita, così arrivi preparato.' },
+    domanda2: { q: "Conviene spiegare la differenza con il fisioterapista?", a: "Sì: molti non la conoscono. Due righe chiare su cosa fa l’osteopata e quando conviene rivolgersi a lui tolgono un dubbio che altrimenti fa rimandare la prenotazione." },
   },
   'siti-web-veterinari-torino': {
     etichetta: 'Veterinari e ambulatori', gruppo: 'salute',
@@ -382,6 +394,7 @@ const DETTAGLI = {
       { h: 'Consigli per i proprietari', p: 'Zecche, viaggi, alimentazione: guide brevi che aiutano e ti fanno trovare.' },
     ],
     domanda: { q: 'Come separo le urgenze dalle visite normali?', a: 'Con due strade ben distinte: in alto il numero per le urgenze, e un modulo di prenotazione per tutto il resto. Così il telefono squilla per le cose che contano.' },
+    domanda2: { q: "Conviene pubblicare le tariffe delle visite?", a: "Molti proprietari le cercano. Se scegli di pubblicarle, meglio come prezzi indicativi per le prestazioni più comuni, come visita e vaccini, spiegando che il costo finale si definisce dopo la visita." },
   },
   'siti-web-farmacie-torino': {
     etichetta: 'Farmacie', gruppo: 'salute',
@@ -393,6 +406,7 @@ const DETTAGLI = {
       { h: 'Il consiglio del farmacista', p: 'Brevi guide di stagione: aiutano i clienti e ti fanno trovare su Google.' },
     ],
     domanda: { q: 'Posso vendere online dal sito?', a: 'Parafarmaco e cosmetica sì, come un normale negozio online. Per vendere a distanza i farmaci senza ricetta servono invece l’autorizzazione e il logo comune europeo: ti aiutiamo a capire cosa serve prima di partire.' },
+    domanda2: { q: "Posso far prenotare il CUP dal sito?", a: "Il sito non sostituisce il sistema della Regione, ma può raccogliere la richiesta: il cliente indica la prestazione e quando passa, e voi la prenotate al banco. Meno code e meno telefonate." },
   },
   'siti-web-negozi-torino': {
     etichetta: 'Negozi', gruppo: 'negozi',
@@ -404,6 +418,7 @@ const DETTAGLI = {
       { h: 'Orari, mappa, parcheggio', p: 'Le domande più fatte, con la risposta prima che le facciano.' },
     ],
     domanda: { q: 'Mi conviene un e-commerce completo?', a: 'Dipende da cosa vendi e da chi ti compra. Per molti negozi di quartiere funziona meglio una vetrina con «ordina e ritira»: costa meno, non richiede spedizioni e porta gente in negozio. Se le richieste crescono, il carrello si aggiunge.' },
+    domanda2: { q: "Devo mettere online tutto il magazzino?", a: "No: bastano le categorie e i pezzi forti, aggiornati quando cambia la stagione. Il sito deve far venire in negozio, non copiare il gestionale." },
   },
   'siti-web-gioiellerie-torino': {
     etichetta: 'Gioiellerie e laboratori orafi', gruppo: 'negozi',
@@ -415,6 +430,7 @@ const DETTAGLI = {
       { h: 'La vostra storia', p: 'Da quanti anni, chi c’è dietro il banco: in gioielleria conta.' },
     ],
     domanda: { q: 'Posso aggiornare la vetrina da solo?', a: 'Sì: da un’area riservata carichi le foto dei nuovi pezzi dal telefono, con nome e descrizione. Non serve saper fare nulla di tecnico.' },
+    domanda2: { q: "Conviene mostrare i prezzi dei gioielli?", a: "Puoi scegliere pezzo per pezzo: il prezzo su alcuni, «su richiesta» su altri. Per i pezzi importanti molti preferiscono la richiesta, che porta il cliente a parlare con voi." },
   },
   'siti-web-officine-torino': {
     etichetta: 'Officine e autoriparazioni', gruppo: 'servizi',
@@ -426,6 +442,7 @@ const DETTAGLI = {
       { h: 'Orari e come arrivare', p: 'Con la mappa e, se ce l’hai, l’auto sostitutiva in evidenza.' },
     ],
     domanda: { q: 'Posso far prenotare il tagliando online?', a: 'Sì: il cliente sceglie il giorno in cui lasciare l’auto tra quelli liberi, e tu confermi. Così riempi l’agenda senza telefonate.' },
+    domanda2: { q: "Conviene mostrare i prezzi del tagliando?", a: "Un «a partire da» per i servizi più richiesti (tagliando, cambio gomme, climatizzatore) aiuta chi confronta; il prezzo finale dipende dall’auto e lo confermi con il preventivo." },
   },
   'siti-web-lavanderie-torino': {
     etichetta: 'Lavanderie e tintorie', gruppo: 'servizi',
@@ -437,6 +454,7 @@ const DETTAGLI = {
       { h: 'Il self service', p: 'Orari, numero di macchine, come si paga.' },
     ],
     domanda: { q: 'Posso far prenotare il ritiro a domicilio?', a: 'Sì: il cliente sceglie giorno e fascia oraria, indica i capi e l’indirizzo. Ti arriva tutto per iscritto e organizzi il giro.' },
+    domanda2: { q: "Posso avvisare i clienti quando il capo è pronto?", a: "Sì: il sito raccoglie il numero quando il cliente prenota il ritiro, e quando il capo è pronto mandi un messaggio WhatsApp dal telefono del negozio. Niente app complicate." },
   },
   'siti-web-agenzie-viaggi-torino': {
     etichetta: 'Agenzie di viaggio', gruppo: 'servizi',
@@ -449,6 +467,7 @@ const DETTAGLI = {
       { h: 'I dati dell’agenzia in chiaro', p: 'Ragione sociale, autorizzazioni e garanzie: tolgono il dubbio a chi spende molto.' },
     ],
     domanda: { q: 'Devo pubblicare i prezzi dei viaggi?', a: 'Non serve: un «a partire da» su qualche proposta aiuta, ma il vostro valore è il su misura. Il sito porta richieste di preventivo, il resto lo fate voi.' },
+    domanda2: { q: "Ha senso pubblicare idee di viaggio sul sito?", a: "Sì, se raccontano mete che conoscete davvero: itinerari, periodi migliori, consigli pratici. Portano chi sta ancora decidendo, che è il momento giusto per farsi conoscere." },
   },
   'siti-web-hotel-torino': {
     etichetta: 'Hotel e B&B', gruppo: 'servizi',
@@ -460,6 +479,7 @@ const DETTAGLI = {
       { h: 'In italiano e in inglese', p: 'Molti ospiti arrivano dall’estero: il sito deve parlare anche la loro lingua.' },
     ],
     domanda: { q: 'Il sito si collega al mio channel manager?', a: 'Nella maggior parte dei casi sì: il motore di prenotazione del tuo channel manager si inserisce nel sito, così disponibilità e prezzi restano allineati con i portali.' },
+    domanda2: { q: "Posso offrire un prezzo migliore a chi prenota dal sito?", a: "Sì: in Italia, dal 2017, la legge sulla concorrenza rende nulle le clausole con cui i portali impedivano agli hotel prezzi migliori sul proprio sito. Uno sconto o un piccolo extra per chi prenota direttamente è il modo più semplice per pagare meno commissioni." },
   },
   'siti-web-addestratori-cani-torino': {
     etichetta: 'Educatori e addestratori cinofili', gruppo: 'servizi',
@@ -472,6 +492,7 @@ const DETTAGLI = {
       { h: 'La lezione di prova prenotabile', p: 'Il passo più facile per cominciare.' },
     ],
     domanda: { q: 'Posso raccontare i cani che ho seguito?', a: 'Sì, ed è una delle cose che convince di più: prima e dopo, con il permesso dei proprietari. Le storie vere valgono più di qualsiasi descrizione.' },
+    domanda2: { q: "Posso vendere i pacchetti di lezioni dal sito?", a: "Si può partire dalla prenotazione della lezione di prova e proporre i pacchetti dopo, di persona. Se tieni corsi di gruppo con date fisse, si può aggiungere l’iscrizione con pagamento online." },
   },
 };
 

@@ -2,6 +2,7 @@
 title: "Scheda Google Business: come crearla e farla rendere"
 description: "Come creare o rivendicare la scheda Google Business, verificarla, compilarla bene, gestire le recensioni ed evitare gli errori che la fanno sospendere."
 date: 2026-10-28
+og: "/og/blog-scheda-google.png"
 ---
 
 Quando qualcuno cerca «bar aperto vicino a me» o «parrucchiere Crocetta», spesso la prima cosa che vede non è un sito: è la **scheda Google Business**, quel riquadro su Google e su Maps con orari, foto, recensioni e il bottone per chiamare. Per un'attività di quartiere è il biglietto da visita più visto. Ed è gratuita.

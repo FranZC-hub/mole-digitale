@@ -4,7 +4,7 @@ import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('blog')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 ---
-<Layout title="Guide su siti web e Google per attività | Mole Digitale" description="Guide pratiche per gli esercenti di Torino: siti vetrina, scheda Google Business, restyling, costi e prenotazioni online, spiegati senza giri di parole.">
+<Layout image="/og/guide.png" title="Guide su siti web e Google per attività | Mole Digitale" description="Guide pratiche per gli esercenti di Torino: siti vetrina, scheda Google Business, restyling, costi e prenotazioni online, spiegati senza giri di parole.">
   <section class="section" style="padding-top:8rem;">
     <div class="section-head" data-reveal>
       <span class="kicker">Guide</span>

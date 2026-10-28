@@ -43,3 +43,6 @@ public/masgioielliDev/api/config.php
 public/masgioielliDev/uploads/*
 !public/masgioielliDev/uploads/.htaccess
 .locale/
+
+# IndexNow: impronta delle pagine all'ultimo invio (solo locale)
+tools/.indexnow-ultimo.json

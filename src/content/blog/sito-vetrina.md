@@ -2,6 +2,7 @@
 title: "Sito vetrina: cos'è, cosa deve avere e quando basta"
 description: "Cos'è un sito vetrina, cosa non deve mancare perché porti clienti, quando basta e quando serve di più. Con esempi per ristoranti, negozi e saloni."
 date: 2026-10-28
+og: "/og/blog-sito-vetrina.png"
 ---
 
 «Mi basta un sito vetrina». È una delle frasi che sentiamo di più. Ed è spesso vero: per molte attività di quartiere un sito vetrina fatto bene è tutto quello che serve. Il problema è che «vetrina» viene spesso inteso come «una pagina con il logo e il numero di telefono». E così non porta nessuno.
