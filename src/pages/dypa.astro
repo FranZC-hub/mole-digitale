@@ -15,9 +15,9 @@ const stats = [
   { n: '24 ore', l: 'per il preventivo' },
 ];
 const demos = [
-  { k: 'estetica', cat: 'Centro estetico', url: '/demo/estetica' },
-  { k: 'dentista', cat: 'Studio dentistico', url: '/demo/dentista' },
-  { k: 'sushi', cat: 'Ristorante', url: '/demo/sushi' },
+  { k: 'estetica', cat: 'Centro estetico', url: '/demo/estetica/' },
+  { k: 'dentista', cat: 'Studio dentistico', url: '/demo/dentista/' },
+  { k: 'sushi', cat: 'Ristorante', url: '/demo/sushi/' },
 ];
 const steps = [
   { n: '1', t: 'Ci racconti l’attività', d: 'Una chiacchierata, anche su WhatsApp: chi sei, cosa offri, quali clienti vuoi.' },
@@ -88,7 +88,7 @@ const faq = [
     <!-- Esempi reali -->
     <div class="dy-demos-head" data-reveal>
       <h2>Ecco alcuni siti che <span class="grad">facciamo</span>.</h2>
-      <a href="/demo" class="dy-demos-all">Vedi tutti gli esempi →</a>
+      <a href="/demo/" class="dy-demos-all">Vedi tutti gli esempi →</a>
     </div>
     <div class="dy-demos" data-reveal>
       {demos.map((d) => (
@@ -128,7 +128,7 @@ const faq = [
       <p style="color:var(--muted); margin-bottom:1.6rem;">Ti rispondiamo in giornata. Nessun impegno, prima bozza gratis.</p>
       <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
         <a href={`https://wa.me/393662102203?text=${waText}`} target="_blank" rel="noopener" class="btn btn-primary btn-magnetic">Scrivici su WhatsApp</a>
-        <a href="/demo" class="btn btn-ghost">Guarda gli esempi</a>
+        <a href="/demo/" class="btn btn-ghost">Guarda gli esempi</a>
       </div>
       <p style="color:var(--muted-2); font-size:.86rem; margin-top:1.2rem;">📱 366 210 2203 · ✉️ info@moledigitale.it · Torino</p>
     </div>

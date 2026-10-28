@@ -15,13 +15,16 @@ interface Props {
   noindex?: boolean;
   image?: string;
   article?: { datePublished: string; dateModified?: string };
+  /** livelli intermedi del breadcrumb tra Home e la pagina (es. la pagina dei settori) */
+  briciole?: { name: string; url: string }[];
 }
 const {
-  title = 'Siti web per attività a Torino — Mole Digitale',
-  description = 'Rifacciamo e creiamo siti web moderni per ristoranti, negozi e attività di Torino e provincia. Veloci, belli e a prezzi onesti.',
+  title = 'Realizzazione siti web a Torino per attività | Mole Digitale',
+  description = 'Realizzazione e restyling di siti web per ristoranti, negozi e attività di Torino e provincia: veloci, curati, trovati su Google. Prima bozza gratis.',
   noindex = false,
   image,
   article,
+  briciole = [],
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -46,12 +49,19 @@ const clarityId = '';
 // Es: 'A luglio: logo professionale incluso in ogni sito nuovo 🎁'
 const promoMessage = '';
 
+// Un'unica scheda per l'azienda (ProfessionalService è già un Organization per schema.org),
+// con un @id che le altre schede richiamano: prima c'erano due schede separate, senza legame.
+const SITO = Astro.site?.href;
+const ID_AZIENDA = SITO + '#azienda';
 const businessSchema = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
+  '@id': ID_AZIENDA,
   name: 'Mole Digitale',
   description: 'Creazione e rifacimento di siti web per esercenti e piccole attività di Torino e provincia, a costi ridotti.',
-  url: Astro.site?.href,
+  url: SITO,
+  logo: new URL('/apple-touch-icon.png', Astro.site).href,
+  image: new URL('/og-image.png', Astro.site).href,
   telephone: '+39 366 210 2203',
   email: 'info@moledigitale.it',
   priceRange: '€€',
@@ -79,15 +89,16 @@ const faqSchema = {
   ],
 };
 
-const orgSchema = {
+// Il sito in sé: aiuta Google a mostrare «Mole Digitale» come nome del sito nei risultati (solo in home)
+const websiteSchema = {
   '@context': 'https://schema.org',
-  '@type': 'Organization',
+  '@type': 'WebSite',
+  '@id': SITO + '#sito',
   name: 'Mole Digitale',
-  url: Astro.site?.href,
-  logo: new URL('/apple-touch-icon.png', Astro.site).href,
-  email: 'info@moledigitale.it',
-  telephone: '+39 366 210 2203',
-  areaServed: 'Torino, Italia',
+  alternateName: 'moledigitale.it',
+  url: SITO,
+  inLanguage: 'it-IT',
+  publisher: { '@id': ID_AZIENDA },
 };
 
 const serviceSchema = {
@@ -95,21 +106,24 @@ const serviceSchema = {
   '@type': 'Service',
   name: 'Creazione e rifacimento di siti web',
   serviceType: 'Realizzazione siti web per attività locali',
-  provider: { '@type': 'ProfessionalService', name: 'Mole Digitale', url: Astro.site?.href },
+  provider: { '@type': 'ProfessionalService', '@id': ID_AZIENDA, name: 'Mole Digitale', url: SITO },
   areaServed: { '@type': 'City', name: 'Torino' },
   description: 'Creazione e restyling di siti web moderni, veloci e ottimizzati per Google, per ristoranti, negozi e attività di Torino e provincia.',
 };
 
-// Breadcrumb: Home > pagina corrente (solo nelle pagine interne)
+// Breadcrumb: Home > (Blog, per gli articoli) > (livelli passati dalla pagina) > pagina corrente
 const isHome = Astro.url.pathname === '/';
 const pageName = title.replace(/\s*[—|·]\s*Mole Digitale.*$/i, '').trim();
+const livelli = [
+  { name: 'Home', item: SITO },
+  ...(article ? [{ name: 'Blog', item: new URL('/blog/', Astro.site).href }] : []),
+  ...briciole.map((b) => ({ name: b.name, item: new URL(b.url, Astro.site).href })),
+  { name: pageName, item: canonical.href },
+];
 const breadcrumbSchema = isHome ? null : {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: Astro.site?.href },
-    { '@type': 'ListItem', position: 2, name: pageName, item: canonical.href },
-  ],
+  itemListElement: livelli.map((l, i) => ({ '@type': 'ListItem', position: i + 1, name: l.name, item: l.item })),
 };
 
 // Dati strutturati articolo (solo nelle pagine del blog)
@@ -122,8 +136,8 @@ const articleSchema = article ? {
   dateModified: article.dateModified ?? article.datePublished,
   image: ogImage.href,
   mainEntityOfPage: canonical.href,
-  author: { '@type': 'Organization', name: 'Mole Digitale', url: Astro.site?.href },
-  publisher: { '@type': 'Organization', name: 'Mole Digitale', logo: { '@type': 'ImageObject', url: new URL('/apple-touch-icon.png', Astro.site).href } },
+  author: { '@type': 'Organization', '@id': ID_AZIENDA, name: 'Mole Digitale', url: SITO },
+  publisher: { '@type': 'Organization', '@id': ID_AZIENDA, name: 'Mole Digitale', logo: { '@type': 'ImageObject', url: new URL('/apple-touch-icon.png', Astro.site).href } },
 } : null;
 ---
 <!DOCTYPE html>
@@ -161,7 +175,7 @@ const articleSchema = article ? {
   <script type="application/ld+json" set:html={JSON.stringify(businessSchema)} />
   {/* FAQPage solo in home: è lì che le FAQ sono visibili. Le pagine di settore hanno il loro FAQPage. */}
   {isHome && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
-  <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
+  {isHome && <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />}
   <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
   {breadcrumbSchema && <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />}
   {articleSchema && <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />}
@@ -256,12 +270,12 @@ const articleSchema = article ? {
     <nav class="nav-links" aria-label="Principale">
       <a href="/#servizi">Servizi</a>
       <a href="/#prezzi">Pacchetti</a>
-      <a href="/demo" class={isActive('/demo') ? 'active' : undefined} aria-current={isActive('/demo') ? 'page' : undefined}>Esempi</a>
-      <a href="/blog" class={isActive('/blog') ? 'active' : undefined} aria-current={isActive('/blog') ? 'page' : undefined}>Blog</a>
-      <a href="/chi-siamo" class={isActive('/chi-siamo') ? 'active' : undefined} aria-current={isActive('/chi-siamo') ? 'page' : undefined}>Chi siamo</a>
+      <a href="/demo/" class={isActive('/demo') ? 'active' : undefined} aria-current={isActive('/demo') ? 'page' : undefined}>Esempi</a>
+      <a href="/blog/" class={isActive('/blog') ? 'active' : undefined} aria-current={isActive('/blog') ? 'page' : undefined}>Blog</a>
+      <a href="/chi-siamo/" class={isActive('/chi-siamo') ? 'active' : undefined} aria-current={isActive('/chi-siamo') ? 'page' : undefined}>Chi siamo</a>
     </nav>
     {/* solo su computer (nascosto sotto i 980 px): sul telefono c'è già la barra in basso */}
-    <a href="/preventivo" class="btn btn-primary nav-cta">Preventivo gratuito</a>
+    <a href="/preventivo/" class="btn btn-primary nav-cta">Preventivo gratuito</a>
     <button class="nav-toggle" aria-label="Apri menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
@@ -296,19 +310,19 @@ const articleSchema = article ? {
         <h2>Sito</h2>
         <a href="/#servizi">Servizi</a>
         <a href="/#prezzi">Pacchetti</a>
-        <a href="/inizia">Inizia da qui</a>
-        <a href="/preventivo">Preventivo gratuito</a>
-        <a href="/demo">Demo</a>
-        <a href="/blog">Blog</a>
-        <a href="/chi-siamo">Chi siamo</a>
+        <a href="/inizia/">Inizia da qui</a>
+        <a href="/preventivo/">Preventivo gratuito</a>
+        <a href="/demo/">Demo</a>
+        <a href="/blog/">Blog</a>
+        <a href="/chi-siamo/">Chi siamo</a>
         <a href="/#faq">FAQ</a>
       </div>
       <div class="footer-col">
         <h2>Per settore</h2>
-        <a href="/siti-web-ristoranti-torino">Siti per ristoranti</a>
-        <a href="/siti-web-parrucchieri-torino">Siti per parrucchieri</a>
-        <a href="/siti-web-negozi-torino">Siti per negozi</a>
-        <a href="/demo">Tutti gli esempi →</a>
+        <a href="/siti-web-ristoranti-torino/">Siti per ristoranti</a>
+        <a href="/siti-web-parrucchieri-torino/">Siti per parrucchieri</a>
+        <a href="/siti-web-negozi-torino/">Siti per negozi</a>
+        <a href="/siti-web-torino/">Tutti i settori →</a>
       </div>
       <div class="footer-col">
         <h2>Contatti</h2>
@@ -322,7 +336,7 @@ const articleSchema = article ? {
       <span>© <span id="year">{new Date().getFullYear()}</span> Mole Digitale{/* Quando avrai la P.IVA: aggiungi qui " · P.IVA <numero>" */}</span>
       <span class="footer-legal">
         {/* una riga: andando a capo dopo «·» Astro toglieva lo spazio («Privacy ·Cookie») */}
-        <a href="/privacy">Privacy</a> · <a href="/privacy#cookie">Cookie</a> · <a href="/crediti">Crediti</a> · Fatto con ⚡ a Torino
+        <a href="/privacy/">Privacy</a> · <a href="/privacy/#cookie">Cookie</a> · <a href="/crediti/">Crediti</a> · Fatto con ⚡ a Torino
       </span>
     </div>
   </footer>
@@ -342,7 +356,7 @@ const articleSchema = article ? {
 
   {clarityId && (
     <div class="cookie-banner" id="ckBanner" hidden role="dialog" aria-label="Preferenze cookie" aria-live="polite">
-      <p>Usiamo un cookie di statistica (Microsoft Clarity) per capire come migliorare il sito. Niente pubblicità, niente profilazione. <a href="/privacy#cookie">Dettagli</a></p>
+      <p>Usiamo un cookie di statistica (Microsoft Clarity) per capire come migliorare il sito. Niente pubblicità, niente profilazione. <a href="/privacy/#cookie">Dettagli</a></p>
       <div class="cookie-actions">
         <button type="button" id="ckNo" class="ck-btn ck-no">Rifiuta</button>
         <button type="button" id="ckYes" class="ck-btn ck-yes">Accetta</button>

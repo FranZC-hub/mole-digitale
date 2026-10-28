@@ -1,263 +1,17 @@
 ---
 import Layout from '../layouts/Layout.astro';
-
-const settori = {
-  'siti-web-ristoranti-torino': {
-    kicker: 'Per ristoranti e pizzerie',
-    h1a: 'Siti web per', h1b: 'ristoranti a Torino',
-    intro: "Un sito che fa venire fame e riempie i tavoli: menu aggiornato, prenotazioni online e la tua attività trovata su Google da chi cerca dove mangiare.",
-    points: [
-      { h: 'Menu digitale', p: 'Sempre aggiornato, leggibile dal telefono, anche con QR code al tavolo.' },
-      { h: 'Prenotazione tavolo', p: 'Il cliente prenota in pochi secondi, anche fuori orario.' },
-      { h: 'Trovato su Google', p: 'SEO locale + scheda Google per comparire nelle ricerche «vicino a me».' },
-    ],
-    demoUrl: '/demo/ristorante', demoName: 'Trattoria del Sole',
-  },
-  'siti-web-parrucchieri-torino': {
-    kicker: 'Per parrucchieri ed estetiste',
-    h1a: 'Siti web per', h1b: 'parrucchieri a Torino',
-    intro: "Fai prenotare i clienti mentre sono ancora sul divano: appuntamenti online, galleria dei tuoi lavori e un'immagine curata che racconta il tuo stile.",
-    points: [
-      { h: 'Appuntamenti online', p: 'Servizio, giorno e ora: il cliente prenota da solo, tu risparmi telefonate.' },
-      { h: 'Galleria lavori', p: 'Mostra tagli, colori e acconciature: si compra prima con gli occhi.' },
-      { h: 'Restyling', p: 'Hai già un sito ma sembra vecchio? Lo rifacciamo moderno mantenendo i contenuti.' },
-    ],
-    demoUrl: '/demo/salone', demoName: 'Salone Aurora',
-  },
-  'siti-web-officine-torino': {
-    kicker: 'Per officine e autoriparazioni',
-    h1a: 'Siti web per', h1b: 'officine a Torino',
-    intro: "Un sito che ispira fiducia: servizi chiari, richiesta preventivo facile e le recensioni Google bene in vista. Così chi cerca un meccanico onesto trova te.",
-    points: [
-      { h: 'Preventivo facile', p: 'Il cliente ti scrive il problema in un attimo, tu rispondi col preventivo.' },
-      { h: 'Scheda Google', p: 'Recensioni e valutazioni in evidenza: la prova sociale che convince.' },
-      { h: 'Servizi & orari', p: 'Tagliandi, gomme, diagnosi: tutto chiaro, niente sorprese.' },
-    ],
-    demoUrl: '/demo/officina', demoName: 'Garage Rossi',
-  },
-  'siti-web-bar-torino': {
-    kicker: 'Per bar e caffetterie',
-    h1a: 'Siti web per', h1b: 'bar a Torino',
-    intro: "Un sito che fa venire voglia di entrare: orari sempre giusti, menu e listino a portata di telefono, e la tua caffetteria trovata su Google da chi passa di lì.",
-    points: [
-      { h: 'Menu & listino', p: 'Colazioni, aperitivi, asporto: tutto chiaro e aggiornato in un attimo.' },
-      { h: 'Orari sempre giusti', p: 'Niente clienti davanti alla saracinesca: orari e festività sempre corretti.' },
-      { h: 'Trovato su Google', p: 'Comparire quando cercano «bar / colazione vicino a me».' },
-    ],
-    demoUrl: '/demo/bar', demoName: 'Caffè Portici',
-  },
-  'siti-web-estetiste-torino': {
-    kicker: 'Per centri estetici ed estetiste',
-    h1a: 'Siti web per', h1b: 'estetiste a Torino',
-    intro: "Fai prenotare i trattamenti online, mostra i risultati e fatti scegliere per la cura che metti. Un'immagine curata vale già metà dell'appuntamento.",
-    points: [
-      { h: 'Prenotazione trattamenti', p: 'La cliente sceglie servizio e orario da sola, anche la sera.' },
-      { h: 'Galleria risultati', p: 'Mostra ambiente e lavori: la fiducia nasce dagli occhi.' },
-      { h: 'Recensioni in vista', p: 'Le valutazioni Google in evidenza per convincere chi è indeciso.' },
-    ],
-    demoUrl: '/demo/estetica', demoName: 'Velvèe', widget: 'il quiz «che pelle hai?» che consiglia il trattamento',
-  },
-  'siti-web-negozi-torino': {
-    kicker: 'Per negozi e botteghe',
-    h1a: 'Siti web per', h1b: 'negozi a Torino',
-    intro: "Porta la tua vetrina online: prodotti in mostra, orari sempre giusti e — se vuoi — vendita con carrello e consegna. Chi cerca cosa vendi, trova te.",
-    points: [
-      { h: 'Vetrina prodotti', p: 'Mostra i tuoi articoli con foto curate, aggiornati in un attimo.' },
-      { h: 'Vendi anche online', p: 'Se vuoi, aggiungiamo carrello e pagamenti: vendi anche a saracinesca chiusa.' },
-      { h: 'Trovato su Google', p: 'SEO locale e scheda Google per comparire a chi cerca «vicino a me».' },
-    ],
-    demoUrl: '/demo/ecommerce', demoName: 'Bottega Subalpina',
-  },
-  'siti-web-pasticcerie-torino': {
-    kicker: 'Per pasticcerie e panetterie',
-    h1a: 'Siti web per', h1b: 'pasticcerie a Torino',
-    intro: "Un sito che fa venire l'acquolina: le tue specialità in vetrina, le torte su ordinazione e l'asporto a portata di telefono. Si compra prima con gli occhi.",
-    points: [
-      { h: 'Vetrina golosa', p: 'Foto curate di torte, lievitati e dolci, sempre aggiornate.' },
-      { h: 'Ordini e torte su misura', p: "Il cliente prenota la torta o l'asporto in pochi tocchi, anche di sera." },
-      { h: 'Trovato su Google', p: 'Comparire quando cercano «pasticceria» o «torta su ordinazione» a Torino.' },
-    ],
-    demoUrl: '/demo/ecommerce', demoName: 'Bottega Subalpina',
-  },
-  'siti-web-farmacie-torino': {
-    kicker: 'Per farmacie e parafarmacie',
-    h1a: 'Siti web per', h1b: 'farmacie a Torino',
-    intro: "Un sito che rassicura e informa: orari sempre giusti (anche i turni), servizi in chiaro e il consiglio del farmacista a portata di tap. Così chi cerca una farmacia aperta trova te.",
-    metaDesc: "Siti web per farmacie a Torino: orari e turni sempre giusti, servizi in chiaro e SEO locale. Chi cerca una farmacia aperta trova te.",
-    points: [
-      { h: 'Orari e turni sempre giusti', p: 'Widget «aperta ora / chiusa» automatico: niente clienti davanti alla saracinesca.' },
-      { h: 'Servizi in evidenza', p: 'Autoanalisi, noleggio, prenotazioni e consegna a domicilio, tutto chiaro.' },
-      { h: 'Trovato su Google', p: 'SEO locale per comparire a chi cerca «farmacia di turno» o «aperta adesso».' },
-    ],
-    demoUrl: '/demo/farmacia', demoName: 'Farmacia Aurora', widget: 'il widget «aperta/chiusa ora» con orari live',
-  },
-  'siti-web-dentisti-torino': {
-    kicker: 'Per studi dentistici e odontoiatri',
-    h1a: 'Siti web per', h1b: 'dentisti a Torino',
-    intro: "Un sito che mette a suo agio e fa prenotare: trattamenti spiegati con chiarezza, prima visita gratuita in evidenza e recensioni che tolgono la paura. La fiducia comincia dal sito.",
-    metaDesc: "Siti web per dentisti a Torino: trattamenti spiegati con chiarezza, prima visita in evidenza e recensioni che tolgono la paura.",
-    points: [
-      { h: 'Prima visita online', p: 'Il paziente prenota la prima visita da solo, anche la sera dal divano.' },
-      { h: 'Trattamenti chiari', p: 'Implantologia, ortodonzia, igiene: spiegati semplici, senza ansia.' },
-      { h: 'Recensioni in vista', p: 'Le valutazioni Google in evidenza per convincere chi è indeciso.' },
-    ],
-    demoUrl: '/demo/dentista', demoName: 'Studio Sorriso', widget: 'il simulatore di rate («da X€/mese»)',
-  },
-  'siti-web-profumerie-torino': {
-    kicker: 'Per profumerie e beauty store',
-    h1a: 'Siti web per', h1b: 'profumerie a Torino',
-    intro: "Un sito elegante come la tua boutique: fragranze in vetrina, consulenza olfattiva su prenotazione e un'immagine raffinata che fa venire voglia di entrare.",
-    points: [
-      { h: 'Vetrina delle fragranze', p: 'Brand e famiglie olfattive presentati con gusto, sempre aggiornati.' },
-      { h: 'Consulenza su prenotazione', p: 'Il cliente prenota la consulenza olfattiva in pochi tocchi.' },
-      { h: 'Immagine premium', p: 'Un design curato che comunica qualità e fa percepire il valore.' },
-    ],
-    demoUrl: '/demo/profumeria', demoName: 'Essènza', widget: 'il test olfattivo che consiglia la famiglia giusta',
-  },
-  'siti-web-centri-massaggi-torino': {
-    kicker: 'Per centri massaggi e benessere',
-    h1a: 'Siti web per', h1b: 'centri massaggi a Torino',
-    intro: "Un sito che fa già rilassare: i tuoi massaggi con durate e prezzi chiari, prenotazione online e un'atmosfera che invita a staccare. Si prenota di più quando è tutto semplice.",
-    metaDesc: "Siti web per centri massaggi a Torino: durate e prezzi chiari, prenotazione online e un'atmosfera che invita a staccare.",
-    points: [
-      { h: 'Listino chiaro', p: 'Ogni massaggio con durata e prezzo: niente domande, solo prenotazioni.' },
-      { h: 'Appuntamenti online', p: 'Il cliente sceglie trattamento e orario da solo, a qualsiasi ora.' },
-      { h: 'Atmosfera curata', p: 'Foto e design che trasmettono calma e fanno percepire la qualità.' },
-    ],
-    demoUrl: '/demo/massaggi', demoName: 'Sàva', widget: 'il selettore «come ti senti oggi?» che suggerisce il massaggio',
-  },
-  'siti-web-osteopati-torino': {
-    kicker: 'Per osteopati e fisioterapisti',
-    h1a: 'Siti web per', h1b: 'osteopati a Torino',
-    intro: "Un sito che spiega e rassicura: per chi è indicata l'osteopatia, come lavori e perché fidarsi. Chi ha mal di schiena cerca su Google — fatti trovare e fai prenotare.",
-    points: [
-      { h: 'Per chi è indicato', p: 'Mal di schiena, cervicale, sport, gravidanza: il paziente si riconosce e prenota.' },
-      { h: 'Il tuo metodo', p: 'Valutazione, trattamento, prevenzione: spiegati in modo chiaro e professionale.' },
-      { h: 'Prenotazione valutazione', p: 'Richiesta della prima valutazione in un tap, anche da telefono.' },
-    ],
-    demoUrl: '/demo/osteopata', demoName: 'Àsse', widget: 'la mappa del corpo cliccabile («dove ti fa male?»)',
-  },
-  'siti-web-agenzie-viaggi-torino': {
-    kicker: 'Per agenzie viaggi e tour operator',
-    h1a: 'Siti web per', h1b: 'agenzie viaggi a Torino',
-    intro: "Un sito che fa sognare e poi convertire: destinazioni in vetrina, richiesta preventivo su misura e quel tocco che fa scegliere te invece del solito portale online.",
-    points: [
-      { h: 'Destinazioni in vetrina', p: 'Le mete del momento con foto che fanno venire voglia di partire.' },
-      { h: 'Preventivo su misura', p: 'Il cliente racconta il viaggio dei sogni, tu rispondi con una proposta.' },
-      { h: 'Il valore del consulente', p: 'Racconti perché un viaggio cucito su misura batte il fai-da-te.' },
-    ],
-    demoUrl: '/demo/viaggi', demoName: 'Vàgo', widget: 'il filtro destinazioni per budget',
-  },
-  'siti-web-nail-studio-torino': {
-    kicker: 'Per nail studio e onicotecniche',
-    h1a: 'Siti web per', h1b: 'nail studio a Torino',
-    intro: "Un sito che mostra quanto sei brava: gallery dei tuoi lavori, listino chiaro e prenotazione facile. La nail art si compra con gli occhi — falla vedere.",
-    points: [
-      { h: 'Gallery dei lavori', p: 'Le tue creazioni in bella mostra: la prossima cliente sceglie guardando.' },
-      { h: 'Listino trasparente', p: 'Manicure, gel, ricostruzione, nail art: prezzi chiari, niente sorprese.' },
-      { h: 'Prenotazione facile', p: 'Appuntamento in pochi tocchi, con tanto di ispirazioni allegate.' },
-    ],
-    demoUrl: '/demo/nails', demoName: 'Lúnula', widget: 'gli swatch smalto che cambiano i colori del sito',
-  },
-  'siti-web-veterinari-torino': {
-    kicker: 'Per ambulatori e cliniche veterinarie',
-    h1a: 'Siti web per', h1b: 'veterinari a Torino',
-    intro: "Un sito che ispira fiducia a chi ama il suo animale: servizi chiari, urgenze 24/7 in evidenza e prenotazione visita semplice. Quando il cane sta male, ti trovano subito.",
-    metaDesc: "Siti web per veterinari a Torino: servizi chiari, urgenze 24/7 in evidenza e prenotazione visita semplice. Ti trovano subito.",
-    points: [
-      { h: 'Urgenze in evidenza', p: 'Numero per le emergenze sempre visibile: in un attimo ti chiamano.' },
-      { h: 'Servizi e prenotazioni', p: 'Visite, vaccinazioni, chirurgia: tutto chiaro, appuntamento in un tap.' },
-      { h: 'Trovato su Google', p: 'SEO locale per comparire a chi cerca «veterinario vicino a me».' },
-    ],
-    demoUrl: '/demo/animali', demoName: 'Zampe Amiche', widget: 'il triage sintomi («è un\'urgenza?»)',
-  },
-  'siti-web-lavanderie-torino': {
-    kicker: 'Per lavanderie e lavasecco',
-    h1a: 'Siti web per', h1b: 'lavanderie a Torino',
-    intro: "Un sito comodo come il tuo servizio: come funziona in 3 passi, listino chiaro e ritiro a domicilio prenotabile online. Più richieste, meno telefonate.",
-    points: [
-      { h: 'Come funziona, chiaro', p: 'Porti o prenoti, laviamo, riconsegniamo: il cliente capisce in 10 secondi.' },
-      { h: 'Listino trasparente', p: 'Prezzi per capo in tabella: niente preventivi al telefono.' },
-      { h: 'Ritiro a domicilio', p: 'Il cliente prenota il ritiro online: comodità che fidelizza.' },
-    ],
-    demoUrl: '/demo/lavanderia', demoName: 'Bollé', widget: 'il calcolatore del bucato con totale live',
-  },
-  'siti-web-ristoranti-giapponesi-torino': {
-    kicker: 'Per sushi e ristoranti giapponesi',
-    h1a: 'Siti web per', h1b: 'ristoranti giapponesi a Torino',
-    intro: "Un sito elegante come il tuo locale: menu giapponese curato, prenotazione tavolo e asporto/delivery in evidenza. L'esperienza comincia dallo schermo.",
-    points: [
-      { h: 'Menu curato', p: 'Nigiri, uramaki, sashimi e special: presentati con stile e sempre aggiornati.' },
-      { h: 'Prenotazione & delivery', p: 'Tavolo, asporto e consegna: il cliente sceglie come gustarti.' },
-      { h: 'Immagine premium', p: 'Design raffinato che comunica qualità e giustifica il prezzo.' },
-    ],
-    demoUrl: '/demo/sushi', demoName: 'Hashi', widget: 'il filtro menu crudo/cotto/veggie',
-  },
-  'siti-web-hotel-torino': {
-    kicker: 'Per hotel, B&B e affittacamere',
-    h1a: 'Siti web per', h1b: 'hotel a Torino',
-    intro: "Ogni prenotazione che passa da un portale ti costa il 15-18% di commissione. Un sito che fa prenotare diretto si ripaga in poche notti — e i clienti stranieri lo leggono nella loro lingua.",
-    metaDesc: "Siti web per hotel e B&B a Torino: prenotazione diretta senza commissioni, camere e servizi anche in inglese, trovati su Google.",
-    points: [
-      { h: 'Prenotazione diretta', p: 'Date, prezzo e richiesta in tre tocchi: la commissione del portale resta a te.' },
-      { h: 'Anche in inglese', p: 'Camere, servizi e informazioni pratiche nella lingua di chi arriva da fuori.' },
-      { h: 'Trovato su Google', p: 'Chi cerca «hotel centro Torino» arriva da te, non su un portale.' },
-    ],
-    demoUrl: '/demo/hotel', demoName: 'Albergo del Teatro', widget: 'il preventivo per date, col confronto su quanto costerebbe la stessa camera su un portale',
-  },
-  'siti-web-gioiellerie-torino': {
-    kicker: 'Per gioiellerie e laboratori orafi',
-    h1a: 'Siti web per', h1b: 'gioiellerie a Torino',
-    intro: "Un gioiello si sceglie dal vivo, ma si cerca online. Il sito porta in negozio chi sta guardando: la vetrina, le riparazioni e le perizie, spiegate come le spieghi al banco.",
-    metaDesc: "Siti web per gioiellerie a Torino: vetrina delle collezioni, riparazioni e perizie in chiaro, e la fiducia che serve per farsi affidare un gioiello.",
-    points: [
-      { h: 'La vetrina, sempre aperta', p: 'Collezioni e pezzi unici da guardare con calma, e da venire a provare in negozio.' },
-      { h: 'Riparazioni e perizie', p: 'I servizi che portano il lavoro più redditizio, spiegati e prenotabili.' },
-      { h: 'Fiducia prima di tutto', p: 'Chi affida un gioiello vuole sapere chi sei: storia, laboratorio e garanzie in chiaro.' },
-    ],
-    demoUrl: '/demo/gioielleria', demoName: 'Lùmina', widget: 'la lista dei preferiti da portare in boutique e il configuratore della fede su misura',
-  },
-  'siti-web-addestratori-cani-torino': {
-    kicker: 'Per addestratori ed educatori cinofili',
-    h1a: 'Siti web per', h1b: 'addestratori cani a Torino',
-    intro: "Un sito che trasmette fiducia ai proprietari: percorsi chiari, metodo gentile e lezione di prova in evidenza. Chi cerca un educatore per il proprio cane trova te.",
-    points: [
-      { h: 'Percorsi chiari', p: 'Cuccioli, educazione di base, problemi di comportamento: ognuno trova il suo.' },
-      { h: 'Lezione di prova', p: 'La prima lezione di prova in evidenza: il modo più facile per iniziare.' },
-      { h: 'Metodo e fiducia', p: 'Racconti il tuo approccio gentile: i proprietari scelgono di pancia.' },
-    ],
-    demoUrl: '/demo/addestratore', demoName: 'Coda Felice', widget: 'il configuratore del percorso su misura',
-  },
-};
+import { SETTORI } from '../data/settori.js';
 
 export function getStaticPaths() {
-  return [
-    'siti-web-ristoranti-torino',
-    'siti-web-parrucchieri-torino',
-    'siti-web-officine-torino',
-    'siti-web-bar-torino',
-    'siti-web-estetiste-torino',
-    'siti-web-negozi-torino',
-    'siti-web-pasticcerie-torino',
-    'siti-web-farmacie-torino',
-    'siti-web-dentisti-torino',
-    'siti-web-profumerie-torino',
-    'siti-web-centri-massaggi-torino',
-    'siti-web-osteopati-torino',
-    'siti-web-agenzie-viaggi-torino',
-    'siti-web-nail-studio-torino',
-    'siti-web-veterinari-torino',
-    'siti-web-lavanderie-torino',
-    'siti-web-ristoranti-giapponesi-torino',
-    'siti-web-addestratori-cani-torino',
-    'siti-web-hotel-torino',
-    'siti-web-gioiellerie-torino',
-  ].map((settore) => ({ params: { settore } }));
+  return Object.keys(SETTORI).map((settore) => ({ params: { settore } }));
 }
 
 const { settore } = Astro.params;
-const d = settori[settore];
+const d = SETTORI[settore];
 const title = `${d.h1a} ${d.h1b} — Mole Digitale`;
+// gli altri settori dello stesso gruppo: si linkano a vicenda (e Google li trova tutti)
+const vicini = Object.entries(SETTORI).filter(([s, x]) => x.gruppo === d.gruppo && s !== settore);
+const HUB = '/siti-web-torino/';
 
 // Gruppo del settore: guida sia il preset del preventivo sia il testo delle FAQ
 const groupOf = (slug) => {
@@ -284,6 +38,7 @@ const faqs = [
   { q: `Quanto costa un sito per ${d.h1b}?`, a: group === 'shop'
       ? `Dipende da cosa ti serve. Per ${d.h1b} la scelta tipica è il sito Attività come vetrina con ${inclusoBy.shop} — oppure, se vuoi vendere online, un e-commerce completo con carrello e pagamenti. Ti mandiamo un preventivo su misura entro 24 ore, gratis e senza impegno: dentro trovi la creazione del sito (una tantum) e il canone mensile per hosting, dominio, SSL e assistenza. La prima bozza è gratis.`
       : `Dipende da cosa ti serve: il pacchetto più scelto per ${d.h1b} è il sito Attività, con ${inclusoBy[group]}. Ti mandiamo un preventivo su misura entro 24 ore, gratis e senza impegno: dentro trovi la creazione del sito (una tantum) e il canone mensile per hosting, dominio, SSL e assistenza. La prima bozza è gratis.` },
+  d.domanda,
   { q: 'In quanto tempo è pronto?', a: 'In media 7 giorni lavorativi da quando abbiamo foto e testi. Con il brief guidato su moledigitale.it/inizia raccogliamo tutto in una volta e partiamo subito.' },
   { q: 'Devo avere già foto e testi?', a: 'No. Se non li hai, i testi li scriviamo noi (pensati per farti scegliere dai clienti) e per le foto possiamo organizzare uno shooting a Torino. Si parte anche da una semplice chiacchierata.' },
   { q: 'Verrò trovato su Google?', a: `Il sito nasce ottimizzato per le ricerche locali (es. «${d.h1b.replace(' a Torino', '')} vicino a me») e includiamo la scheda Google Business. I risultati SEO crescono nelle settimane: ti diciamo sempre cosa aspettarti, senza promesse magiche.` },
@@ -296,9 +51,12 @@ const faqSchemaSettore = {
 };
 ---
 <!-- metaDesc: solo per i settori la cui intro supera i ~160 caratteri utili in SERP; altrimenti vale l'intro. -->
-<Layout title={title} description={d.metaDesc ?? d.intro} image={`/og/${settore}.png`}>
+<Layout title={title} description={d.metaDesc ?? d.intro} image={`/og/${settore}.png`} briciole={[{ name: 'Siti web per settore', url: HUB }]}>
   <script type="application/ld+json" set:html={JSON.stringify(faqSchemaSettore)} />
   <section class="section" style="padding-top:8rem;">
+    <nav class="briciole" aria-label="Sei qui">
+      <a href="/">Home</a><span aria-hidden="true">›</span><a href={HUB}>Siti web per settore</a><span aria-hidden="true">›</span><span aria-current="page">{d.etichetta}</span>
+    </nav>
     <div class="section-head" data-reveal>
       <span class="kicker">{d.kicker}</span>
       <h1 style="font-size:clamp(2.2rem,5vw,3.4rem); line-height:1.1;">{d.h1a} <span class="grad">{d.h1b}</span>.</h1>
@@ -319,6 +77,21 @@ const faqSchemaSettore = {
       ))}
     </div>
 
+    <!-- Il contenuto proprio di questo settore (src/data/settori.js, DETTAGLI) -->
+    <div class="land-cercano" data-reveal>
+      <h2>Come ti cercano i clienti</h2>
+      <p>{d.cercano}</p>
+    </div>
+
+    <div class="land-check" data-reveal>
+      <h2>Cosa non deve mancare in un sito per {d.h1b}</h2>
+      <ol class="land-check-grid">
+        {d.checklist.map((c, i) => (
+          <li><span class="lc-n" aria-hidden="true">{i + 1}</span><h3>{c.h}</h3><p>{c.p}</p></li>
+        ))}
+      </ol>
+    </div>
+
     <div class="land-incluso" data-reveal>
       <h2>Sempre incluso, per ogni attività</h2>
       <ul class="spunte">
@@ -332,7 +105,7 @@ const faqSchemaSettore = {
 
     <!-- Anteprima della demo (screenshot reale) -->
     <a class="land-shot glass" href={d.demoUrl} data-reveal>
-      <img src={`/img/thumbs/${d.demoUrl.split('/').pop()}.webp`} alt={`Anteprima del sito demo ${d.demoName}`} loading="lazy" width="760" height="475" />
+      <img src={`/img/thumbs/${d.demoUrl.split('/').filter(Boolean).pop()}.webp`} alt={`Anteprima del sito demo ${d.demoName}`} loading="lazy" width="760" height="475" />
       <span class="land-shot-cap"><b>{d.demoName}</b> — un esempio reale di come può essere il tuo sito · <i>apri la demo →</i></span>
     </a>
 
@@ -340,11 +113,11 @@ const faqSchemaSettore = {
     <div class="land-price" data-reveal>
       <h2>Quanto costa? <span class="grad">Te lo diciamo prima</span>.</h2>
       <div class="land-price-grid">
-        <a class="land-price-card glass" href="/preventivo?progetto=essenziale"><b>Essenziale</b><span class="lp-p">1 pagina</span><span class="lp-d">contatti, mappa, WhatsApp</span></a>
-        <a class="land-price-card glass lp-hot" href="/preventivo?progetto=attivita"><b>Attività</b><span class="lp-p"><i>fino a</i> 6 pagine</span><span class="lp-d">prenotazioni, SEO locale, scheda Google</span></a>
+        <a class="land-price-card glass" href="/preventivo/?progetto=essenziale"><b>Essenziale</b><span class="lp-p">1 pagina</span><span class="lp-d">contatti, mappa, WhatsApp</span></a>
+        <a class="land-price-card glass lp-hot" href="/preventivo/?progetto=attivita"><b>Attività</b><span class="lp-p"><i>fino a</i> 6 pagine</span><span class="lp-d">prenotazioni, SEO locale, scheda Google</span></a>
         <div class="land-price-card glass"><b>Poi</b><span class="lp-p">canone mensile</span><span class="lp-d">hosting, dominio, SSL e assistenza</span></div>
       </div>
-      <p class="lp-note"><a href="/preventivo">Chiedi il preventivo</a>: gratis, entro 24 ore. Prima bozza gratis, nessun anticipo.</p>
+      <p class="lp-note"><a href="/preventivo/">Chiedi il preventivo</a>: gratis, entro 24 ore. Prima bozza gratis, nessun anticipo.</p>
     </div>
 
     {d.widget && (
@@ -363,6 +136,14 @@ const faqSchemaSettore = {
         ))}
       </div>
     </div>
+
+    <nav class="land-vicini" aria-labelledby="vicini-h" data-reveal>
+      <h2 id="vicini-h">Facciamo siti anche per</h2>
+      <ul>
+        {vicini.map(([s, x]) => <li><a href={`/${s}/`}>{x.etichetta}</a></li>)}
+        <li><a href={HUB} class="lv-tutti">Tutti i settori →</a></li>
+      </ul>
+    </nav>
 
     <div class="cta-card glass" data-reveal style="margin-top:3rem; text-align:center; display:block;">
       <h2 style="font-size:clamp(1.6rem,3.5vw,2.4rem); margin-bottom:1rem;">Un sito così, <span class="grad">per la tua attività</span>.</h2>
@@ -405,6 +186,24 @@ const faqSchemaSettore = {
     .land-incluso ul { list-style:none; display:inline-grid; gap:.6rem; text-align:left; margin:0 0 1.2rem; padding:0; }
     .land-incluso li { color:var(--muted); }
     .land-incluso p { color:var(--muted); }
-    @media (max-width:780px){ .land-points, .land-price-grid { grid-template-columns:1fr; } }
+    .briciole { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:.2rem .5rem; margin:0 auto 1.6rem; font-size:.88rem; color:var(--muted-2); }
+    .briciole a { color:var(--muted); text-decoration:underline; text-decoration-color:rgba(184,184,208,.35); text-underline-offset:3px; }
+    .briciole a:hover { color:var(--c2); }
+    .briciole [aria-current] { color:var(--text); }
+    .land-cercano { max-width:760px; margin:3.5rem auto 0; text-align:center; }
+    .land-cercano h2, .land-check h2, .land-vicini h2 { font-size:clamp(1.5rem,3.5vw,2.2rem); margin-bottom:1rem; }
+    .land-cercano p { color:var(--muted); font-size:1.06rem; }
+    .land-check { max-width:960px; margin:3.5rem auto 0; text-align:center; }
+    .land-check-grid { list-style:none; display:grid; grid-template-columns:repeat(2,1fr); gap:1rem; text-align:left; margin-top:1.4rem; }
+    .land-check-grid li { position:relative; padding:1.2rem 1.3rem 1.2rem 3.6rem; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); }
+    .lc-n { position:absolute; left:1.1rem; top:1.15rem; width:1.8rem; height:1.8rem; border-radius:50%; display:grid; place-items:center; background:var(--grad-soft); border:1px solid var(--border); color:var(--c2); font-family:'Space Grotesk Variable','Space Grotesk'; font-weight:700; font-size:.85rem; }
+    .land-check-grid h3 { font-size:1.08rem; margin-bottom:.3rem; }
+    .land-check-grid p { color:var(--muted); font-size:.93rem; }
+    .land-vicini { max-width:760px; margin:3.5rem auto 0; text-align:center; }
+    .land-vicini ul { list-style:none; display:flex; flex-wrap:wrap; justify-content:center; gap:.6rem; }
+    .land-vicini a { display:inline-flex; align-items:center; min-height:44px; padding:.5rem 1.1rem; border-radius:999px; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:.95rem; transition:border-color .2s, color .2s; }
+    .land-vicini a:hover { border-color:rgba(34,211,238,.5); color:var(--c2); }
+    .land-vicini .lv-tutti { color:var(--c2); }
+    @media (max-width:780px){ .land-points, .land-price-grid, .land-check-grid { grid-template-columns:1fr; } }
   </style>
 </Layout>

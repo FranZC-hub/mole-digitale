@@ -13,7 +13,7 @@ Il classico. Il cliente è sul telefono, tocca "Menu", si scarica un PDF pensato
 
 ## 2. Orari sbagliati o introvabili
 
-Sembra banale, ma un cliente davanti alla saracinesca abbassata è un cliente perso — e arrabbiato. Gli orari devono essere in evidenza, aggiornati, e coerenti con la scheda Google. Nelle nostre demo, come quella della [farmacia](/demo/farmacia), l'orario mostra addirittura "aperta/chiusa **adesso**", calcolato in automatico.
+Sembra banale, ma un cliente davanti alla saracinesca abbassata è un cliente perso — e arrabbiato. Gli orari devono essere in evidenza, aggiornati, e coerenti con la scheda Google. Nelle nostre demo, come quella della [farmacia](/demo/farmacia/), l'orario mostra addirittura "aperta/chiusa **adesso**", calcolato in automatico.
 
 ## 3. Niente WhatsApp
 
@@ -21,7 +21,7 @@ A Torino le attività locali ricevono più richieste su WhatsApp che via email. 
 
 ## 4. Nessun modo di prenotare
 
-Se per prenotare bisogna chiamare in orario d'apertura, perdi tutti quelli che decidono la sera sul divano. Un modulo di prenotazione — anche semplice — lavora quando tu sei chiuso. Vale per [ristoranti](/siti-web-ristoranti-torino), [parrucchieri](/siti-web-parrucchieri-torino), [dentisti](/siti-web-dentisti-torino), [centri massaggi](/siti-web-centri-massaggi-torino).
+Se per prenotare bisogna chiamare in orario d'apertura, perdi tutti quelli che decidono la sera sul divano. Un modulo di prenotazione — anche semplice — lavora quando tu sei chiuso. Vale per [ristoranti](/siti-web-ristoranti-torino/), [parrucchieri](/siti-web-parrucchieri-torino/), [dentisti](/siti-web-dentisti-torino/), [centri massaggi](/siti-web-centri-massaggi-torino/).
 
 ## 5. Foto sgranate (o di repertorio)
 
@@ -37,4 +37,4 @@ Il sito più bello del mondo non serve se non compare quando cercano "«quello c
 
 ## Da dove iniziare
 
-Se ti sei riconosciuto in almeno 3 di questi punti, il sito ti sta costando clienti. Puoi [raccontarci la tua attività](/inizia) oppure [scriverci due righe](/#contatti): la prima bozza è gratis, e in una settimana sei online.
+Se ti sei riconosciuto in almeno 3 di questi punti, il sito ti sta costando clienti. Puoi [raccontarci la tua attività](/inizia/) oppure [scriverci due righe](/#contatti): la prima bozza è gratis, e in una settimana sei online.

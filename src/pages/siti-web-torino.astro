@@ -1,0 +1,83 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { SETTORI, GRUPPI } from '../data/settori.js';
+// La pagina che raccoglie tutte le pagine di settore: punta alle ricerche generiche
+// («siti web Torino», «sito per la mia attività») e dà a ogni settore un link in entrata.
+const perGruppo = GRUPPI.map((g) => ({ ...g, settori: Object.entries(SETTORI).filter(([, d]) => d.gruppo === g.id) }));
+const n = Object.keys(SETTORI).length;
+---
+<Layout
+  title="Siti web per settore a Torino — Mole Digitale"
+  description={`Siti web per ristoranti, bar, parrucchieri, centri estetici, dentisti, negozi, hotel e altri settori di Torino: cosa serve a ciascuno e come lo facciamo.`}
+>
+  <section class="section" style="padding-top:8rem;">
+    <nav class="briciole" aria-label="Sei qui">
+      <a href="/">Home</a><span aria-hidden="true">›</span><span aria-current="page">Siti web per settore</span>
+    </nav>
+    <div class="section-head" data-reveal>
+      <span class="kicker">Siti web per settore</span>
+      <h1 style="font-size:clamp(2.2rem,5vw,3.4rem); line-height:1.1;">Un sito su misura <span class="grad">per ogni attività</span> di Torino.</h1>
+      <p class="section-lead">Un ristorante ha bisogno del menu e delle prenotazioni, un dentista di spiegare i trattamenti e far prenotare la prima visita, un hotel di farsi prenotare senza commissioni. Per questo non facciamo un sito uguale per tutti: per ciascuno di questi {n} settori sappiamo come cercano i clienti e cosa non deve mancare. Scegli il tuo.</p>
+    </div>
+
+    {perGruppo.map((g) => (
+      <section class="gruppo" aria-labelledby={'g-' + g.id}>
+        <h2 id={'g-' + g.id} class="gruppo-h2" data-reveal>{g.t}</h2>
+        <ul class="gruppo-griglia">
+          {g.settori.map(([slug, d]) => (
+            <li data-reveal>
+              <a class="settore glass" href={`/${slug}/`}>
+                <h3>{d.etichetta}</h3>
+                <p>{d.points.map((p) => p.h).join(' · ')}</p>
+                <span class="settore-vai">Siti web per {d.h1b.replace(' a Torino', '')} <span aria-hidden="true">→</span></span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+
+    <div class="sempre" data-reveal>
+      <h2>In ogni sito, qualunque sia il settore</h2>
+      <ul class="spunte">
+        <li>Pensato prima di tutto per il telefono</li>
+        <li>Veloce: pagine leggere, che si aprono subito anche in mobilità</li>
+        <li>SEO locale e scheda Google, per farti trovare da chi cerca a Torino</li>
+        <li>WhatsApp, telefono e mappa a un tocco</li>
+        <li>Hosting, dominio, backup e assistenza: ci pensiamo noi</li>
+      </ul>
+      <p>Vuoi un’idea dei costi prima di scriverci? Leggi <a href="/blog/quanto-costa-un-sito-web-a-torino/">quanto costa un sito web a Torino</a>, oppure <a href="/preventivo/">chiedi il preventivo</a>: è gratis.</p>
+    </div>
+
+    <div class="cta-card glass" data-reveal style="margin-top:3rem; text-align:center; display:block;">
+      <h2 style="font-size:clamp(1.6rem,3.5vw,2.4rem); margin-bottom:1rem;">Il tuo settore non c’è?</h2>
+      <p style="color:var(--muted); margin-bottom:1.6rem;">Lavoriamo per tante altre attività: raccontaci la tua e ti mandiamo una prima bozza gratis, su misura.</p>
+      <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <a href="/inizia/" class="btn btn-ghost">Raccontaci la tua attività</a>
+        <a href="/preventivo/" class="btn btn-primary btn-magnetic">Preventivo gratis</a>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .briciole { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:.2rem .5rem; margin:0 auto 1.6rem; font-size:.88rem; color:var(--muted-2); }
+    .briciole a { color:var(--muted); text-decoration:underline; text-decoration-color:rgba(184,184,208,.35); text-underline-offset:3px; }
+    .briciole a:hover { color:var(--c2); }
+    .briciole [aria-current] { color:var(--text); }
+    .gruppo { margin-top:3rem; }
+    .gruppo-h2 { font-size:clamp(1.5rem,3vw,2rem); margin-bottom:1.2rem; }
+    .gruppo-griglia { list-style:none; display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+    .settore { display:flex; flex-direction:column; height:100%; padding:1.3rem 1.4rem; transition:border-color .25s, transform .25s var(--ease); }
+    .settore:hover { border-color:rgba(34,211,238,.45); transform:translateY(-4px); }
+    .settore h3 { font-size:1.2rem; margin-bottom:.45rem; }
+    .settore p { color:var(--muted); font-size:.9rem; margin-bottom:1rem; }
+    .settore-vai { margin-top:auto; color:var(--c2); font-size:.9rem; font-weight:600; }
+    .sempre { max-width:760px; margin:3.5rem auto 0; text-align:center; }
+    .sempre h2 { font-size:clamp(1.5rem,3.5vw,2.2rem); margin-bottom:1.2rem; }
+    .sempre ul { list-style:none; display:inline-grid; gap:.6rem; text-align:left; margin:0 0 1.2rem; padding:0; }
+    .sempre li, .sempre p { color:var(--muted); }
+    .sempre p a { color:var(--c2); text-decoration:underline; text-underline-offset:3px; }
+    @media (max-width:980px){ .gruppo-griglia { grid-template-columns:repeat(2,1fr); } }
+    @media (max-width:600px){ .gruppo-griglia { grid-template-columns:1fr; } }
+  </style>
+</Layout>

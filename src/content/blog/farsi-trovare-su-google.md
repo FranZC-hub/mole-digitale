@@ -27,4 +27,4 @@ Sul sito devono comparire le parole che la gente cerca davvero: la tua **città*
 
 Queste 4 cose, messe insieme, valgono più di tanta pubblicità. Noi le impostiamo per te quando facciamo il sito: scheda Google, struttura SEO e velocità sono incluse.
 
-Vuoi vederne un esempio? Dai un'occhiata alle nostre [demo](/demo), o [scrivici](/#contatti) per il tuo caso.
+Vuoi vederne un esempio? Dai un'occhiata alle nostre [demo](/demo/), guarda cosa facciamo per il [tuo settore](/siti-web-torino/), o [scrivici](/#contatti) per il tuo caso.

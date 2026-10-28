@@ -24,11 +24,15 @@
   Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self' 'unsafe-inline'; connect-src 'self'; frame-src https://www.google.com; form-action 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
 </IfModule>
 
-# --- Forza HTTPS ---
+# --- Forza HTTPS e il www ---
+# Un solo indirizzo per pagina (quello dei canonical e della sitemap), in un solo 301:
+# http://moledigitale.it/x va dritto a https://www.moledigitale.it/x, senza passare
+# da https://moledigitale.it/x. Senza www Google vedeva due copie di ogni pagina.
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteCond %{HTTPS} off
-  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  RewriteCond %{HTTPS} off [OR]
+  RewriteCond %{HTTP_HOST} ^moledigitale\.it$ [NC]
+  RewriteRule ^ https://www.moledigitale.it%{REQUEST_URI} [L,R=301]
 </IfModule>
 
 # --- Pagina di errore 404 brandizzata ---

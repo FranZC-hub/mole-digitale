@@ -19,10 +19,10 @@ Il salto di qualità non è tecnologico, è di attrito: il cliente esprime l'int
 
 Il modulo giusto cambia con il mestiere:
 
-- **Parrucchieri ed estetiste** — servizio + giorno + ora preferita. Guarda la demo del [salone](/demo/salone) o del [centro estetico](/demo/estetica), dove un quiz consiglia perfino il trattamento giusto.
-- **Dentisti e studi medici** — la parola chiave è "prima visita": deve essere prenotabile in due tocchi. Nella [demo dello studio dentistico](/demo/dentista) c'è anche un simulatore di rate.
-- **Ristoranti** — data, ora, coperti. E il menu a portata di pollice, perché si prenota *dopo* aver visto cosa si mangia.
-- **Veterinari** — qui conta distinguere l'urgenza dalla routine: nella [demo dell'ambulatorio](/demo/animali) c'è un triage che indirizza subito ("chiama ora" vs "prenota con calma").
+- **Parrucchieri ed estetiste** — servizio + giorno + ora preferita. Guarda la demo del [salone](/demo/salone/) o del [centro estetico](/demo/estetica/), dove un quiz consiglia perfino il trattamento giusto. Cosa non deve mancare nel sito lo trovi nelle pagine per [parrucchieri](/siti-web-parrucchieri-torino/) ed [estetiste](/siti-web-estetiste-torino/).
+- **Dentisti e studi medici** — la parola chiave è "prima visita": deve essere prenotabile in due tocchi. Nella [demo dello studio dentistico](/demo/dentista/) c'è anche un simulatore di rate. Più dettagli nella pagina dei [siti per dentisti](/siti-web-dentisti-torino/).
+- **Ristoranti** — data, ora, coperti. E il menu a portata di pollice, perché si prenota *dopo* aver visto cosa si mangia. Ne parliamo nella pagina dei [siti per ristoranti](/siti-web-ristoranti-torino/).
+- **Veterinari** — qui conta distinguere l'urgenza dalla routine: nella [demo dell'ambulatorio](/demo/animali/) c'è un triage che indirizza subito ("chiama ora" vs "prenota con calma"). Vedi anche i [siti per veterinari](/siti-web-veterinari-torino/).
 
 ## I tre dettagli che fanno la differenza
 
@@ -32,4 +32,4 @@ Il modulo giusto cambia con il mestiere:
 
 ## Quanto costa?
 
-Meno di quel che pensi: le prenotazioni sono incluse nel nostro pacchetto Attività e puoi vederle funzionare in tutte le [demo](/demo). Se vuoi un numero preciso per il tuo caso, [chiedi un preventivo](/preventivo) — è gratis, e anche la prima bozza del sito.
+Meno di quel che pensi: le prenotazioni sono incluse nel nostro pacchetto Attività e puoi vederle funzionare in tutte le [demo](/demo/). Se vuoi un numero preciso per il tuo caso, [chiedi un preventivo](/preventivo/) — è gratis, e anche la prima bozza del sito.

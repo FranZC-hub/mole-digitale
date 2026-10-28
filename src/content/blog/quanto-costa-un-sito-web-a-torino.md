@@ -25,4 +25,4 @@ Oltre alla creazione (una tantum), c'è una spesa ricorrente da mettere in conto
 
 Noi di Mole Digitale lavoriamo a **prezzo chiaro una tantum**: ti mandiamo un preventivo con la cifra prima di partire, calcolato su quello che ti serve davvero. La prima bozza è gratis e senza impegno, così vedi dove andiamo a parare prima di decidere.
 
-Vuoi sapere quanto costa nel tuo caso? [Chiedi un preventivo](/preventivo): scegli cosa ti serve e ti rispondiamo entro 24 ore con un prezzo chiaro.
+Vuoi sapere quanto costa nel tuo caso? [Chiedi un preventivo](/preventivo/): scegli cosa ti serve e ti rispondiamo entro 24 ore con un prezzo chiaro. Se vuoi prima vedere cosa mettiamo nel sito di un'attività come la tua, parti dalla pagina dei [siti web per settore](/siti-web-torino/).
