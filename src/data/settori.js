@@ -517,8 +517,177 @@ const DETTAGLI = {
   },
 };
 
-// Unisce i dettagli ai dati delle pagine: ogni settore deve averli (la build si ferma se ne manca uno).
+// Secondo strato di contenuto proprio (ottobre 2026): con i soli DETTAGLI ogni pagina aveva ancora
+// ~40% di testo in comune con quella del settore più vicino (bar e pasticcerie, dentisti e osteopati).
+//   funzioni   tre approfondimenti su come lavora il sito in quel settore (blocco «Come lavora il sito»)
+//   domanda3   una terza domanda del settore: prende il posto della FAQ generica «E dopo la consegna?»
+const APPROFONDIMENTI = {
+  'siti-web-ristoranti-torino': {
+    funzioni: [
+      { h: 'Una pagina per ogni momento', p: 'Pranzo di lavoro, cena, pizza da asporto, menu degustazione: chi cerca ha in mente un momento preciso. Una sezione per ciascuno, con i suoi piatti e i suoi prezzi, risponde meglio di un menu unico, e Google la mostra a chi cerca proprio quello, come «pranzo di lavoro Borgo San Paolo» o «pizza da asporto Torino».' },
+      { h: 'Gruppi ed eventi senza telefonate', p: 'Compleanni, cene aziendali, il pranzo di Natale: le richieste dei gruppi arrivano da un modulo con data, numero di persone ed eventuale menu fisso. Rispondi a servizio finito, con tutto scritto, e le date occupate non si perdono tra messaggi e foglietti.' },
+      { h: 'Il menu che segue le stagioni', p: 'Tartufo in autunno, bollito in inverno, piatti freddi d’estate: un menu stagionale aggiornato è un motivo per tornare sul sito e dice a Google che il locale è vivo. Lo aggiorni dal telefono, o ce lo mandi e la pagina cambia in giornata.' },
+    ],
+    domanda3: { q: 'Posso usare il sistema di prenotazione che ho già?', a: 'Sì: se prenoti già con una piattaforma online, il bottone del sito porta lì e l’agenda resta una sola. Se non ne usi una, un modulo semplice ti manda le richieste su WhatsApp o per email.' },
+  },
+  'siti-web-ristoranti-giapponesi-torino': {
+    funzioni: [
+      { h: 'Il menu diviso come si ordina', p: 'Nigiri, uramaki, sashimi, piatti caldi, dolci: il menu segue le categorie con cui si ordina al tavolo, con il numero del piatto se lo usate nell’all you can eat. Chi lo guarda dal telefono trova subito quello che cerca, e al tavolo ordina più in fretta.' },
+      { h: 'Pranzo, cena e asporto separati', p: 'Formula pranzo, formula cena, carta e asporto hanno prezzi e regole diversi: ognuno ha la sua sezione, così nessuno arriva la sera convinto di pagare il prezzo del pranzo. E Google mostra la pagina giusta a chi cerca «sushi pranzo Torino» o «sushi da asporto».' },
+      { h: 'Foto nuove quando cambia il menu', p: 'Nel sushi le foto sono il menu. Quando aggiungete un piatto ci mandate la foto dal telefono e lo mettiamo online con nome, prezzo e allergeni. Le foto vere dei vostri piatti, non quelle di repertorio, sono quelle che fanno ordinare.' },
+    ],
+    domanda3: { q: 'Il menu può essere in più lingue?', a: 'Sì: stesse foto e stessi prezzi, con i nomi e le descrizioni in inglese o in altre lingue. È utile con i turisti e con chi non legge bene l’italiano, e lo gestisci come una pagina sola.' },
+  },
+  'siti-web-bar-torino': {
+    funzioni: [
+      { h: 'La giornata del bar, ora per ora', p: 'Colazione, pranzo veloce, merenda, aperitivo: il bar cambia faccia nel corso della giornata e il sito lo racconta così, una sezione per ogni momento con i prezzi principali. È anche il modo per farsi trovare da chi cerca «pranzo veloce Crocetta» e non solo «bar».' },
+      { h: 'Le serate in calendario', p: 'Musica dal vivo, partite, degustazioni, quiz: una pagina eventi che aggiorni quando serve, con data e ora. Chi cerca «aperitivo con musica Torino» o vuole sapere dove vedere la partita trova te, e la stessa notizia la rilanci su Instagram e sulla scheda Google.' },
+      { h: 'Il dehors in vetrina', p: 'Da aprile a ottobre il dehors è spesso il motivo per cui si sceglie un bar: foto, quanti tavoli, se è coperto o riscaldato, se ci si sta con il cane. Sono dettagli che si cercano prima di uscire di casa e che una foto risolve meglio di qualsiasi descrizione.' },
+    ],
+    domanda3: { q: 'Come tengo aggiornati orari e chiusure per ferie?', a: 'Ci mandi un messaggio e li cambiamo sul sito; per agosto e per le feste mettiamo un avviso in alto, che togliamo alla riapertura. Ricordati di aggiornare anche la scheda Google: i clienti guardano entrambi.' },
+  },
+  'siti-web-pasticcerie-torino': {
+    funzioni: [
+      { h: 'Il calendario delle ricorrenze', p: 'San Valentino, le bugie di Carnevale, Pasqua, la festa del papà, Natale: ogni ricorrenza ha i suoi dolci e il suo tempo per ordinare. Una pagina che cambia nel corso dell’anno, con la data entro cui prenotare, fa arrivare gli ordini per tempo invece che tutti l’ultimo giorno.' },
+      { h: 'Le torte su misura, spiegate', p: 'Per compleanni, battesimi, comunioni e matrimoni il cliente vuole capire cosa è possibile: gusti, piani, decorazioni, scritte, torte a tema. Una galleria divisa per occasione e due righe su come funzionano l’ordine e il ritiro tolgono le domande che oggi arrivano tutte al banco.' },
+      { h: 'Il banco di ogni giorno', p: 'Oltre alle ordinazioni c’è la vetrina quotidiana: paste, biscotti, cioccolato, la colazione se c’è la caffetteria. Raccontarla con foto vere ti fa trovare da chi cerca «pasticceria vicino a me» la domenica mattina, e chi cerca un vassoio di paste per l’ufficio trova il modulo per ordinarlo.' },
+    ],
+    domanda3: { q: 'Posso indicare entro quando ordinare per le feste?', a: 'Sì: per ogni ricorrenza mettiamo in evidenza la data limite per gli ordini e i giorni di ritiro. Quando sei al completo scriviamo «ordini chiusi» e togliamo il modulo: niente ordini che non riesci a fare.' },
+  },
+  'siti-web-parrucchieri-torino': {
+    funzioni: [
+      { h: 'Una pagina per ogni servizio', p: 'Colore, balayage, trattamenti alla cheratina, taglio uomo, acconciature: ogni servizio con la sua pagina, le foto e il prezzo indicativo. È così che Google ti mostra a chi cerca «balayage Torino», e non solo a chi conosce già il nome del salone. E chi legge arriva sapendo cosa chiedere.' },
+      { h: 'Spose e cerimonie', p: 'Acconciature da sposa e da cerimonia si prenotano con mesi di anticipo e valgono più di una piega. Una sezione dedicata, con i lavori fatti, come funziona la prova e un modulo per chiederla, raccoglie richieste che oggi arrivano solo dal passaparola.' },
+      { h: 'Clienti abituali e promemoria', p: 'Chi fa il colore ogni sei settimane torna più volentieri se prenotare è un attimo. Molte agende online per saloni mandano un promemoria prima dell’appuntamento: collegate al sito, riducono le dimenticanze, che in un salone sono ore perse.' },
+    ],
+    domanda3: { q: 'Posso usare l’agenda online che ho già?', a: 'Sì: se il salone usa già un’agenda online, il sito ci porta con un bottone e le prenotazioni restano tutte lì. Se non ce l’hai, ti aiutiamo a sceglierne una adatta a quante persone lavorano con te.' },
+  },
+  'siti-web-estetiste-torino': {
+    funzioni: [
+      { h: 'Una scheda per ogni trattamento', p: 'Pulizia viso, laminazione ciglia, epilazione, trattamenti corpo: ognuno con la sua pagina, che spiega cos’è, per chi è indicato, quanto dura e ogni quanto ripeterlo. Google la mostra a chi cerca proprio quel trattamento a Torino, e risponde alle domande prima della telefonata.' },
+      { h: 'Percorsi e pacchetti', p: 'Molti trattamenti funzionano a cicli: epilazione, trattamenti corpo, percorsi viso. Presentarli come percorsi, con il numero di sedute e il prezzo del pacchetto, aiuta la cliente a decidere e ti porta prenotazioni ripetute invece di appuntamenti singoli.' },
+      { h: 'Le stagioni del centro', p: 'Prima dell’estate epilazione e corpo, in autunno il viso, a Natale i buoni regalo: il sito mette in evidenza quello che conta nel periodo. Una proposta di stagione in prima pagina, cambiata quando serve, è spesso il motivo per cui una cliente prenota proprio da te.' },
+    ],
+    domanda3: { q: 'Conviene indicare quando un trattamento è sconsigliato?', a: 'Sì, è un segno di serietà: per laser, peeling e trattamenti con apparecchiature, due righe su quando evitarli e sulla consulenza iniziale rassicurano. Le scriviamo con te, con un tono informativo e senza promesse di risultato.' },
+  },
+  'siti-web-nail-studio-torino': {
+    funzioni: [
+      { h: 'Il listino che spiega le differenze', p: 'Semipermanente, gel, acrilico, ricostruzione, refill, copertura: chi non è del mestiere non sa cosa scegliere. Due righe per ciascun servizio, con durata, prezzo e ogni quanto rifarlo, fanno prenotare il servizio giusto e non sbagliare il tempo in agenda.' },
+      { h: 'Gli stili del momento', p: 'French, baby boomer, effetto cromato, nail art a tema per le feste: gli stili cambiano ogni stagione e si cercano per nome. Una galleria dei tuoi lavori divisa per stile, aggiornata spesso, ti fa trovare anche da chi cerca uno stile preciso e lo studio ancora non lo conosce.' },
+      { h: 'Le regole dello studio', p: 'Ritardi, disdette, rimozione di lavori fatti altrove, acconto per la nail art più lunga: scritte sul sito, le regole evitano discussioni e buchi in agenda. La cliente le legge prima di prenotare, e tu non devi spiegarle ogni volta.' },
+    ],
+    domanda3: { q: 'Posso chiedere un acconto per gli appuntamenti lunghi?', a: 'Sì: diverse agende online permettono di chiedere un acconto per i servizi più lunghi o per le clienti nuove. È il modo più semplice per ridurre gli appuntamenti saltati senza avviso.' },
+  },
+  'siti-web-centri-massaggi-torino': {
+    funzioni: [
+      { h: 'Ogni massaggio spiegato', p: 'Decontratturante, rilassante, sportivo, con pietre calde, di coppia: chi cerca spesso non conosce le differenze. Una pagina per ciascuno, con come si svolge, quanto dura e a chi piace di più, aiuta a scegliere e ti fa trovare da chi cerca quel massaggio preciso a Torino.' },
+      { h: 'Il regalo comprato la sera prima', p: 'I buoni regalo si comprano spesso all’ultimo momento, la sera prima del compleanno. Se il sito permette di sceglierli e pagarli online, vendi anche a centro chiuso: a San Valentino, per la festa della mamma e a Natale sono la parte più visitata del sito.' },
+      { h: 'Un ambiente da mostrare', p: 'Le stanze, le luci, la doccia, la stanza per la coppia: chi vuole rilassarsi vuole sapere dove andrà. Foto vere e due righe su come si svolge la prima volta, dall’accoglienza alla fine del trattamento, tolgono l’imbarazzo a chi non è mai stato in un centro massaggi.' },
+    ],
+    domanda3: { q: 'Si può prenotare il massaggio di coppia online?', a: 'Sì: si prenota come un servizio unico che blocca due operatori e la stanza nello stesso orario. Il cliente sceglie il giorno e vede solo gli orari in cui sono liberi entrambi.' },
+  },
+  'siti-web-profumerie-torino': {
+    funzioni: [
+      { h: 'Le famiglie olfattive', p: 'Agrumati, floreali, legnosi, ambrati: molti clienti non sanno il nome del profumo che cercano, ma sanno cosa amano. Una sezione che li guida per famiglie olfattive, con le fragranze che hai in negozio, trasforma la curiosità in una visita e ti fa trovare anche da chi non cerca una marca.' },
+      { h: 'Cosmetica e trattamenti', p: 'Molte profumerie hanno anche skincare, make-up e una cabina estetica: meritano pagine a parte, con le linee trattate e i servizi. Chi cerca una linea cosmetica precisa a Torino scopre che la trova da te, e chi viene per la crema torna per il profumo.' },
+      { h: 'Le idee regalo', p: 'Natale, San Valentino, la festa della mamma e del papà: la profumeria vive di regali. Una pagina di idee per fascia di prezzo, con la confezione e la possibilità di prenotare e ritirare, aiuta chi non sa cosa scegliere e porta in negozio chi altrimenti comprerebbe online.' },
+    ],
+    domanda3: { q: 'Posso far richiedere i campioncini dal sito?', a: 'Sì, come richiesta: il cliente indica le fragranze che vuole provare e passa a ritirarle, oppure le prova in negozio su appuntamento. È un modo semplice per portare in profumeria chi sta ancora scegliendo.' },
+  },
+  'siti-web-dentisti-torino': {
+    funzioni: [
+      { h: 'Le pagine dei trattamenti', p: 'Igiene e prevenzione, conservativa, endodonzia, implantologia, ortodonzia anche trasparente, pedodonzia: una pagina per ciascuno, che spiega cos’è, come si svolge e quante sedute servono. Sono le pagine che rispondono a chi cerca «apparecchio trasparente Torino» e lo fanno arrivare con le domande giuste.' },
+      { h: 'Lo studio e chi ci lavora', p: 'Chi sceglie un dentista vuole sapere chi lo curerà: i professionisti con titoli e ambiti di lavoro, l’iscrizione all’albo, le attrezzature dello studio. È il contenuto informativo adatto a uno studio sanitario, e mette a proprio agio chi del dentista ha paura.' },
+      { h: 'La prima visita, senza ansia', p: 'Molti rimandano per timore del dolore o del costo. Spiegare come si svolge la prima visita, quanto dura, se si fanno radiografie e come si arriva al preventivo scritto toglie due paure in una volta: chi si sente tranquillo prenota, chi non trova risposte rimanda ancora.' },
+    ],
+    domanda3: { q: 'Posso indicare convenzioni e modalità di pagamento?', a: 'Sì, sono informazioni utili e cercate: fondi e assicurazioni convenzionati, modalità di pagamento, eventuali rateizzazioni. Si scrivono in modo informativo, senza trasformarle in offerte promozionali.' },
+  },
+  'siti-web-osteopati-torino': {
+    funzioni: [
+      { h: 'Una pagina per ogni situazione', p: 'Mal di schiena, cervicale, gravidanza, sportivi, neonati: una pagina per ciascuna situazione, scritta in modo informativo, spiega come lavori in quel caso. Chi cerca «osteopata cervicale Torino» trova una risposta precisa invece di una pagina generica, e capisce se sei la persona giusta.' },
+      { h: 'La prima seduta, spiegata', p: 'Cosa succede nel primo incontro: il colloquio, la valutazione, il trattamento, quanto dura, cosa indossare, se portare esami o referti. Sono dettagli semplici, ma per chi non è mai stato da un osteopata fanno la differenza tra prenotare e rimandare.' },
+      { h: 'Il lavoro con gli altri professionisti', p: 'Se collabori con medici, fisioterapisti od ostetriche, dirlo rassicura: il paziente capisce che sei una parte del percorso, non un’alternativa alla medicina. Una pagina sullo studio e sulla rete con cui lavori costruisce fiducia meglio di qualsiasi slogan.' },
+    ],
+    domanda3: { q: 'Posso pubblicare le recensioni dei pazienti?', a: 'Puoi mostrare quelle della tua scheda Google collegandola al sito: sono pubbliche e verificabili. Meglio evitare testimonianze che parlano di guarigioni: un tono informativo è più corretto e più credibile.' },
+  },
+  'siti-web-veterinari-torino': {
+    funzioni: [
+      { h: 'Una pagina per ogni servizio', p: 'Visite e vaccinazioni, chirurgia, ecografie e radiografie, odontoiatria, esami del sangue, microchip e passaporto per l’estero: ogni servizio con due righe su come si svolge e come prepararsi. Chi cerca «ecografia cane Torino» trova la pagina giusta e chiama già informato.' },
+      { h: 'I richiami durante l’anno', p: 'Cucciolo nuovo, richiami dei vaccini, prevenzione per zecche e filaria: una pagina con il calendario che consigli, e il modulo per prenotare il richiamo subito sotto. È una pagina che i proprietari aprono più volte all’anno, e ogni volta li riporta da te.' },
+      { h: 'Esotici e visite a domicilio', p: 'Se tratti conigli, furetti, uccelli o rettili, una pagina dedicata ti fa trovare da chi fa fatica a trovare un veterinario per il suo animale. Lo stesso vale per le visite a domicilio, preziose per animali anziani o difficili da trasportare.' },
+    ],
+    domanda3: { q: 'Come spiego ai clienti quando arrivano i risultati degli esami?', a: 'Con due righe chiare sul sito: quali esami fate in ambulatorio, quali mandate al laboratorio e come comunicate l’esito, per telefono o per email. Il cliente sa cosa aspettarsi, e il telefono squilla meno.' },
+  },
+  'siti-web-farmacie-torino': {
+    funzioni: [
+      { h: 'Una pagina per ogni servizio', p: 'Pressione, ECG e holter, autoanalisi, vaccinazioni dove previste, noleggio di bilance pesaneonati e tiralatte, preparazioni galeniche: ogni servizio con cosa serve, quanto dura e come prenotarlo. Sono le pagine che Google mostra a chi cerca proprio quel servizio in farmacia, vicino a casa.' },
+      { h: 'I reparti, raccontati', p: 'Dermocosmesi, infanzia, integratori, veterinaria, senza glutine: molte farmacie hanno reparti che i clienti non conoscono. Una pagina per reparto, con le marche principali, ti fa trovare da chi cerca «farmacia dermocosmesi Torino» e porta al banco chi oggi compra online.' },
+      { h: 'I consigli di stagione', p: 'Allergie in primavera, protezione solare d’estate, raffreddore e influenza in autunno: il sito mette in evidenza i servizi e i consigli del periodo, con un linguaggio informativo. Sono contenuti utili, che fanno tornare i clienti e che puoi rilanciare sulla scheda Google.' },
+    ],
+    domanda3: { q: 'Posso far prenotare i prodotti da ritirare?', a: 'Sì, per parafarmaco e cosmetica: il cliente sceglie e passa a ritirare, come in un negozio. Per i farmaci il sito può raccogliere una richiesta di disponibilità, che poi conferma il farmacista.' },
+  },
+  'siti-web-negozi-torino': {
+    funzioni: [
+      { h: 'Le pagine per categoria', p: 'Una pagina per ogni reparto, con le foto dei prodotti più rappresentativi e le marche, è quello che ti fa trovare quando qualcuno cerca un prodotto preciso a Torino. Google mostra la pagina delle scarpe da corsa a chi cerca scarpe da corsa, non una home generica.' },
+      { h: 'Novità e promozioni', p: 'Nuovi arrivi, collezioni di stagione, saldi: una sezione che aggiorni quando cambia la vetrina dà un motivo per tornare sul sito e per passare in negozio. La stessa notizia va sulla scheda Google, dove la vede anche chi passa di lì.' },
+      { h: 'Il servizio che le catene non hanno', p: 'Consiglio, riparazioni, prove, consegna in zona, ordini su richiesta: sono i motivi per cui si sceglie un negozio di quartiere. Scriverli sul sito, insieme a un modo per chiedere un prodotto che non vedi esposto, trasforma una ricerca online in una visita.' },
+    ],
+    domanda3: { q: 'Posso far richiedere un prodotto che non ho in negozio?', a: 'Sì: un modulo raccoglie prodotto, marca e contatti, e ti arriva su WhatsApp. Rispondi con disponibilità e tempi, il cliente passa a ritirare: una vendita che altrimenti sarebbe andata online.' },
+  },
+  'siti-web-gioiellerie-torino': {
+    funzioni: [
+      { h: 'Fedi e anelli di fidanzamento', p: 'Sono gli acquisti più pensati e più cercati: «fedi nuziali Torino», «anello di fidanzamento». Una pagina dedicata con gli stili, i metalli, i tempi di realizzazione e l’incisione, insieme alla richiesta di appuntamento, porta in negozio coppie che hanno già scelto voi.' },
+      { h: 'Il laboratorio, mostrato', p: 'Se avete un laboratorio è il vostro vantaggio: riparazioni, misure degli anelli, creazioni su disegno, gioielli di famiglia rimontati. Le foto del banco di lavoro e qualche prima e dopo raccontano un saper fare che le catene non hanno.' },
+      { h: 'Orologi e piccoli servizi', p: 'Cambio pila, revisione, cinturini, valutazione: anche i servizi piccoli portano gente in negozio, e chi entra per una pila spesso torna per un regalo. Ogni servizio con i tempi indicativi e un modulo per chiedere informazioni risparmia telefonate.' },
+    ],
+    domanda3: { q: 'Posso ricevere richieste per gioielli su misura?', a: 'Sì: un modulo raccoglie l’idea del cliente, il budget indicativo e, se vuole, una foto o un disegno di riferimento. Arriva tutto per iscritto, e fissate l’appuntamento per parlarne in negozio.' },
+  },
+  'siti-web-officine-torino': {
+    funzioni: [
+      { h: 'Una pagina per ogni lavoro', p: 'Tagliando, freni, frizione, distribuzione, climatizzatore, gomme e deposito, revisione se la fate: una pagina per ciascun lavoro, con cosa comprende e quanto tempo serve. Chi cerca «ricarica clima auto Torino» trova direttamente il servizio, non solo il nome dell’officina.' },
+      { h: 'Il cambio gomme di stagione', p: 'Due volte l’anno molti cercano chi monta le gomme invernali o estive, con l’obbligo di gomme da neve o catene a bordo sulle strade dove è previsto. Una pagina che apre le prenotazioni per tempo e spiega il deposito pneumatici riempie l’agenda prima della corsa di novembre.' },
+      { h: 'I segnali di serietà', p: 'Auto di cortesia, ritiro e consegna, preventivo scritto prima di cominciare, garanzia sui lavori: chi ha avuto brutte esperienze in officina cerca proprio questi segnali. Se li offri, vanno in evidenza: spesso decidono la scelta più del prezzo.' },
+    ],
+    domanda3: { q: 'Conviene indicare marche e ricambi con cui lavoro?', a: 'Sì: le marche in cui siete specializzati e il tipo di ricambi, originali o equivalenti, aiutano chi confronta. Detto con chiarezza, è uno dei motivi per cui si sceglie un’officina invece di un’altra.' },
+  },
+  'siti-web-lavanderie-torino': {
+    funzioni: [
+      { h: 'I capi speciali', p: 'Abiti da sposa, piumini, tappeti, tende, pelle, divise da lavoro: sono i servizi che si cercano per nome e che valgono una visita. Una pagina per ciascuno, con come li trattate, i tempi e il prezzo indicativo, ti fa trovare da chi cerca «lavaggio tappeti Torino».' },
+      { h: 'Attività e affitti brevi', p: 'Ristoranti, saloni, palestre, B&B e case vacanza lavano biancheria tutte le settimane. Una sezione per le attività, con il ritiro programmato e la richiesta di preventivo, ti porta clienti che fanno lavoro ogni settimana, non una volta all’anno.' },
+      { h: 'Il self service, spiegato', p: 'Chi non ha mai usato una lavanderia self service ha dubbi semplici: quanto dura un lavaggio, quanti chili per macchina, se il detersivo è compreso, come si paga. Due righe chiare e qualche foto tolgono l’imbarazzo della prima volta.' },
+    ],
+    domanda3: { q: 'Posso avere prezzi diversi per aziende e clienti abituali?', a: 'Sì: il listino del sito vale per tutti, e per attività e clienti abituali scriviamo «tariffe su richiesta» con il modulo per il preventivo. Il prezzo al banco resta chiaro, le condizioni speciali le decidi tu.' },
+  },
+  'siti-web-agenzie-viaggi-torino': {
+    funzioni: [
+      { h: 'Una pagina per ogni meta che conoscete', p: 'Un’agenzia vale per l’esperienza: chi c’è stato, quali hotel ha visto, quali errori fa evitare. Una pagina per ogni meta che conoscete bene, con periodo migliore, durata consigliata e un’idea di itinerario, risponde a chi cerca «tour del Giappone organizzato» e mostra quello che un portale non sa fare.' },
+      { h: 'Gruppi, scuole e aziende', p: 'Viaggi di gruppo, gite scolastiche, viaggi aziendali, pellegrinaggi: richiedono organizzazione e sono il lavoro che i portali non fanno. Una sezione dedicata, con un modulo che chiede persone, periodo e budget, porta richieste complete e di valore.' },
+      { h: 'Partire da Torino', p: 'Chi parte da Torino vuole sapere come arriverà: volo da Caselle o da Malpensa, treno, partenze organizzate in pullman. Indicare da dove partono le vostre proposte e se il trasferimento è compreso rende concreta l’offerta, e ti fa scegliere da chi non vuole pensare alla logistica.' },
+    ],
+    domanda3: { q: 'Posso pubblicare le offerte last minute?', a: 'Sì, con una sezione che aggiorni quando hai un’offerta, con date, cosa è compreso e fino a quando vale. Le offerte con una scadenza chiara funzionano bene anche sui social e sulla scheda Google.' },
+  },
+  'siti-web-hotel-torino': {
+    funzioni: [
+      { h: 'Torino a due passi', p: 'Chi viene a Torino ha un motivo: una fiera al Lingotto, una partita, il Museo Egizio, una visita in ospedale, un concerto. Una pagina su come raggiungere da te i luoghi principali, con i tempi a piedi o con i mezzi, ti fa trovare da chi cerca «hotel vicino al Lingotto» o «B&B vicino a Porta Nuova».' },
+      { h: 'Ospiti che tornano', p: 'Chi ha già dormito da te e torna a Torino deve trovarti in un attimo e prenotare senza passare dal portale. Il sito, un piccolo vantaggio per chi prenota diretto e WhatsApp per le richieste speciali, come check-in tardivo, culla o parcheggio, trasformano un ospite in un cliente abituale.' },
+      { h: 'Le regole della casa', p: 'Orari della colazione, parcheggio, animali, check-in autonomo, imposta di soggiorno: sono le domande che arrivano a tutte le ore. Scritte bene sul sito, in italiano e in inglese, rispondono prima che l’ospite scriva e tolgono il dubbio a chi sta scegliendo tra te e un’altra struttura.' },
+    ],
+    domanda3: { q: 'Posso mostrare le recensioni sul sito?', a: 'Sì: la cosa più semplice è collegare quelle della scheda Google, che sono tue; il punteggio dei portali si può citare rispettando le loro regole. Le recensioni vicino al bottone «prenota» sono quelle che convincono.' },
+  },
+  'siti-web-addestratori-cani-torino': {
+    funzioni: [
+      { h: 'I problemi che risolvi', p: 'Il cane che tira al guinzaglio, che abbaia quando resta solo, che salta addosso, che non torna al richiamo: chi ha un problema lo cerca con le sue parole. Una pagina per ciascuno, che spiega come lo affronti, ti fa trovare da chi cerca proprio quello e mostra il tuo metodo meglio di una descrizione generale.' },
+      { h: 'Gruppo o lezione individuale', p: 'Classi per cuccioli, educazione di base in gruppo, lezioni individuali, percorsi a domicilio, sport cinofili: formule diverse per esigenze diverse. Indicare per ciascuna durata, numero di incontri e cosa si impara aiuta il proprietario a scegliere senza mille domande.' },
+      { h: 'Prima che arrivi il cucciolo', p: 'Molti cercano un educatore prima ancora di portare a casa il cucciolo. Una guida su come prepararsi, cosa comprare e quando cominciare, con il corso cuccioli in fondo alla pagina, incontra queste famiglie nel momento giusto e le porta al campo.' },
+    ],
+    domanda3: { q: 'Conviene indicare la mia formazione?', a: 'Sì: il percorso di formazione, l’ente con cui ti sei formato e gli aggiornamenti rassicurano chi deve affidarti il cane. Li scriviamo in modo semplice, senza sigle incomprensibili.' },
+  },
+};
+
+// Unisce dettagli e approfondimenti ai dati delle pagine: ogni settore deve averli
+// (la build si ferma se ne manca uno).
 for (const [slug, d] of Object.entries(SETTORI)) {
   if (!DETTAGLI[slug]) throw new Error(`settori.js: mancano i DETTAGLI di ${slug}`);
-  Object.assign(d, DETTAGLI[slug]);
+  if (!APPROFONDIMENTI[slug]) throw new Error(`settori.js: mancano gli APPROFONDIMENTI di ${slug}`);
+  Object.assign(d, DETTAGLI[slug], APPROFONDIMENTI[slug]);
 }

@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getCollection, render } from 'astro:content';
+import { SETTORI, GRUPPI } from '../../data/settori.js';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -19,6 +20,18 @@ const related = (await getCollection('blog'))
   .filter((p) => p.id !== post.id)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, 2);
+
+// Pagine di settore collegate alla guida: le guide di un settore linkano quel gruppo,
+// quelle valide per tutti (costi, dominio, Google…) linkano tutti i settori.
+// È il percorso inverso di «Da leggere prima di cominciare» nelle pagine di settore.
+const GRUPPI_PER_GUIDA = {
+  'sito-per-ristorante': ['ristorazione'],
+  'menu-qr-code-ristorante': ['ristorazione'],
+  'prenotazioni-online-attivita': ['ristorazione', 'bellezza', 'salute'],
+  'sito-vetrina': ['negozi', 'bellezza', 'servizi'],
+};
+const gruppiGuida = GRUPPI_PER_GUIDA[post.id] ?? GRUPPI.map((g) => g.id);
+const settoriGuida = Object.entries(SETTORI).filter(([, d]) => gruppiGuida.includes(d.gruppo));
 ---
 <Layout title={post.data.title} description={post.data.description} image={post.data.og} article={{ datePublished: post.data.date.toISOString(), dateModified: post.data.updated?.toISOString() }}>
   <article class="section blog-article" style="padding-top:8rem;">
@@ -33,6 +46,13 @@ const related = (await getCollection('blog'))
       <p>Vuoi un sito così per la tua attività a Torino?</p>
       <a href="/#contatti" class="btn btn-primary btn-magnetic btn-lg">Preventivo gratis →</a>
     </div>
+
+    <nav class="blog-settori" aria-labelledby="blog-settori-h" data-reveal>
+      <h2 id="blog-settori-h">{settoriGuida.length < Object.keys(SETTORI).length ? 'Siti per il tuo settore' : 'Siti web per ogni settore'}</h2>
+      <ul>
+        {settoriGuida.map(([slug, d]) => <li><a href={`/${slug}/`}>{d.etichetta}</a></li>)}
+      </ul>
+    </nav>
 
     {related.length > 0 && (
       <aside class="blog-related" aria-label="Altre guide" data-reveal>
@@ -50,7 +70,7 @@ const related = (await getCollection('blog'))
   </article>
   <style>
     .blog-article { max-width:760px; margin:0 auto; }
-    .blog-back { color:var(--c2); display:inline-block; margin-bottom:1.5rem; }
+    .blog-back { color:var(--c2); display:block; width:fit-content; margin-bottom:1.5rem; }
     .blog-article h1 { font-size:clamp(2rem,5vw,3rem); margin:.4rem 0 2rem; line-height:1.12; }
     .prose :global(h2) { font-size:1.6rem; margin:2.2rem 0 .8rem; }
     .prose :global(p) { color:var(--muted); margin-bottom:1.1rem; line-height:1.75; }
@@ -64,6 +84,11 @@ const related = (await getCollection('blog'))
     .prose :global(figcaption) { color:var(--muted-2); font-size:.86rem; margin-top:.6rem; text-align:center; }
     .blog-cta { text-align:center; margin-top:3rem; padding-top:2rem; border-top:1px solid var(--border); }
     .blog-cta p { color:var(--muted); margin-bottom:1rem; }
+    .blog-settori { margin-top:3rem; }
+    .blog-settori h2 { font-size:1.3rem; margin-bottom:1rem; }
+    .blog-settori ul { list-style:none; display:flex; flex-wrap:wrap; gap:.5rem; }
+    .blog-settori a { display:inline-flex; align-items:center; min-height:40px; padding:.4rem 1rem; border-radius:999px; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:.9rem; transition:border-color .2s, color .2s; }
+    .blog-settori a:hover { border-color:rgba(34,211,238,.5); color:var(--c2); }
     .blog-related { margin-top:3rem; }
     .blog-related h2 { font-size:1.3rem; margin-bottom:1rem; }
     .blog-related-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }

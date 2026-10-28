@@ -1,5 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { SETTORI, GRUPPI } from '../data/settori.js';
+const settoriPerGruppo = GRUPPI.map((g) => ({ ...g, voci: Object.entries(SETTORI).filter(([, d]) => d.gruppo === g.id) }));
 // Chi siamo: per Google, per l'intelligenza artificiale e per i clienti conta sapere chi c'è
 // dietro. DA AGGIUNGERE appena possibile (non inventarli): nome e foto di chi lavora ai siti,
 // due righe di storia, e la partita IVA (va anche nel piede, è obbligatoria in home page).
@@ -79,6 +81,20 @@ const servizi = [
       </article>
     </div>
 
+    <div class="cs-clienti" data-reveal>
+      <h2 class="cs-h2">Con chi lavoriamo</h2>
+      <p>Con le attività che i clienti trovano cercando sul telefono: chi ha un locale, un negozio, uno studio, un laboratorio. Ogni settore ha le sue domande. Al ristorante chiedono il menu e il tavolo libero, dal dentista il primo appuntamento e le urgenze, in officina il preventivo. Per questo per ogni settore abbiamo una pagina che spiega cosa mettiamo nel sito e perché.</p>
+      <div class="cs-gruppi">
+        {settoriPerGruppo.map((g) => (
+          <div>
+            <h3>{g.t}</h3>
+            <ul>{g.voci.map(([slug, d]) => <li><a href={`/${slug}/`}>{d.etichetta}</a></li>)}</ul>
+          </div>
+        ))}
+      </div>
+      <p>Il tuo settore non c'è? Facciamo siti anche per tutte le altre attività: raccontaci la tua e ti mostriamo come lo imposteremmo.</p>
+    </div>
+
     <div style="text-align:center; margin-top:3rem;" data-reveal>
       <a href="/#contatti" class="btn btn-primary btn-magnetic btn-lg">Parliamo del tuo sito →</a>
     </div>
@@ -96,6 +112,15 @@ const servizi = [
     .cs-servizi p { color:var(--muted); font-size:.93rem; margin-bottom:1rem; }
     .cs-servizi a { margin-top:auto; color:var(--c2); font-weight:600; font-size:.92rem; }
     .cs-due { margin-top:3.5rem; }
+    .cs-clienti { max-width:980px; margin:0 auto; }
+    .cs-clienti > p { color:var(--muted); max-width:760px; margin:0 auto 1.4rem; text-align:center; }
+    .cs-gruppi { display:grid; grid-template-columns:repeat(5,1fr); gap:1.4rem; margin:0 0 1.6rem; }
+    .cs-gruppi h3 { font-size:.82rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted-2); margin-bottom:.6rem; }
+    .cs-gruppi ul { list-style:none; display:grid; gap:.15rem; }
+    .cs-gruppi a { display:inline-flex; min-height:32px; align-items:center; color:var(--text); }
+    .cs-gruppi a:hover { color:var(--c2); }
+    @media (max-width:980px){ .cs-gruppi { grid-template-columns:repeat(3,1fr); } }
+    @media (max-width:560px){ .cs-gruppi { grid-template-columns:1fr 1fr; } }
     .cs-lista { list-style:none; display:grid; gap:.7rem; }
     .cs-lista li { color:var(--muted); }
     .cs-lista b { color:var(--text); font-weight:600; }

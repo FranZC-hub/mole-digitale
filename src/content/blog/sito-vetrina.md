@@ -13,7 +13,7 @@ og: "/og/blog-sito-vetrina.png"
 
 ## A chi basta (e a chi no)
 
-Basta a chi vende o lavora **sul posto**: ristoranti, bar, parrucchieri, officine, studi, negozi che non spediscono. Per loro il sito deve far trovare l'attività su Google e convincere a chiamare, scrivere o passare.
+Basta a chi vende o lavora **sul posto**: [ristoranti](/siti-web-ristoranti-torino/), [bar](/siti-web-bar-torino/), [parrucchieri](/siti-web-parrucchieri-torino/), [officine](/siti-web-officine-torino/), studi, [negozi](/siti-web-negozi-torino/) che non spediscono. Per loro il sito deve far trovare l'attività su Google e convincere a chiamare, scrivere o passare.
 
 Non basta quando:
 

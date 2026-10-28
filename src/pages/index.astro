@@ -7,6 +7,14 @@ import lavoroSalone from '../assets/img/lavoro-salone.jpg';
 import lavoroOfficina from '../assets/img/lavoro-officina.jpg';
 import primaImg from '../assets/img/prima.jpg';
 import dopoImg from '../assets/img/dopo.jpg';
+import { SETTORI, GRUPPI } from '../data/settori.js';
+
+// Tutti i settori, divisi per gruppo: dalla home ogni pagina di settore è a un clic
+// (prima ne erano linkate 8 su 20, le altre solo passando dalla pagina che le raccoglie)
+const settoriPerGruppo = GRUPPI.map((g) => ({
+  ...g,
+  voci: Object.entries(SETTORI).filter(([, d]) => d.gruppo === g.id),
+}));
 ---
 <Layout>
   <!-- ===================== HERO ===================== -->
@@ -483,11 +491,22 @@ import dopoImg from '../assets/img/dopo.jpg';
   </section>
 
   <!-- Internal linking per settore (SEO locale) -->
-  <section class="section settori-links" style="padding-top:0; padding-bottom:2rem; text-align:center;">
-    <p data-reveal style="color:var(--muted); max-width:780px; margin:0 auto; font-size:1.05rem;">
-      {/* Tutto su una riga: il compilatore toglie gli a capo tra testo e link, e con loro gli spazi */}
-      Facciamo siti su misura per <a href="/siti-web-ristoranti-torino/">ristoranti</a>, <a href="/siti-web-bar-torino/">bar</a>, <a href="/siti-web-parrucchieri-torino/">parrucchieri</a>, <a href="/siti-web-estetiste-torino/">estetiste</a>, <a href="/siti-web-pasticcerie-torino/">pasticcerie</a>, <a href="/siti-web-officine-torino/">officine</a>, <a href="/siti-web-hotel-torino/">hotel</a> e <a href="/siti-web-gioiellerie-torino/">gioiellerie</a> di Torino — e per <a href="/siti-web-torino/">tante altre attività</a>.
-    </p>
+  <section class="section settori-links" aria-labelledby="settori-h" style="padding-top:0; padding-bottom:2rem;">
+    <div class="section-head" data-reveal>
+      <h2 id="settori-h" style="font-size:clamp(1.5rem,3.5vw,2.2rem);">Trova il sito per il tuo settore</h2>
+      <p class="section-lead">Per ogni settore una pagina con quello che cercano i tuoi clienti e quello che il sito deve avere.</p>
+    </div>
+    <div class="settori-gruppi" data-reveal>
+      {settoriPerGruppo.map((g) => (
+        <div class="settori-gruppo">
+          <h3>{g.t}</h3>
+          <ul>
+            {g.voci.map(([slug, d]) => <li><a href={`/${slug}/`}>{d.etichetta}</a></li>)}
+          </ul>
+        </div>
+      ))}
+    </div>
+    <p class="settori-tutti" data-reveal><a href="/siti-web-torino/">Tutti i settori in una pagina →</a></p>
   </section>
 
   <!-- ===================== CTA / CONTATTI ===================== -->
