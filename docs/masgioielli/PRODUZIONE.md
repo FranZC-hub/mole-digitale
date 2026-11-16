@@ -59,7 +59,7 @@ riservata salva i dati nel browser di chi la usa (localStorage), senza database.
 
 ## Contenuti — 👤 dal negozio
 
-- ⬜ **Foto della home**: quella grande in apertura è d'archivio (`img/apertura-provvisoria.webp`)
+- ✅ **Foto della home**: l'anello con diamante giallo mandato dal negozio (`img/apertura.webp`, novembre 2026)
 - ⬜ **I pezzi della Selezione** (la sezione resta nascosta finché è vuota)
 - ⬜ **I marchi che trattano davvero** (nelle loro foto si vedono Salvatore Arzani e Giorgio Visconti)
 - ✅ **Numero di iscrizione al Registro OAM** per il Compro oro (`INFO.oam` in `_sito.js`):

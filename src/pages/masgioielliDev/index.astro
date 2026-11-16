@@ -11,11 +11,13 @@ const mestieri = [
   { n: '04', t: 'Perizie', d: 'Valutazioni per successioni, divisioni ereditarie e cassette di sicurezza. Con discrezione.', href: 'perizie/' },
   { n: '05', t: 'Compro oro', d: 'Il vostro oro usato, pesato e valutato davanti a voi sulla quotazione del giorno.', href: 'compro-oro/' },
 ];
-// fotografie del negozio vero (dal sito attuale, di Elisa Miglietti)
+// La riga di fotografie sotto «Il negozio»: il laboratorio, con le sole quattro foto mandate dal
+// negozio (novembre 2026), le stesse della pagina Atelier.
 const negozio = [
-  { src: BASE + 'img/vetrina.webp', w: 627, h: 419, alt: 'Una vetrina interna del negozio con collane e anelli esposti', t: 'Le vetrine' },
-  { src: BASE + 'img/insegna.webp', w: 627, h: 419, alt: 'Il logo MAS inciso sul vetro all’ingresso del negozio', t: 'L’ingresso' },
-  { src: BASE + 'img/lab-banco.webp', w: 800, h: 534, alt: 'Il banco del laboratorio con gli attrezzi da orologiaio', t: 'Il laboratorio' },
+  { src: BASE + 'img/lab-fusione.webp', w: 800, h: 534, alt: 'Fusione dell’oro nel crogiolo, con la fiamma del cannello', t: 'Fusione' },
+  { src: BASE + 'img/lab-lima.webp', w: 800, h: 534, alt: 'Un modello in cera rifinito a lima al banco dell’orafo', t: 'Rifinitura del modello in cera' },
+  { src: BASE + 'img/lab-lucidatura.webp', w: 800, h: 534, alt: 'Lucidatura di un bracciale alla spazzola', t: 'Lucidatura' },
+  { src: BASE + 'img/lab-componenti.webp', w: 800, h: 534, alt: 'I componenti di un movimento d’orologio smontato, in ordine sul banco', t: 'I componenti di un movimento' },
 ];
 ---
 <Layout title="Preziosi di qualità dal 1996" active="Maison">
@@ -33,9 +35,10 @@ const negozio = [
     </div>
     <div class="apertura-foto">
       <span class="apertura-cornice" aria-hidden="true"></span>
-      {/* FOTO PROVVISORIA (archivio): da sostituire con una foto del negozio prima della pubblicazione */}
-      <img src={BASE + 'img/apertura-provvisoria.webp'} width="660" height="660"
-           alt="Anello con diamante a taglio principessa, dettaglio ravvicinato" fetchpriority="high" />
+      {/* Foto del negozio (novembre 2026): ritaglio quadrato attorno all'anello, in due misure */}
+      <img src={BASE + 'img/apertura.webp'} srcset={`${BASE}img/apertura.webp 660w, ${BASE}img/apertura-1100.webp 1100w`}
+           sizes="(max-width:900px) 92vw, 46vw" width="660" height="660"
+           alt="Anello con diamante giallo al centro e doppio contorno di diamanti bianchi, dettaglio ravvicinato" fetchpriority="high" />
     </div>
   </section>
 
@@ -89,11 +92,22 @@ const negozio = [
           <p>Da diversi anni Alessandro, nipote di Massimo, lo affianca nella gestione del negozio, per dare continuità ad una realtà che ha fatto della continua ricerca di miglioramento uno dei suoi obiettivi principali.</p>
           <h3 class="neg-h3">Le persone</h3>
           <ul class="persone">
+            {/* Foto del negozio (novembre 2026), ritagliate 4:5 sul mezzo busto */}
             <li class="persona">
-              <img src={BASE + 'img/titolare.webp'} width="800" height="534" alt={INFO.fondatore + ' nel negozio di Corso Trapani'} loading="lazy" />
+              <img src={BASE + 'img/persona-massimo.webp'} width="600" height="750" alt={INFO.fondatore + ' nel negozio di Corso Trapani'} loading="lazy" />
               <p><b>{INFO.fondatore}</b><span>Fondatore · orologiaio</span></p>
             </li>
+            {/* DA CONFERMARE col negozio: nome completo e ruolo */}
+            <li class="persona">
+              <img src={BASE + 'img/persona-alessandro.webp'} width="600" height="750" alt="Alessandro nel negozio di Corso Trapani" loading="lazy" />
+              <p><b>Alessandro</b><span>Gestione del negozio</span></p>
+            </li>
           </ul>
+          <figure class="staff">
+            <img src={BASE + 'img/staff.webp'} srcset={`${BASE}img/staff-800.webp 800w, ${BASE}img/staff.webp 1400w`} sizes="(max-width:900px) 92vw, 620px"
+                 width="1400" height="749" alt="Lo staff di MAS Gioielli dietro il banco del negozio, davanti alle vetrine degli orologi" loading="lazy" />
+            <figcaption>Lo staff di MAS Gioielli</figcaption>
+          </figure>
         </div>
       </div>
       <div class="neg-riga">
@@ -230,7 +244,7 @@ const negozio = [
     .apertura-testo>p{color:var(--grafite);font-size:1.05rem;max-width:46ch;margin-top:1.7rem}
     .apertura-azioni{display:flex;align-items:center;gap:2rem;flex-wrap:wrap;margin-top:2.4rem}
     .apertura-foto{position:relative}
-    .apertura-foto img{position:relative;z-index:1;width:100%;height:clamp(380px,68vh,680px);object-fit:cover;object-position:center 42%}
+    .apertura-foto img{position:relative;z-index:1;width:100%;height:clamp(380px,68vh,680px);object-fit:cover;object-position:center}
     /* cornice sfalsata: da' profondita' alla fotografia senza aggiungere immagini */
     .apertura-cornice{position:absolute;z-index:0;top:-14px;left:-14px;width:180px;height:180px;
       border-top:1px solid var(--oro);border-left:1px solid var(--oro);opacity:.55}
@@ -265,11 +279,14 @@ const negozio = [
     .neg-testo>p.neg-lead{font-family:var(--disp);font-size:clamp(1.4rem,2.5vw,1.85rem);line-height:1.3;color:var(--inchiostro);margin-top:0}
     .neg-h3{font-family:var(--sans);font-size:.75rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--oro);margin:clamp(2rem,4vw,2.8rem) 0 1rem}
     .persone{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,210px));gap:1.4rem}
-    .persona img{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;object-position:78% 30%}
+    .persona img{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover}
+    .staff{margin-top:2rem}
+    .staff img{width:100%;height:auto;display:block}
+    .staff figcaption{font-size:.8rem;color:var(--grigio);margin-top:.6rem}
     .persona p{margin-top:.8rem}
     .persona b{display:block;font-family:var(--disp);font-weight:400;font-size:1.35rem;line-height:1.2}
     .persona span{font-size:.8rem;color:var(--grigio)}
-    .neg-riga{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1rem,2.4vw,2rem);margin-top:clamp(2.5rem,5vw,4rem)}
+    .neg-riga{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(1rem,2.4vw,2rem);margin-top:clamp(2.5rem,5vw,4rem)}
     .neg-riga>*{min-width:0}
     .neg-riga img{width:100%;height:auto;aspect-ratio:3/2;object-fit:cover}
     .neg-riga figcaption{margin-top:.7rem;font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;color:var(--oro)}
@@ -375,7 +392,6 @@ const negozio = [
       .atelier-in,.visita-in,.neg-in,.oro-in{grid-template-columns:1fr}
       .neg-grande img{aspect-ratio:4/3}
       .neg-riga{grid-template-columns:1fr 1fr}
-      .neg-riga figure:last-child{grid-column:1 / -1}
       .fiducia-ora{margin-left:0}
     }
   </style>

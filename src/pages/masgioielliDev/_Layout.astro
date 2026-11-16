@@ -55,6 +55,7 @@ const schema = {
     closes: `${String(Math.floor(b)).padStart(2, '0')}:${String(Math.round((b % 1) * 60)).padStart(2, '0')}`,
   }))),
 };
+import IconaWhatsApp from '../../components/IconaWhatsApp.astro';
 ---
 <!DOCTYPE html>
 <html lang="it">
@@ -136,15 +137,14 @@ const schema = {
     </div>
     <p class="chiusura-legale">
       <span>P.IVA {INFO.piva}</span>
-      <span>Fotografie del negozio: Elisa Miglietti</span>
       <span><a href={BASE + 'privacy/'}>Privacy e cookie</a></span>
       <span><a href={BASE + 'area-riservata/'} rel="nofollow">Area riservata</a></span>
-      <span>Sito: <a href="https://www.moledigitale.it/" target="_blank" rel="noopener">Mole Digitale</a></span>
+      <span>Sito creato da <a href="https://www.moledigitale.it/" target="_blank" rel="noopener">Mole Digitale</a></span>
     </p>
   </footer>
 
   <aside aria-label="Contatto rapido"><a class="wa-flt" href={WA} target="_blank" rel="noopener" aria-label="Scrivici su WhatsApp">
-    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.5-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c2.3 1 2.3.7 2.7.6a2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1z"/></svg>
+    <IconaWhatsApp width="22" height="22" fill="currentColor" aria-hidden="true" />
   </a></aside>
 
   <style is:global>
