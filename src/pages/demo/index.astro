@@ -86,7 +86,7 @@ const scorciatoie = ['bar', 'ristorante', 'parrucchiere', 'dentista'];
            data-cerca={`${dm.name} ${dm.cat} ${dm.desc} ${dm.cerca}`}>
           <div class="port-thumb">
             {/* le prime due sono nella prima schermata: subito, la prima con priorità (era lei a frenare l'apertura) */}
-            <img class="port-img" src={`/img/thumbs/${dm.k}.webp`} alt={`Anteprima del sito demo ${dm.name}`} loading={i < 2 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : undefined} width="760" height="475" />
+            <img class="port-img" src={`/img/thumbs/${dm.k}.webp`} srcset={`/img/thumbs/640/${dm.k}.webp 640w, /img/thumbs/${dm.k}.webp 760w`} sizes="(max-width:980px) calc(100vw - 67px), 370px" alt={`Anteprima del sito demo ${dm.name}`} loading={i < 2 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : undefined} width="760" height="475" />
             <span class="port-go">Apri la demo →</span>
           </div>
           <div class="port-cap"><b>{dm.name}</b><span>{dm.cat} · {dm.desc}</span></div>
@@ -106,6 +106,34 @@ const scorciatoie = ['bar', 'ristorante', 'parrucchiere', 'dentista'];
       <p>Le attività sono inventate, i siti no: ogni demo funziona come funzionerebbe il tuo. Prova a prenotare un tavolo, a sfogliare un menu, a chiedere un preventivo o a riempire un carrello. Aprile dal telefono, perché è da lì che arriva la maggior parte dei tuoi clienti.</p>
       <p>Non devi scegliere la demo del tuo settore. Spesso l'idea giusta viene da un'altra attività: il quiz di un centro estetico funziona anche per un negozio, il calcolatore del bucato di una lavanderia per un'officina che fa preventivi. Ogni sito che facciamo parte da zero, con la tua struttura e il tuo stile, e prende da questi esempi solo quello che ti serve.</p>
       <p>Se vuoi vedere cosa mettiamo nel sito di un'attività come la tua, parti dalla pagina del tuo <a href="/siti-web-torino/">settore</a>: trovi come ti cercano i clienti, cosa non deve mancare e le domande più frequenti.</p>
+    </div>
+
+    {/* I siti veri, già online, in fondo alle demo. Sono dichiarati per quello che sono (le demo
+        sono attività inventate, questi no) e portano al sito reale, in una scheda nuova.
+        L'anteprima è la schermata della home: public/img/thumbs/<img>.webp (+ la versione in 640/). */}
+    <div class="demo-vero" data-reveal>
+      <h2>E tre siti veri, già online</h2>
+      {[
+        { nome: 'AttrezzatureChef', url: 'https://www.attrezzaturechef.it/', img: 'attrezzaturechef',
+          alt: 'Home page di AttrezzatureChef, negozio online di attrezzature per la ristorazione',
+          desc: 'Negozio online di attrezzature professionali per la ristorazione: catalogo diviso per reparti, carrello e pagamento online.' },
+        { nome: 'DYPA Professional', url: 'https://www.dypa.it/', img: 'dypa',
+          alt: 'Home page di DYPA Professional, detergenti e attrezzature professionali',
+          desc: 'Detergenti e attrezzature professionali per ristorazione, lavanderie, comunità e industria: servizi, catalogo dei prodotti e catalogo dell’usato.' },
+        { nome: 'Capellimania Torino', url: 'https://www.capellimaniatorino.it/', img: 'capellimania',
+          alt: 'Home page di Capellimania Torino, extension e trattamenti per capelli',
+          desc: 'Extension naturali, botox e cheratina a Torino: i trattamenti, i risultati sulle clienti e la richiesta di consulenza gratuita.' },
+      ].map((s) => (
+        <a class="demo-vero-card glass" href={s.url} target="_blank" rel="noopener">
+          <img src={`/img/thumbs/${s.img}.webp`} srcset={`/img/thumbs/640/${s.img}.webp 640w, /img/thumbs/${s.img}.webp 760w`} sizes="(max-width:760px) calc(100vw - 67px), 380px" alt={s.alt} loading="lazy" width="760" height="475" />
+          <span class="demo-vero-testo">
+            <span class="demo-vero-tag">Sito online</span>
+            <b>{s.nome}</b>
+            <span class="demo-vero-desc">{s.desc}</span>
+            <span class="demo-vero-vai">Apri {new URL(s.url).hostname.replace('www.', '')} <span aria-hidden="true">→</span></span>
+          </span>
+        </a>
+      ))}
     </div>
 
     <div style="text-align:center; margin-top:3rem;" data-reveal>
@@ -133,6 +161,25 @@ const scorciatoie = ['bar', 'ristorante', 'parrucchiere', 'dentista'];
       color:var(--muted);font:inherit;font-size:.82rem;cursor:pointer;transition:.25s var(--ease)}
     .cerca-tag:hover{border-color:rgba(124,92,255,.55);color:var(--text);transform:translateY(-1px)}
     .cerca-esito{font-size:.85rem;color:var(--muted-2);white-space:nowrap}
+
+    /* i siti veri in fondo: una scheda larga per ciascuno, anteprima a sinistra e testo a destra */
+    .demo-vero{max-width:860px;margin:3.5rem auto 0}
+    .demo-vero h2{font-size:clamp(1.5rem,3.5vw,2.2rem);text-align:center;margin-bottom:1.4rem}
+    .demo-vero-card{display:grid;grid-template-columns:380px 1fr;gap:1.6rem;align-items:center;padding:.8rem;color:inherit;
+      transition:transform .3s var(--ease),box-shadow .3s}
+    .demo-vero-card + .demo-vero-card{margin-top:1.2rem}
+    .demo-vero-card:hover{transform:translateY(-5px);box-shadow:0 30px 60px -30px rgba(124,92,255,.5)}
+    .demo-vero-card img{width:100%;height:auto;border-radius:12px;display:block}
+    .demo-vero-testo{display:flex;flex-direction:column;gap:.5rem;padding:.4rem 1rem .4rem 0}
+    .demo-vero-tag{align-self:flex-start;font-family:'Space Grotesk Variable','Space Grotesk';font-size:.72rem;font-weight:700;
+      letter-spacing:.08em;text-transform:uppercase;color:#4ade80;border:1px solid rgba(74,222,128,.4);border-radius:999px;padding:.2rem .65rem}
+    .demo-vero-testo b{font-family:'Space Grotesk Variable','Space Grotesk';font-size:1.3rem}
+    .demo-vero-desc{color:var(--muted)}
+    .demo-vero-vai{color:var(--c2);font-weight:600;margin-top:.3rem}
+    @media (max-width:760px){
+      .demo-vero-card{grid-template-columns:1fr;gap:.4rem}
+      .demo-vero-testo{padding:.6rem .6rem .8rem}
+    }
 
     /* .port-card ha display:block nel global: serve più specificità per nasconderla */
     .port-card[hidden]{display:none}

@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { whatsapp } from '../data/contatti.js';
 // La scheda Google Business: fa già parte dei nostri siti («Google & mappe» in home), ma non
 // aveva una pagina. Le ricerche ci sono, e tante («scheda google business», «creare»,
 // «rivendicare», «sospesa»…): questa pagina è il servizio, la guida nel blog è il come si fa.
@@ -49,19 +50,39 @@ const faqSchema = {
 >
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
-  <section class="section" style="padding-top:8rem;">
+  <section class="section section-alta">
     <nav class="briciole" aria-label="Sei qui">
       <a href="/">Home</a><span aria-hidden="true">›</span><span aria-current="page">Scheda Google Business</span>
     </nav>
     <div class="section-head" data-reveal>
       <span class="kicker">Scheda Google Business</span>
-      <h1 style="font-size:clamp(2.2rem,5vw,3.4rem); line-height:1.1;">Scheda Google Business <span class="grad">fatta bene</span>, per la tua attività di Torino.</h1>
+      <h1 class="titolo-pagina">Scheda Google Business <span class="grad">fatta bene</span>, per la tua attività di Torino.</h1>
       <p class="section-lead">Quando qualcuno cerca «pizzeria vicino a me» o «parrucchiere San Salvario», la prima cosa che vede spesso non è un sito: è la scheda su Google Maps. Orari, foto, recensioni, telefono. Se è incompleta o sbagliata, il cliente sceglie un altro.</p>
-      <div style="margin-top:1.6rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+      <div class="azioni azioni-testa">
         <a href="/preventivo/" class="btn btn-primary btn-magnetic">Chiedi il preventivo</a>
         <a href="/blog/scheda-google-business-guida/" class="btn btn-ghost">Leggi la guida →</a>
       </div>
     </div>
+
+    {/* Un disegno di com'è fatta una scheda: la pagina vende una cosa che si guarda, e fin qui
+        era solo testo. Attività e numeri sono inventati (è la trattoria delle nostre demo). */}
+    <figure class="gb-esempio" data-reveal>
+      <div class="gb-scheda" aria-hidden="true">
+        {/* al posto della foto un riquadro disegnato: niente immagini di terzi in una pagina indicizzata */}
+        <div class="gb-foto">
+          <svg viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1.2-4h13.6L20 9"/><path d="M4 9a2 2 0 0 0 4 0 2 2 0 0 0 4 0 2 2 0 0 0 4 0 2 2 0 0 0 4 0"/><path d="M5.5 11.5V19h13v-7.5"/><path d="M10 19v-4h4v4"/></svg>
+          <span>Foto del locale</span>
+        </div>
+        <div class="gb-corpo">
+          <b class="gb-nome">Trattoria del Sole</b>
+          <p class="gb-voto"><span class="gb-stelle">★★★★★</span> 4,8 <span class="gb-quante">(132 recensioni)</span></p>
+          <p class="gb-tipo">Ristorante piemontese · San Salvario, Torino</p>
+          <p class="gb-orario"><span class="gb-aperto">Aperto</span> · chiude alle 23:00</p>
+          <div class="gb-azioni"><span>Chiama</span><span>Indicazioni</span><span>Sito web</span></div>
+        </div>
+      </div>
+      <figcaption>Com’è fatta una scheda Google: foto, voto, orari e i bottoni per chiamare, arrivare o aprire il sito. Esempio dimostrativo, attività e dati sono inventati.</figcaption>
+    </figure>
 
     <div class="gb-blocco" data-reveal>
       <h2>Cosa facciamo</h2>
@@ -91,11 +112,11 @@ const faqSchema = {
 
     <p class="gb-nota" data-reveal>La scheda rende di più se porta a un sito veloce e chiaro: guarda cosa facciamo per <a href="/siti-web-torino/">ogni tipo di attività</a>, o come <a href="/restyling-siti-web-torino/">rifacciamo i siti che hai già</a>.</p>
 
-    <div class="cta-card glass" data-reveal style="margin-top:3rem; text-align:center; display:block;">
-      <h2 style="font-size:clamp(1.6rem,3.5vw,2.4rem); margin-bottom:1rem;">Vuoi che ci pensiamo noi?</h2>
-      <p style="color:var(--muted); margin-bottom:1.6rem;">Dicci il nome della tua attività: guardiamo com’è la scheda oggi e ti diciamo cosa sistemare.</p>
-      <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
-        <a href={'https://wa.me/393662102203?text=' + encodeURIComponent('Ciao! Vorrei sistemare la scheda Google della mia attività: ')} target="_blank" rel="noopener" class="btn btn-ghost">Scrivici su WhatsApp</a>
+    <div class="cta-card glass cta-finale" data-reveal>
+      <h2>Vuoi che ci pensiamo noi?</h2>
+      <p>Dicci il nome della tua attività: guardiamo com’è la scheda oggi e ti diciamo cosa sistemare.</p>
+      <div class="azioni">
+        <a href={whatsapp('Ciao! Vorrei sistemare la scheda Google della mia attività: ')} target="_blank" rel="noopener" class="btn btn-ghost">Scrivici su WhatsApp</a>
         <a href="/preventivo/" class="btn btn-primary btn-magnetic">Chiedi il preventivo</a>
       </div>
     </div>
@@ -106,11 +127,29 @@ const faqSchema = {
     .gb-blocco > h2 { font-size:clamp(1.5rem,3.5vw,2.2rem); text-align:center; margin-bottom:1.4rem; }
     .gb-griglia { list-style:none; display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
     .gb-griglia h3 { font-size:1.1rem; margin-bottom:.4rem; }
+    /* l'ultima scheda, quando resta sola sulla riga, la occupa tutta (7 voci: 3 + 3 + 1) */
+    .gb-griglia li:last-child:nth-child(3n+1) { grid-column:1 / -1; }
+    /* disegno di una scheda di esempio */
+    .gb-esempio { max-width:420px; margin:2.5rem auto 0; }
+    .gb-scheda { background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
+    .gb-foto { aspect-ratio:16/9; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.5rem; color:var(--text); font-size:.86rem; background:linear-gradient(135deg, rgba(124,92,255,.38), rgba(34,211,238,.22) 60%, rgba(255,107,136,.22)); border-bottom:1px solid var(--border); }
+    .gb-corpo { padding:1.1rem 1.3rem 1.3rem; display:flex; flex-direction:column; gap:.3rem; }
+    .gb-nome { font-family:'Space Grotesk Variable','Space Grotesk'; font-size:1.25rem; }
+    .gb-voto, .gb-tipo, .gb-orario { color:var(--muted); font-size:.93rem; }
+    .gb-stelle { color:#fbbf24; letter-spacing:.08em; }
+    .gb-aperto { color:#4ade80; font-weight:600; }
+    .gb-azioni { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.7rem; }
+    .gb-azioni span { padding:.4rem .9rem; border-radius:999px; border:1px solid var(--border); background:var(--surface); color:var(--c2); font-size:.86rem; font-weight:600; }
+    .gb-esempio figcaption { color:var(--muted-2); font-size:.86rem; text-align:center; margin-top:.8rem; }
     .gb-errori li { padding:1.2rem 1.3rem; border-left:3px solid var(--warning); background:var(--surface); border-radius:var(--radius-sm); }
     .gb-errori p, .gb-griglia p { color:var(--muted); font-size:.94rem; }
     .gb-nota { color:var(--muted); max-width:760px; margin:3rem auto 0; text-align:center; }
     .gb-nota a { color:var(--c2); text-decoration:underline; text-underline-offset:3px; }
-    @media (max-width:900px){ .gb-griglia { grid-template-columns:repeat(2,1fr); } }
+    @media (max-width:900px){
+      .gb-griglia { grid-template-columns:repeat(2,1fr); }
+      .gb-griglia li:last-child:nth-child(3n+1) { grid-column:auto; }
+      .gb-griglia li:last-child:nth-child(odd) { grid-column:1 / -1; }
+    }
     @media (max-width:640px){ .gb-griglia { grid-template-columns:1fr; } }
   </style>
 </Layout>

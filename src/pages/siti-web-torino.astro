@@ -11,13 +11,13 @@ const n = Object.keys(SETTORI).length;
   image="/og/siti-web-torino.png"
   description={`Siti web per ristoranti, bar, parrucchieri, centri estetici, dentisti, negozi, hotel e altri settori di Torino: cosa serve a ciascuno e come lo facciamo.`}
 >
-  <section class="section" style="padding-top:8rem;">
+  <section class="section section-alta">
     <nav class="briciole" aria-label="Sei qui">
       <a href="/">Home</a><span aria-hidden="true">›</span><span aria-current="page">Siti web per settore</span>
     </nav>
     <div class="section-head" data-reveal>
       <span class="kicker">Siti web per settore</span>
-      <h1 style="font-size:clamp(2.2rem,5vw,3.4rem); line-height:1.1;">Un sito su misura <span class="grad">per ogni attività</span> di Torino.</h1>
+      <h1 class="titolo-pagina">Un sito su misura <span class="grad">per ogni attività</span> di Torino.</h1>
       <p class="section-lead">Un ristorante ha bisogno del menu e delle prenotazioni, un dentista di spiegare i trattamenti e far prenotare la prima visita, un hotel di farsi prenotare senza commissioni. Per questo non facciamo un sito uguale per tutti: per ciascuno di questi {n} settori sappiamo come cercano i clienti e cosa non deve mancare. Scegli il tuo.</p>
     </div>
 
@@ -51,10 +51,10 @@ const n = Object.keys(SETTORI).length;
       <p>Vuoi un’idea dei costi prima di scriverci? Leggi <a href="/blog/quanto-costa-un-sito-web-a-torino/">quanto costa un sito web a Torino</a>, oppure <a href="/preventivo/">chiedi il preventivo</a>: è gratis.</p>
     </div>
 
-    <div class="cta-card glass" data-reveal style="margin-top:3rem; text-align:center; display:block;">
-      <h2 style="font-size:clamp(1.6rem,3.5vw,2.4rem); margin-bottom:1rem;">Il tuo settore non c’è?</h2>
-      <p style="color:var(--muted); margin-bottom:1.6rem;">Lavoriamo per tante altre attività: raccontaci la tua e ti mandiamo una prima bozza gratis, su misura.</p>
-      <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+    <div class="cta-card glass cta-finale" data-reveal>
+      <h2>Il tuo settore non c’è?</h2>
+      <p>Lavoriamo per tante altre attività: raccontaci la tua e ti mandiamo una prima bozza gratis, su misura.</p>
+      <div class="azioni">
         <a href="/inizia/" class="btn btn-ghost">Raccontaci la tua attività</a>
         <a href="/preventivo/" class="btn btn-primary btn-magnetic">Preventivo gratis</a>
       </div>
@@ -75,6 +75,9 @@ const n = Object.keys(SETTORI).length;
     .sempre ul { list-style:none; display:inline-grid; gap:.6rem; text-align:left; margin:0 0 1.2rem; padding:0; }
     .sempre li, .sempre p { color:var(--muted); }
     .sempre p a { color:var(--c2); text-decoration:underline; text-underline-offset:3px; }
+    /* i gruppi da quattro settori stanno su una riga sola: con tre colonne l'ultima scheda
+       restava da sola sulla riga sotto */
+    @media (min-width:981px){ .gruppo-griglia:has(> li:nth-child(4):last-child) { grid-template-columns:repeat(4,1fr); } }
     @media (max-width:980px){ .gruppo-griglia { grid-template-columns:repeat(2,1fr); } }
     @media (max-width:600px){ .gruppo-griglia { grid-template-columns:1fr; } }
   </style>

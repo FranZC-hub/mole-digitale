@@ -1,8 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { whatsapp, TELEFONO_BREVE, EMAIL } from '../data/contatti.js';
 
 // Landing dedicata ai clienti DYPA (traffico dal volantino co-branded). noindex: pagina "riservata".
-const waText = encodeURIComponent('Ciao! Sono un cliente DYPA e vorrei informazioni sul sito web.');
+const waDypa = whatsapp('Ciao! Sono un cliente DYPA e vorrei informazioni sul sito web.');
 const benefits = [
   { t: 'Veloce e perfetto da telefono', d: 'I tuoi clienti ti trovano e ti contattano in un tocco, da qualsiasi dispositivo.' },
   { t: 'Primo su Google a Torino', d: 'SEO locale e scheda Google incluse: compari quando cercano cosa offri.' },
@@ -93,7 +94,7 @@ const faq = [
     <div class="dy-demos" data-reveal>
       {demos.map((d) => (
         <a class="dy-demo" href={d.url}>
-          <img src={`/img/thumbs/${d.k}.webp`} alt={`Esempio sito ${d.cat}`} loading="lazy" width="760" height="475" />
+          <img src={`/img/thumbs/${d.k}.webp`} srcset={`/img/thumbs/640/${d.k}.webp 640w, /img/thumbs/${d.k}.webp 760w`} sizes="(max-width:720px) 92vw, 360px" alt={`Esempio sito ${d.cat}`} loading="lazy" width="760" height="475" />
           <span>{d.cat} <i>· apri →</i></span>
         </a>
       ))}
@@ -123,14 +124,14 @@ const faq = [
       ))}
     </div>
 
-    <div class="cta-card glass" data-reveal style="margin-top:2.5rem; text-align:center; display:block;">
-      <h2 style="font-size:clamp(1.6rem,3.5vw,2.4rem); margin-bottom:1rem;">Raccontaci la tua attività.</h2>
-      <p style="color:var(--muted); margin-bottom:1.6rem;">Ti rispondiamo in giornata. Nessun impegno, prima bozza gratis.</p>
-      <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
-        <a href={`https://wa.me/393662102203?text=${waText}`} target="_blank" rel="noopener" class="btn btn-primary btn-magnetic">Scrivici su WhatsApp</a>
+    <div class="cta-card glass cta-finale" data-reveal style="margin-top:2.5rem;">
+      <h2>Raccontaci la tua attività.</h2>
+      <p>Ti rispondiamo in giornata. Nessun impegno, prima bozza gratis.</p>
+      <div class="azioni">
+        <a href={waDypa} target="_blank" rel="noopener" class="btn btn-primary btn-magnetic">Scrivici su WhatsApp</a>
         <a href="/demo/" class="btn btn-ghost">Guarda gli esempi</a>
       </div>
-      <p style="color:var(--muted-2); font-size:.86rem; margin-top:1.2rem;">📱 366 210 2203 · ✉️ info@moledigitale.it · Torino</p>
+      <p style="color:var(--muted-2); font-size:.86rem; margin-top:1.2rem;">📱 {TELEFONO_BREVE} · ✉️ {EMAIL} · Torino</p>
     </div>
 
     <p class="dy-dl" data-reveal>

@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { whatsapp } from '../data/contatti.js';
 
 // Brief guidato per i nuovi clienti: raccoglie le info che servono per partire
 // e le invia allo stesso endpoint del form contatti (/contact.php), impacchettate nel messaggio.
@@ -8,7 +9,7 @@ import Layout from '../layouts/Layout.astro';
   title="Inizia da qui — raccontaci la tua attività | Mole Digitale"
   description="Compila il brief in 2 minuti: chi sei, cosa fai e cosa ti serve. Con queste informazioni prepariamo la tua prima bozza gratuita in pochi giorni."
 >
-  <section class="section" style="padding-top:8rem;">
+  <section class="section section-alta">
     <div class="section-head" data-reveal>
       <span class="kicker">Si parte</span>
       <h1>Raccontaci la tua <span class="grad">attività</span>.</h1>
@@ -55,7 +56,7 @@ import Layout from '../layouts/Layout.astro';
 
       <button type="submit" class="btn btn-primary btn-lg btn-block btn-magnetic">Invia il brief — bozza gratis →</button>
       <p class="form-feedback" id="briefFeedback" aria-live="polite"></p>
-      <p class="brief-note">Preferisci parlare? <a href="https://wa.me/393662102203?text=Ciao!%20Vorrei%20raccontarvi%20la%20mia%20attivit%C3%A0" target="_blank" rel="noopener">Scrivici su WhatsApp</a> e facciamo tutto a voce.</p>
+      <p class="brief-note">Preferisci parlare? <a href={whatsapp("Ciao! Vorrei raccontarvi la mia attività")} target="_blank" rel="noopener">Scrivici su WhatsApp</a> e facciamo tutto a voce.</p>
     </form>
 
     <!-- Cosa succede dopo: la domanda di chi sta per inviare (stesse promesse della home) -->
@@ -81,16 +82,21 @@ import Layout from '../layouts/Layout.astro';
     .brief-note { text-align:center; color:var(--muted-2); font-size:.9rem; }
     .brief-note a { color:var(--c2); text-decoration:underline; }
     @media (max-width:560px) { .brief-checks { grid-template-columns:1fr; } }
+    /* sul telefono il modulo perde il riquadro esterno: erano tre scatole una dentro l'altra
+       (scheda, sezione, opzione) e ai testi restava poco più di metà schermo */
+    @media (max-width:560px) { .brief { padding:0; background:none; border:0; border-radius:0; backdrop-filter:none; } }
   </style>
 
   <script>
-    import { azione } from '../scripts/azione.js';
+    import { inviaRichiesta } from '../scripts/invio.js';
+    import { recapitoValido, RECAPITO_ERRORE } from '../scripts/recapito.js';
     const bf = document.getElementById('briefForm');
     const bfb = document.getElementById('briefFeedback');
     bf.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!document.getElementById('b-privacy').checked) { bfb.classList.add('ko'); bfb.textContent = 'Devi accettare la privacy per inviare.'; return; }
       const v = (id) => document.getElementById(id).value.trim();
+      if (!recapitoValido(v('b-telefono'))) { bfb.classList.add('ko'); bfb.textContent = RECAPITO_ERRORE; document.getElementById('b-telefono').focus(); return; }
       const checks = [...bf.querySelectorAll('.brief-checks input:checked')].map((c) => c.value).join(', ');
       const messaggio =
         `— BRIEF DAL SITO —\n` +
@@ -99,24 +105,15 @@ import Layout from '../layouts/Layout.astro';
         `Obiettivi: ${checks || '-'}\n` +
         `Siti di riferimento: ${v('b-esempi') || '-'}\n` +
         `Materiale pronto: ${v('b-materiale') || '-'}`;
-      const btn = bf.querySelector('button[type=submit]');
-      const label = btn.innerHTML;
-      btn.disabled = true; btn.setAttribute('aria-busy', 'true'); btn.innerHTML = '<span class="btn-spin" aria-hidden="true"></span> Invio…';
-      bfb.classList.remove('ok', 'ko'); bfb.textContent = 'Invio in corso…';
-      try {
-        const res = await fetch('/contact.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ nome: v('b-nome'), attivita: v('b-attivita'), telefono: v('b-telefono'), messaggio, website: bf.website.value }),
-        });
-        const out = await res.json().catch(() => ({}));
-        if (res.ok && out.ok) { bfb.classList.add('ok'); bfb.textContent = '✅ Brief ricevuto! Ti ricontattiamo entro 24 ore con la prima proposta.'; azione('richiesta-brief'); bf.reset(); }
-        else throw new Error();
-      } catch {
-        bfb.classList.add('ko'); bfb.textContent = '⚠️ Invio non riuscito. Riprova, oppure scrivici su WhatsApp qui sotto.';
-      } finally {
-        btn.disabled = false; btn.removeAttribute('aria-busy'); btn.innerHTML = label;
-      }
+      const inviata = await inviaRichiesta({
+        bottone: bf.querySelector('button[type=submit]'),
+        esito: bfb,
+        dati: { nome: v('b-nome'), attivita: v('b-attivita'), telefono: v('b-telefono'), messaggio, website: bf.website.value },
+        conferma: '✅ Brief ricevuto! Ti ricontattiamo entro 24 ore con la prima proposta.',
+        errore: '⚠️ Invio non riuscito. Riprova, oppure scrivici su WhatsApp qui sotto.',
+        evento: 'richiesta-brief',
+      });
+      if (inviata) bf.reset();
     });
   </script>
 </Layout>

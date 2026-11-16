@@ -51,7 +51,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // Rate-limit anti-flood: max 5 invii ogni 10 minuti per IP
-$ip = $_SERVER['REMOTE_ADDR'] ?? 'x';
+// Il sito sta dietro il proxy di Aruba: REMOTE_ADDR può essere l'indirizzo del proxy, uguale per
+// tutti i visitatori (e cinque richieste di persone diverse bloccherebbero la sesta). Per questo
+// nella chiave entra anche l'indirizzo che il proxy dichiara in X-Forwarded-For, quando c'è.
+$ip = ($_SERVER['REMOTE_ADDR'] ?? 'x') . '|' . trim(explode(',', (string) ($_SERVER['HTTP_X_FORWARDED_FOR'] ?? ''))[0]);
 $rlFile = sys_get_temp_dir() . '/md_rl_' . md5($ip) . '.txt';
 $now = time();
 $hits = @is_file($rlFile)
@@ -149,6 +152,13 @@ if ($website !== '') { finish(200, true, 'Grazie!', $isJson); }
 
 if ($nome === '' || $attivita === '' || $telefono === '') {
   finish(400, false, 'Compila nome, attività e un recapito.', $isJson);
+}
+
+// Recapito plausibile: un'email valida oppure un numero con 8-15 cifre (spazi, prefisso e note
+// ammessi). Stessa regola di src/scripts/recapito.js: senza, un numero a metà è un lead perso.
+$cifre = strlen(preg_replace('/\D/', '', $telefono));
+if (!filter_var($telefono, FILTER_VALIDATE_EMAIL) && ($cifre < 8 || $cifre > 15)) {
+  finish(400, false, 'Controlla il recapito: serve un numero di telefono completo o un’email.', $isJson);
 }
 
 // Backup del lead su CSV (sopra la cartella pubblica): non si perde nulla anche se l'email fallisce.

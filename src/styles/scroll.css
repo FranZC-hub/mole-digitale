@@ -1,18 +1,16 @@
 /* =========================================================
    Mole Digitale — scroll.css
    Tecnologie moderne: animazioni scroll-driven NATIVE +
-   stati iniziali per l'hero animato con GSAP (progressive enhancement)
+   entrata dell'hero in solo CSS (progressive enhancement)
    ========================================================= */
 
 /* ---------- Barra di progresso scroll: 100% CSS nativo (niente JS) ---------- */
 .scroll-progress span { transform-origin: left center; }
-@media (prefers-reduced-motion: no-preference) {
+  @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: scroll()) {
-    .scroll-progress span {
-      width: 100%;
-      animation: progressGrow linear both;
-      animation-timeline: scroll(root);
-    }
+    .scroll-progress span { width: 100%; animation: progressGrow linear both; }
+    /* timeline in una regola a parte: vedi la nota su [data-reveal] in global.css */
+    html .scroll-progress span { animation-timeline: scroll(root); }
   }
 }
 @keyframes progressGrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
@@ -21,13 +19,10 @@
    Prima era una gsap/ScrollTrigger: essendo il footer presente in ogni pagina,
    costringeva a caricare ScrollTrigger (~21 KB) ovunque. Qui e' decorativo, quindi
    dove animation-timeline non e' supportato semplicemente non si muove. */
-@media (prefers-reduced-motion: no-preference) {
+  @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
-    .footer-watermark {
-      animation: watermarkShift linear both;
-      animation-timeline: view();
-      animation-range: entry 0% exit 100%;
-    }
+    .footer-watermark { animation: watermarkShift linear both; }
+    html .footer-watermark { animation-timeline: view(); animation-range: entry 0% exit 100%; }
   }
 }
 @keyframes watermarkShift {
@@ -35,15 +30,10 @@
   to   { transform: translateX(-50%) translateX(-3%); }
 }
 
-/* ---------- Hero animato con GSAP solo se JS è attivo ----------
-   Senza JS gli elementi restano visibili (nessun contenuto nascosto). */
-.hero-title .word { opacity: 1; }                             /* visibile senza JS */
-html.js .hero-title .word { opacity: 0; }                     /* GSAP le rivela */
-html.js .hero-fade { opacity: 0; }
-.hero-visual { animation: none !important; }                  /* l'entrata la fa GSAP */
-
-/* ---------- Riduzione movimento: tutto fermo e visibile ---------- */
-@media (prefers-reduced-motion: reduce) {
-  html.js .hero-title .word,
-  html.js .hero-fade { opacity: 1 !important; transform: none !important; }
-}
+/* ---------- Entrata dell'hero: solo CSS ----------
+   Prima la faceva GSAP: titolo e sottotitolo restavano invisibili finché non arrivava
+   la libreria (~27 KB compressi), e il sottotitolo è l'elemento che Google misura come LCP.
+   Ora partono col primo disegno della pagina, senza JavaScript. L'ordine d'entrata sta nel
+   markup: --i sulle parole del titolo, --f sui blocchi sotto.
+   «backwards» e non «both»: a fine corsa l'animazione si stacca, così l'inclinazione al
+   passaggio del mouse (data-tilt, che scrive transform in linea) continua a funzionare. */

@@ -34,7 +34,7 @@ const gruppiGuida = GRUPPI_PER_GUIDA[post.id] ?? GRUPPI.map((g) => g.id);
 const settoriGuida = Object.entries(SETTORI).filter(([, d]) => gruppiGuida.includes(d.gruppo));
 ---
 <Layout title={post.data.title} description={post.data.description} image={post.data.og} article={{ datePublished: post.data.date.toISOString(), dateModified: post.data.updated?.toISOString() }}>
-  <article class="section blog-article" style="padding-top:8rem;">
+  <article class="section blog-article section-alta">
     <a href="/blog/" class="blog-back" data-reveal>← Tutte le guide</a>
     {/* niente data visibile: sono guide che non invecchiano (la data resta nei dati strutturati) */}
     <span class="kicker" data-reveal>Guida · {readMin} min di lettura</span>
@@ -69,12 +69,18 @@ const settoriGuida = Object.entries(SETTORI).filter(([, d]) => gruppiGuida.inclu
     )}
   </article>
   <style>
-    .blog-article { max-width:760px; margin:0 auto; }
+    /* su computer le righe erano lunghe circa 95 caratteri: colonna un po' più stretta e testo
+       un po' più grande le portano attorno a 85, più comode da leggere */
+    .blog-article { max-width:740px; margin:0 auto; }
+    @media (min-width:721px){ .prose { font-size:1.09rem; } }
     .blog-back { color:var(--c2); display:block; width:fit-content; margin-bottom:1.5rem; }
     .blog-article h1 { font-size:clamp(2rem,5vw,3rem); margin:.4rem 0 2rem; line-height:1.12; }
     .prose :global(h2) { font-size:1.6rem; margin:2.2rem 0 .8rem; }
     .prose :global(p) { color:var(--muted); margin-bottom:1.1rem; line-height:1.75; }
     .prose :global(ul) { color:var(--muted); margin:0 0 1.1rem 1.3rem; }
+    /* gli elenchi numerati non avevano rientro: i numeri sporgevano nel margine della pagina e sul
+       telefono venivano tagliati dal bordo dello schermo. Stesso colore degli altri testi. */
+    .prose :global(ol) { color:var(--muted); margin:0 0 1.1rem 1.6rem; }
     .prose :global(li) { margin-bottom:.4rem; }
     .prose :global(a) { color:var(--c2); border-bottom:1px solid rgba(34,211,238,.4); }
     .prose :global(strong) { color:var(--text); }

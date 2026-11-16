@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { EMAIL } from '../data/contatti.js';
 ---
 <Layout title="Privacy & Cookie — Mole Digitale" description="Informativa privacy e cookie di Mole Digitale." noindex={true}>
   <article class="section legal" style="padding-top:8rem; max-width:780px; margin:0 auto;">
@@ -8,7 +9,7 @@ import Layout from '../layouts/Layout.astro';
 
     <h2>1. Titolare del trattamento</h2>
     <p>Il titolare del trattamento è <strong>Mole Digitale</strong>, con sede a Torino, operante in <strong>regime forfettario</strong>. Per qualsiasi richiesta relativa ai tuoi dati personali puoi
-    scrivere a <a href="mailto:info@moledigitale.it">info@moledigitale.it</a>.</p>
+    scrivere a <a href={`mailto:${EMAIL}`}>{EMAIL}</a>.</p>
     {/* Quando avrai la P.IVA, aggiungila qui e nel footer (src/layouts/Layout.astro). */}
 
     <h2>2. Quali dati raccogliamo</h2>
@@ -32,7 +33,7 @@ import Layout from '../layouts/Layout.astro';
 
     <h2>6. I tuoi diritti</h2>
     <p>Hai diritto di accesso, rettifica, cancellazione, limitazione, opposizione e portabilità dei dati.
-    Per esercitarli scrivi a <a href="mailto:info@moledigitale.it">info@moledigitale.it</a>.
+    Per esercitarli scrivi a <a href={`mailto:${EMAIL}`}>{EMAIL}</a>.
     Hai inoltre diritto di reclamo al Garante per la protezione dei dati personali.</p>
 
     <h2 id="cookie">7. Cookie</h2>

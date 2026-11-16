@@ -3,6 +3,8 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 // <lastmod> della sitemap: l'ultima volta che è cambiato il file da cui nasce la pagina (o i suoi
 // dati), letta da git. Non la data della build: Google usa lastmod solo se è affidabile, e la stessa
@@ -33,6 +35,23 @@ const ultimaModifica = (pathname) => {
 };
 
 // https://astro.build/config
+// A fine build toglie da dist/ i font degli alfabeti che il sito, in italiano, non usa mai
+// (cirillico, greco, vietnamita): una ventina di file, circa 300 KB, che il browser non chiede
+// nemmeno (ogni font dichiara per quali caratteri serve) ma che a ogni caricamento a mano via
+// FTP salivano comunque sul server. Restano latino e latino esteso.
+// Se un giorno una pagina avrà testo in una di quelle lingue, togli questa integrazione.
+const SENZA_FONT_INUTILI = {
+  name: 'senza-font-inutili',
+  hooks: {
+    'astro:build:done': ({ dir }) => {
+      const cartella = path.join(fileURLToPath(dir), '_astro');
+      const tolti = fs.readdirSync(cartella).filter((f) => /-(cyrillic|greek|vietnamese)(-ext)?-.*\.woff2$/.test(f));
+      for (const f of tolti) fs.rmSync(path.join(cartella, f));
+      console.log(`[senza-font-inutili] tolti ${tolti.length} font di alfabeti non usati`);
+    },
+  },
+};
+
 // Sito 100% statico: si carica via FTP nella root del sito (es. Aruba) come file HTML/CSS/JS.
 // L'invio email è gestito da /contact.php (PHP + SMTP Aruba), non da Node.
 export default defineConfig({
@@ -61,5 +80,6 @@ export default defineConfig({
         return lastmod ? { ...item, lastmod } : item;
       },
     }),
+    SENZA_FONT_INUTILI,
   ],
 });

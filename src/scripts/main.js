@@ -1,11 +1,11 @@
 /* =========================================================
    Mole Digitale — main.js (Astro + Vite bundle)
-   Lenis (smooth scroll) + interazioni. L'animazione d'apertura con GSAP
-   è in hero.js e la carica solo la home.
+   Lenis (smooth scroll, solo su computer) + interazioni. L'entrata dell'hero
+   è in CSS (scroll.css).
    ========================================================= */
-import Lenis from 'lenis';
-import 'lenis/dist/lenis.css';
 import { azione } from './azione.js';
+import { inviaRichiesta } from './invio.js';
+import { recapitoValido, RECAPITO_ERRORE } from './recapito.js';
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const finePointer = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
@@ -15,21 +15,22 @@ const yearEl = document.getElementById('year');
 if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
 const nav = document.getElementById('nav');
-const setNav = (y) => nav && nav.classList.toggle('scrolled', y > 30);
+const setNav = () => nav && nav.classList.toggle('scrolled', window.scrollY > 30);
+window.addEventListener('scroll', setNav, { passive: true });
+setNav();
 
-/* ---------- Lenis (smooth scroll, solo se movimento consentito) ---------- */
+/* ---------- Lenis (smooth scroll): solo con mouse o trackpad, e movimento consentito ----------
+   Lenis ammorbidisce la rotella; sul telefono lo scorrimento col dito è già quello nativo, quindi
+   lì restava solo un ciclo requestAnimationFrame sempre acceso (batteria) e ~6 KB da scaricare.
+   Arriva con un import a richiesta: chi non lo usa non lo scarica. */
 let lenis = null;
-if (!reduced) {
-  lenis = new Lenis({ lerp: 0.1, smoothWheel: true, wheelMultiplier: 1 });
-  const raf = (time) => { lenis.raf(time); requestAnimationFrame(raf); };
-  requestAnimationFrame(raf);
-  lenis.on('scroll', ({ scroll }) => setNav(scroll));
-
-  // Il parallasse del watermark nel footer ora e' in CSS nativo (scroll.css).
-} else {
-  window.addEventListener('scroll', () => setNav(window.scrollY), { passive: true });
+if (!reduced && finePointer) {
+  Promise.all([import('lenis'), import('lenis/dist/lenis.css')]).then(([{ default: Lenis }]) => {
+    lenis = new Lenis({ lerp: 0.1, smoothWheel: true, wheelMultiplier: 1 });
+    const raf = (time) => { lenis.raf(time); requestAnimationFrame(raf); };
+    requestAnimationFrame(raf);
+  }).catch(() => { /* senza Lenis resta lo scorrimento nativo */ });
 }
-setNav(window.scrollY);
 
 /* ---------- Scroll fluido sulle ancore interne ---------- */
 document.querySelectorAll('a[href*="#"]').forEach((a) => {
@@ -293,7 +294,9 @@ if (form) {
     let ok = true;
     if (!nome) { setError('nome', 'Dicci come ti chiami'); ok = false; } else setError('nome', '');
     if (!att) { setError('attivita', 'Qual è il nome della tua attività?'); ok = false; } else setError('attivita', '');
-    if (!tel) { setError('telefono', 'Serve un recapito per ricontattarti'); ok = false; } else setError('telefono', '');
+    if (!tel) { setError('telefono', 'Serve un recapito per ricontattarti'); ok = false; }
+    else if (!recapitoValido(tel)) { setError('telefono', RECAPITO_ERRORE); ok = false; }
+    else setError('telefono', '');
     if (!form.privacy.checked) { setError('privacy', 'Devi accettare la privacy per inviare'); ok = false; } else setError('privacy', '');
     if (!ok) {
       feedback.textContent = '';
@@ -302,38 +305,17 @@ if (form) {
       return;
     }
     // Invio reale all'endpoint PHP /contact.php (PHPMailer + SMTP Aruba)
-    const btn = form.querySelector('button[type="submit"]');
-    const btnLabel = btn ? btn.innerHTML : '';
-    feedback.classList.remove('ok', 'ko');
-    feedback.textContent = 'Invio in corso…';
-    if (btn) { btn.disabled = true; btn.setAttribute('aria-busy', 'true'); btn.innerHTML = '<span class="btn-spin" aria-hidden="true"></span> Invio…'; }
-    try {
-      const res = await fetch('/contact.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          nome,
-          attivita: att,
-          telefono: tel,
-          messaggio: form.messaggio.value.trim(),
-          website: form.website ? form.website.value : '',
-        }),
-      });
-      const out = await res.json().catch(() => ({}));
-      if (res.ok && out.ok) {
-        feedback.classList.add('ok');
-        feedback.textContent = '✅ Grazie! Abbiamo ricevuto la tua richiesta: ti rispondiamo entro 24 ore.';
-        try { if (window.clarity) window.clarity('event', 'form_inviato'); } catch (_) {}
-        azione('richiesta-contatti');
-        form.reset();
-      } else {
-        throw new Error(out.error || 'Errore');
-      }
-    } catch (err) {
-      feedback.classList.add('ko');
-      feedback.textContent = '⚠️ Invio non riuscito. Riprova, oppure scrivici su WhatsApp qui sopra.';
-    } finally {
-      if (btn) { btn.disabled = false; btn.removeAttribute('aria-busy'); btn.innerHTML = btnLabel; }
+    const inviata = await inviaRichiesta({
+      bottone: form.querySelector('button[type="submit"]'),
+      esito: feedback,
+      dati: { nome, attivita: att, telefono: tel, messaggio: form.messaggio.value.trim(), website: form.website ? form.website.value : '' },
+      conferma: '✅ Grazie! Abbiamo ricevuto la tua richiesta: ti rispondiamo entro 24 ore.',
+      errore: '⚠️ Invio non riuscito. Riprova, oppure scrivici su WhatsApp qui sopra.',
+      evento: 'richiesta-contatti',
+    });
+    if (inviata) {
+      try { if (window.clarity) window.clarity('event', 'form_inviato'); } catch (_) {}
+      form.reset();
     }
   });
 }

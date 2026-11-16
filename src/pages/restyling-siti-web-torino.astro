@@ -1,5 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { whatsapp } from '../data/contatti.js';
+import PrimaDopo from '../components/PrimaDopo.astro';
 // Restyling: il cuore dell'offerta («il tuo sito, rifatto come si deve») e una ricerca vera
 // («restyling siti web torino», dai suggerimenti di Google). La home punta a «realizzazione»:
 // questa pagina presidia chi un sito ce l'ha già e vuole rifarlo.
@@ -40,7 +42,7 @@ const faqSchema = {
   '@type': 'FAQPage',
   mainEntity: domande.map((d) => ({ '@type': 'Question', name: d.q, acceptedAnswer: { '@type': 'Answer', text: d.a } })),
 };
-const WA = 'https://wa.me/393662102203?text=' + encodeURIComponent('Ciao! Vorrei rifare il sito della mia attività. Questo è l’indirizzo attuale: ');
+const WA = whatsapp('Ciao! Vorrei rifare il sito della mia attività. Questo è l’indirizzo attuale: ');
 ---
 <Layout
   title="Restyling siti web a Torino — Mole Digitale"
@@ -49,18 +51,26 @@ const WA = 'https://wa.me/393662102203?text=' + encodeURIComponent('Ciao! Vorrei
 >
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
-  <section class="section" style="padding-top:8rem;">
+  <section class="section section-alta">
     <nav class="briciole" aria-label="Sei qui">
       <a href="/">Home</a><span aria-hidden="true">›</span><span aria-current="page">Restyling del sito</span>
     </nav>
     <div class="section-head" data-reveal>
       <span class="kicker">Restyling del sito</span>
-      <h1 style="font-size:clamp(2.2rem,5vw,3.4rem); line-height:1.1;">Restyling siti web a Torino: <span class="grad">rifacciamo il tuo sito</span>, senza perdere niente.</h1>
+      <h1 class="titolo-pagina">Restyling siti web a Torino: <span class="grad">rifacciamo il tuo sito</span>, senza perdere niente.</h1>
       <p class="section-lead">Hai già un sito ma sembra di dieci anni fa, è lento o dal telefono non si legge? Lo rifacciamo da capo, moderno e veloce, tenendo quello che funziona: il dominio, i contenuti buoni e le posizioni che hai su Google.</p>
-      <div style="margin-top:1.6rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+      <div class="azioni azioni-testa">
         <a href="/preventivo/" class="btn btn-primary btn-magnetic">Mandaci il tuo sito</a>
-        <a href="/#prima-dopo" class="btn btn-ghost">Guarda un prima/dopo →</a>
+        <a href="#prima-dopo" class="btn btn-ghost">Guarda un prima/dopo →</a>
       </div>
+    </div>
+
+    {/* il confronto sta qui: prima il bottone portava alla home, e questa pagina parlava di
+        prima/dopo senza mostrarne uno */}
+    <div class="rs-blocco" id="prima-dopo">
+      <h2 data-reveal>Lo stesso locale, prima e dopo</h2>
+      <p class="rs-lead" data-reveal>Un esempio dimostrativo: trascina il cursore per passare dal sito di partenza a quello rifatto.</p>
+      <PrimaDopo reveal />
     </div>
 
     <div class="rs-blocco" data-reveal>
@@ -115,10 +125,10 @@ const WA = 'https://wa.me/393662102203?text=' + encodeURIComponent('Ciao! Vorrei
 
     <p class="rs-nota rs-centro" data-reveal>Lavoriamo per <a href="/siti-web-torino/">ogni tipo di attività</a>, e insieme al sito sistemiamo anche la <a href="/scheda-google-business-torino/">scheda Google Business</a>.</p>
 
-    <div class="cta-card glass" data-reveal style="margin-top:3rem; text-align:center; display:block;">
-      <h2 style="font-size:clamp(1.6rem,3.5vw,2.4rem); margin-bottom:1rem;">Mandaci l’indirizzo del tuo sito.</h2>
-      <p style="color:var(--muted); margin-bottom:1.6rem;">Ti diciamo cosa cambieremmo e ti mandiamo una prima bozza gratis. Nessun anticipo, nessun impegno.</p>
-      <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+    <div class="cta-card glass cta-finale" data-reveal>
+      <h2>Mandaci l’indirizzo del tuo sito.</h2>
+      <p>Ti diciamo cosa cambieremmo e ti mandiamo una prima bozza gratis. Nessun anticipo, nessun impegno.</p>
+      <div class="azioni">
         <a href={WA} target="_blank" rel="noopener" class="btn btn-ghost">Scrivici su WhatsApp</a>
         <a href="/preventivo/" class="btn btn-primary btn-magnetic">Chiedi il preventivo</a>
       </div>

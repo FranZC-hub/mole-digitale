@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { whatsapp } from '../data/contatti.js';
 ---
 <Layout title="Pagina non trovata — Mole Digitale" noindex={true}>
   <section class="section" style="min-height:70vh; display:grid; place-items:center; text-align:center;">
@@ -16,7 +17,7 @@ import Layout from '../layouts/Layout.astro';
         <a href="/demo/" class="btn btn-ghost btn-lg">Guarda gli esempi</a>
       </div>
       <p style="color:var(--muted); font-size:.95rem;">
-        Cercavi qualcosa di preciso? <a href="https://wa.me/393662102203?text=Ciao!%20Cercavo%20una%20pagina%20sul%20sito%20ma%20non%20la%20trovo" target="_blank" rel="noopener" style="color:var(--c2); text-decoration:underline;">Scrivici su WhatsApp</a> e ti aiutiamo al volo.
+        Cercavi qualcosa di preciso? <a href={whatsapp("Ciao! Cercavo una pagina sul sito ma non la trovo")} target="_blank" rel="noopener" style="color:var(--c2); text-decoration:underline;">Scrivici su WhatsApp</a> e ti aiutiamo al volo.
       </p>
     </div>
   </section>

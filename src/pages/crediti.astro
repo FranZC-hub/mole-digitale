@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { EMAIL } from '../data/contatti.js';
 
 // Le demo (/demo/*) sono mockup illustrativi, marcati noindex. Le immagini provengono da Openverse,
 // aggregatore di contenuti con licenze libere (CC0, Pubblico Dominio, CC BY, CC BY-SA).
@@ -22,7 +23,7 @@ const fonti = [
   description="Crediti e licenze delle immagini usate nelle demo dimostrative di Mole Digitale."
   noindex={true}
 >
-  <section class="section" style="padding-top:8rem;">
+  <section class="section section-alta">
     <div class="section-head" data-reveal>
       <span class="kicker">Crediti</span>
       <h1>Crediti <span class="grad">immagini</span>.</h1>
@@ -38,7 +39,7 @@ const fonti = [
       </ul>
 
       <h2>Licenze e attribuzione</h2>
-      <p>Le opere sono utilizzate nel rispetto delle rispettive licenze libere. Dove la licenza lo richiede (CC BY / CC BY-SA), l'attribuzione completa di autore e fonte è disponibile su richiesta scrivendo a <a href="mailto:info@moledigitale.it">info@moledigitale.it</a>: forniamo i riferimenti puntuali o rimuoviamo l'immagine.</p>
+      <p>Le opere sono utilizzate nel rispetto delle rispettive licenze libere. Dove la licenza lo richiede (CC BY / CC BY-SA), l'attribuzione completa di autore e fonte è disponibile su richiesta scrivendo a <a href={`mailto:${EMAIL}`}>{EMAIL}</a>: forniamo i riferimenti puntuali o rimuoviamo l'immagine.</p>
       <p>Nei <b>siti reali</b> realizzati per i clienti utilizziamo esclusivamente <b>fotografie di proprietà del cliente</b>, scatti realizzati da noi o immagini regolarmente licenziate. Le immagini delle demo hanno scopo puramente illustrativo.</p>
 
       <h2>Font</h2>

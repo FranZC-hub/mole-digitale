@@ -1,0 +1,31 @@
+---
+// Confronto prima/dopo trascinabile, usato in home e nella pagina del restyling.
+// Il comportamento è in src/scripts/main.js (cerca #compare: uno solo per pagina),
+// lo stile in src/styles/global.css (.compare).
+import { Image } from 'astro:assets';
+import primaImg from '../assets/img/prima.jpg';
+import dopoImg from '../assets/img/dopo.jpg';
+
+interface Props {
+  /** true = il riquadro entra in scena da solo allo scroll (se non sta già in un blocco che lo fa) */
+  reveal?: boolean;
+}
+const { reveal = false } = Astro.props;
+---
+<div class="compare" data-reveal={reveal || undefined} id="compare"
+     role="slider" tabindex="0" aria-label="Confronto prima e dopo: usa le frecce per spostare"
+     aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+  <div class="compare-img before">
+    <Image class="cmp-img" src={primaImg} alt="Esempio di sito vecchio e disordinato (prima)" widths={[480, 720, 960, 1280]} sizes="(max-width:920px) 92vw, 880px" format="webp" loading="lazy" />
+    <span class="tag tag-bad">PRIMA</span>
+  </div>
+  <div class="compare-img after" id="compareAfter">
+    <Image class="cmp-img cmp-img-after" src={dopoImg} alt="Esempio di sito moderno rifatto (dopo)" widths={[480, 720, 960, 1280]} sizes="(max-width:920px) 92vw, 880px" format="webp" loading="lazy" />
+    <span class="tag tag-good">DOPO</span>
+  </div>
+  <div class="compare-handle" id="compareHandle">
+    <div class="handle-circle">
+      <svg viewBox="0 0 24 24" width="20" height="20"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+  </div>
+</div>

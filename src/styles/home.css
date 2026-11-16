@@ -1,0 +1,361 @@
+/* =========================================================
+   Mole Digitale — home.css
+   Gli stili che servono solo alla home (apertura, striscia dei settori, servizi, processo,
+   calcolatore, pacchetti, numeri…). Stavano in global.css e scroll.css, cioè li scaricavano
+   tutte le pagine, che fuori dalla home ne usavano un quarto. Li importa solo
+   src/pages/index.astro, e nella pagina arrivano DOPO quelli comuni: alcune regole qui sotto
+   correggono regole di global.css e contano sull'ordine.
+   Dove mettere una regola nuova: se la classe compare solo in index.astro, qui; se la usa
+   anche un'altra pagina, in global.css.
+   ========================================================= */
+
+/* ---------- da global.css ---------- */
+/* ---------- Badge garanzia ---------- */
+.guarantee { display:flex; align-items:center; justify-content:center; gap:1.4rem; flex-wrap:wrap; margin-top:1.4rem; color:var(--muted); font-size:.9rem; }
+.guarantee span { display:inline-flex; align-items:center; gap:.45rem; }
+.guarantee svg { color:var(--c2); flex:none; }
+.hero .guarantee { justify-content:flex-start; }
+
+/* Banda garanzia (vicino al prezzo) */
+.guarantee-band { display:flex; align-items:center; gap:1.1rem; max-width:680px; margin:2.2rem auto 0; padding:1.1rem 1.4rem; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); }
+.guarantee-band .gb-ic { flex:none; width:50px; height:50px; border-radius:14px; display:grid; place-items:center; background:rgba(34,211,238,.12); color:var(--c2); }
+.guarantee-band strong { display:block; font-size:1.08rem; color:var(--text); }
+.guarantee-band p { color:var(--muted); font-size:.92rem; margin-top:.2rem; }
+.settori-gruppi { max-width:var(--maxw); margin:0 auto; display:grid; grid-template-columns:repeat(5,1fr); gap:1.6rem; }
+.settori-gruppo h3 { font-size:.82rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted-2); margin-bottom:.7rem; }
+.settori-gruppo ul { list-style:none; display:grid; gap:.15rem; }
+.settori-gruppo a { display:inline-flex; align-items:center; min-height:32px; color:var(--text); transition:color .2s; }
+.settori-gruppo a:hover { color:var(--c2); }
+.settori-tutti { text-align:center; margin-top:1.8rem; }
+.settori-tutti a { color:var(--c2); font-weight:600; }
+@media (max-width:980px) { .settori-gruppi { grid-template-columns:repeat(3,1fr); }
+}
+@media (max-width:560px) { .settori-gruppi { grid-template-columns:1fr 1fr; gap:1.2rem 1rem; }
+}
+.price-feats li, .addon-feats li, .serv-card li { position:relative; padding-left:1.5rem; }
+.price-feats li::before, .addon-feats li::before, .serv-card li::before {
+  content:''; position:absolute; left:0; top:.3em; width:1em; height:1em; background:var(--c2);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+.btn-wa { background: linear-gradient(135deg,#12874a,#0d6b5e); color:#fff; /* verde WhatsApp scurito: col brand originale il bianco stava a 2:1 */ box-shadow: 0 10px 30px -8px rgba(37,211,102,.5); }
+.btn-wa:hover { transform: translateY(-3px); box-shadow: 0 18px 42px -10px rgba(37,211,102,.7); }
+
+/* Icone inline (marquee + badge) */
+.m-ic, .badge-ic { fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.m-ic { width:1.3em; height:1.3em; vertical-align:-.28em; margin-right:.15rem; color:var(--c2); }
+.badge-ic { width:1.05em; height:1.05em; vertical-align:-.18em; margin-right:.1rem; }
+
+/* ---------- HERO ---------- */
+.hero {
+  position: relative; min-height: 100vh; display: grid;
+  /* colonne uguali: con 1.1fr/.9fr l'anteprima del sito restava piccola accanto al titolo */
+  grid-template-columns: 1fr 1fr; align-items: center; gap: 2rem;
+  max-width: var(--maxw); margin: 0 auto; padding: 8rem clamp(1rem,4vw,2rem) 4rem;
+}
+.eyebrow {
+  display:inline-flex; align-items:center; gap:.55rem; color:var(--muted);
+  font-size:.9rem; padding:.45rem .9rem; border:1px solid var(--border);
+  border-radius:999px; background:var(--surface); margin-bottom:1.6rem; backdrop-filter:blur(8px);
+}
+.ping { width:8px; height:8px; border-radius:50%; background:var(--c2); position:relative; box-shadow:0 0 10px var(--c2); }
+.ping::after { content:''; position:absolute; inset:0; border-radius:50%; background:var(--c2); animation:ping 1.8s var(--ease) infinite; }
+@keyframes ping { 0%{transform:scale(1);opacity:.7} 100%{transform:scale(3.5);opacity:0} }
+
+.hero-title { font-size: clamp(2.6rem, 6.5vw, 5rem); margin-bottom: 1.5rem; line-height: 1.07; }
+.hero-title .line { display: block; }
+.hero-title .word { display: inline-block; }
+
+.hero-sub { font-size: 1.18rem; color: var(--muted); max-width: 520px; margin-bottom: 2rem; }
+.hero-sub strong { color: var(--text); }
+.hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.8rem; }
+.hero .guarantee { margin-top: 0; }
+
+/* Mockup browser */
+.hero-visual { position: relative; perspective: 1200px; }
+/* su schermi larghi l'anteprima esce un po' dalla colonna, nel margine vuoto a destra della pagina */
+@media (min-width:1440px) { .hero-visual { margin-right:-3rem; }
+}
+.browser-mock {
+  background: var(--bg-2); border:1px solid var(--border); border-radius:16px; overflow:hidden;
+  box-shadow: var(--shadow); transform: rotateY(-12deg) rotateX(6deg); transform-style:preserve-3d;
+  transition: transform .4s var(--ease); animation: floaty 6s ease-in-out infinite;
+}
+@keyframes floaty { 0%,100%{ transform: rotateY(-12deg) rotateX(6deg) translateY(0);} 50%{ transform: rotateY(-12deg) rotateX(6deg) translateY(-14px);} }
+.browser-bar { display:flex; align-items:center; gap:6px; padding:10px 12px; background:rgba(255,255,255,.04); border-bottom:1px solid var(--border); }
+.browser-bar .dot { width:10px; height:10px; border-radius:50%; }
+.dot.r{background:#ff5f57}.dot.y{background:#febc2e}.dot.g{background:#28c840}
+.browser-bar .url { margin-left:10px; font-size:.72rem; color:var(--muted-2); background:rgba(255,255,255,.05); padding:3px 12px; border-radius:6px; }
+.browser-body { padding:0; line-height:0; }
+.browser-shot { width:100%; height:auto; display:block; }
+
+.floating-badge {
+  position:absolute; padding:.55rem .9rem; border-radius:12px; font-size:.82rem; font-weight:600;
+  background:rgba(12,12,22,.85); border:1px solid var(--border); backdrop-filter:blur(10px);
+  box-shadow:var(--shadow); white-space:nowrap;
+}
+/* «Perfetto da telefono» copriva la barra dell'indirizzo: restano le due etichette ai bordi */
+.fb-1 { display:none; }
+.fb-2 { bottom:16%; right:-10%; animation: floaty 7s ease-in-out infinite .5s; }
+.fb-3 { bottom:-4%; left:8%; animation: floaty 6s ease-in-out infinite 1s; }
+/* su schermi tra 981 e 1240 px (tablet in orizzontale, portatili piccoli) sporgeva oltre il bordo
+   destro della finestra e veniva tagliata di 8-17 px */
+@media (max-width:1240px) { .fb-2 { right:-2%; }
+}
+
+.scroll-hint {
+  position:absolute; bottom:1.5rem; left:50%; transform:translateX(-50%);
+  display:flex; flex-direction:column; align-items:center; gap:.5rem;
+  font-size:.72rem; letter-spacing:.15em; text-transform:uppercase; color:var(--muted-2);
+}
+.scroll-hint span { width:22px; height:34px; border:1px solid var(--border); border-radius:12px; position:relative; }
+.scroll-hint span::after { content:''; position:absolute; top:6px; left:50%; transform:translateX(-50%); width:4px; height:7px; border-radius:2px; background:var(--c2); animation:scrolldot 1.6s var(--ease) infinite; }
+@keyframes scrolldot { 0%{opacity:0;top:6px} 40%{opacity:1} 80%{opacity:0;top:18px} 100%{opacity:0} }
+
+/* ---------- Trust marquee ---------- */
+.trust { padding: 2rem 0 1rem; border-top:1px solid var(--border); border-bottom:1px solid var(--border); background:rgba(255,255,255,.015); }
+.trust-label { text-align:center; color:var(--muted-2); font-size:.85rem; letter-spacing:.1em; text-transform:uppercase; margin-bottom:1.4rem; }
+.marquee { overflow:hidden; -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent); mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent); }
+.marquee-track { display:flex; gap:3rem; width:max-content; animation:scrollX 32s linear infinite; }
+.marquee-track span { font-family:'Space Grotesk Variable', 'Space Grotesk'; font-size:1.15rem; color:var(--muted); white-space:nowrap; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+@keyframes scrollX { to { transform: translateX(-50%); } }
+
+/* ---------- Problema ---------- */
+.problem-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1.2rem; }
+.prob-icon {
+  width:48px; height:48px; border-radius:14px; display:grid; place-items:center;
+  background:var(--grad-soft); border:1px solid var(--border); color:var(--c2); margin-bottom:1.1rem;
+  transition: color .35s, background .35s;
+}
+.prob-icon svg { width:24px; height:24px; }
+.prob-card:hover .prob-icon { color:var(--text); }
+
+/* ---------- Fasce di sfondo alternate (ritmo visivo) ---------- */
+.band { position:relative; }
+.band::before {
+  content:''; position:absolute; top:0; bottom:0; left:50%; width:100vw; transform:translateX(-50%);
+  z-index:-1; background:rgba(255,255,255,.022);
+  border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+}
+.serv-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.3rem; }
+.serv-card {
+  padding:2rem 1.7rem; position:relative; overflow:hidden;
+  transition: transform .35s var(--ease), border-color .35s, box-shadow .35s;
+  transform-style:preserve-3d;
+}
+.serv-card::before {
+  content:''; position:absolute; inset:0; border-radius:inherit; padding:1px;
+  background:var(--grad); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude; opacity:0; transition:opacity .35s;
+}
+.serv-card:hover { transform:translateY(-8px); box-shadow:0 30px 60px -30px rgba(124,92,255,.55); }
+.serv-card:hover::before { opacity:1; }
+.serv-num { font-family:'Space Grotesk Variable', 'Space Grotesk'; font-size:.85rem; font-weight:700; color:var(--c2); letter-spacing:.1em; margin-bottom:1rem; opacity:.8; }
+.serv-card h3 { font-size:1.3rem; margin-bottom:.7rem; }
+.serv-card p { color:var(--muted); font-size:.96rem; margin-bottom:1.1rem; }
+.serv-card ul { list-style:none; display:flex; flex-direction:column; gap:.4rem; }
+.serv-card li { font-size:.88rem; color:var(--muted); }
+
+/* ---------- Processo / timeline ---------- */
+.timeline { max-width:760px; margin:0 auto; list-style:none; position:relative; padding-left:2.5rem; }
+.timeline::before { content:''; position:absolute; left:13px; top:8px; bottom:8px; width:2px; background:linear-gradient(var(--c1),var(--c2),var(--c3)); }
+.t-step { display:flex; gap:1.4rem; padding-bottom:2.5rem; position:relative; }
+.t-step:last-child { padding-bottom:0; }
+.t-num {
+  position:absolute; left:-2.5rem; width:30px; height:30px; border-radius:50%;
+  background:var(--bg-2); border:2px solid var(--c1); color:var(--text);
+  display:grid; place-items:center; font-family:'Space Grotesk Variable', 'Space Grotesk'; font-weight:700; font-size:.85rem;
+  box-shadow:0 0 0 5px rgba(124,92,255,.12);
+}
+.t-body h3 { font-size:1.3rem; margin-bottom:.4rem; }
+.t-body p { color:var(--muted); }
+
+/* ---------- Prezzi ---------- */
+/* schede alte uguali, con il bottone in fondo: prima ognuna era alta quanto il suo elenco e i
+   bottoni finivano sfalsati di 34 px */
+.price-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.4rem; }
+.price-card { padding:2.2rem 1.8rem; position:relative; display:flex; flex-direction:column; transition: transform .35s var(--ease), box-shadow .35s; }
+.price-card::before {
+  content:''; position:absolute; top:0; left:50%; transform:translateX(-50%);
+  width:38%; height:3px; border-radius:0 0 4px 4px; background:var(--grad); opacity:.5;
+}
+.price-card.popular::before { opacity:.9; width:50%; box-shadow:0 4px 14px -2px var(--c1); }
+.price-card:hover { transform:translateY(-6px); }
+.price-card.popular {
+  border-color:rgba(124,92,255,.5); transform:scale(1.04);
+  box-shadow:0 30px 70px -30px rgba(124,92,255,.6); background:var(--surface-2);
+}
+.price-card.popular:hover { transform:scale(1.04) translateY(-6px); }
+.badge-pop { position:absolute; top:-13px; left:50%; transform:translateX(-50%); background:var(--grad); color:#fff; font-size:.72rem; font-weight:700; font-family:'Space Grotesk Variable', 'Space Grotesk'; padding:.35rem .9rem; border-radius:999px; white-space:nowrap; box-shadow:0 8px 20px -6px var(--c1); }
+.price-card h3 { font-size:1.4rem; margin-bottom:.3rem; }
+.price-for { color:var(--muted-2); font-size:.88rem; margin-bottom:1.3rem; }
+/* niente cifre sul sito: al loro posto quanto è grande il sito, in bianco pieno */
+.price-key { font-family:'Space Grotesk Variable', 'Space Grotesk'; font-size:2rem; font-weight:700; line-height:1.1; letter-spacing:-.02em; }
+.price-key small { font-size:1rem; font-weight:500; color:var(--muted); letter-spacing:0; }
+.price-quote { color:var(--muted-2); font-size:.86rem; margin:.4rem 0 1.4rem; padding-bottom:1.3rem; border-bottom:1px solid var(--border); }
+.price-feats { list-style:none; display:flex; flex-direction:column; gap:.65rem; margin-bottom:1.7rem; flex:1; }
+.price-feats li { font-size:.92rem; color:var(--muted); }
+.price-note { text-align:center; color:var(--muted-2); margin-top:2rem; font-size:.92rem; }
+
+/* ---------- Add-on: hosting e gestione (canone mensile, la cifra è nel preventivo) ---------- */
+.addon {
+  margin-top:1.6rem; display:grid; grid-template-columns:1.4fr 1fr; gap:2.5rem; align-items:center;
+  padding:clamp(1.8rem,4vw,2.6rem); border-radius:var(--radius);
+  background:var(--grad-soft); border:1px solid rgba(124,92,255,.35); position:relative; overflow:hidden;
+}
+.addon::after {
+  content:''; position:absolute; right:-60px; top:-60px; width:240px; height:240px; border-radius:50%;
+  background:radial-gradient(circle, rgba(34,211,238,.20), transparent 70%); pointer-events:none;
+}
+.addon-tag {
+  display:inline-block; font-family:'Space Grotesk Variable', 'Space Grotesk'; font-size:.78rem; font-weight:600; letter-spacing:.05em;
+  color:var(--c2); background:rgba(0,0,0,.25); border:1px solid var(--border); padding:.35rem .8rem;
+  border-radius:999px; margin-bottom:1rem;
+}
+.addon-text h3 { font-size:clamp(1.4rem,3vw,1.9rem); margin-bottom:.7rem; }
+.addon-text p { color:var(--muted); font-size:1rem; }
+.addon-price { background:rgba(7,7,12,.45); border:1px solid var(--border); border-radius:var(--radius-sm); padding:1.6rem; backdrop-filter:blur(8px); }
+.addon-h { font-family:'Space Grotesk Variable', 'Space Grotesk'; font-size:1.25rem; font-weight:700; margin-bottom:1rem; }
+.addon-feats { list-style:none; display:flex; flex-direction:column; gap:.55rem; margin-bottom:1.4rem; }
+.addon-feats li { font-size:.92rem; color:var(--muted); }
+
+/* ---------- ROI: quanto costa NON avere un sito ---------- */
+.roi-box { display:grid; grid-template-columns:1.2fr 1fr; gap:2rem; max-width:860px; margin:0 auto; padding:clamp(1.6rem,4vw,2.4rem); align-items:center; }
+.roi-box > * { min-width:0; }
+.roi-in { display:grid; gap:1.4rem; }
+.roi-in label { display:grid; gap:.5rem; font-weight:600; font-size:.95rem; }
+.roi-in label b { color:var(--c2); font-family:'Space Grotesk Variable','Space Grotesk'; font-size:1.2rem; }
+.roi-in input[type=range] { width:100%; accent-color:var(--c1); height:32px; cursor:pointer; }
+.roi-out { text-align:center; display:grid; gap:.5rem; justify-items:center; }
+.roi-out > span { color:var(--muted); font-size:.9rem; text-transform:uppercase; letter-spacing:.08em; }
+.roi-out b { font-family:'Space Grotesk Variable','Space Grotesk'; font-size:clamp(2.4rem,6vw,3.6rem); font-weight:700; background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; line-height:1; }
+.roi-out small { color:var(--muted-2); font-size:.86rem; max-width:32ch; margin-bottom:.6rem; }
+@media (max-width:780px) { .roi-box { grid-template-columns:1fr; }
+}
+
+/* ---------- Numeri ---------- */
+/* padding-top a zero: segue i pacchetti senza fascia in mezzo, e i due margini sommati lasciavano
+   quasi 200 px vuoti */
+.numeri { text-align:center; padding-top:0; }   /* solo la riga sotto il titolo */
+.cta-text h2 { font-size:clamp(1.8rem,3.5vw,2.6rem); margin-bottom:1rem; }
+.cta-text p { color:var(--muted); margin-bottom:1.8rem; }
+.cta-direct { display:flex; gap:1rem; flex-wrap:wrap; }
+
+/* errori per-campo */
+.field-error { display:block; color:var(--error); font-size:.8rem; margin-top:.3rem; min-height:1rem; }
+
+/* Alone pulsante dietro il titolo hero */
+.hero-title { position:relative; }
+.hero-title::after {
+  content:''; position:absolute; inset:-25% -12% -25% -8%; z-index:-1; pointer-events:none;
+  background:radial-gradient(45% 60% at 28% 50%, rgba(124,92,255,.30), transparent 70%);
+  filter:blur(34px); animation: heroGlow 5s ease-in-out infinite;
+}
+@keyframes heroGlow { 0%,100%{opacity:.55; transform:scale(1)} 50%{opacity:1; transform:scale(1.1)} }
+.serv-card::after {
+  content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  opacity:0; transition:opacity .35s var(--ease); z-index:1;
+  background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%), rgba(124,92,255,.16), transparent 60%);
+}
+.serv-card:hover::after { opacity:1; }
+
+/* Bordo conico rotante sulla card prezzi consigliata (solo ANELLO, non riempie) */
+.price-card.popular::after {
+  content:''; position:absolute; inset:-2px; border-radius:22px; z-index:-1; padding:2px;
+  background:conic-gradient(from var(--a), var(--c1), var(--c2), var(--c3), var(--c1));
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude;
+  animation: spin 5s linear infinite; opacity:.9;
+}
+@keyframes spin { to { --a:360deg; } }
+@media (prefers-reduced-motion: reduce) {
+  .browser-mock, .floating-badge, .marquee-track, .ping::after, .scroll-hint span::after, .hero-title::after, .hero-visual, .price-card.popular::after { animation:none !important; }
+  .hero-title .word { transform:none; opacity:1; }
+  .hero-visual { transform:none; opacity:1; }
+}
+@media (max-width: 980px) {
+  .hero { grid-template-columns:1fr; min-height:auto; padding-top:7rem; text-align:left; }
+  /* mockup visibile anche su mobile, ridotto e centrato */
+  .hero-visual { margin:1rem auto 2rem; max-width:340px; }
+  .browser-mock { transform:rotateX(4deg); animation:none; }
+  /* sul telefono le etichette coprivano metà dell'anteprima, e «scorri» col mouse non serve */
+  .floating-badge, .scroll-hint { display:none; }
+  .problem-grid { grid-template-columns:repeat(2,1fr); }
+  .serv-grid, .price-grid { grid-template-columns:1fr; }
+  .price-card.popular { transform:none; }
+  .price-card.popular:hover { transform:translateY(-6px); }
+  .addon { grid-template-columns:1fr; gap:1.6rem; }
+}
+/* Tablet e telefoni in orizzontale: due o tre colonne al posto di una sola con schede enormi
+   (a 820 px la home era alta 15.000 px, contro gli 11.000 di uno schermo da 1024) */
+@media (min-width:561px) and (max-width:980px) {
+  .serv-grid { grid-template-columns:repeat(2,1fr); }
+  .hero-visual { max-width:460px; }
+}
+@media (min-width:721px) and (max-width:980px) {
+  .perche .serv-grid { grid-template-columns:repeat(3,1fr); }
+  .price-grid { grid-template-columns:repeat(2,1fr); }
+  /* il terzo pacchetto prende tutta la riga, con l'elenco su due colonne */
+  .price-card:nth-child(3) { grid-column:1 / -1; }
+  .price-card:nth-child(3) .price-feats { display:grid; grid-template-columns:1fr 1fr; }
+}
+@media (max-width: 560px) {
+  .problem-grid { grid-template-columns:1fr; }
+  /* apertura: etichetta su una riga sola, bottoni larghi uguali */
+  .eyebrow-extra, .addon-tag-extra { display:none; }
+  .hero-cta { flex-direction:column; }
+  .hero-cta .btn, .cta-direct .btn { justify-content:center; }
+  .cta-direct .btn { flex:1 1 100%; }
+  /* servizi: i tre punti su una riga («uno · due · tre») invece di tre righe con la spunta */
+  .serv-card p { margin-bottom:.7rem; }
+  .serv-card ul { display:block; }
+  .serv-card li { display:inline; padding-left:0; }
+  .serv-card li::before { content:none; }
+  .serv-card li:not(:last-child)::after { content:' · '; color:var(--muted-2); }
+  .prob-card:has(> .prob-icon) { display:grid; grid-template-columns:auto 1fr; column-gap:1rem; }
+  .prob-icon { grid-row:span 2; width:42px; height:42px; margin-bottom:0; }
+  .serv-card .prob-icon { margin-bottom:.8rem; }   /* «Perché fidarti»: l'icona sta sopra il titolo */
+  .prob-card:has(> .prob-icon) h3 { align-self:end; }
+  .serv-card { padding:1.6rem 1.3rem; }
+}
+@media (max-width: 720px) {
+  .floating-badge, .eyebrow { backdrop-filter:none; }
+}
+
+/* Link «approfondisci» in fondo alle schede dei servizi (home) */
+.serv-link { display:inline-block; margin-top:1.1rem; color:var(--c2); font-weight:600; font-size:.92rem; position:relative; z-index:2; }
+.serv-link:hover { text-decoration:underline; text-underline-offset:3px; }
+
+/* ---------- da scroll.css ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-title .word {
+    animation: heroWord .7s cubic-bezier(.215,.61,.355,1) backwards;
+    animation-delay: calc(.1s + var(--i, 0) * .05s);
+  }
+  /* la parola col gradiente ha già la sua animazione (gradShift): vanno dichiarate insieme */
+  .hero-title .word.grad {
+    animation: heroWord .7s cubic-bezier(.215,.61,.355,1) backwards, gradShift 6s linear infinite;
+    animation-delay: calc(.1s + var(--i, 0) * .05s), 0s;
+  }
+  .hero-fade {
+    animation: heroFade .8s cubic-bezier(.215,.61,.355,1) backwards;
+    animation-delay: calc(.45s + var(--f, 0) * .12s);
+  }
+  .hero-visual.hero-fade { animation: heroIn 1.1s cubic-bezier(.215,.61,.355,1) .4s backwards; }
+
+  /* Parallasse del mockup mentre si scorre l'hero: prima era gsap/ScrollTrigger (~21 KB).
+     Usa «translate», che non tocca il transform dell'inclinazione. Decorativo: dove le
+     animazioni legate allo scroll non ci sono, il mockup resta fermo. */
+  @supports (animation-timeline: scroll()) {
+    .hero .hero-visual.hero-fade {
+      animation: heroIn 1.1s cubic-bezier(.215,.61,.355,1) .4s backwards, heroParallasse linear both;
+    }
+    /* timeline in una regola a parte: vedi la nota su [data-reveal] in global.css */
+    html .hero .hero-visual.hero-fade { animation-timeline: auto, scroll(root); animation-range: normal, 0 100vh; }
+  }
+}
+@keyframes heroWord { from { opacity: 0; transform: translateY(28px); } }
+/* parte già leggibile (.35 e non 0): il sottotitolo conta come LCP al primo disegno */
+@keyframes heroFade { from { opacity: .35; transform: translateY(24px); } }
+@keyframes heroParallasse { to { translate: 0 -10%; } }

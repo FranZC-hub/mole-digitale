@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { whatsapp } from '../data/contatti.js';
 
 // Preventivo guidato SENZA prezzi: il cliente sceglie cosa gli serve, la cifra la
 // prepariamo noi e la mandiamo entro 24 ore. Invia allo stesso endpoint del form
@@ -25,7 +26,7 @@ const TEMPI = ['Il prima possibile', 'Entro un mese', 'Entro 2-3 mesi', 'Nessuna
   title="Preventivo gratuito per il tuo sito | Mole Digitale"
   description="Scegli cosa ti serve nel sito: tipo di sito, funzioni, grafica e visibilità su Google. Ti mandiamo un preventivo su misura entro 24 ore, gratis e senza impegno."
 >
-  <section class="section" style="padding-top:8rem;">
+  <section class="section section-alta">
     <div class="section-head" data-reveal>
       <span class="kicker">Preventivo gratuito</span>
       <h1>Dicci cosa ti serve. <span class="grad">Il preventivo lo facciamo noi.</span></h1>
@@ -114,7 +115,7 @@ const TEMPI = ['Il prima possibile', 'Entro un mese', 'Entro 2-3 mesi', 'Nessuna
 
       <button type="submit" class="btn btn-primary btn-lg btn-block btn-magnetic">Richiedi il preventivo gratuito →</button>
       <p class="form-feedback" id="prevFeedback" aria-live="polite"></p>
-      <p class="prev-note">Preferisci parlarne? <a href="https://wa.me/393662102203?text=Ciao!%20Vorrei%20un%20preventivo%20per%20il%20mio%20sito" target="_blank" rel="noopener">Scrivici su WhatsApp</a> e facciamo tutto a voce.</p>
+      <p class="prev-note">Preferisci parlarne? <a href={whatsapp("Ciao! Vorrei un preventivo per il mio sito")} target="_blank" rel="noopener">Scrivici su WhatsApp</a> e facciamo tutto a voce.</p>
     </form>
 
     <!-- Cosa arriva e quando: la domanda di chi sta per chiedere il preventivo -->
@@ -160,10 +161,14 @@ const TEMPI = ['Il prima possibile', 'Entro un mese', 'Entro 2-3 mesi', 'Nessuna
     .prev-note { text-align:center; color:var(--muted-2); font-size:.9rem; }
     .prev-note a { color:var(--c2); text-decoration:underline; }
     @media (max-width:560px) { .checks { grid-template-columns:1fr; } }
+    /* sul telefono il modulo perde il riquadro esterno: erano tre scatole una dentro l'altra
+       (scheda, sezione, opzione) e ai testi restava poco più di metà schermo */
+    @media (max-width:560px) { .prev { padding:0; background:none; border:0; border-radius:0; backdrop-filter:none; } }
   </style>
 
   <script>
-    import { azione } from '../scripts/azione.js';
+    import { inviaRichiesta } from '../scripts/invio.js';
+    import { recapitoValido, RECAPITO_ERRORE } from '../scripts/recapito.js';
     const pf = document.getElementById('prevForm') as HTMLFormElement;
     const pfb = document.getElementById('prevFeedback')!;
     const negozio = document.getElementById('prevNegozio')!;
@@ -214,31 +219,20 @@ const TEMPI = ['Il prima possibile', 'Entro un mese', 'Entro 2-3 mesi', 'Nessuna
     pf.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!(document.getElementById('p-privacy') as HTMLInputElement).checked) { pfb.classList.add('ko'); pfb.textContent = 'Devi accettare la privacy per inviare.'; return; }
+      if (!recapitoValido(testo('p-telefono'))) { pfb.classList.add('ko'); pfb.textContent = RECAPITO_ERRORE; document.getElementById('p-telefono')!.focus(); return; }
       const righe = aggiorna();
       if (testo('p-sito')) righe.push(['Sito attuale', testo('p-sito')]);
       if (testo('p-note')) righe.push(['Note', testo('p-note')]);
       const messaggio = '— PREVENTIVO DAL SITO —\n' + righe.map(([k, t]) => `${k}: ${t}`).join('\n');
-      const btn = pf.querySelector('button[type=submit]') as HTMLButtonElement;
-      const etichetta = btn.innerHTML;
-      btn.disabled = true; btn.setAttribute('aria-busy', 'true'); btn.innerHTML = '<span class="btn-spin" aria-hidden="true"></span> Invio…';
-      pfb.classList.remove('ok', 'ko'); pfb.textContent = 'Invio in corso…';
-      try {
-        const res = await fetch('/contact.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ nome: testo('p-nome'), attivita: testo('p-attivita'), telefono: testo('p-telefono'), messaggio, website: (pf.elements.namedItem('website') as HTMLInputElement).value }),
-        });
-        const out = await res.json().catch(() => ({}));
-        if (res.ok && out.ok) {
-          pfb.classList.add('ok'); pfb.textContent = '✅ Richiesta ricevuta! Ti mandiamo il preventivo entro 24 ore.';
-          azione('richiesta-preventivo');
-          pf.reset(); aggiorna();
-        } else throw new Error();
-      } catch {
-        pfb.classList.add('ko'); pfb.textContent = '⚠️ Invio non riuscito. Riprova, oppure scrivici su WhatsApp qui sotto.';
-      } finally {
-        btn.disabled = false; btn.removeAttribute('aria-busy'); btn.innerHTML = etichetta;
-      }
+      const inviata = await inviaRichiesta({
+        bottone: pf.querySelector('button[type=submit]'),
+        esito: pfb,
+        dati: { nome: testo('p-nome'), attivita: testo('p-attivita'), telefono: testo('p-telefono'), messaggio, website: (pf.elements.namedItem('website') as HTMLInputElement).value },
+        conferma: '✅ Richiesta ricevuta! Ti mandiamo il preventivo entro 24 ore.',
+        errore: '⚠️ Invio non riuscito. Riprova, oppure scrivici su WhatsApp qui sotto.',
+        evento: 'richiesta-preventivo',
+      });
+      if (inviata) { pf.reset(); aggiorna(); }
     });
   </script>
 </Layout>

@@ -43,15 +43,15 @@ const serviceSchema = {
 >
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
-  <section class="section" style="padding-top:8rem;">
+  <section class="section section-alta">
     <nav class="briciole" aria-label="Sei qui">
       <a href="/">Home</a><span aria-hidden="true">›</span><span aria-current="page">Analisi gratuita del sito</span>
     </nav>
     <div class="section-head" data-reveal>
       <span class="kicker">Analisi gratuita</span>
-      <h1 style="font-size:clamp(2.2rem,5vw,3.4rem); line-height:1.1;">Analisi del sito web, <span class="grad">gratis</span>: ti diciamo cosa migliorare.</h1>
+      <h1 class="titolo-pagina">Analisi del sito web, <span class="grad">gratis</span>: ti diciamo cosa migliorare.</h1>
       <p class="section-lead">Mandaci l’indirizzo del tuo sito. Lo guardiamo come lo vedono i tuoi clienti e Google, e ti rispondiamo con le cose più importanti da sistemare, in parole semplici. Lo guarda una persona, non un programma.</p>
-      <div style="margin-top:1.6rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+      <div class="azioni azioni-testa">
         <a href="#richiesta" class="btn btn-primary btn-magnetic">Richiedi l’analisi</a>
       </div>
     </div>
@@ -72,7 +72,9 @@ const serviceSchema = {
       <!-- Senza JavaScript il modulo funziona lo stesso: invio classico a contact.php -->
       <form class="cta-form glass an-form" id="anForm" action="/contact.php" method="post" data-reveal>
         <input type="hidden" name="richiesta" value="analisi" />
-        <div class="field"><input type="url" id="a-sito" name="sito" required placeholder=" " inputmode="url" /><label for="a-sito">Indirizzo del tuo sito *</label></div>
+        {/* type="text" e non "url": con "url" il browser rifiuta «www.miobar.it» (vuole https:// davanti),
+            cioè l'indirizzo come lo scrive chiunque — e il modulo non partiva */}
+        <div class="field"><input type="text" id="a-sito" name="sito" required placeholder=" " inputmode="url" autocomplete="url" autocapitalize="none" spellcheck="false" /><label for="a-sito">Indirizzo del tuo sito *</label></div>
         <div class="field"><input type="text" id="a-nome" name="nome" required placeholder=" " autocomplete="name" /><label for="a-nome">Il tuo nome *</label></div>
         <div class="field"><input type="text" id="a-attivita" name="attivita" required placeholder=" " autocomplete="organization" /><label for="a-attivita">Nome dell’attività *</label></div>
         <div class="field"><input type="text" id="a-telefono" name="telefono" required placeholder=" " autocomplete="tel" /><label for="a-telefono">Telefono o email *</label></div>
@@ -119,7 +121,9 @@ const serviceSchema = {
   </style>
 
   <script>
-    import { azione } from '../scripts/azione.js';
+    import { inviaRichiesta } from '../scripts/invio.js';
+    import { TELEFONO_BREVE, EMAIL } from '../data/contatti.js';
+    import { recapitoValido, RECAPITO_ERRORE } from '../scripts/recapito.js';
     const af = document.getElementById('anForm') as HTMLFormElement;
     const afb = document.getElementById('anFeedback')!;
     const testo = (id: string) => (document.getElementById(id) as HTMLInputElement).value.trim();
@@ -127,29 +131,20 @@ const serviceSchema = {
       e.preventDefault();
       afb.classList.remove('ok', 'ko');
       if (!af.checkValidity()) { af.reportValidity(); return; }
+      // l'indirizzo va bene anche senza https:// o www: basta che sembri un indirizzo (un punto, niente spazi)
+      if (!/^\S+\.\S{2,}$/.test(testo('a-sito'))) { afb.classList.add('ko'); afb.textContent = 'Controlla l’indirizzo del sito: per esempio www.tuosito.it'; document.getElementById('a-sito')!.focus(); return; }
+      if (!recapitoValido(testo('a-telefono'))) { afb.classList.add('ko'); afb.textContent = RECAPITO_ERRORE; document.getElementById('a-telefono')!.focus(); return; }
       const righe = ['— ANALISI GRATUITA DEL SITO —', `Sito: ${testo('a-sito')}`];
       if (testo('a-note')) righe.push(`Note: ${testo('a-note')}`);
-      const btn = af.querySelector('button[type=submit]') as HTMLButtonElement;
-      const etichetta = btn.innerHTML;
-      btn.disabled = true; btn.setAttribute('aria-busy', 'true'); btn.innerHTML = '<span class="btn-spin" aria-hidden="true"></span> Invio…';
-      afb.textContent = 'Invio in corso…';
-      try {
-        const res = await fetch('/contact.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ nome: testo('a-nome'), attivita: testo('a-attivita'), telefono: testo('a-telefono'), messaggio: righe.join('\n'), website: (af.elements.namedItem('website') as HTMLInputElement).value }),
-        });
-        const out = await res.json().catch(() => ({}));
-        if (res.ok && out.ok) {
-          afb.classList.add('ok'); afb.textContent = '✅ Richiesta ricevuta! Ti mandiamo l’analisi di solito entro 48 ore lavorative.';
-          azione('richiesta-analisi');
-          af.reset();
-        } else throw new Error();
-      } catch {
-        afb.classList.add('ko'); afb.textContent = 'Non siamo riusciti a inviare la richiesta. Scrivici su WhatsApp al 366 210 2203 o a info@moledigitale.it.';
-      } finally {
-        btn.disabled = false; btn.removeAttribute('aria-busy'); btn.innerHTML = etichetta;
-      }
+      const inviata = await inviaRichiesta({
+        bottone: af.querySelector('button[type=submit]'),
+        esito: afb,
+        dati: { nome: testo('a-nome'), attivita: testo('a-attivita'), telefono: testo('a-telefono'), messaggio: righe.join('\n'), website: (af.elements.namedItem('website') as HTMLInputElement).value },
+        conferma: '✅ Richiesta ricevuta! Ti mandiamo l’analisi di solito entro 48 ore lavorative.',
+        errore: `Non siamo riusciti a inviare la richiesta. Scrivici su WhatsApp al ${TELEFONO_BREVE} o a ${EMAIL}.`,
+        evento: 'richiesta-analisi',
+      });
+      if (inviata) af.reset();
     });
   </script>
 </Layout>
