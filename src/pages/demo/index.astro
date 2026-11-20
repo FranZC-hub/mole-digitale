@@ -112,7 +112,7 @@ const scorciatoie = ['bar', 'ristorante', 'parrucchiere', 'dentista'];
         sono attività inventate, questi no) e portano al sito reale, in una scheda nuova.
         L'anteprima è la schermata della home: public/img/thumbs/<img>.webp (+ la versione in 640/). */}
     <div class="demo-vero" data-reveal>
-      <h2>E tre siti veri, già online</h2>
+      <h2>Alcuni dei siti veri che abbiamo realizzato</h2>
       {[
         { nome: 'AttrezzatureChef', url: 'https://www.attrezzaturechef.it/', img: 'attrezzaturechef',
           alt: 'Home page di AttrezzatureChef, negozio online di attrezzature per la ristorazione',
@@ -123,6 +123,9 @@ const scorciatoie = ['bar', 'ristorante', 'parrucchiere', 'dentista'];
         { nome: 'Capellimania Torino', url: 'https://www.capellimaniatorino.it/', img: 'capellimania',
           alt: 'Home page di Capellimania Torino, extension e trattamenti per capelli',
           desc: 'Extension naturali, botox e cheratina a Torino: i trattamenti, i risultati sulle clienti e la richiesta di consulenza gratuita.' },
+        { nome: 'Sodepro', url: 'https://sodepro.it/', img: 'sodepro',
+          alt: 'Home page di Sodepro, noleggio auto a lungo termine',
+          desc: 'Noleggio a lungo termine per privati e aziende: le offerte del mese e la richiesta di un’offerta su misura.' },
       ].map((s) => (
         <a class="demo-vero-card glass" href={s.url} target="_blank" rel="noopener">
           <img src={`/img/thumbs/${s.img}.webp`} srcset={`/img/thumbs/640/${s.img}.webp 640w, /img/thumbs/${s.img}.webp 760w`} sizes="(max-width:760px) calc(100vw - 67px), 380px" alt={s.alt} loading="lazy" width="760" height="475" />
