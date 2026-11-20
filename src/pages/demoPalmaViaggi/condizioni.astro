@@ -1,0 +1,79 @@
+---
+import Layout from './_Layout.astro';
+import { INFO, BASE, REGOLE } from './_shared.js';
+// Condizioni di viaggio: la pagina che il modulo di prenotazione chiede di accettare.
+// È un MODELLO: struttura e regole che il sito applica davvero (minimo di iscritti, acconto,
+// preavvisi, lista d'attesa). Le parti segnate ⚠️ le danno l'agenzia e il suo consulente
+// (o l'associazione di categoria): autorizzazione, polizza, fondo di garanzia, penali.
+// Riferimento: Codice del Turismo (D.Lgs. 79/2011, come modificato dal D.Lgs. 62/2018).
+---
+<Layout title="Condizioni di viaggio" desc={`Le condizioni di viaggio di ${INFO.nome}: prenotazione, pagamenti, minimo di partecipanti, annullamenti, documenti.`}>
+  <section class="primo banda-t">
+    <div class="misura stretta testo">
+      <span class="occhiello">Condizioni</span>
+      <h1>Condizioni di viaggio</h1>
+      <p class="promemoria"><b>Modello da completare.</b> Il testo definitivo va scritto con il vostro consulente o con l’associazione di categoria, sulla base del Codice del Turismo. Qui ci sono già le regole che il sito applica (minimo di iscritti, acconto, preavvisi): se le cambiate, cambiano anche sul sito.</p>
+
+      <h2>Chi organizza</h2>
+      <p>{INFO.societa}, {INFO.indirizzo}, P.IVA {INFO.piva}.</p>
+      <ul class="dati">
+        <li>Autorizzazione / SCIA: <b>⚠️ estremi da inserire</b></li>
+        <li>Polizza di responsabilità civile: <b>⚠️ compagnia e numero</b></li>
+        <li>Garanzia per insolvenza o fallimento: <b>⚠️ fondo o polizza</b></li>
+      </ul>
+
+      <h2>Prenotazione</h2>
+      <p>Prenoti dal sito, al telefono o in agenzia. Dal sito la prenotazione è confermata quando paghi, tutto o l’acconto; se scegli di pagare in agenzia, ti teniamo il posto per 3 giorni. Per ogni passeggero ci servono nome e cognome; per i viaggi in aereo, anche i dati del documento.</p>
+      <p>Prima della conferma ricevi il modulo informativo standard previsto dalla legge per i pacchetti turistici e la scheda tecnica del viaggio. <b>⚠️ modulo e scheda da allegare</b></p>
+
+      <h2>Pagamenti</h2>
+      <ul>
+        <li>Gite in giornata: si paga tutto al momento della prenotazione, online o in agenzia.</li>
+        <li>Viaggi di più giorni: acconto del 30% alla prenotazione e saldo entro 15 giorni dalla partenza. Ti mandiamo noi il link per pagare il saldo online.</li>
+        <li>Sconto del 10% per chi prenota almeno due mesi prima della partenza, dove indicato.</li>
+      </ul>
+
+      <h2>Minimo di partecipanti</h2>
+      <p>Le gite in pullman partono con almeno {REGOLE.minimo} iscritti (i viaggi in aereo con il numero indicato nella scheda). Se il minimo non si raggiunge, ti avvisiamo almeno 7 giorni prima per le gite di un giorno, 10 giorni prima per i viaggi da 2 a 6 giorni, 21 giorni prima per quelli più lunghi, e ti restituiamo tutto quello che hai pagato.</p>
+
+      <h2>Se devi annullare</h2>
+      <p>Puoi annullare in qualsiasi momento prima della partenza. Ti restituiamo quello che hai pagato, meno una penale che dipende da quanto manca alla partenza:</p>
+      <table class="penali">
+        <thead><tr><th scope="col">Quando annulli</th><th scope="col">Penale</th></tr></thead>
+        <tbody>
+          <tr><td>⚠️ fino a … giorni prima</td><td>⚠️ …%</td></tr>
+          <tr><td>⚠️ da … a … giorni prima</td><td>⚠️ …%</td></tr>
+          <tr><td>⚠️ meno di … giorni prima</td><td>⚠️ …%</td></tr>
+        </tbody>
+      </table>
+      <p>Non paghi penali se il viaggio è impedito da circostanze inevitabili e straordinarie nel luogo di destinazione. Puoi anche cedere il posto a un’altra persona, avvisandoci in tempo.</p>
+
+      <h2>Lista d’attesa</h2>
+      <p>Se una partenza è completa puoi metterti in lista d’attesa senza pagare: se si libera un posto ti chiamiamo, nell’ordine in cui vi siete iscritti.</p>
+
+      <h2>Documenti</h2>
+      <p>Ognuno viaggia con il proprio documento valido: carta d’identità valida per l’espatrio per l’Europa, passaporto dove indicato nella scheda della gita. Chi non può partire per un documento mancante o scaduto non ha diritto al rimborso.</p>
+
+      <h2>Reclami e assistenza</h2>
+      <p>Durante il viaggio segnala subito qualsiasi problema all’accompagnatore o al numero di assistenza {INFO.telSera} (dalle 18:30 alle 9:00). Dopo il viaggio scrivici a <a href={'mailto:' + INFO.email}>{INFO.email}</a>.</p>
+
+      <p class="ritorno"><a href={BASE + 'privacy/'}>Privacy</a> · <a href={BASE + 'partenze/'}>Torna alle gite</a></p>
+    </div>
+  </section>
+  <style>
+    .banda-t{padding-bottom:clamp(4rem,8vw,6rem)}
+    .testo h1{font-size:clamp(2.4rem,5vw,3.6rem);margin:.8rem 0 1rem;font-weight:800}
+    .testo h2{font-size:1.5rem;margin:2.2rem 0 .6rem}
+    .testo p,.testo li{color:var(--muto)}
+    .testo p{margin-top:.6rem}
+    .testo ul{list-style:disc;margin:.6rem 0 0 1.2rem;display:grid;gap:.35rem}
+    .testo b{color:var(--inchiostro)}
+    .testo a{color:var(--cielo-testo);text-decoration:underline;text-underline-offset:3px}
+    .testo .promemoria{margin:1rem 0 0}
+    .dati b{color:var(--arancio-testo)}
+    .penali{width:100%;max-width:520px;border-collapse:collapse;margin-top:.9rem;background:var(--carta);border-radius:12px;overflow:hidden}
+    .penali th,.penali td{padding:.6rem .9rem;text-align:left;border-bottom:1px solid var(--filo);color:var(--muto)}
+    .penali th{font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;background:var(--sabbia-2)}
+    .ritorno{margin-top:2.4rem !important}
+  </style>
+</Layout>

@@ -1,0 +1,472 @@
+---
+// BOZZA CLIENTE — Palma Viaggi (Palma Viaggi di El Khayati Abderrahman), Buttigliera Alta (TO)
+// Agenzia viaggi nata da una ditta di trasporti: gite in pullman con mezzi propri, viaggi, noleggio.
+// Anteprima non ufficiale realizzata da Mole Digitale su dati pubblici (palmaviaggi.com).
+//
+// IMPIANTO VISIVO: il manifesto di viaggio e il biglietto. Dal loro marchio vengono il sole a strisce
+// giallo-arancio e l'azzurro del pullman; il blu notte è la strada all'alba, quando si parte.
+// Ogni partenza è un biglietto con la matrice staccabile (data, prezzo, «Prenota»).
+// Outfit per i titoli (geometrico, come la scritta PALMA del logo), Manrope per il testo.
+import '@fontsource-variable/outfit';
+import '@fontsource-variable/manrope';
+import outfitWoff2 from '@fontsource-variable/outfit/files/outfit-latin-wght-normal.woff2?url';
+import manropeWoff2 from '@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2?url';
+import IconaWhatsApp from '../../components/IconaWhatsApp.astro';
+import { INFO, BASE, TEMI, SERVIZI, ORARI, orariCompatti, sole, icona, waLink } from './_shared.js';
+
+interface Props { title: string; desc?: string; active?: string; ogImg?: string; ogAlt?: string }
+const {
+  title,
+  desc = `${INFO.nome}, agenzia viaggi a Buttigliera Alta (TO): gite in pullman di un giorno, weekend e viaggi in Italia e in Europa con i nostri pullman Gran Turismo. Si sale a Buttigliera Alta, Pianezza, Torino e Beinasco.`,
+  active = '',
+  // l'anteprima quando il link gira su WhatsApp o Facebook: ogni gita ha la sua foto
+  ogImg = 'https://www.moledigitale.it/img/palmaviaggi/anteprima.jpg',
+  ogAlt = 'Il lago d’Iseo e Monte Isola, una delle gite di Palma Viaggi',
+} = Astro.props;
+
+const pieno = active === 'Home'
+  ? `${INFO.nome} — Gite in pullman e viaggi da Buttigliera Alta e Torino`
+  : `${title} · ${INFO.nome}`;
+const NAV = [['partenze/', 'Gite e viaggi'], ['servizi/', 'Servizi'], ['agenzia/', 'Chi siamo'], ['contatti/', 'Contatti']];
+const WA = waLink(`Ciao ${INFO.nome}, vorrei un’informazione.`);
+const orari = orariCompatti();
+const giorniSchema = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const ora = (h: number) => `${String(Math.floor(h)).padStart(2, '0')}:${String(Math.round((h % 1) * 60)).padStart(2, '0')}`;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'TravelAgency',
+  name: INFO.nome,
+  legalName: INFO.societa,
+  vatID: 'IT' + INFO.piva,
+  telephone: INFO.telHref,
+  email: INFO.email,
+  address: { '@type': 'PostalAddress', streetAddress: INFO.via, postalCode: INFO.cap, addressLocality: INFO.citta, addressRegion: INFO.prov, addressCountry: 'IT' },
+  areaServed: ['Buttigliera Alta', 'Valle di Susa', 'Torino'],
+  openingHoursSpecification: Object.entries(ORARI).flatMap(([d, f]) => (f || []).map(([a, b]) => ({
+    '@type': 'OpeningHoursSpecification', dayOfWeek: giorniSchema[+d], opens: ora(a), closes: ora(b),
+  }))),
+  url: 'https://www.moledigitale.it' + BASE,
+  image: 'https://www.moledigitale.it/img/palmaviaggi/anteprima.jpg',
+  sameAs: [INFO.facebook, INFO.instagram],
+};
+---
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>{pieno}</title>
+  <meta name="description" content={desc} />
+  <meta name="theme-color" content="#0b2836" />
+  <link rel="preload" as="font" type="font/woff2" href={outfitWoff2} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href={manropeWoff2} crossorigin />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230b2836'/><circle cx='16' cy='16' r='10' fill='%23ffa21f'/><rect x='5' y='17.2' width='22' height='1.4' fill='%230b2836'/><rect x='5' y='20.2' width='22' height='1.9' fill='%230b2836'/><rect x='5' y='23.6' width='22' height='2.6' fill='%230b2836'/></svg>" />
+  <meta property="og:title" content={pieno} />
+  <meta property="og:description" content={desc} />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="it_IT" />
+  <meta property="og:image" content={ogImg} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content={ogAlt} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  {/* prima di disegnare: con JavaScript acceso le sezioni entrano in scena, senza restano ferme e visibili */}
+  <script is:inline>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+  <a class="salta" href="#main">Salta al contenuto</a>
+  <aside aria-label="Anteprima di Mole Digitale"><a class="demo-flag" href="/">Anteprima realizzata da <b>Mole Digitale</b><span class="flag-piu"> — bozza di proposta per {INFO.nome}</span></a></aside>
+
+  <header class="testata" id="testata">
+    <div class="testata-in">
+      {/* il loro logo (dal sito di oggi, rifilato) */}
+      <a href={BASE} class="marchio" aria-label={INFO.nome + ', pagina iniziale'}>
+        <img src="/img/palmaviaggi/logo-180.webp" srcset="/img/palmaviaggi/logo-180.webp 180w, /img/palmaviaggi/logo-360.webp 360w" sizes="108px" width="180" height="112" alt="Palma Viaggi" />
+      </a>
+      <nav class="menu" id="menu" aria-label="Menu principale">
+        {NAV.map(([href, label]) => (
+          <a href={BASE + href} class={active === label ? 'on' : undefined} aria-current={active === label ? 'page' : undefined}>{label}</a>
+        ))}
+        <a href={'tel:' + INFO.telHref} class="menu-tel"><Fragment set:html={icona('telefono', 18)} />{INFO.tel}</a>
+      </nav>
+      <div class="testata-dx">
+        <a href={BASE + 'prenota/'} class="btn btn-sole testata-cta">Prenota un posto</a>
+        <button class="menu-btn" id="menuBtn" aria-label="Apri il menu" aria-expanded="false" aria-controls="menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  {/* l'avviso che l'agenzia scrive dal pannello (chiusure, novità): vuoto finché non c'è */}
+  <div class="avviso" id="avviso" role="status" hidden><p><b>Avviso dall’agenzia</b> <span id="avvisoTesto"></span></p></div>
+
+  <main id="main" tabindex="-1">
+    <slot />
+  </main>
+
+  <footer class="piede">
+    <div class="piede-sole" aria-hidden="true"><Fragment set:html={sole('sole-piede')} /></div>
+    <div class="piede-in">
+      <div class="piede-marca">
+        <p class="piede-nome"><img src="/img/palmaviaggi/logo-270.webp" srcset="/img/palmaviaggi/logo-180.webp 180w, /img/palmaviaggi/logo-270.webp 270w, /img/palmaviaggi/logo-360.webp 360w" sizes="150px" width="180" height="112" alt="Palma Viaggi" loading="lazy" /></p>
+        <p class="piede-claim">Agenzia viaggi e pullman Gran Turismo a {INFO.citta}. Gite di un giorno, weekend e viaggi in Italia e in Europa, con i nostri pullman e i nostri autisti.</p>
+        <p class="piede-social">
+          <a href={INFO.facebook} target="_blank" rel="noopener">Facebook</a>
+          <a href={INFO.instagram} target="_blank" rel="noopener">Instagram</a>
+        </p>
+      </div>
+      <div>
+        <h2>Gite e viaggi</h2>
+        <ul>
+          {TEMI.map((t) => <li><a href={`${BASE}partenze/?tema=${t.id}`}>{t.t}</a></li>)}
+        </ul>
+      </div>
+      <div>
+        <h2>Servizi</h2>
+        <ul>
+          {SERVIZI.map((s) => <li><a href={`${BASE}servizi/#${s.id}`}>{s.t}</a></li>)}
+        </ul>
+      </div>
+      <div>
+        <h2>L’agenzia</h2>
+        <ul class="piede-contatti">
+          <li><a href={INFO.maps} target="_blank" rel="noopener">{INFO.via}<br />{INFO.cap} {INFO.citta} ({INFO.prov})</a></li>
+          <li><a href={'tel:' + INFO.telHref}>{INFO.tel}</a> <small>in orario d’agenzia</small></li>
+          <li><a href={'tel:' + INFO.telSeraHref}>{INFO.telSera}</a> <small>dalle 18:30 alle 9:00</small></li>
+          <li><a href={'mailto:' + INFO.email}>{INFO.email}</a></li>
+        </ul>
+        <dl class="piede-orari">
+          {orari.map((o) => <><dt>{o.giorni}</dt><dd>{o.orario}</dd></>)}
+        </dl>
+      </div>
+    </div>
+    <p class="piede-legale">
+      <span>{INFO.societa} · P.IVA {INFO.piva}</span>
+      {/* ⚠️ obbligatori per un'agenzia che vende online: estremi da chiedere al cliente */}
+      <span>Autorizzazione n. ⚠️ · Polizza RC ⚠️ · Fondo di garanzia ⚠️</span>
+      <span><a href={BASE + 'condizioni/'}>Condizioni di viaggio</a></span>
+      <span><a href={BASE + 'privacy/'}>Privacy e crediti foto</a></span>
+      <span><a href={BASE + 'gestione/'}>Area riservata</a></span>
+      <span>Bozza dimostrativa · <a href="/">Mole Digitale</a></span>
+    </p>
+  </footer>
+
+  <!-- da telefono: le tre azioni che contano, sempre sotto il pollice -->
+  <nav class="barra-mobile" aria-label="Azioni rapide">
+    <a href={'tel:' + INFO.telHref}><Fragment set:html={icona('telefono', 20)} /><span>Chiama</span></a>
+    <a href={WA} target="_blank" rel="noopener"><IconaWhatsApp width="20" height="20" fill="currentColor" aria-hidden="true" /><span>WhatsApp</span></a>
+    <a href={BASE + 'prenota/'} class="barra-cta">Prenota</a>
+  </nav>
+
+  <style is:global>
+    :root{
+      --sabbia:#fbf6ec; --carta:#fffdf8; --sabbia-2:#f4ead8; --filo:#e6dbc6; --filo-2:#d8c9ad;
+      --notte:#0b2836; --notte-2:#123d52; --notte-3:#1b5470;
+      --cielo:#11a8e0; --cielo-testo:#04729b; --cielo-chiaro:#dff3fb;
+      --sole:#ffc23a; --arancio:#ff8a1f; --arancio-testo:#b54708;
+      --verde:#1c7c4f; --rosso:#b3261e;
+      --inchiostro:#0b2836; --testo:#2a3a43; --muto:#5a6871;
+      --disp:'Outfit Variable',system-ui,sans-serif; --sans:'Manrope Variable',system-ui,sans-serif;
+      --e:cubic-bezier(.2,.7,.2,1); --testata:76px; --flag:28px; --r:18px;
+      --fondo:var(--sabbia);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    [hidden]{display:none !important}
+    html{scroll-behavior:smooth;scroll-padding-top:calc(var(--flag) + var(--testata) + 24px)}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none !important;animation:none !important}}
+    body{background:var(--sabbia);color:var(--testo);font-family:var(--sans);font-size:1rem;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:clip}
+    img{display:block;max-width:100%;height:auto}
+    a{color:inherit;text-decoration:none}
+    ul{list-style:none}
+    h1,h2,h3,h4{font-family:var(--disp);font-weight:700;color:var(--inchiostro);line-height:1.05;letter-spacing:-.02em;text-wrap:balance}
+    p{text-wrap:pretty}
+    a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--cielo);outline-offset:3px}
+    .salta{position:absolute;left:-999px;top:0;background:var(--notte);color:#fff;padding:.6rem 1rem;z-index:999}
+    .salta:focus{left:8px;top:8px}
+    .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+    .ico{flex:none}
+
+    .demo-flag{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--flag);display:flex;align-items:center;justify-content:center;background:#061820;color:#bcd3de;font-size:.75rem;letter-spacing:.02em}
+    .demo-flag b{color:#fff;margin:0 .25em}
+    @media (max-width:640px){.flag-piu{display:none}}
+
+    /* ---------------------------------------------------------------- testata */
+    /* passaggio morbido da una pagina all'altra; la testata resta ferma */
+    @media (prefers-reduced-motion:no-preference){
+      @view-transition{navigation:auto}
+      ::view-transition-old(root),::view-transition-new(root){animation-duration:.28s}
+    }
+    .testata{view-transition-name:testata}
+    .testata{position:fixed;top:var(--flag);left:0;right:0;z-index:200;background:var(--sabbia);border-bottom:1px solid transparent;transition:border-color .3s,box-shadow .3s}
+    .testata.giu{border-color:var(--filo);box-shadow:0 10px 30px -24px rgba(11,40,54,.5)}
+    .testata-in{transition:height .3s var(--e)}
+    .testata.giu .testata-in{height:64px}
+    .testata-in{max-width:1240px;height:var(--testata);margin:0 auto;display:flex;align-items:center;gap:2rem;padding:0 clamp(1rem,4vw,2.4rem)}
+    .marchio{display:flex;align-items:center;flex:none}
+    .marchio img{width:108px;height:auto;transition:width .3s var(--e)}
+    .testata.giu .marchio img{width:92px}
+    .menu{display:flex;align-items:center;gap:clamp(1.1rem,2.4vw,2rem);margin-left:auto}
+    .menu a{font-family:var(--disp);font-weight:500;font-size:1.02rem;color:var(--testo);padding:.35rem 0;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+    .menu a:hover{color:var(--cielo-testo)}
+    .menu a.on{color:var(--inchiostro);border-color:var(--arancio)}
+    .menu-tel{display:none !important}
+    .testata-dx{display:flex;align-items:center;gap:.8rem}
+    .menu-btn{display:none;width:44px;height:44px;background:none;border:0;cursor:pointer;flex-direction:column;justify-content:center;align-items:center;gap:5px}
+    .menu-btn span{display:block;width:22px;height:2px;background:var(--inchiostro);transition:transform .3s var(--e),opacity .2s}
+    .menu-btn[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+    .menu-btn[aria-expanded="true"] span:nth-child(2){opacity:0}
+    .menu-btn[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+    .avviso{position:relative;z-index:150;margin-top:calc(var(--flag) + var(--testata));background:var(--sole);color:var(--notte);text-align:center;padding:.7rem 1rem;font-size:.95rem}
+    .avviso b{font-family:var(--disp);margin-right:.3rem}
+    .avviso:not([hidden]) + main .primo{padding-top:clamp(2rem,5vw,3.5rem)}
+
+    /* ---------------------------------------------------------------- bottoni */
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:48px;padding:.75rem 1.35rem;border-radius:999px;border:2px solid transparent;font-family:var(--disp);font-weight:600;font-size:1.02rem;letter-spacing:.005em;cursor:pointer;transition:background .2s,color .2s,border-color .2s,transform .2s var(--e),box-shadow .2s;text-align:center;line-height:1.2}
+    .btn:active{transform:scale(.98)}
+    .btn-sole{background:linear-gradient(100deg,var(--sole),var(--arancio));color:var(--notte);box-shadow:0 10px 24px -14px rgba(255,138,31,.9)}
+    .btn-sole:hover{box-shadow:0 14px 28px -12px rgba(255,138,31,1);transform:translateY(-1px)}
+    .btn-notte{background:var(--notte);color:#fff}
+    .btn-notte:hover{background:var(--notte-3)}
+    .btn-bordo{border-color:var(--inchiostro);color:var(--inchiostro);background:transparent}
+    .btn-bordo:hover{background:var(--inchiostro);color:var(--sabbia)}
+    .btn-wa{background:#25d366;color:#06321c}
+    .btn-wa:hover{background:#1fbf5b}
+    .btn-chiaro{background:#fff;color:var(--notte)}
+    .btn-chiaro:hover{background:var(--sole)}
+    .btn-pieno{width:100%}
+    .link{color:var(--cielo-testo);font-weight:700;display:inline-flex;align-items:center;gap:.35rem;border-bottom:2px solid rgba(17,168,224,.3);transition:border-color .2s}
+    .link:hover{border-color:var(--cielo-testo)}
+
+    /* ---------------------------------------------------------------- impaginazione */
+    .primo{padding-top:calc(var(--flag) + var(--testata) + clamp(2rem,5vw,3.5rem))}
+    .misura{max-width:1240px;margin:0 auto;padding:0 clamp(1.1rem,4vw,2.4rem)}
+    .stretta{max-width:860px}
+    .banda{padding:clamp(3.5rem,8vw,6.5rem) 0}
+    .occhiello{display:inline-flex;align-items:center;gap:.55rem;font-family:var(--disp);font-size:.8rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--arancio-testo)}
+    .occhiello::before{content:'';width:1.4rem;height:.5rem;border-radius:99px;background:linear-gradient(90deg,var(--sole),var(--arancio))}
+    .sez-h2{font-size:clamp(2rem,4.6vw,3.3rem);margin-top:.8rem}
+    .sez-p{color:var(--muto);max-width:60ch;margin-top:1rem;font-size:1.06rem}
+    .sez-testa{display:flex;justify-content:space-between;align-items:flex-end;gap:1.5rem 2rem;flex-wrap:wrap;margin-bottom:clamp(1.8rem,4vw,2.8rem)}
+    .chiara{background:var(--sabbia-2);--fondo:var(--sabbia-2)}
+    .scura{background:var(--notte);color:#cfdbe2;--fondo:var(--notte)}
+    .scura h2,.scura h3{color:#fff}
+    .scura .occhiello{color:var(--sole)}
+    .scura .sez-p{color:#a9bec9}
+
+    /* note per il cliente: si vedono solo nella bozza */
+    .promemoria{max-width:860px;margin:3rem auto 0;padding:1.1rem 1.3rem;border:1.5px dashed var(--filo-2);border-radius:14px;background:rgba(255,194,58,.08);color:var(--muto);font-size:.9rem;line-height:1.6}
+    .promemoria b{color:var(--inchiostro)}
+    .promemoria ul{margin:.4rem 0 0 1.1rem;list-style:disc}
+    .promemoria li{margin-top:.2rem}
+
+    .vuoto{padding:1.6rem;border-radius:var(--r);background:var(--carta);border:1.5px dashed var(--filo-2);color:var(--muto)}
+    .foto{border-radius:var(--r);overflow:hidden;background:var(--sabbia-2)}
+    .foto img{width:100%;height:100%;object-fit:cover}
+
+    /* ---------------------------------------------------------------- posti */
+    .posti-barra{position:relative;height:6px;border-radius:99px;background:#ebe2d1;margin:.8rem 0 .45rem}
+    .posti-barra span{position:absolute;left:0;top:0;bottom:0;border-radius:inherit;background:var(--cielo);min-width:6px}
+    .posti--confermata .posti-barra span{background:var(--verde)}
+    .posti--ultimi .posti-barra span{background:var(--arancio)}
+    .posti--completo .posti-barra span{background:var(--rosso)}
+    .posti-barra i{position:absolute;top:-3px;width:2px;height:12px;margin-left:-1px;background:var(--notte);border-radius:2px}
+    .posti-t{font-size:.86rem;color:var(--muto);line-height:1.35}
+    .posti-t b{color:var(--cielo-testo);font-weight:700}
+    .posti--confermata .posti-t b{color:var(--verde)}
+    .posti--ultimi .posti-t b{color:var(--arancio-testo)}
+    .posti--completo .posti-t b{color:var(--rosso)}
+
+    /* ---------------------------------------------------------------- il biglietto */
+    .biglietti{display:grid;gap:1.3rem}
+    .bgl{container-type:inline-size}
+    .bgl-in{position:relative;display:grid;grid-template-columns:1fr;background:var(--carta);border-radius:var(--r);overflow:hidden;
+      box-shadow:0 1px 0 var(--filo),0 18px 34px -26px rgba(11,40,54,.55);transition:transform .3s var(--e),box-shadow .3s}
+    .bgl-in:hover{transform:translateY(-3px);box-shadow:0 1px 0 var(--filo),0 24px 40px -24px rgba(11,40,54,.55)}
+    .bgl-foto{aspect-ratio:16/9;overflow:hidden;background:var(--sabbia-2)}
+    .bgl-foto img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--e)}
+    .bgl-in:hover .bgl-foto img{transform:scale(1.04)}
+    .bgl-corpo{padding:1rem 1.15rem .95rem;display:flex;flex-direction:column;min-width:0}
+    .bgl-tipo{font-size:.74rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muto)}
+    .bgl-titolo{font-size:1.28rem;font-weight:700;line-height:1.15;margin-top:.35rem}
+    .bgl-titolo a::after{content:'';position:absolute;inset:0;z-index:0}
+    .bgl-titolo a:focus-visible{outline:0}
+    .bgl-titolo a:focus-visible::after{outline:3px solid var(--cielo);outline-offset:-3px;border-radius:var(--r)}
+    .bgl-breve{display:none}
+    .bgl-corpo .posti{margin-top:auto}
+    .bgl-matrice{position:relative;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:.9rem;padding:.95rem 1.15rem 1.05rem;border-top:2px dashed var(--filo)}
+    .bgl-matrice::before,.bgl-matrice::after{content:'';position:absolute;top:-11px;width:20px;height:20px;border-radius:50%;background:var(--fondo)}
+    .bgl-matrice::before{left:-10px}
+    .bgl-matrice::after{right:-10px}
+    .bgl-data{display:grid;justify-items:center;line-height:1;font-family:var(--disp);color:var(--inchiostro);min-width:3.2rem}
+    .bgl-data span{font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--arancio-testo)}
+    .bgl-data b{font-size:2rem;font-weight:800;margin:.08rem 0}
+    .bgl-data small{font-size:.74rem;font-weight:600;color:var(--muto);margin-top:.2rem;white-space:nowrap}
+    .bgl-prezzo p{line-height:1.25}
+    .bgl-prezzo b{font-family:var(--disp);font-size:1.45rem;font-weight:800;color:var(--inchiostro)}
+    .bgl-prezzo small{display:block;font-size:.78rem;color:var(--muto)}
+    .bgl-sconto{font-size:.78rem;font-weight:700;color:var(--verde);margin-top:.15rem}
+    .bgl-cta{position:relative;z-index:1;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.55rem 1.1rem;border-radius:999px;
+      background:linear-gradient(100deg,var(--sole),var(--arancio));color:var(--notte);font-family:var(--disp);font-weight:700;white-space:nowrap;transition:box-shadow .2s}
+    .bgl-cta:hover{box-shadow:0 8px 18px -8px rgba(255,138,31,.95)}
+    .bgl--completo .bgl-cta{background:var(--sabbia-2);color:var(--inchiostro)}
+    @container (min-width:640px){
+      .bgl-in{grid-template-columns:210px minmax(0,1fr) 196px}
+      .bgl-foto{aspect-ratio:auto;height:100%;min-height:150px}
+      .bgl-corpo{padding:1.15rem 1.4rem}
+      .bgl-titolo{font-size:1.42rem}
+      .bgl-breve{display:block;color:var(--muto);font-size:.95rem;margin:.3rem 0 .4rem;max-width:60ch}
+      .bgl-matrice{grid-template-columns:1fr;justify-items:center;text-align:center;align-content:center;gap:.6rem;border-top:0;border-left:2px dashed var(--filo);padding:1rem 1.1rem}
+      .bgl-matrice::before{left:-11px;top:-10px}
+      .bgl-matrice::after{left:-11px;right:auto;top:auto;bottom:-10px}
+    }
+
+    /* il biglietto piccolo, senza foto */
+    .mini{position:relative;background:var(--carta);border-radius:var(--r);padding:1.1rem 1.25rem 1rem;box-shadow:0 26px 50px -24px rgba(11,40,54,.6)}
+    .mini::after{content:'';position:absolute;left:1.25rem;right:1.25rem;bottom:4.1rem;border-top:2px dashed var(--filo)}
+    .mini-et{display:flex;align-items:center;gap:.45rem;font-size:.74rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--arancio-testo)}
+    .mini-data{font-family:var(--disp);font-weight:600;color:var(--muto);margin-top:.5rem;font-size:.95rem}
+    .mini-titolo{font-family:var(--disp);font-size:1.25rem;font-weight:700;line-height:1.15;color:var(--inchiostro);margin-top:.15rem}
+    .mini-titolo a:hover{color:var(--cielo-testo)}
+    .mini-piede{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:1.4rem}
+    .mini-piede b{font-family:var(--disp);font-size:1.4rem;font-weight:800;color:var(--inchiostro)}
+    .mini-piede small{color:var(--muto);font-size:.8rem}
+    .mini-cta{display:inline-flex;align-items:center;gap:.35rem;min-height:44px;padding:.5rem 1rem;border-radius:999px;background:var(--notte);color:#fff;font-family:var(--disp);font-weight:600}
+    .mini-cta:hover{background:var(--notte-3)}
+
+    /* ---------------------------------------------------------------- scelte (chip) */
+    .chips{display:flex;flex-wrap:wrap;gap:.5rem}
+    .chip{position:relative;display:inline-flex}
+    .chip input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+    .chip span{display:inline-flex;align-items:center;gap:.4rem;min-height:42px;padding:.45rem 1rem;border-radius:999px;border:1.5px solid var(--filo-2);background:var(--carta);font-weight:600;font-size:.93rem;color:var(--testo);transition:background .2s,border-color .2s,color .2s;white-space:nowrap}
+    .chip small{font-weight:600;color:var(--muto);font-size:.8rem}
+    .chip:hover span{border-color:var(--inchiostro)}
+    .chip input:checked + span{background:var(--notte);border-color:var(--notte);color:#fff}
+    .chip input:checked + span small{color:#a9bec9}
+    .chip input:focus-visible + span{outline:3px solid var(--cielo);outline-offset:2px}
+    .chip input:disabled + span{opacity:.45;text-decoration:line-through}
+
+    /* ---------------------------------------------------------------- moduli */
+    .modulo{display:grid;gap:1.1rem}
+    .modulo label,.modulo .etichetta{display:grid;gap:.4rem;font-size:.9rem;font-weight:700;color:var(--inchiostro)}
+    .modulo small{font-weight:500;font-size:.82rem;color:var(--muto)}
+    .modulo input:not([type=checkbox]):not([type=radio]),.modulo select,.modulo textarea{width:100%;min-width:0;padding:.8rem .9rem;border:1.5px solid var(--filo-2);border-radius:12px;background:var(--carta);font:inherit;font-weight:500;font-size:1rem;color:var(--inchiostro)}
+    .modulo input:focus,.modulo select:focus,.modulo textarea:focus{outline:0;border-color:var(--cielo-testo);box-shadow:0 0 0 3px rgba(17,168,224,.2)}
+    .modulo [aria-invalid="true"]{border-color:var(--rosso) !important;background:#fff6f4 !important}
+    .modulo fieldset{border:0;display:grid;gap:1rem;min-width:0}
+    .modulo legend{font-family:var(--disp);font-size:1.25rem;font-weight:700;color:var(--inchiostro);margin-bottom:.2rem}
+    .modulo .spunta{display:flex;align-items:flex-start;gap:.6rem;font-weight:500;font-size:.88rem;color:var(--muto)}
+    .modulo .spunta input{width:20px;height:20px;margin-top:.1rem;accent-color:var(--notte);flex:none}
+    .modulo .spunta a{color:var(--cielo-testo);text-decoration:underline;text-underline-offset:3px}
+    .due{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .errore{color:var(--rosso);font-size:.88rem;font-weight:700}
+    @media (max-width:560px){.due{grid-template-columns:1fr}}
+
+    /* entrata delle sezioni: solo con JavaScript acceso e se il visitatore non ha chiesto meno movimento */
+    @media (prefers-reduced-motion:no-preference){
+      .js .rv{opacity:0;transform:translateY(18px);transition:opacity .7s var(--e),transform .7s var(--e)}
+      .js .rv.vista{opacity:1;transform:none}
+      /* i posti si riempiono quando il biglietto arriva sotto gli occhi, poi compare la tacca del minimo */
+      .js .posti-barra span{clip-path:inset(0 100% 0 0 round 99px);transition:clip-path 1.2s var(--e) .1s}
+      .js .posti-barra i{scale:1 0;transition:scale .35s var(--e) 1s}
+      .js .posti-barra.piena span{clip-path:inset(0 0 0 0 round 99px)}
+      .js .posti-barra.piena i{scale:1}
+    }
+    /* la foto grande che si assesta all'arrivo (home e schede gita): solo movimento, niente dissolvenza */
+    @keyframes respiro{from{scale:1.08}to{scale:1}}
+    @keyframes sobbalza{to{translate:0 -1.5px}}
+
+    /* ---------------------------------------------------------------- piede */
+    .piede{position:relative;overflow:hidden;background:var(--notte);color:#a9bec9}
+    .piede-sole{position:absolute;right:-90px;top:-60px;width:320px;opacity:.12;pointer-events:none}
+    .piede-in{position:relative;max-width:1240px;margin:0 auto;padding:clamp(3rem,6vw,4.5rem) clamp(1.1rem,4vw,2.4rem) 2rem;display:grid;grid-template-columns:1.4fr 1fr 1.1fr 1.3fr;gap:2.5rem}
+    .piede h2{font-family:var(--disp);font-size:.8rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--sole);margin-bottom:.9rem}
+    .piede li{margin-bottom:.45rem}
+    .piede a{transition:color .2s}
+    .piede a:hover{color:#fff}
+    .piede small{color:#7f98a5;font-size:.78rem}
+    .piede-nome img{width:150px;height:auto}
+    .piede-claim{margin-top:.9rem;max-width:36ch}
+    .piede-social{display:flex;gap:1.2rem;margin-top:1rem;font-weight:700;color:#fff}
+    .piede-orari{display:grid;grid-template-columns:auto 1fr;gap:.2rem .8rem;margin-top:1rem;font-size:.85rem}
+    .piede-orari dt{color:#fff;font-weight:600}
+    .piede-legale{position:relative;max-width:1240px;margin:0 auto;padding:1.2rem clamp(1.1rem,4vw,2.4rem) 2rem;border-top:1px solid rgba(255,255,255,.1);display:flex;flex-wrap:wrap;gap:.6rem 2rem;font-size:.8rem;color:#7f98a5}
+    .piede-legale a{text-decoration:underline;text-underline-offset:3px}
+
+    .barra-mobile{display:none}
+
+    @media (max-width:1060px){
+      .menu{position:fixed;top:calc(var(--flag) + var(--testata));left:0;right:0;flex-direction:column;align-items:center;gap:1.2rem;padding:1.8rem 1rem 2.2rem;background:var(--sabbia);border-bottom:1px solid var(--filo);margin:0;display:none;box-shadow:0 24px 40px -30px rgba(11,40,54,.6)}
+      .testata.aperta .menu{display:flex}
+      .testata.giu .menu{top:calc(var(--flag) + 64px)}
+      .menu a{font-size:1.2rem}
+      .menu-tel{display:inline-flex !important;align-items:center;gap:.5rem;color:var(--cielo-testo) !important;font-weight:700 !important}
+      .testata-dx{margin-left:auto}
+      .menu-btn{display:flex}
+      .piede-in{grid-template-columns:1fr 1fr;gap:2rem}
+      .piede-marca{grid-column:1/-1}
+    }
+    @media (max-width:640px){
+      :root{--testata:64px}
+      .marchio img{width:80px}
+      .testata-cta{display:none}
+      .piede-in{grid-template-columns:1fr}
+      .barra-mobile{display:grid;grid-template-columns:auto auto 1fr;gap:.4rem;position:fixed;left:0;right:0;bottom:0;z-index:160;background:var(--carta);border-top:1px solid var(--filo);padding:.6rem .8rem calc(.6rem + env(safe-area-inset-bottom))}
+      .barra-mobile a{display:flex;align-items:center;justify-content:center;gap:.4rem;min-height:48px;padding:0 .8rem;border-radius:999px;font-family:var(--disp);font-weight:600;white-space:nowrap;color:var(--inchiostro)}
+      .barra-cta{background:linear-gradient(100deg,var(--sole),var(--arancio))}
+      body{padding-bottom:76px}
+      /* quello che riceve il fuoco (o viene portato in vista) non finisce sotto la barra in basso */
+      html{scroll-padding-bottom:96px}
+    }
+    @media (max-width:380px){.barra-mobile a span{display:none}}
+  </style>
+
+  <script>
+    import { leggiAvviso } from './_shared.js';
+    const t = document.getElementById('testata');
+    const b = document.getElementById('menuBtn');
+    const menu = (aperto: boolean) => {
+      t!.classList.toggle('aperta', aperto);
+      b!.setAttribute('aria-expanded', String(aperto));
+      b!.setAttribute('aria-label', aperto ? 'Chiudi il menu' : 'Apri il menu');
+    };
+    b!.addEventListener('click', () => menu(!t!.classList.contains('aperta')));
+    document.querySelectorAll('#menu a').forEach((a) => a.addEventListener('click', () => menu(false)));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && t!.classList.contains('aperta')) { menu(false); b!.focus(); }
+    });
+    // ombra sotto la testata appena si scende
+    const giu = () => t!.classList.toggle('giu', scrollY > 8);
+    addEventListener('scroll', giu, { passive: true }); giu();
+
+    // l'avviso scritto dal pannello
+    const av = leggiAvviso();
+    if (av.attivo && av.testo.trim()) {
+      document.getElementById('avvisoTesto')!.textContent = av.testo.trim();
+      document.getElementById('avviso')!.hidden = false;
+    }
+
+    // entrata delle sezioni
+    const rv = document.querySelectorAll('.rv');
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('vista'); io.unobserve(e.target); } }), { threshold: 0.1 });
+      rv.forEach((el) => io.observe(el));
+    } else rv.forEach((el) => el.classList.add('vista'));
+
+    // le barre dei posti: anche quelle che le pagine ridisegnano dopo (filtri, date, pannello)
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('piena'); io.unobserve(e.target); } }), { threshold: 0.9 });
+      let attesa = false;
+      const cerca = () => {
+        attesa = false;
+        document.querySelectorAll('.posti-barra:not([data-v])').forEach((el) => { el.setAttribute('data-v', ''); io.observe(el); });
+      };
+      cerca();
+      new MutationObserver(() => { if (!attesa) { attesa = true; requestAnimationFrame(cerca); } })
+        .observe(document.getElementById('main')!, { childList: true, subtree: true });
+    } else document.querySelectorAll('.posti-barra').forEach((el) => el.classList.add('piena'));
+  </script>
+</body>
+</html>

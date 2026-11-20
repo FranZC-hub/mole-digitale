@@ -1,0 +1,183 @@
+---
+import Layout from './_Layout.astro';
+import IconaWhatsApp from '../../components/IconaWhatsApp.astro';
+import { INFO, BASE, SERVIZI, COMFORT, foto, icona } from './_shared.js';
+// I servizi, dalla loro pagina: su misura e pacchetti, nozze, noleggio pullman, scuole, turismo
+// religioso, viaggi per chi ha esigenze particolari. Un solo modulo di preventivo in fondo: il
+// pulsante di ogni servizio lo apre già impostato (?tipo=noleggio#preventivo).
+const pullman = foto('pullman', 1400, 700);
+---
+<Layout title="Servizi" active="Servizi" desc={`I servizi di ${INFO.nome}: viaggi su misura e di nozze, noleggio pullman Gran Turismo con autista, gite scolastiche, turismo religioso, viaggi accessibili.`}>
+
+  <section class="primo sv-testa">
+    <div class="misura">
+      <span class="occhiello">Servizi</span>
+      <h1>Non solo gite in pullman.</h1>
+      <p class="sez-p">Il viaggio di nozze, il pullman per il matrimonio, la gita della scuola o della parrocchia, un viaggio pensato per chi ha esigenze particolari. Dicci cosa ti serve: ti mandiamo un preventivo chiaro.</p>
+      <nav class="sv-indice" aria-label="I servizi">
+        {SERVIZI.map((s) => <a href={'#' + s.id}><Fragment set:html={icona(s.ico, 20)} />{s.t}</a>)}
+      </nav>
+    </div>
+  </section>
+
+  <div class="misura sv-lista">
+    {SERVIZI.map((s, i) => (
+      <section class={'sv rv' + (s.id === 'noleggio' ? ' sv-grande' : '')} id={s.id} aria-labelledby={'t-' + s.id}>
+        <div class="sv-ico"><Fragment set:html={icona(s.ico, 30)} /></div>
+        <div class="sv-testo">
+          <h2 id={'t-' + s.id}>{s.t}</h2>
+          <p>{s.d}</p>
+          <ul>{s.punti.map((x) => <li><Fragment set:html={icona('check', 18)} />{x}</li>)}</ul>
+          <a href={`?tipo=${s.id}#preventivo`} class="btn btn-bordo" data-tipo={s.id}>Chiedi un preventivo</a>
+        </div>
+        {s.id === 'noleggio' && (
+          <div class="sv-extra">
+            <div class="foto"><img src={pullman.src} srcset={pullman.srcset} sizes="(max-width:980px) 92vw, 460px" width="1400" height="880" alt="Tre pullman Gran Turismo bianchi in fila, pronti a partire" loading="lazy" /></div>
+            <ul class="sv-comfort">{COMFORT.map(([ic, t]) => <li><Fragment set:html={icona(ic, 18)} />{t}</li>)}</ul>
+          </div>
+        )}
+      </section>
+    ))}
+  </div>
+
+  <!-- ============================================================ preventivo -->
+  <section class="banda scura" id="preventivo">
+    <div class="misura prev">
+      <div>
+        <span class="occhiello">Preventivo</span>
+        <h2 class="sez-h2">Raccontaci il viaggio.</h2>
+        <p class="sez-p">Bastano poche righe: ti rispondiamo entro un giorno lavorativo con un preventivo voce per voce. Senza impegno.</p>
+        <ul class="prev-contatti">
+          <li><Fragment set:html={icona('telefono', 20)} /><a href={'tel:' + INFO.telHref}>{INFO.tel}</a></li>
+          <li><Fragment set:html={icona('email', 20)} /><a href={'mailto:' + INFO.email}>{INFO.email}</a></li>
+          <li><Fragment set:html={icona('mappa', 20)} /><a href={INFO.maps} target="_blank" rel="noopener">{INFO.via}, {INFO.citta}</a></li>
+        </ul>
+      </div>
+      <form class="modulo prev-form" id="prevForm" novalidate>
+        <label>Di cosa hai bisogno
+          <select id="tipo">
+            {SERVIZI.map((s) => <option value={s.id}>{s.t}</option>)}
+            <option value="altro">Altro</option>
+          </select>
+        </label>
+        <div class="due">
+          <label>Quando <small>(data o periodo)</small><input type="text" id="quando" maxlength="60" placeholder="Es. 12 giugno, o fine agosto" /></label>
+          <label>Quante persone<input type="number" id="quanti" min="1" max="999" inputmode="numeric" /></label>
+        </div>
+        <div class="due" id="tratta">
+          <label>Partenza da<input type="text" id="da" maxlength="60" placeholder="Es. Avigliana" /></label>
+          <label>Destinazione<input type="text" id="a" maxlength="60" placeholder="Es. Lago di Garda" /></label>
+        </div>
+        <label>Qualche dettaglio in più <small>(facoltativo)</small><textarea id="msg" rows="4" maxlength="800"></textarea></label>
+        <div class="due">
+          <label>Nome<input type="text" id="pNome" autocomplete="name" required maxlength="80" /></label>
+          <label>Telefono o email<input type="text" id="pRec" autocomplete="tel" required maxlength="120" /></label>
+        </div>
+        <label class="spunta"><input type="checkbox" id="pPriv" required /> <span>Ho letto l’<a href={BASE + 'privacy/'} target="_blank">informativa sulla privacy</a>.</span></label>
+        <p class="errore" id="pErr" role="alert" hidden></p>
+        <div class="prev-azioni">
+          <button type="submit" class="btn btn-wa" name="via" value="wa"><IconaWhatsApp width="20" height="20" fill="currentColor" aria-hidden="true" /> Invia su WhatsApp</button>
+          <button type="submit" class="btn btn-chiaro" name="via" value="email"><Fragment set:html={icona('email', 18)} /> Invia per email</button>
+        </div>
+        <p class="prev-ok" id="pOk" role="status" hidden></p>
+      </form>
+    </div>
+  </section>
+
+  <style>
+    .sv-testa{padding-bottom:1rem}
+    .sv-testa h1{font-size:clamp(2.5rem,5.6vw,4.2rem);margin-top:.9rem;font-weight:800}
+    .sv-indice{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:2rem}
+    .sv-indice a{display:inline-flex;align-items:center;gap:.45rem;min-height:42px;padding:.4rem 1rem;border-radius:999px;background:var(--carta);border:1.5px solid var(--filo);font-weight:700;font-size:.92rem;transition:border-color .2s}
+    .sv-indice a:hover{border-color:var(--inchiostro)}
+    .sv-indice .ico{color:var(--cielo-testo)}
+
+    .sv-lista{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem;padding-top:2rem;padding-bottom:clamp(3.5rem,7vw,5.5rem)}
+    .sv{display:grid;grid-template-columns:auto 1fr;gap:1.2rem;background:var(--carta);border-radius:var(--r);padding:1.6rem;box-shadow:0 1px 0 var(--filo)}
+    .sv-grande{grid-column:1/-1;grid-template-columns:auto minmax(0,1fr) minmax(0,.95fr);gap:1.2rem 2rem}
+    .sv-ico{display:grid;place-items:center;width:3.4rem;height:3.4rem;border-radius:16px;background:linear-gradient(180deg,var(--sole),var(--arancio));color:var(--notte)}
+    .sv h2{font-size:1.6rem}
+    .sv-testo p{color:var(--muto);margin-top:.6rem}
+    .sv-testo ul{display:grid;gap:.4rem;margin:1rem 0 1.3rem}
+    .sv-testo li{display:flex;gap:.5rem;align-items:flex-start;font-weight:600;color:var(--inchiostro);font-size:.95rem}
+    .sv-testo li .ico{color:var(--verde);margin-top:.2rem}
+    .sv-extra .foto{aspect-ratio:1400/880}
+    .sv-comfort{display:grid;grid-template-columns:1fr 1fr;gap:.45rem .9rem;margin-top:1rem;font-size:.88rem;color:var(--muto)}
+    .sv-comfort li{display:flex;gap:.45rem;align-items:center}
+    .sv-comfort .ico{color:var(--cielo-testo)}
+
+    .prev{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(2rem,5vw,4.5rem);align-items:start}
+    .prev-contatti{display:grid;gap:.7rem;margin-top:2rem}
+    .prev-contatti li{display:flex;align-items:center;gap:.7rem;color:#fff;font-weight:600}
+    .prev-contatti .ico{color:var(--sole)}
+    .prev-form{background:var(--carta);border-radius:var(--r);padding:clamp(1.3rem,3vw,2rem);color:var(--testo)}
+    .prev-azioni{display:flex;flex-wrap:wrap;gap:.7rem}
+    .prev-azioni .btn-chiaro{border-color:var(--filo-2)}
+    .prev-ok{font-weight:700;color:var(--verde)}
+
+    @media (max-width:980px){
+      .sv-lista{grid-template-columns:1fr}
+      .sv-grande{grid-template-columns:auto 1fr}
+      .sv-extra{grid-column:1/-1}
+      .prev{grid-template-columns:1fr}
+    }
+    @media (max-width:560px){
+      .sv,.sv-grande{grid-template-columns:1fr}
+      .prev-azioni .btn{width:100%}
+    }
+  </style>
+
+  <script>
+    import { INFO, SERVIZI, waLink, aggiungiRichiesta } from './_shared.js';
+    import { recapitoValido, RECAPITO_ERRORE } from '../../scripts/recapito.js';
+    const $ = <T extends HTMLElement = HTMLInputElement>(s: string) => document.querySelector(s) as T;
+    const tipo = $<HTMLSelectElement>('#tipo');
+
+    // il tipo arriva dal pulsante del servizio, o dall'indirizzo
+    const scegli = (t: string | null) => { if (t && [...tipo.options].some((o) => o.value === t)) tipo.value = t; aggiorna(); };
+    const aggiorna = () => {
+      // partenza e destinazione servono a noleggio, scuole, religioso e su misura; non alle nozze
+      $('#tratta').hidden = tipo.value === 'nozze' || tipo.value === 'per-tutti';
+    };
+    tipo.addEventListener('change', aggiorna);
+    document.querySelectorAll<HTMLAnchorElement>('[data-tipo]').forEach((a) => a.addEventListener('click', (e) => {
+      e.preventDefault();
+      scegli(a.dataset.tipo!);
+      history.replaceState(null, '', `?tipo=${a.dataset.tipo}#preventivo`);
+      document.getElementById('preventivo')!.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      setTimeout(() => tipo.focus({ preventScroll: true }), 400);
+    }));
+    scegli(new URLSearchParams(location.search).get('tipo'));
+
+    const err = (msg: string, campo?: HTMLElement) => {
+      const e = $('#pErr'); e.textContent = msg; e.hidden = !msg;
+      document.querySelectorAll('#prevForm [aria-invalid]').forEach((el) => el.removeAttribute('aria-invalid'));
+      if (campo) { campo.setAttribute('aria-invalid', 'true'); campo.focus(); }
+    };
+    $('#prevForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const via = ((e as SubmitEvent).submitter as HTMLButtonElement | null)?.value || 'wa';
+      const nome = $('#pNome').value.trim(), rec = $('#pRec').value.trim();
+      if (!nome) return err('Scrivi il tuo nome.', $('#pNome'));
+      if (!recapitoValido(rec)) return err(RECAPITO_ERRORE, $('#pRec'));
+      if (!$('#pPriv').checked) return err('Serve la presa visione dell’informativa.', $('#pPriv'));
+      err('');
+      const servizio = SERVIZI.find((s) => s.id === tipo.value)?.t || 'Altro';
+      const righe = [
+        `Richiesta di preventivo: ${servizio}`,
+        $('#quando').value.trim() && `Quando: ${$('#quando').value.trim()}`,
+        $('#quanti').value && `Persone: ${$('#quanti').value}`,
+        !$('#tratta').hidden && ($('#da').value.trim() || $('#a').value.trim()) && `Tratta: ${$('#da').value.trim() || '?'} → ${$('#a').value.trim() || '?'}`,
+        $<HTMLTextAreaElement>('#msg').value.trim(),
+        `${nome} · ${rec}`,
+      ].filter(Boolean).join('\n');
+      aggiungiRichiesta({ id: 'q' + Date.now(), tipo: 'preventivo', servizio, testo: righe, nome, tel: rec, stato: 'nuova', creata: new Date().toISOString() });
+      const url = via === 'email'
+        ? `mailto:${INFO.email}?subject=${encodeURIComponent('Preventivo: ' + servizio)}&body=${encodeURIComponent(righe)}`
+        : waLink(righe);
+      if (via === 'email') location.href = url; else window.open(url, '_blank', 'noopener');
+      const ok = $('#pOk'); ok.hidden = false;
+      ok.textContent = via === 'email' ? 'Si è aperta l’email già scritta: manca solo «Invia».' : 'Si è aperto WhatsApp con il messaggio già scritto: manca solo «Invia».';
+    });
+  </script>
+</Layout>

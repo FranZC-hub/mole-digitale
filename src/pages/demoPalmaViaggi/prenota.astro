@@ -1,0 +1,635 @@
+---
+import Layout from './_Layout.astro';
+import { INFO, BASE, icona, sole, pullmino } from './_shared.js';
+// Prenotazione e pagamento. Hanno chiesto di poter comprare il viaggio online: qui il percorso
+// completo, con il PAGAMENTO FINTO (nessun circuito, nessun addebito). Tre modi:
+//   tutto online · acconto online (solo viaggi di più giorni) · posto bloccato e pagamento in agenzia.
+// Le gite complete vanno in lista d'attesa, senza pagamento.
+// Il modulo della carta accetta SOLO le carte di prova: nessuno deve essere tentato di scrivere la
+// sua. I dati della carta non vengono salvati né mandati da nessuna parte, e si svuotano dopo l'uso.
+// Nella versione reale: pagina di pagamento del circuito (Nexi XPay, Stripe…), che restituisce l'esito.
+---
+<Layout title="Prenota e paga" active="" desc={`Prenota il tuo posto sulle gite di ${INFO.nome}: scegli data, partecipanti e fermata, e paga online o in agenzia.`}>
+
+  <section class="primo pren">
+    <div class="misura">
+
+      <!-- ============================================================ 1. la prenotazione -->
+      <div id="passo-dati">
+        <span class="occhiello">Prenota</span>
+        <h1>Prenota il tuo posto</h1>
+        <p class="sez-p">Nessuna registrazione: scegli la gita, dicci quanti siete e dove salite. Puoi pagare subito online oppure bloccare il posto e pagare in agenzia.</p>
+
+        {/* Tre blocchi invece di quattro. Chi arriva da un biglietto ha già scelto gita e data: le vede in
+            una scheda con «Cambia», senza il menu. I nomi stanno subito sotto il «quanti siete», così il
+            + fa comparire il campo lì dove si guarda. Da telefono il riepilogo viene prima del pulsante
+            (non prima del modulo) e il totale resta sempre in basso, con il pulsante per andare avanti. */}
+        <div class="pren-griglia">
+          <form class="modulo pren-form" id="prenForm" novalidate>
+            <div class="scelta" id="sceltaBox">
+              <div class="scelta-gita" id="sceltaGita"></div>
+              <label class="scelta-sel" id="sceltaSel"><span class="lab">Gita e data</span>
+                <select id="partenza" required></select>
+              </label>
+              {/* prima di disegnare: arrivando da un biglietto il menu non si vede, così il modulo non salta */}
+              <script is:inline>if (/[?&]p=/.test(location.search)) document.getElementById('sceltaSel').hidden = true;</script>
+            </div>
+
+            <fieldset>
+              <legend><span class="n">1</span> Chi viene</legend>
+              <div class="etichetta" id="persone-et">Quanti siete
+                <div class="contatore" role="group" aria-labelledby="persone-et">
+                  <button type="button" id="meno" aria-label="Un passeggero in meno"><Fragment set:html={icona('meno', 20)} /></button>
+                  <output id="persone" aria-live="polite">2</output>
+                  <button type="button" id="piu" aria-label="Un passeggero in più"><Fragment set:html={icona('piu', 20)} /></button>
+                </div>
+                <small id="personeNota"></small>
+              </div>
+              <div class="nomi">
+                <label><span class="lab">Il tuo nome e cognome</span><input type="text" id="nome" autocomplete="name" required maxlength="80" /></label>
+                <div class="altri-campi" id="altriCampi"><label><span class="lab">Passeggero 2</span><input type="text" maxlength="80" autocomplete="off" /></label></div>
+                <p class="nomi-nota" id="nomiNota">Ci servono i nomi di tutti per l’assicurazione e per la lista del pullman.</p>
+              </div>
+              <div class="due">
+                <label><span class="lab">Telefono <small>(meglio con WhatsApp)</small></span><input type="tel" id="tel" autocomplete="tel" inputmode="tel" required maxlength="20" /></label>
+                <label><span class="lab">Email <small id="emailNota">(ti mandiamo il biglietto)</small></span><input type="email" id="email" autocomplete="email" maxlength="120" /></label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend id="salita-et"><span class="n">2</span> Dove salite</legend>
+              <div class="chips" id="salite" role="radiogroup" aria-labelledby="salita-et"></div>
+              <label class="singole" id="singoleBox" hidden><span class="lab">Camere singole <small id="singoleNota"></small></span>
+                <select id="singole"></select>
+              </label>
+              <p class="nota-volo" id="notaVolo" hidden>Per il volo ti chiederemo poi i dati del documento di ogni passeggero.</p>
+              <details class="nota-box" id="notaBox">
+                <summary>Aggiungi una nota <small>(posti vicini, intolleranze, mobilità ridotta…)</small></summary>
+                <label><span class="sr-only">Nota per l’agenzia</span><textarea id="note" rows="3" maxlength="500"></textarea></label>
+                {/* dati sulla salute (art. 9 GDPR): servono un consenso esplicito, chiesto solo se si scrive qualcosa */}
+                <label class="spunta" id="saluteBox" hidden><input type="checkbox" id="salute" /> <span>Se nella nota ho scritto informazioni sulla salute (allergie, intolleranze, mobilità), acconsento che {INFO.nome} le usi solo per organizzare il viaggio.</span></label>
+              </details>
+            </fieldset>
+
+            <fieldset id="fsPaga">
+              <legend><span class="n">3</span> Come vuoi pagare</legend>
+              <div class="pagamenti" id="pagamenti"></div>
+            </fieldset>
+          </form>
+
+          <aside class="riep" aria-labelledby="riep-t">
+            <div class="riep-in">
+              <h2 id="riep-t" class="riep-t">Il tuo viaggio</h2>
+              <div id="riepilogo"></div>
+            </div>
+          </aside>
+
+          {/* fuori dal modulo ma collegati con form="prenForm": da telefono stanno dopo il riepilogo */}
+          <div class="modulo pren-fine" id="prenFine">
+            <label class="spunta"><input type="checkbox" id="privacy" form="prenForm" required /> <span>Ho letto l’<a href={BASE + 'privacy/'} target="_blank">informativa sulla privacy</a> e accetto le <a href={BASE + 'condizioni/'} target="_blank">condizioni di viaggio</a>.</span></label>
+            <p class="errore" id="errore" role="alert" hidden></p>
+            <button type="submit" form="prenForm" class="btn btn-sole btn-pieno btn-grande" id="invia">Vai al pagamento</button>
+            <p class="pren-tel">Preferisci parlarne? Chiama il <a href={'tel:' + INFO.telHref}>{INFO.tel}</a> o passa in agenzia, in {INFO.via}.</p>
+          </div>
+        </div>
+
+        {/* da telefono e tablet: il totale sempre sotto gli occhi; sparisce quando si arriva al pulsante vero */}
+        <div class="pren-barra" id="prenBarra">
+          <p><small id="barraCosa">Totale</small><b id="barraTot"></b></p>
+          <button type="submit" form="prenForm" class="btn btn-sole" id="barraInvia">Avanti</button>
+        </div>
+      </div>
+
+      <!-- ============================================================ 2. la cassa (finta) -->
+      <div id="passo-cassa" hidden>
+        <div class="cassa">
+          <p class="cassa-avviso"><Fragment set:html={icona('scudo', 20)} /> <span><b>Pagamento di prova: nessun addebito.</b> La carta di prova è già inserita. Non scrivere i dati di una carta vera: questa pagina accetta solo le carte di prova.</span></p>
+          <div class="cassa-testa">
+            <div>
+              <p class="cassa-a">Pagamento a <b>{INFO.nome}</b></p>
+              <h1 class="cassa-imp" id="cassaImporto" tabindex="-1"></h1>
+              <p class="cassa-cosa" id="cassaCosa"></p>
+            </div>
+            <div class="cassa-sole" aria-hidden="true"><Fragment set:html={sole('sole-cassa')} /></div>
+          </div>
+          <form class="modulo" id="cartaForm" novalidate autocomplete="off">
+            <p class="carte" aria-label="Carte accettate"><span>VISA</span><span>Mastercard</span><span>Maestro</span><span>American Express</span></p>
+            <label>Intestatario della carta<input type="text" id="cIntest" maxlength="60" autocomplete="off" /></label>
+            <label>Numero della carta<input type="text" id="cNum" inputmode="numeric" maxlength="23" autocomplete="off" /></label>
+            <div class="due">
+              <label>Scadenza <small>(MM/AA)</small><input type="text" id="cScad" inputmode="numeric" maxlength="5" autocomplete="off" /></label>
+              <label>CVC <small>(3 cifre sul retro)</small><input type="text" id="cCvc" inputmode="numeric" maxlength="4" autocomplete="off" /></label>
+            </div>
+            <p class="errore" id="cErrore" role="alert" hidden></p>
+            <button type="submit" class="btn btn-notte btn-pieno btn-grande" id="paga"></button>
+            <p class="cassa-sicuro"><Fragment set:html={icona('scudo', 16)} /> Nella versione definitiva il pagamento passa dalla pagina sicura della banca: i dati della carta non toccano mai il sito.</p>
+            <button type="button" class="cassa-indietro" id="indietro"><Fragment set:html={icona('indietro', 16)} /> Torna alla prenotazione</button>
+          </form>
+          <div class="cassa-attesa" id="attesa" hidden role="status"><span class="viaggio" aria-hidden="true"><Fragment set:html={pullmino()} /></span> Pagamento in corso…</div>
+        </div>
+      </div>
+
+      <!-- ============================================================ 3. fatto -->
+      <div id="passo-fatto" hidden>
+        <div class="fatto">
+          <p class="fatto-ok"><Fragment set:html={icona('check', 30)} /></p>
+          <h1 id="fattoTitolo" tabindex="-1"></h1>
+          <p class="sez-p fatto-p" id="fattoTesto"></p>
+
+          <div class="biglietto-finale" id="bigliettoFinale"></div>
+
+          <div class="fatto-azioni">
+            <button type="button" class="btn btn-notte" id="stampa"><Fragment set:html={icona('documento', 18)} /> Stampa il biglietto</button>
+            <a class="btn btn-bordo" id="calendario" download="palma-viaggi.ics" href="#"><Fragment set:html={icona('calendario', 18)} /> Aggiungi al calendario</a>
+            <a class="btn btn-wa" id="fattoWa" target="_blank" rel="noopener">Conferma su WhatsApp</a>
+          </div>
+          <p class="fatto-nota">Nella versione definitiva il biglietto arriva anche per email, e il giorno prima della partenza un messaggio con il punto e l’orario di salita.</p>
+          <p class="fatto-nota"><a href={BASE + 'partenze/'} class="link">Torna alle gite</a></p>
+        </div>
+      </div>
+
+      <p class="promemoria" id="promemoria"><b>Per Palma Viaggi:</b> il pagamento è una simulazione, per far vedere il percorso. Quando decidete il circuito (Nexi XPay della vostra banca, Stripe o PayPal) lo colleghiamo: il cliente paga sulla pagina sicura del circuito, il posto si scala da solo e voi ricevete la prenotazione già pagata. L’acconto del 30% e il saldo 15 giorni prima sono d’esempio: le condizioni le decidete voi.</p>
+    </div>
+  </section>
+
+  <style is:global>
+    .pren{padding-bottom:clamp(4rem,8vw,6rem)}
+    .pren h1{font-size:clamp(2.4rem,5.4vw,4rem);margin-top:.9rem;font-weight:800}
+    .pren-griglia{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:1.6rem clamp(2rem,4vw,3.5rem);align-items:start;margin-top:2.2rem}
+    .modulo.pren-form{gap:1.6rem;grid-column:1;grid-row:1}
+    .pren-fine{grid-column:1;grid-row:2}
+    /* la gita scelta: una scheda, con il menu solo se si vuole cambiare */
+    .scelta{background:var(--carta);border-radius:var(--r);padding:1.1rem 1.2rem;box-shadow:0 1px 0 var(--filo);display:grid;gap:1rem}
+    .sg-cambia{display:inline-flex;align-items:center;min-height:36px;margin-top:.35rem;padding:0;background:none;border:0;font:inherit;font-size:.9rem;font-weight:700;color:var(--cielo-testo);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+    .lab small{margin-left:.15rem}
+    /* i nomi in griglia: chi prenota e gli altri, tutti uguali */
+    .nomi{display:grid;grid-template-columns:1fr 1fr;gap:.9rem 1rem}
+    .altri-campi{display:contents}
+    .nomi-nota{grid-column:1/-1;font-size:.85rem;color:var(--muto);margin-top:-.2rem}
+    .nomi .errore,.due + .errore{grid-column:1/-1;margin-top:-.4rem}
+    .nota-box summary{display:inline-flex;align-items:center;gap:.45rem;min-height:40px;cursor:pointer;font-weight:700;color:var(--cielo-testo);list-style:none}
+    .nota-box summary::-webkit-details-marker{display:none}
+    .nota-box summary::before{content:'+';display:inline-grid;place-items:center;width:1.4rem;height:1.4rem;border-radius:50%;border:1.5px solid currentColor;font-size:1rem;line-height:1;transition:rotate .2s}
+    .nota-box[open] summary::before{rotate:45deg}
+    .nota-box summary small{font-weight:500;color:var(--muto)}
+    .nota-box[open]{display:grid;gap:.8rem}
+    /* la barra col totale: solo da telefono e tablet, al posto di quella con Chiama e WhatsApp */
+    .pren-barra{display:none}
+    .pren-form fieldset{background:var(--carta);border-radius:var(--r);padding:1.4rem 1.4rem 1.5rem;box-shadow:0 1px 0 var(--filo)}
+    .pren-form legend{float:left;width:100%;display:flex;align-items:center;gap:.6rem;margin-bottom:.4rem}
+    .pren-form legend + *{clear:both}
+    .n{display:inline-grid;place-items:center;width:2rem;height:2rem;border-radius:50%;background:linear-gradient(180deg,var(--sole),var(--arancio));color:var(--notte);font-size:1rem;font-weight:800}
+    .scelta-gita{display:grid;grid-template-columns:120px 1fr;gap:1rem;align-items:center}
+    /* spazio riservato alla scheda (la disegna lo script): misurato, con e senza «Cambia» */
+    .scelta-gita{min-height:89px}
+    .scelta:has(#sceltaSel[hidden]) .scelta-gita{min-height:131px}
+    @media (max-width:560px){.scelta-gita{min-height:127px}.scelta:has(#sceltaSel[hidden]) .scelta-gita{min-height:169px}}
+    #salite{min-height:42px}
+    #pagamenti{min-height:10.5rem}
+    .scelta-gita img{width:120px;height:80px;object-fit:cover;border-radius:12px}
+    .sg-t{font-family:var(--disp);font-weight:700;color:var(--inchiostro);line-height:1.2}
+    .sg-t a{color:var(--cielo-testo);font-family:var(--sans);font-size:.85rem;font-weight:700;margin-left:.3rem;white-space:nowrap}
+    .sg-d{font-size:.88rem;color:var(--muto);margin-top:.15rem}
+    .contatore{display:inline-flex;align-items:center;gap:.4rem;border:1.5px solid var(--filo-2);border-radius:999px;padding:.25rem;background:var(--sabbia);justify-self:start}
+    .contatore button{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;border:0;background:var(--carta);color:var(--inchiostro);cursor:pointer;box-shadow:0 1px 0 var(--filo)}
+    .contatore button:disabled{opacity:.35;cursor:default}
+    .contatore output{min-width:2.4rem;text-align:center;font-family:var(--disp);font-size:1.4rem;font-weight:800;color:var(--inchiostro)}
+    .pagamenti{display:grid;gap:.7rem}
+    .pag{position:relative;display:grid;grid-template-columns:auto 1fr auto;gap:.4rem .9rem;align-items:center;padding:1rem 1.1rem;border:1.5px solid var(--filo-2);border-radius:14px;cursor:pointer;transition:border-color .2s,background .2s}
+    .pag:hover{border-color:var(--inchiostro)}
+    .pag input{width:20px;height:20px;accent-color:var(--notte);margin:0}
+    .pag:has(input:checked){border-color:var(--notte);background:var(--cielo-chiaro)}
+    .pag b{font-family:var(--disp);font-size:1.05rem;color:var(--inchiostro)}
+    .pag small{grid-column:2/-1;font-size:.85rem;color:var(--muto);font-weight:500}
+    .pag-imp{font-family:var(--disp);font-weight:800;color:var(--inchiostro);white-space:nowrap}
+    .btn.btn-grande{min-height:56px;font-size:1.12rem}
+    .singole{max-width:320px}
+    .nota-volo{font-size:.88rem;color:var(--cielo-testo);font-weight:600}
+    .pren-tel{font-size:.9rem;color:var(--muto);text-align:center}
+    .pren-tel a{color:var(--cielo-testo);font-weight:700}
+
+    .riep{grid-column:2;grid-row:1 / span 2;position:sticky;top:calc(var(--flag) + var(--testata) + 1.2rem)}
+    .riep-in{background:var(--notte);color:#cfdbe2;border-radius:var(--r);padding:1.4rem;box-shadow:0 30px 60px -34px rgba(11,40,54,.8)}
+    .riep-t{color:#fff;font-size:1.05rem;letter-spacing:.12em;text-transform:uppercase}
+    .r-foto{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;margin-top:1rem}
+    .r-titolo{font-family:var(--disp);font-size:1.25rem;font-weight:700;color:#fff;line-height:1.2;margin-top:.9rem}
+    .r-quando{font-size:.9rem;margin-top:.3rem}
+    .r-righe{margin-top:1.1rem;padding-top:1rem;border-top:2px dashed rgba(255,255,255,.18);display:grid;gap:.45rem;font-size:.93rem}
+    .r-righe div{display:flex;justify-content:space-between;gap:1rem}
+    .r-righe dd{color:#fff;font-weight:700;text-align:right}
+    .r-sconto dd,.r-sconto dt{color:#7fe0ae !important}
+    .r-tot{margin-top:.5rem;padding-top:.7rem;border-top:1px solid rgba(255,255,255,.18)}
+    .r-tot dt{color:#fff;font-weight:700}
+    .r-tot dd{font-family:var(--disp);font-size:1.6rem;font-weight:800;color:var(--sole) !important}
+    .r-ora dd{color:var(--sole) !important}
+    .r-nota{font-size:.82rem;color:#8fa8b5;margin-top:.9rem}
+
+    /* cassa */
+    .cassa{max-width:560px;margin:0 auto;background:var(--carta);border-radius:22px;padding:clamp(1.3rem,4vw,2.2rem);box-shadow:0 1px 0 var(--filo),0 40px 80px -40px rgba(11,40,54,.6)}
+    .cassa-avviso{display:flex;gap:.6rem;align-items:flex-start;padding:.85rem 1rem;border-radius:12px;background:#fff4d6;border:1.5px solid var(--sole);color:#5c3b00;font-size:.88rem;line-height:1.45}
+    .cassa-avviso .ico{color:var(--arancio-testo);margin-top:.05rem}
+    .cassa-testa{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin:1.4rem 0 1.2rem}
+    .cassa-a{color:var(--muto);font-size:.92rem}
+    .cassa-a b{color:var(--inchiostro)}
+    .cassa .cassa-imp{font-size:clamp(2.4rem,7vw,3.2rem);margin-top:.2rem}
+    .cassa-cosa{color:var(--muto);font-size:.92rem;margin-top:.3rem}
+    .cassa-sole{width:84px;flex:none}
+    .carte{display:flex;flex-wrap:wrap;gap:.4rem}
+    .carte span{font-size:.7rem;font-weight:800;letter-spacing:.06em;padding:.25rem .55rem;border-radius:6px;border:1.5px solid var(--filo-2);color:var(--muto)}
+    #cNum{font-family:var(--disp);letter-spacing:.08em}
+    .cassa-sicuro{display:flex;gap:.45rem;align-items:flex-start;font-size:.8rem;color:var(--muto)}
+    .cassa-sicuro .ico{color:var(--verde);margin-top:.15rem}
+    .cassa-indietro{display:inline-flex;align-items:center;gap:.35rem;justify-self:center;background:none;border:0;font:inherit;font-weight:700;color:var(--cielo-testo);cursor:pointer;padding:.4rem}
+    .cassa-attesa{display:flex;align-items:center;justify-content:center;gap:.8rem;padding:2.4rem 0 1.4rem;font-family:var(--disp);font-size:1.2rem;font-weight:600;color:var(--inchiostro)}
+    /* in attesa dell'esito: il pullman «viaggia» sulla strada che gli scorre sotto */
+    .viaggio{position:relative;flex:none;width:112px;height:30px;overflow:hidden}
+    .viaggio::after{content:'';position:absolute;left:0;right:0;bottom:1px;height:2px;background:repeating-linear-gradient(90deg,var(--filo-2) 0 10px,transparent 10px 18px);animation:asfalto .45s linear infinite}
+    .viaggio .pullmino{position:absolute;left:32px;bottom:2px;width:48px;height:auto;animation:sobbalza .3s ease-in-out infinite alternate}
+    @keyframes asfalto{to{background-position:-18px 0}}
+
+    /* fatto */
+    .fatto{max-width:760px;margin:0 auto;text-align:center}
+    .fatto-ok{display:inline-grid;place-items:center;width:64px;height:64px;border-radius:50%;background:var(--verde);color:#fff}
+    @media (prefers-reduced-motion:no-preference){.fatto-ok{animation:spunta .6s var(--e) both}}
+    @keyframes spunta{0%{scale:0}60%{scale:1.15}100%{scale:1}}
+    .fatto h1{outline:0}
+    .fatto-p{margin-left:auto;margin-right:auto}
+    .fatto-azioni{display:flex;flex-wrap:wrap;justify-content:center;gap:.7rem;margin-top:1.8rem}
+    .fatto-nota{font-size:.9rem;color:var(--muto);margin-top:1rem}
+
+    @media (max-width:980px){
+      .pren-griglia{grid-template-columns:1fr}
+      /* da telefono: prima il modulo, poi il riepilogo, poi il pulsante */
+      .riep{position:static;grid-column:1;grid-row:auto}
+      .pren-fine{grid-row:auto}
+      .r-foto{display:none}
+      #riepilogo{min-height:16rem}
+      body:has(#passo-dati:not([hidden])) .barra-mobile{display:none}
+      body:has(#passo-dati:not([hidden])){padding-bottom:84px}
+      .pren-barra{position:fixed;left:0;right:0;bottom:0;z-index:160;display:flex;align-items:center;justify-content:space-between;gap:1rem;
+        padding:.65rem clamp(1rem,4vw,2.4rem) calc(.65rem + env(safe-area-inset-bottom));background:var(--carta);border-top:1px solid var(--filo);box-shadow:0 -12px 30px -24px rgba(11,40,54,.6);transition:translate .3s var(--e)}
+      .pren-barra.via{translate:0 110%}
+      .pren-barra p{display:grid;line-height:1.2;min-width:0}
+      .pren-barra small{font-size:.78rem;color:var(--muto);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .pren-barra b{font-family:var(--disp);font-size:1.35rem;font-weight:800;color:var(--inchiostro);white-space:nowrap}
+      .pren-barra .btn{flex:none;min-height:48px}
+    }
+    @media (max-width:560px){
+      .scelta-gita{grid-template-columns:90px 1fr}
+      .scelta-gita img{width:90px;height:64px}
+      .pren-form fieldset,.scelta{padding:1.1rem}
+      .nomi{grid-template-columns:1fr}
+    }
+  </style>
+
+  <style is:global>
+    /* il biglietto finale: anche in stampa */
+    .bf{margin-top:2rem;text-align:left;display:grid;grid-template-columns:minmax(0,1fr) 220px;background:var(--carta);border-radius:var(--r);overflow:hidden;box-shadow:0 1px 0 var(--filo),0 30px 60px -36px rgba(11,40,54,.6)}
+    .bf-corpo{padding:1.5rem 1.6rem}
+    .bf-marca{display:flex;align-items:center;gap:.5rem;font-family:var(--disp);font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--inchiostro)}
+    .bf-marca .sole{width:26px;height:26px}
+    .bf-titolo{font-family:var(--disp);font-size:1.6rem;font-weight:800;color:var(--inchiostro);line-height:1.1;margin-top:1rem}
+    .bf-dati{display:grid;grid-template-columns:1fr 1fr;gap:.9rem 1.4rem;margin-top:1.2rem}
+    .bf-dati dt{font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muto)}
+    .bf-dati dd{font-weight:700;color:var(--inchiostro);margin-top:.1rem}
+    .bf-matrice{position:relative;background:var(--notte);color:#cfdbe2;padding:1.5rem 1.3rem;display:grid;align-content:center;justify-items:center;text-align:center;gap:.4rem}
+    .bf-matrice::before,.bf-matrice::after{content:'';position:absolute;left:-11px;width:22px;height:22px;border-radius:50%;background:var(--sabbia)}
+    .bf-matrice::before{top:-11px}
+    .bf-matrice::after{bottom:-11px}
+    .bf-cod-t{font-size:.72rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--sole)}
+    .bf-cod{font-family:var(--disp);font-size:1.7rem;font-weight:800;color:#fff;letter-spacing:.06em}
+    .bf-stato{font-size:.85rem;font-weight:700;padding:.25rem .7rem;border-radius:99px;background:rgba(127,224,174,.15);color:#7fe0ae;margin-top:.4rem}
+    .bf-stato.attesa{background:rgba(255,194,58,.15);color:var(--sole)}
+    .bf-righe{width:100%;font-size:.82rem;margin-top:.6rem;display:grid;gap:.2rem}
+    .bf-righe div{display:flex;justify-content:space-between;gap:.6rem}
+    .bf-righe b{color:#fff}
+    @media (max-width:640px){.bf{grid-template-columns:1fr}.bf-matrice::before,.bf-matrice::after{display:none}.bf-dati{grid-template-columns:1fr}}
+
+    /* il timbro dell'agenzia sul biglietto: verde se pagato, arancio se da pagare, azzurro in lista d'attesa */
+    .bf{position:relative}
+    .bf-timbro{position:absolute;z-index:2;top:1.1rem;right:calc(220px + 1.1rem);rotate:-11deg;padding:.3rem .75rem;border:3px solid currentColor;border-radius:10px;
+      font-family:var(--disp);font-size:.95rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;line-height:1.2;color:var(--verde);opacity:.85;mix-blend-mode:multiply;pointer-events:none;
+      box-shadow:inset 0 0 0 2px var(--carta),inset 0 0 0 3.5px currentColor}
+    .bf-timbro.da-pagare{color:var(--arancio-testo)}
+    .bf-timbro.attesa{color:var(--cielo-testo)}
+    @media (max-width:640px){.bf-timbro{right:1rem;top:1rem;font-size:.82rem}}
+    /* il biglietto esce dall'alto come da una stampante, poi il timbro batte */
+    @media (prefers-reduced-motion:no-preference){
+      .bf{animation:esce .9s var(--e) .15s both}
+      .bf-timbro{animation:timbra .45s cubic-bezier(.3,1.6,.5,1) 1.05s both}
+    }
+    @keyframes esce{from{clip-path:inset(-60px -60px 100% -60px);translate:0 -16px}to{clip-path:inset(-60px -60px -90px -60px);translate:0 0}}
+    @keyframes timbra{from{opacity:0;scale:2.4;rotate:-4deg}to{opacity:.85;scale:1;rotate:-11deg}}
+    @media print{
+      .bf,.bf-timbro{animation:none !important}
+      .bf-timbro{-webkit-print-color-adjust:exact;print-color-adjust:exact;mix-blend-mode:normal}
+      body *{visibility:hidden !important}
+      #bigliettoFinale,#bigliettoFinale *{visibility:visible !important}
+      #bigliettoFinale{position:absolute;left:0;top:0;width:100%}
+      .bf{box-shadow:none;border:1px solid #999}
+      .bf-matrice{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    }
+  </style>
+
+  <script>
+    import {
+      INFO, BASE, GITA, foto, salite, partenzeAttuali, prossime, statoPosti, barraPosti, prezzoDi, prezzoOggi,
+      scontoAttivo, scadenzaSconto, dataLunga, dataMedia, dataBreve, fineDi, nomeMese, euro, arrotonda, esc, waLink,
+      aggiungiRichiesta, leggiModifiche, scriviModifiche, sole,
+    } from './_shared.js';
+
+    const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySelector(s) as T;
+    const oggi = new Date();
+    const lista = prossime(partenzeAttuali(), oggi);
+    const ACCONTO = 0.3;
+
+    // ---------------------------------------------------------------- la gita
+    const sel = $<HTMLSelectElement>('#partenza');
+    const mesi = [...new Set(lista.map((p) => p.data.slice(0, 7)))];
+    sel.innerHTML = mesi.map((m) => `<optgroup label="${nomeMese(m)}">${lista.filter((p) => p.data.startsWith(m)).map((p) => {
+      const g = GITA[p.gita], s = statoPosti(p);
+      return `<option value="${esc(p.id)}">${esc(dataBreve(p.data))} · ${esc(g.titolo)}${s.k === 'completo' ? ' (completo)' : ''}</option>`;
+    }).join('')}</optgroup>`).join('');
+    const voluta = new URLSearchParams(location.search).get('p');
+    // arrivati da un biglietto: la gita è già scelta, il menu si apre solo con «Cambia»
+    let selAperto = !(voluta && lista.some((p) => p.id === voluta));
+    if (!selAperto) sel.value = voluta!;
+    $('#sceltaSel').hidden = !selAperto;
+    $('#sceltaGita').addEventListener('click', (e) => {
+      if (!(e.target as HTMLElement).closest('#cambia')) return;
+      selAperto = true;
+      $('#sceltaSel').hidden = false;
+      $('#cambia').remove();
+      sel.focus();
+    });
+
+    let persone = 2;
+    const partenza = () => lista.find((p) => p.id === sel.value)!;
+    const salitaScelta = () => (document.querySelector('input[name=salita]:checked') as HTMLInputElement | null)?.value;
+    const pagamento = () => (document.querySelector('input[name=paga]:checked') as HTMLInputElement | null)?.value || 'online';
+
+    // camere singole: solo nei viaggi con hotel che hanno il supplemento
+    const c_singole = (g: any) => (g.singola ? Math.min(Number(($('#singole') as HTMLSelectElement).value) || 0, persone) : 0);
+    const conti = () => {
+      const p = partenza(), g = GITA[p.gita];
+      const unit = prezzoOggi(p, oggi), pieno = prezzoDi(p);
+      const singole = c_singole(g);
+      const supplemento = arrotonda(singole * (g.singola || 0));
+      const totale = arrotonda(unit * persone + supplemento);
+      const risparmio = arrotonda((pieno - unit) * persone);
+      const modo = statoPosti(p).k === 'completo' ? 'attesa' : pagamento();
+      const ora = modo === 'online' ? totale : modo === 'acconto' ? arrotonda(totale * ACCONTO) : 0;
+      return { p, g, unit, pieno, totale, risparmio, modo, ora, saldo: arrotonda(totale - ora), singole, supplemento };
+    };
+
+    const disegnaGita = () => {
+      const p = partenza(), g = GITA[p.gita], s = statoPosti(p);
+      const f = foto(g.img);
+      $('#sceltaGita').innerHTML = `<img src="${f.src.replace('-1200', '-600')}" alt="" width="120" height="80" />
+        <div><p class="sg-t">${esc(g.titolo)} <a href="${BASE}gite/${g.id}/?p=${encodeURIComponent(p.id)}">Il programma</a></p>
+        <p class="sg-d">${esc(g.giorni > 1 ? `Dal ${dataMedia(p.data)} al ${dataMedia(fineDi(p))}` : dataLunga(p.data))}</p>${barraPosti(s)}
+        ${selAperto ? '' : '<button type="button" class="sg-cambia" id="cambia">Cambia gita o data</button>'}</div>`;
+      // fermate della gita, con l'orario
+      const prima = salitaScelta();
+      $('#salite').innerHTML = salite(g).map((x: any, i: number) => `<label class="chip"><input type="radio" name="salita" value="${esc(x.luogo)}" ${(prima ? prima === x.luogo : i === 0) ? 'checked' : ''} /><span>${esc(x.luogo)} <small>${esc(x.ora)}</small></span></label>`).join('');
+      if (!salitaScelta()) (document.querySelector('input[name=salita]') as HTMLInputElement).checked = true;
+      // modi di pagamento: l'acconto solo per i viaggi di più giorni
+      const completo = s.k === 'completo';
+      const modi = completo ? [] : [
+        { v: 'online', t: 'Paga tutto online', d: 'Con carta, adesso. Il posto è tuo subito.' },
+        ...(g.giorni > 1 ? [{ v: 'acconto', t: `Acconto online del ${ACCONTO * 100}%`, d: 'Il saldo entro 15 giorni dalla partenza: ti mandiamo noi il link, o paghi in agenzia.' }] : []),
+        { v: 'agenzia', t: 'Blocca il posto, paga in agenzia', d: 'Ti teniamo il posto per 3 giorni: passi in agenzia a pagare.' },
+      ];
+      const scelto = modi.some((m) => m.v === pagamento()) ? pagamento() : modi[0]?.v;
+      $('#pagamenti').innerHTML = completo
+        ? '<p class="nota-attesa">Questa partenza è completa: lasciaci i tuoi dati e ti chiamiamo appena si libera un posto. Non si paga niente.</p>'
+        : modi.map((m) => `<label class="pag"><input type="radio" name="paga" value="${m.v}" ${m.v === scelto ? 'checked' : ''} /><b>${m.t}</b><span class="pag-imp" data-imp="${m.v}"></span><small>${m.d}</small></label>`).join('');
+      ($('#fsPaga').querySelector('legend') as HTMLElement).lastChild!.textContent = completo ? ' Lista d’attesa' : ' Come vuoi pagare';
+      disegnaConti();
+    };
+
+    const disegnaConti = () => {
+      const c = conti(), s = statoPosti(c.p);
+      const max = s.k === 'completo' ? 10 : Math.min(10, s.liberi);
+      if (persone > max) persone = max;
+      $('#persone').textContent = String(persone);
+      $<HTMLButtonElement>('#meno').disabled = persone <= 1;
+      $<HTMLButtonElement>('#piu').disabled = persone >= max;
+      $('#personeNota').textContent = s.k === 'completo' ? '' : s.liberi <= 10 ? `Restano ${s.liberi} posti su questa partenza.` : 'Per più di 10 persone scrivici: per i gruppi facciamo un preventivo.';
+      // un campo per ogni altro passeggero; quello che è già scritto resta
+      const scritti = [...document.querySelectorAll<HTMLInputElement>('#altriCampi input')].map((i) => i.value);
+      $('#altriCampi').innerHTML = Array.from({ length: persone - 1 }, (_, i) =>
+        `<label><span class="lab">Passeggero ${i + 2}</span><input type="text" maxlength="80" autocomplete="off" value="${esc(scritti[i] || '')}" /></label>`).join('');
+      $('#nomiNota').hidden = persone < 2;
+      const sel1 = $<HTMLSelectElement>('#singole');
+      const prima1 = Math.min(Number(sel1.value) || 0, persone);
+      sel1.innerHTML = Array.from({ length: persone + 1 }, (_, i) => `<option value="${i}" ${i === prima1 ? 'selected' : ''}>${i === 0 ? 'Nessuna: tutti in doppia' : i === 1 ? '1 singola' : i + ' singole'}</option>`).join('');
+      $('#singoleBox').hidden = !c.g.singola;
+      $('#singoleNota').textContent = c.g.singola ? `(supplemento ${euro(c.g.singola)} a camera)` : '';
+      $('#notaVolo').hidden = c.g.mezzo !== 'aereo';
+      document.querySelectorAll<HTMLElement>('[data-imp]').forEach((el) => {
+        const v = el.dataset.imp;
+        el.textContent = v === 'online' ? euro(arrotonda(c.unit * persone)) : v === 'acconto' ? euro(arrotonda(c.unit * persone * ACCONTO)) : 'in agenzia';
+      });
+      const f = foto(c.g.img);
+      const fermata = salite(c.g).find((x: any) => x.luogo === salitaScelta());
+      $('#riepilogo').innerHTML = `<img class="r-foto" src="${f.src.replace('-1200', '-600')}" alt="" width="600" height="400" />
+        <p class="r-titolo">${esc(c.g.titolo)}</p>
+        <p class="r-quando">${esc(c.g.giorni > 1 ? `Dal ${dataMedia(c.p.data)} al ${dataMedia(fineDi(c.p))}` : dataLunga(c.p.data))}${fermata ? ` · ${esc(fermata.luogo)} alle ${esc(fermata.ora)}` : ''}</p>
+        <dl class="r-righe">
+          <div><dt>${persone} × ${euro(c.pieno)}</dt><dd>${euro(arrotonda(c.pieno * persone))}</dd></div>
+          ${c.supplemento > 0 ? `<div><dt>Supplemento singola × ${c.singole}</dt><dd>+ ${euro(c.supplemento)}</dd></div>` : ''}
+          ${c.risparmio > 0 ? `<div class="r-sconto"><dt>Sconto 10% (prenoti entro il ${esc(dataMedia(scadenzaSconto(c.p.data)))})</dt><dd>− ${euro(c.risparmio)}</dd></div>` : ''}
+          <div class="r-tot"><dt>Totale</dt><dd>${euro(c.totale)}</dd></div>
+          ${c.modo === 'attesa' ? '<div><dt>Lista d’attesa</dt><dd>non si paga</dd></div>'
+            : `<div class="r-ora"><dt>Da pagare ora</dt><dd>${euro(c.ora)}</dd></div>${c.saldo > 0 ? `<div><dt>${c.modo === 'agenzia' ? 'In agenzia, entro 3 giorni' : 'Saldo, entro 15 giorni dalla partenza'}</dt><dd>${euro(c.saldo)}</dd></div>` : ''}`}
+        </dl>
+        <p class="r-nota">${c.g.giorni > 1 ? 'Prezzo a persona in camera doppia.' : 'Prezzo a persona.'} Il pullman parte con ${s.minimo} iscritti: se non si raggiungono, ti restituiamo tutto.</p>`;
+      const inv = $('#invia');
+      inv.textContent = c.modo === 'attesa' ? 'Mettimi in lista d’attesa' : c.modo === 'agenzia' ? 'Blocca il posto' : `Vai al pagamento · ${euro(c.ora)}`;
+      $('#emailNota').textContent = c.modo === 'online' || c.modo === 'acconto' ? '(ti mandiamo il biglietto)' : '(facoltativa)';
+      // la barra in basso (telefono e tablet): quanto, e il passo successivo
+      $('#barraCosa').textContent = c.modo === 'attesa' ? 'Partenza completa' : c.modo === 'agenzia' ? 'Da pagare in agenzia'
+        : c.modo === 'acconto' ? `Acconto ora · totale ${euro(c.totale)}` : c.risparmio > 0 ? 'Totale, con lo sconto' : 'Totale';
+      $('#barraTot').textContent = c.modo === 'attesa' ? 'Non si paga' : euro(c.modo === 'acconto' ? c.ora : c.totale);
+      $('#barraInvia').textContent = c.modo === 'attesa' ? 'Lista d’attesa' : c.modo === 'agenzia' ? 'Blocca il posto' : 'Vai al pagamento';
+    };
+
+    sel.addEventListener('change', disegnaGita);
+    $('#salite').addEventListener('change', disegnaConti);
+    $('#singole').addEventListener('change', disegnaConti);
+    $('#note').addEventListener('input', () => { $('#saluteBox').hidden = !$<HTMLTextAreaElement>('#note').value.trim(); });
+    $('#pagamenti').addEventListener('change', disegnaConti);
+    $('#meno').addEventListener('click', () => { persone = Math.max(1, persone - 1); disegnaConti(); });
+    $('#piu').addEventListener('click', () => { persone += 1; disegnaConti(); });
+    if (lista.length) disegnaGita();
+    else {
+      $('#prenForm').innerHTML = '<p>In questo momento non ci sono partenze in calendario. Scrivici: per i gruppi organizziamo anche gite su richiesta.</p>';
+      ['#prenFine', '#prenBarra', '.riep'].forEach((s) => { $(s).hidden = true; });
+    }
+    // la barra in basso si toglie di mezzo quando il pulsante vero è sullo schermo
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(([x]) => $('#prenBarra').classList.toggle('via', x.isIntersecting || x.boundingClientRect.top < 0)).observe($('#invia'));
+    }
+
+    // ---------------------------------------------------------------- invio
+    const errore = (box: string, msg: string, campo?: HTMLElement) => {
+      const e = $(box); e.textContent = msg; e.hidden = !msg;
+      const dove = box === '#errore' ? '#prenForm [aria-invalid], #prenFine [aria-invalid]' : '#cartaForm [aria-invalid]';
+      document.querySelectorAll(dove).forEach((el) => el.removeAttribute('aria-invalid'));
+      // il messaggio va accanto al campo da sistemare, non in fondo alla pagina (da telefono non si vedrebbe)
+      if (box === '#errore') {
+        // (gli altri passeggeri: dopo il loro gruppo, che si ridisegna quando cambia il numero)
+        const vicino = campo && campo.id !== 'privacy' ? campo.closest('.due') || campo.closest('#altriCampi') || campo.closest('label') : null;
+        (vicino || $('#prenFine .spunta')).after(e);
+      }
+      if (campo) { campo.setAttribute('aria-invalid', 'true'); campo.focus(); }
+      return false;
+    };
+    const passo = (id: string) => {
+      ['#passo-dati', '#passo-cassa', '#passo-fatto'].forEach((s) => { $(s).hidden = s !== id; });
+      scrollTo({ top: 0 });
+    };
+
+    let bozza: any = null;
+    $('#prenForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const c = conti();
+      const nome = $<HTMLInputElement>('#nome').value.trim(), tel = $<HTMLInputElement>('#tel').value.trim(), email = $<HTMLInputElement>('#email').value.trim();
+      if (!nome) return errore('#errore', 'Scrivi il tuo nome e cognome.', $('#nome'));
+      if (tel.replace(/\D/g, '').length < 8) return errore('#errore', 'Serve un numero di telefono completo: ti chiamiamo da lì.', $('#tel'));
+      const conCarta = c.modo === 'online' || c.modo === 'acconto';
+      if ((conCarta || email) && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return errore('#errore', conCarta ? 'Serve un’email valida: ti mandiamo lì il biglietto.' : 'Controlla l’email.', $('#email'));
+      const altri = [...document.querySelectorAll<HTMLInputElement>('#altriCampi input')];
+      const vuoto = altri.find((i) => !i.value.trim());
+      if (vuoto) return errore('#errore', 'Scrivi nome e cognome di tutti i passeggeri: servono per l’assicurazione e la lista del pullman.', vuoto);
+      if (!$<HTMLInputElement>('#privacy').checked) return errore('#errore', 'Per prenotare serve accettare l’informativa e le condizioni.', $('#privacy'));
+      errore('#errore', '');
+      bozza = {
+        id: 'r' + Date.now(), codice: codice(), tipo: 'prenotazione', partenza: c.p.id, gita: c.g.id, data: c.p.data,
+        persone, passeggeri: [nome, ...altri.map((i) => i.value.trim())], salita: salitaScelta(), nome, tel, email, note: $<HTMLTextAreaElement>('#note').value.trim(),
+        singole: c.singole, consensoSalute: $<HTMLInputElement>('#salute').checked, totale: c.totale, pagato: 0, modo: c.modo,
+        metodo: c.modo === 'online' ? 'Carta online' : c.modo === 'acconto' ? 'Carta online (acconto)' : '—',
+        creata: new Date().toISOString(),
+      };
+      if (conCarta) {
+        $('#cassaImporto').textContent = euro(c.ora);
+        $('#cassaCosa').textContent = `${c.modo === 'acconto' ? 'Acconto · ' : ''}${c.g.titolo}, ${dataMedia(c.p.data)} · ${persone} ${persone === 1 ? 'persona' : 'persone'}`;
+        $('#paga').textContent = `Paga ${euro(c.ora)}`;
+        $<HTMLInputElement>('#cIntest').value = nome;
+        $<HTMLInputElement>('#cNum').value = '4242 4242 4242 4242';
+        $<HTMLInputElement>('#cScad').value = '12/' + String((oggi.getFullYear() + 3) % 100).padStart(2, '0');
+        $<HTMLInputElement>('#cCvc').value = '123';
+        passo('#passo-cassa');
+        $('#cassaImporto').focus();
+      } else chiudi(c.modo === 'attesa' ? 'lista d’attesa' : 'posto bloccato', 0);
+    });
+
+    // ---------------------------------------------------------------- la cassa finta
+    // Solo le carte di prova dei circuiti: un numero vero non passa, e niente viene salvato.
+    const PROVA = ['4242424242424242', '4000056655665556', '5555555555554444', '378282246310005'];
+    const pulisci = () => ['#cNum', '#cScad', '#cCvc'].forEach((s) => { $<HTMLInputElement>(s).value = ''; });
+    $('#cNum').addEventListener('input', (e) => {
+      const el = e.target as HTMLInputElement;
+      el.value = el.value.replace(/\D/g, '').slice(0, 19).replace(/(\d{4})(?=\d)/g, '$1 ');
+    });
+    $('#cScad').addEventListener('input', (e) => {
+      const el = e.target as HTMLInputElement;
+      const d = el.value.replace(/\D/g, '').slice(0, 4);
+      el.value = d.length > 2 ? d.slice(0, 2) + '/' + d.slice(2) : d;
+    });
+    $('#indietro').addEventListener('click', () => { pulisci(); passo('#passo-dati'); });
+    $('#cartaForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const num = $<HTMLInputElement>('#cNum').value.replace(/\D/g, '');
+      const [mm, aa] = $<HTMLInputElement>('#cScad').value.split('/').map(Number);
+      const cvc = $<HTMLInputElement>('#cCvc').value.replace(/\D/g, '');
+      if (!$<HTMLInputElement>('#cIntest').value.trim()) return errore('#cErrore', 'Scrivi l’intestatario della carta.', $('#cIntest'));
+      if (!PROVA.includes(num)) return errore('#cErrore', 'Questa è una prova: funziona solo la carta di prova 4242 4242 4242 4242. Non usare una carta vera.', $('#cNum'));
+      const fine = new Date(2000 + (aa || 0), mm || 0, 1);
+      if (!(mm >= 1 && mm <= 12) || fine <= oggi) return errore('#cErrore', 'Controlla la scadenza (MM/AA).', $('#cScad'));
+      if (cvc.length < 3) return errore('#cErrore', 'Il CVC sono le 3 cifre sul retro della carta.', $('#cCvc'));
+      errore('#cErrore', '');
+      $('#cartaForm').hidden = true; $('#attesa').hidden = false;
+      setTimeout(() => {
+        pulisci();
+        $('#cartaForm').hidden = false; $('#attesa').hidden = true;
+        const c = conti();
+        chiudi(c.modo === 'acconto' ? 'acconto pagato' : 'pagata', c.ora);
+      }, 1800);
+    });
+
+    // ---------------------------------------------------------------- fatto
+    function codice() {
+      const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      return 'PV-' + Array.from({ length: 5 }, () => A[Math.floor(Math.random() * A.length)]).join('');
+    }
+
+    function chiudi(stato: string, pagato: number) {
+      const r = { ...bozza, stato, pagato };
+      aggiungiRichiesta(r);   // nella versione definitiva: salvata sul sito, con la notifica all'agenzia
+      // pagata (anche solo l'acconto) o bloccata: il posto si scala subito dal calendario
+      if (pagato > 0 || stato === 'posto bloccato') {
+        const m = leggiModifiche();
+        const p = lista.find((x) => x.id === r.partenza)!;
+        m.mod[p.id] = { ...(m.mod[p.id] || {}), iscritti: (Number(p.iscritti) || 0) + r.persone };
+        scriviModifiche(m);
+      }
+      const g = GITA[r.gita], p = lista.find((x) => x.id === r.partenza)!;
+      const fermata = salite(g).find((x: any) => x.luogo === r.salita);
+      const attesa = stato === 'lista d’attesa', bloccato = stato === 'posto bloccato';
+      $('#fattoTitolo').textContent = attesa ? 'Sei in lista d’attesa' : bloccato ? 'Il posto è bloccato' : 'Pagamento riuscito: si parte!';
+      $('#fattoTesto').textContent = attesa
+        ? `Appena si libera un posto ti chiamiamo al ${r.tel}. Non hai pagato niente.`
+        : bloccato
+          ? `Ti teniamo ${r.persone === 1 ? 'il posto' : `i ${r.persone} posti`} per 3 giorni: passa in agenzia, in ${INFO.via}, per pagare ${euro(r.totale)}.`
+          : `Abbiamo ricevuto ${euro(pagato)}${r.totale - pagato > 0 ? `; il saldo di ${euro(arrotonda(r.totale - pagato))} entro 15 giorni dalla partenza (ti mandiamo il link per pagarlo)` : ''}. Conserva il codice: è il tuo biglietto.`;
+      const giorni = g.giorni > 1 ? `Dal ${dataMedia(p.data)} al ${dataMedia(fineDi(p))}` : dataLunga(p.data);
+      const timbro = attesa ? ['In attesa', 'attesa'] : bloccato ? ['Da pagare', 'da-pagare'] : stato === 'acconto pagato' ? ['Acconto pagato', ''] : ['Pagato', ''];
+      $('#bigliettoFinale').innerHTML = `<div class="bf">
+        <p class="bf-timbro ${timbro[1]}" aria-hidden="true">${timbro[0]}</p>
+        <div class="bf-corpo">
+          <p class="bf-marca">${sole('sole-bf')} Palma Viaggi</p>
+          <p class="bf-titolo">${esc(g.titolo)}</p>
+          <dl class="bf-dati">
+            <div><dt>Quando</dt><dd>${esc(giorni[0].toUpperCase() + giorni.slice(1))}</dd></div>
+            <div><dt>Si sale a</dt><dd>${esc(fermata ? `${fermata.luogo}, alle ${fermata.ora}` : r.salita)}</dd></div>
+            <div><dt>A nome di</dt><dd>${esc(r.nome)}</dd></div>
+            <div><dt>Passeggeri</dt><dd>${r.passeggeri.map((x: string) => esc(x)).join(', ')}</dd></div>
+          </dl>
+        </div>
+        <div class="bf-matrice">
+          <p class="bf-cod-t">Codice</p>
+          <p class="bf-cod">${esc(r.codice)}</p>
+          <p class="bf-stato ${pagato > 0 ? '' : 'attesa'}">${esc(attesa ? 'In lista d’attesa' : bloccato ? 'Da pagare in agenzia' : stato === 'acconto pagato' ? 'Acconto pagato' : 'Pagato')}</p>
+          <div class="bf-righe"><div><span>Totale</span><b>${euro(r.totale)}</b></div><div><span>Pagato</span><b>${euro(pagato)}</b></div></div>
+        </div>
+      </div>`;
+      // il promemoria nel calendario del telefono (file .ics)
+      const ics = creaIcs(r, g, p, fermata);
+      const cal = $<HTMLAnchorElement>('#calendario');
+      cal.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics);
+      cal.hidden = attesa;
+      $<HTMLAnchorElement>('#fattoWa').href = waLink(`Ciao ${INFO.nome}, sono ${r.nome}. ${attesa ? 'Mi sono messo in lista d’attesa per' : bloccato ? 'Ho bloccato il posto per' : 'Ho prenotato e pagato'} «${g.titolo}» del ${dataMedia(p.data)}, ${r.persone} ${r.persone === 1 ? 'persona' : 'persone'}, salita a ${r.salita}. Codice ${r.codice}.`);
+      passo('#passo-fatto');
+      $('#fattoTitolo').focus();
+    }
+
+    function creaIcs(r: any, g: any, p: any, fermata: any) {
+      const pul = (s: string) => String(s).replace(/[\\,;]/g, (m) => '\\' + m).replace(/\n/g, '\\n');
+      const ymd = (s: string) => s.replace(/-/g, '');
+      const [h, m] = (fermata?.ora || g.ora).split(':').map(Number);
+      const inizio = `${ymd(p.data)}T${String(h).padStart(2, '0')}${String(m).padStart(2, '0')}00`;
+      const fine = `${ymd(fineDi(p))}T210000`;
+      const ora = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
+      return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Palma Viaggi//Prenotazioni//IT', 'BEGIN:VEVENT',
+        `UID:${r.codice}@palmaviaggi`, `DTSTAMP:${ora}`, `DTSTART:${inizio}`, `DTEND:${fine}`,
+        `SUMMARY:${pul('Gita: ' + g.titolo)}`, `LOCATION:${pul(fermata ? fermata.luogo : r.salita)}`,
+        `DESCRIPTION:${pul(`Codice ${r.codice}. ${r.persone} partecipanti. Info: ${INFO.tel}, la sera ${INFO.telSera}.`)}`,
+        'BEGIN:VALARM', 'TRIGGER:-P1D', 'ACTION:DISPLAY', `DESCRIPTION:${pul('Domani si parte: ' + g.titolo)}`, 'END:VALARM',
+        'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+    }
+
+    $('#stampa').addEventListener('click', () => print());
+  </script>
+</Layout>

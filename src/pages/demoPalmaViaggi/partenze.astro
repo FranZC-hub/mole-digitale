@@ -1,0 +1,177 @@
+---
+import Layout from './_Layout.astro';
+import { BASE, TEMI, PARTENZE, REGOLE, prossime, biglietto, nomeMese, barraPosti, icona } from './_shared.js';
+// Il calendario: tutte le partenze dei prossimi mesi, divise per mese, con i filtri.
+// Al build c'è tutto l'elenco (si legge anche senza JavaScript); nel browser i filtri lo restringono
+// e l'indirizzo si aggiorna, così un filtro si può mandare a un amico (…/partenze/?tema=laghi).
+const oggi = new Date();
+const lista = prossime(PARTENZE, oggi);
+const mesi = [...new Set(lista.map((p) => p.data.slice(0, 7)))];
+---
+<Layout title="Gite e viaggi in partenza" active="Gite e viaggi" desc="Il calendario delle gite in pullman e dei viaggi di Palma Viaggi: date, prezzi, posti liberi e partenza garantita. Mercatini di Natale, laghi, montagna, città d’arte.">
+
+  <section class="primo cal-testa">
+    <div class="misura">
+      <span class="occhiello">Calendario</span>
+      <h1>Gite e viaggi in partenza</h1>
+      <p class="sez-p">Le date dei prossimi mesi, con il prezzo e i posti che restano. Si parte con {REGOLE.minimo} iscritti: la tacca sulla barra segna quel punto, e quando la barra lo supera la partenza è confermata.</p>
+
+      <form class="filtri" id="filtri" role="search" aria-label="Filtra le partenze">
+        <fieldset>
+          <legend>Che gita cerchi</legend>
+          <div class="chips">
+            <label class="chip"><input type="radio" name="tema" value="" checked /><span>Tutte</span></label>
+            {TEMI.map((t) => <label class="chip"><input type="radio" name="tema" value={t.id} /><span>{t.t}</span></label>)}
+          </div>
+        </fieldset>
+        <div class="filtri-riga">
+          <fieldset>
+            <legend>Durata</legend>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="durata" value="" checked /><span>Tutte</span></label>
+              <label class="chip"><input type="radio" name="durata" value="1" /><span>In giornata</span></label>
+              <label class="chip"><input type="radio" name="durata" value="piu" /><span>Più giorni</span></label>
+            </div>
+          </fieldset>
+          <label class="mese-sel">Mese
+            <select name="mese" id="meseSel">
+              <option value="">Tutti i mesi</option>
+              {mesi.map((m) => <option value={m}>{nomeMese(m)}</option>)}
+            </select>
+          </label>
+          <label class="spunta-f"><input type="checkbox" name="liberi" value="1" /> Solo con posti liberi</label>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="cal-corpo">
+    <div class="misura">
+      <p class="conteggio" id="conteggio" aria-live="polite">{lista.length} partenze</p>
+      <div id="elenco">
+        {mesi.map((m) => (
+          <section class="gruppo" aria-labelledby={'m-' + m}>
+            <h2 id={'m-' + m}>{nomeMese(m)}</h2>
+            <div class="biglietti">
+              {lista.filter((p) => p.data.startsWith(m)).map((p) => <Fragment set:html={biglietto(p, oggi)} />)}
+            </div>
+          </section>
+        ))}
+      </div>
+      <div class="vuoto-box" id="vuoto" hidden>
+        <p><b>Nessuna partenza con questi filtri.</b> Prova a toglierne uno, oppure chiedici la gita che cerchi: per i gruppi organizziamo anche partenze su richiesta.</p>
+        <div class="vuoto-cta">
+          <button type="button" class="btn btn-bordo" id="azzera">Togli i filtri</button>
+          <a href={BASE + 'servizi/#preventivo'} class="btn btn-notte">Proponi una gita</a>
+        </div>
+      </div>
+
+      <aside class="legenda" aria-label="Come leggere i biglietti">
+        <h2>Come leggere i biglietti</h2>
+        <ul>
+          <li><Fragment set:html={barraPosti({ k: 'aperta', t: 'Mancano 13 iscritti', d: 'si parte con 35', perc: 41, tacca: 65 })} /><p>Iscrizioni aperte: quando la barra passa la tacca, la gita è confermata.</p></li>
+          <li><Fragment set:html={barraPosti({ k: 'confermata', t: 'Partenza confermata', d: '16 posti liberi', perc: 70, tacca: 65 })} /><p>Si parte di sicuro: c’è ancora posto.</p></li>
+          <li><Fragment set:html={barraPosti({ k: 'ultimi', t: 'Ultimi 5 posti', d: 'partenza confermata', perc: 91, tacca: 65 })} /><p>Meglio non aspettare.</p></li>
+          <li><Fragment set:html={barraPosti({ k: 'completo', t: 'Completo', d: 'lista d’attesa aperta', perc: 100, tacca: 65 })} /><p>Lascia il nome: se si libera un posto ti chiamiamo.</p></li>
+        </ul>
+        <p class="legenda-sconto"><Fragment set:html={icona('sconto', 20)} /> Il prezzo in verde è quello con lo <b>sconto del 10%</b>, per chi prenota almeno due mesi prima della partenza.</p>
+      </aside>
+    </div>
+  </section>
+
+  <style is:global>
+    .cal-testa{padding-bottom:1.5rem}
+    .cal-testa h1{font-size:clamp(2.5rem,5.6vw,4.2rem);margin-top:.9rem;font-weight:800}
+    .filtri{margin-top:2rem;display:grid;gap:1.2rem;padding:1.3rem 1.4rem;background:var(--carta);border-radius:var(--r);box-shadow:0 1px 0 var(--filo)}
+    .filtri fieldset{border:0;min-width:0}
+    .filtri legend,.mese-sel{font-size:.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muto);margin-bottom:.55rem}
+    .filtri-riga{display:flex;flex-wrap:wrap;align-items:flex-end;gap:1.2rem 2rem}
+    .mese-sel{display:grid;gap:.55rem}
+    .mese-sel select{min-height:42px;padding:.4rem 2.2rem .4rem .9rem;border:1.5px solid var(--filo-2);border-radius:999px;background:var(--carta);font:inherit;font-weight:600;font-size:.93rem;letter-spacing:0;text-transform:none;color:var(--inchiostro)}
+    .spunta-f{display:inline-flex;align-items:center;gap:.55rem;min-height:42px;font-weight:600;font-size:.95rem;cursor:pointer}
+    .spunta-f input{width:20px;height:20px;accent-color:var(--notte)}
+
+    .cal-corpo{padding-bottom:clamp(4rem,8vw,6rem)}
+    .conteggio{font-weight:700;color:var(--muto);margin:1rem 0 .5rem}
+    .gruppo{margin-top:1.8rem}
+    .gruppo h2{font-size:1.6rem;display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
+    .gruppo h2::after{content:'';flex:1;height:2px;background:var(--filo)}
+    .vuoto-box{margin-top:2rem;padding:1.6rem;border-radius:var(--r);background:var(--carta);border:1.5px dashed var(--filo-2)}
+    .vuoto-box b{color:var(--inchiostro)}
+    .vuoto-cta{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.1rem}
+
+    .legenda{margin-top:3.5rem;padding:1.6rem 1.6rem 1.4rem;border-radius:var(--r);background:var(--sabbia-2)}
+    .legenda h2{font-size:1.3rem}
+    .legenda ul{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem;margin-top:.6rem}
+    .legenda li > p{font-size:.85rem;color:var(--muto);margin-top:.35rem}
+    .legenda-sconto{display:flex;align-items:center;gap:.5rem;margin-top:1.3rem;font-size:.92rem;color:var(--muto)}
+    .legenda-sconto .ico{color:var(--verde)}
+    /* sul fondo sabbia il verde normale non arriva a 4,5:1: qui un tono più scuro (5,5:1) */
+    .legenda .posti--confermata .posti-t b{color:#176a43}
+    @media (max-width:980px){.legenda ul{grid-template-columns:1fr 1fr}}
+    @media (max-width:560px){.legenda ul{grid-template-columns:1fr}.filtri{padding:1.1rem}}
+    ::view-transition-group(*){animation-duration:.38s;animation-timing-function:cubic-bezier(.2,.7,.2,1)}
+  </style>
+
+  <script>
+    import { partenzeAttuali, prossime, biglietto, statoPosti, GITA, nomeMese } from './_shared.js';
+    const oggi = new Date();
+    const tutte = prossime(partenzeAttuali(), oggi);
+    const form = document.getElementById('filtri') as HTMLFormElement;
+    const sel = document.getElementById('meseSel') as HTMLSelectElement;
+
+    // i mesi del menu dai dati di questo browser (il pannello può aver aggiunto partenze)
+    const mesi = [...new Set(tutte.map((p) => p.data.slice(0, 7)))];
+    sel.innerHTML = '<option value="">Tutti i mesi</option>' + mesi.map((m) => `<option value="${m}">${nomeMese(m)}</option>`).join('');
+
+    // i filtri arrivano anche dall'indirizzo: ?tema=laghi&mese=2027-07&durata=1&liberi=1
+    const q = new URLSearchParams(location.search);
+    const imposta = (nome: string, v: string) => {
+      const el = form.querySelector<HTMLInputElement>(`input[name="${nome}"][value="${CSS.escape(v)}"]`);
+      if (el) el.checked = true;
+    };
+    imposta('tema', q.get('tema') || '');
+    imposta('durata', q.get('durata') || '');
+    if (q.get('mese') && mesi.includes(q.get('mese')!)) sel.value = q.get('mese')!;
+    (form.elements.namedItem('liberi') as HTMLInputElement).checked = q.get('liberi') === '1';
+
+    const disegna = (aggiornaUrl = true) => {
+      const f = new FormData(form);
+      const tema = String(f.get('tema') || ''), durata = String(f.get('durata') || ''), mese = String(f.get('mese') || ''), liberi = f.get('liberi') === '1';
+      const scelte = tutte.filter((p) => {
+        const g = GITA[p.gita];
+        if (tema && !g.temi.includes(tema)) return false;
+        if (durata === '1' && g.giorni !== 1) return false;
+        if (durata === 'piu' && g.giorni === 1) return false;
+        if (mese && !p.data.startsWith(mese)) return false;
+        if (liberi && statoPosti(p).k === 'completo') return false;
+        return true;
+      });
+      const gruppi = [...new Set(scelte.map((p) => p.data.slice(0, 7)))];
+      document.getElementById('elenco')!.innerHTML = gruppi.map((m) => `<section class="gruppo" aria-labelledby="m-${m}"><h2 id="m-${m}">${nomeMese(m)}</h2><div class="biglietti">${
+        scelte.filter((p) => p.data.startsWith(m)).map((p) => biglietto(p, oggi)).join('')}</div></section>`).join('');
+      document.getElementById('vuoto')!.hidden = scelte.length > 0;
+      document.getElementById('conteggio')!.textContent = scelte.length === 1 ? '1 partenza' : `${scelte.length} partenze`;
+      if (aggiornaUrl) {
+        const u = new URLSearchParams();
+        if (tema) u.set('tema', tema); if (mese) u.set('mese', mese); if (durata) u.set('durata', durata); if (liberi) u.set('liberi', '1');
+        history.replaceState(null, '', location.pathname + (u.toString() ? '?' + u : ''));
+      }
+    };
+    // cambiando un filtro i biglietti che restano scivolano al loro nuovo posto, gli altri sfumano
+    // (View Transitions: Chrome, Edge, Safari; dove manca, o se si è chiesto meno movimento, cambia e basta)
+    const elenco = document.getElementById('elenco')!;
+    const nomi = (on: boolean) => elenco.querySelectorAll<HTMLElement>('.bgl').forEach((el) => { el.style.viewTransitionName = on ? 'bgl-' + el.dataset.p : ''; });
+    const ridisegna = () => {
+      const doc = document as any;
+      if (!doc.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) return disegna();
+      nomi(true);
+      const t = doc.startViewTransition(() => { disegna(); nomi(true); });
+      t.finished.finally(() => nomi(false));
+    };
+    form.addEventListener('change', ridisegna);
+    form.addEventListener('submit', (e) => e.preventDefault());
+    document.getElementById('azzera')!.addEventListener('click', () => { form.reset(); ridisegna(); });
+    disegna(false);
+  </script>
+</Layout>

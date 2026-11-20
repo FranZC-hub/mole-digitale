@@ -109,4 +109,31 @@ export const CLIENTI = [
     ],
     // niente `accesso`: questa bozza non ha un'area riservata
   },
+  {
+    nome: 'Palma Viaggi',
+    settore: 'Agenzia viaggi · gite in pullman',
+    dove: 'Corso Torino 54, Buttigliera Alta (TO)',
+    url: '/demoPalmaViaggi/',
+    stato: 'Bozza da mostrare',
+    pitch: 'Un’agenzia nata come ditta di trasporti: gite in giornata e viaggi con i propri pullman, da Buttigliera Alta e Torino. Hanno chiesto (email di Francesca) 8 pagine, prenotazione e pagamento online, e il resoconto automatico di passeggeri, pagamenti e fermate. Il sito di oggi ha le gite del 2020 e il numero con il prefisso del Belgio.',
+    dentro: [
+      '8 pagine: Home, Gite e viaggi, Scheda gita (una per meta), Prenota e paga, Servizi, Chi siamo, Contatti, Privacy; più Condizioni di viaggio (modello) e l’area riservata',
+      'Prenotazione senza registrazione, con i nomi di tutti i passeggeri e la fermata; pagamento online di prova (tutto, acconto o in agenzia), biglietto con codice',
+      'Resoconto di ogni partenza: lista passeggeri per fermata nell’ordine del giro, pagamenti, da incassare, camere per l’hotel; da stampare per l’autista, per Excel o per email. Le prenotazioni al telefono si aggiungono con i nomi',
+      'Calendario a biglietti con posti liberi, partenza garantita a 35 iscritti e sconto del 10% calcolato da solo; le date passate spariscono',
+      'Logo loro (dal sito); date, programmi e passeggeri d’esempio; foto a licenza libera',
+    ],
+    pagine: [
+      { t: 'Home', u: '/demoPalmaViaggi/' },
+      { t: 'Gite e viaggi', u: '/demoPalmaViaggi/partenze/' },
+      { t: 'Una gita', u: '/demoPalmaViaggi/gite/annecy/' },
+      { t: 'Prenota e paga', u: '/demoPalmaViaggi/prenota/' },
+      { t: 'Servizi', u: '/demoPalmaViaggi/servizi/' },
+      { t: 'Chi siamo', u: '/demoPalmaViaggi/agenzia/' },
+      { t: 'Contatti', u: '/demoPalmaViaggi/contatti/' },
+      { t: 'Privacy', u: '/demoPalmaViaggi/privacy/' },
+      { t: 'Condizioni', u: '/demoPalmaViaggi/condizioni/' },
+    ],
+    accesso: { t: 'Pannello di gestione', u: '/demoPalmaViaggi/gestione/', user: 'palma', pass: 'buttigliera54' },
+  },
 ];

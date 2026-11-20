@@ -1,0 +1,113 @@
+---
+import Layout from './_Layout.astro';
+import { INFO, BASE, COMFORT, foto, icona, sole } from './_shared.js';
+// Chi siamo: dalla loro pagina. Nati come ditta di trasporti (Bus Number One), poi l'agenzia.
+// Valori dichiarati: serietà, onestà, professionalità, puntualità; autisti qualificati con corsi
+// di aggiornamento; comfort a bordo. Niente numeri inventati: il loro sito ha i contatori a zero.
+const pullman = foto('pullman', 1400, 700);
+const sacra = foto('sacra', 1400, 700);
+const valori = [
+  { t: 'Serietà', d: 'Quello che scriviamo nel programma è quello che trovi. Orari, fermate, cosa comprende la quota: tutto chiaro prima di partire.' },
+  { t: 'Puntualità', d: 'Il pullman è il nostro e lo guidiamo noi: alla fermata ci siamo, all’ora giusta.' },
+  { t: 'Onestà', d: 'Il prezzo è quello, senza sorprese. Se una gita non raggiunge il minimo di iscritti, te lo diciamo per tempo (almeno una settimana prima, tre per i viaggi lunghi) e ti restituiamo tutto.' },
+  { t: 'Professionalità', d: 'Autisti esperti, che fanno corsi di aggiornamento periodici, e un’agenzia che segue il viaggio dall’inizio alla fine.' },
+];
+---
+<Layout title="Chi siamo" active="Chi siamo" desc={`${INFO.nome}: nati come ditta di trasporti, Bus Number One, oggi agenzia viaggi a ${INFO.citta}. I nostri pullman Gran Turismo, i nostri autisti, i nostri valori.`}>
+
+  <section class="primo ag-testa">
+    <div class="misura ag-in">
+      <div>
+        <span class="occhiello">Chi siamo</span>
+        <h1>Prima il pullman, <span>poi l’agenzia.</span></h1>
+        <p class="ag-lead">Siamo nati come ditta di trasporti: <b>Bus Number One</b>. Per anni abbiamo portato gruppi, scuole e associazioni in giro per l’Italia e per l’Europa. Poi è arrivata <b>Palma Viaggi</b>, per occuparci del viaggio intero: non solo la strada, ma il programma, gli hotel, le guide, i biglietti.</p>
+        <p class="ag-p">Il titolare è {INFO.titolare}. L’agenzia è a {INFO.citta}, in {INFO.via}, all’imbocco della Valle di Susa: a pochi minuti da Torino e a pochi chilometri dalla Sacra di San Michele.</p>
+      </div>
+      <div class="ag-foto">
+        <div class="ag-sole" aria-hidden="true"><Fragment set:html={sole('sole-ag')} /></div>
+        <div class="foto"><img src={pullman.src} srcset={pullman.srcset} sizes="(max-width:980px) 92vw, 560px" width="1400" height="880" alt="Tre pullman Gran Turismo bianchi in fila, pronti a partire" fetchpriority="high" /></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="banda chiara">
+    <div class="misura">
+      <span class="occhiello">Come lavoriamo</span>
+      <h2 class="sez-h2">Quattro parole, prese sul serio.</h2>
+      <ul class="valori">
+        {valori.map((v, i) => (
+          <li class="rv"><span class="v-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span><h3>{v.t}</h3><p>{v.d}</p></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="banda scura">
+    <div class="misura bordo">
+      <div class="rv">
+        <span class="occhiello">A bordo</span>
+        <h2 class="sez-h2">Il viaggio comincia sul pullman.</h2>
+        <p class="sez-p">Pullman Gran Turismo moderni, con tutto quello che serve per arrivare riposati: si guarda un film, si chiacchiera, si ascolta musica, si guarda il paesaggio.</p>
+      </div>
+      <ul class="bordo-lista rv">
+        {COMFORT.map(([ic, t]) => <li><span><Fragment set:html={icona(ic, 26)} /></span>{t}</li>)}
+      </ul>
+    </div>
+    <div class="misura autisti rv">
+      <span class="autisti-ico"><Fragment set:html={icona('volante', 30)} /></span>
+      <p><b>I nostri autisti</b> sono professionisti con anni di esperienza su strade di montagna, autostrade e centri città, e fanno corsi di aggiornamento periodici. Sono loro a farvi trovare il pullman pulito, in orario, e a riportarvi a casa.</p>
+    </div>
+  </section>
+
+  <section class="banda">
+    <div class="misura dove">
+      <div class="foto rv"><img src={sacra.src} srcset={sacra.srcset} sizes="(max-width:980px) 92vw, 700px" width="1400" height="800" alt="La Sacra di San Michele sulla sua rupe, tra la neve e le nuvole" loading="lazy" /></div>
+      <div class="rv">
+        <span class="occhiello">Dove siamo</span>
+        <h2 class="sez-h2">{INFO.citta}, {INFO.via}.</h2>
+        <p class="sez-p">Passa in agenzia per prenotare, pagare o solo per fare due chiacchiere su dove andare.</p>
+        <div class="dove-cta">
+          <a href={INFO.maps} class="btn btn-notte" target="_blank" rel="noopener"><Fragment set:html={icona('mappa', 18)} /> Indicazioni stradali</a>
+          <a href={BASE + 'contatti/'} class="btn btn-bordo">Orari e contatti</a>
+        </div>
+      </div>
+    </div>
+    <div class="misura"><p class="promemoria"><b>Per Palma Viaggi:</b> qui ci vogliono le vostre foto. Il vostro pullman con la scritta, l’agenzia da fuori, voi al banco, un gruppo in gita (con il loro permesso). Valgono più di qualsiasi testo. E se avete un anno di fondazione o un numero di viaggiatori da raccontare, mettiamolo: sul sito di oggi i contatori sono tutti a zero.</p></div>
+  </section>
+
+  <style>
+    .ag-testa{padding-bottom:clamp(3rem,6vw,5rem)}
+    .ag-in{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(2rem,5vw,4.5rem);align-items:center}
+    .ag-in h1{font-size:clamp(2.6rem,5.8vw,4.5rem);margin-top:.9rem;font-weight:800}
+    .ag-in h1 span{display:block;color:var(--cielo-testo)}
+    .ag-lead{font-size:clamp(1.08rem,1.6vw,1.22rem);margin-top:1.4rem;max-width:56ch}
+    .ag-lead b{color:var(--inchiostro)}
+    .ag-p{color:var(--muto);margin-top:1rem;max-width:56ch}
+    .ag-foto{position:relative;padding:2rem 0 0 2rem}
+    .ag-sole{position:absolute;left:-4%;top:-6%;width:45%}
+    .ag-foto .foto{position:relative;aspect-ratio:1400/880;box-shadow:0 40px 70px -40px rgba(11,40,54,.7)}
+
+    .valori{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-top:2.2rem}
+    .valori li{background:var(--carta);border-radius:var(--r);padding:1.5rem;box-shadow:0 1px 0 var(--filo)}
+    .v-n{font-family:var(--disp);font-size:2.2rem;font-weight:800;background:linear-gradient(180deg,var(--sole),var(--arancio));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .valori h3{font-size:1.35rem;margin-top:.3rem}
+    .valori p{color:var(--muto);margin-top:.5rem;font-size:.95rem}
+
+    .bordo{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(2rem,5vw,4rem);align-items:center}
+    .bordo-lista{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+    .bordo-lista li{display:flex;align-items:center;gap:.9rem;padding:.9rem 1rem;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#fff;font-weight:600}
+    .bordo-lista span{display:grid;place-items:center;width:2.8rem;height:2.8rem;border-radius:12px;background:rgba(255,194,58,.14);color:var(--sole);flex:none}
+    .autisti{display:flex;gap:1.2rem;align-items:flex-start;margin-top:3rem;padding-top:2rem;border-top:1px solid rgba(255,255,255,.12)}
+    .autisti-ico{color:var(--sole);margin-top:.1rem}
+    .autisti p{max-width:70ch;font-size:1.05rem}
+    .autisti b{color:#fff}
+
+    .dove{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(2rem,5vw,4rem);align-items:center}
+    .dove .foto{aspect-ratio:1400/800}
+    .dove-cta{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.6rem}
+
+    @media (max-width:1060px){.valori{grid-template-columns:1fr 1fr}}
+    @media (max-width:980px){.ag-in,.bordo,.dove{grid-template-columns:1fr}}
+    @media (max-width:560px){.valori,.bordo-lista{grid-template-columns:1fr}.ag-foto{padding:1.2rem 0 0 1.2rem}}
+  </style>
+</Layout>

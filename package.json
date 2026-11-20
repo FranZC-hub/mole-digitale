@@ -8,8 +8,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "mas:prova": "astro build && node tools/masgioielli/prova-locale.mjs",
-    "test": "node --test tools/test/sito.test.mjs",
-    "verifica": "astro build && node tools/check-links.mjs && node --test tools/test/sito.test.mjs",
+    "test": "node --test tools/test/sito.test.mjs tools/test/palmaviaggi.test.mjs",
+    "verifica": "astro build && node tools/check-links.mjs && node --test tools/test/sito.test.mjs tools/test/palmaviaggi.test.mjs",
     "indexnow": "node tools/indexnow.mjs",
     "og": "node tools/og-immagini.mjs"
   },

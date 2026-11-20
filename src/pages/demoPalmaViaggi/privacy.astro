@@ -1,0 +1,84 @@
+---
+import Layout from './_Layout.astro';
+import { INFO, BASE } from './_shared.js';
+// Le foto della bozza sono a licenza libera (Wikimedia Commons): CC BY e CC BY-SA chiedono
+// autore, licenza, fonte e l'indicazione delle modifiche. Via quando arrivano quelle dell'agenzia.
+// L'informativa è un modello: prima di andare online va vista con un consulente.
+const CC = {
+  'CC0': 'https://creativecommons.org/publicdomain/zero/1.0/deed.it',
+  'CC BY 2.0': 'https://creativecommons.org/licenses/by/2.0/deed.it',
+  'CC BY 2.5': 'https://creativecommons.org/licenses/by/2.5/deed.it',
+  'CC BY 3.0': 'https://creativecommons.org/licenses/by/3.0/deed.it',
+  'CC BY 3.0 DE': 'https://creativecommons.org/licenses/by/3.0/de/deed.it',
+  'CC BY-SA 3.0': 'https://creativecommons.org/licenses/by-sa/3.0/deed.it',
+  'CC BY-SA 4.0': 'https://creativecommons.org/licenses/by-sa/4.0/deed.it',
+};
+const C = 'https://commons.wikimedia.org/wiki/File:';
+const f = (nome: string) => C + encodeURIComponent(nome.replace(/ /g, '_'));
+const foto = [
+  { s: 'Il lago di Lugano dal Monte Brè (apertura)', a: 'Mchernyavska', l: 'CC BY-SA 4.0', f: 'Lugano from Monte Bre.jpg' },
+  { s: 'Annecy, il Palais de l’Isle', a: 'Kosala Bandara', l: 'CC BY 2.0', f: "The Palais de l'Isle (13878026023).jpg" },
+  { s: 'L’albero di Natale a Lugano', a: 'Hp.Baumeler', l: 'CC BY-SA 4.0', f: 'Christmas tree in Lugano (2018).jpg' },
+  { s: 'Aosta, l’Arco di Augusto', a: 'Rosalba Vaccamorta', l: 'CC BY-SA 4.0', f: 'Arco di Augusto 2 Aosta.jpg' },
+  { s: 'Colmar a Natale', a: 'Gzen92', l: 'CC BY-SA 4.0', f: 'Rue des Marchands depuis le Koïfhus (Colmar) (4).jpg' },
+  { s: 'Mentone, la Festa dei Limoni', a: 'Nicolas Sartore', l: 'CC BY-SA 4.0', f: 'Fête du Citron® Menton.jpg' },
+  { s: 'Praga, il ponte Carlo', a: 'DXR', l: 'CC BY-SA 4.0', f: 'North view of Charles Bridge from Mánesův most, Prague 20160808 1.jpg' },
+  { s: 'Roma, il Colosseo', a: 'Wilfredor', l: 'CC0', f: 'View of Colosseo from Ponte degli Annibaldi.jpg' },
+  { s: 'Marrakech, piazza Jemaa el-Fna', a: 'Herokk', l: 'CC BY-SA 4.0', f: 'Jemaa el-Fnaa Marrakech at sunset.jpg' },
+  { s: 'Malta, il Grand Harbour', a: 'Marie-Lan Nguyen', l: 'CC BY 2.5', f: 'Grand Harbour seen from Triq Girolamo Cassar n02.jpg' },
+  { s: 'Lago Maggiore, l’Isola dei Pescatori', a: 'Isiwal', l: 'CC BY-SA 4.0', f: 'Lago Maggiore Isola Superiore from Isola Bella.jpg' },
+  { s: 'Lago d’Iseo e Monte Isola', a: 'pacj', l: 'CC BY 3.0', f: "Lago d'iseo,Monte Isola,e l'isola di Loreto,vista dalla sponda bergamasca - panoramio.jpg" },
+  { s: 'Ginevra, il Jet d’eau', a: 'Terragio67', l: 'CC BY-SA 4.0', f: "Arc-en-ciel sur le jet d'eau de Genève - GT 2025.jpg" },
+  { s: 'Campi di lavanda', a: 'Eippol', l: 'CC BY-SA 3.0', f: 'Campi lavanda.JPG' },
+  { s: 'Ceresole Reale, i laghi d’alta quota', a: 'Zairon', l: 'CC BY-SA 4.0', f: 'Ceresole Reale Lago Agnel 10.jpg' },
+  { s: 'Le cascate di Lillaz', a: 'Hagai Agmon-Snir', l: 'CC BY-SA 4.0', f: 'CascateDiLillazJuly292024.jpg' },
+  { s: 'Le Langhe', a: 'Megan Cole', l: 'CC BY 2.0', f: 'Piemonte, Italy (5885147365).jpg' },
+  { s: 'I pullman', a: 'Globetrotter19', l: 'CC BY-SA 3.0', f: 'White buses, railway station, 2019 Veresegyház.jpg' },
+  { s: 'La Sacra di San Michele', a: 'Elio Pallard', l: 'CC BY-SA 4.0', f: 'La Sacra ammantata dalla neve.jpg' },
+];
+---
+<Layout title="Privacy e crediti" desc={`Privacy e crediti fotografici del sito di ${INFO.nome}.`}>
+  <section class="primo banda-t">
+    <div class="misura stretta testo">
+      <span class="occhiello">Privacy</span>
+      <h1>Privacy e crediti</h1>
+
+      <h2>Prenotazioni e richieste</h2>
+      <p>Quando prenoti una gita o ci chiedi un preventivo ci lasci nome, telefono, eventualmente email, e i dati del viaggio (gita, data, partecipanti, fermata, note). Li usiamo solo per gestire la prenotazione, risponderti e, se serve, per gli obblighi di legge legati al viaggio (assicurazione, hotel, compagnie aeree). Non li cediamo a nessuno per altri scopi e non ti mandiamo pubblicità.</p>
+      <p>Le note sulla salute o sulla mobilità che ci scrivi volontariamente servono solo a organizzare il viaggio, e le leggono solo le persone che se ne occupano.</p>
+
+      <h2>Pagamenti</h2>
+      <p>I pagamenti online passano dalla pagina sicura del circuito di pagamento: i dati della carta non arrivano a noi e il sito non li conserva.</p>
+
+      <h2>Cosa resta nel vostro browser</h2>
+      <p>Il sito non usa cookie. Il riepilogo dell’ultima prenotazione resta salvato nel tuo browser solo per mostrarti il biglietto.</p>
+
+      <h2>Mappa</h2>
+      <p>La mappa nella pagina Contatti è di Google e si carica solo se la apri: da quel momento valgono le regole sulla privacy di Google.</p>
+
+      <h2>Titolare</h2>
+      <p>{INFO.societa} · P.IVA {INFO.piva} · {INFO.indirizzo} · <a href={'mailto:' + INFO.email}>{INFO.email}</a></p>
+      <p class="promemoria"><b>Da completare:</b> questa è una base. L’informativa completa (basi giuridiche, tempi di conservazione, diritti, eventuali responsabili del trattamento come il circuito di pagamento) la prepariamo insieme a un consulente prima di andare online. In questa bozza le prenotazioni restano nel browser di chi le fa: nessun dato arriva a un server.</p>
+
+      <h2>Crediti fotografici</h2>
+      <p>Le foto di questa bozza vengono da Wikimedia Commons, a licenza libera, e verranno sostituite con quelle dell’agenzia. Tutte sono state ritagliate e ridimensionate.</p>
+      <ul class="crediti">
+        {foto.map((x) => (
+          <li><b>{x.s}</b> — foto di {x.a}, <a href={f(x.f)} target="_blank" rel="noopener">Wikimedia Commons</a>, {x.l === 'CC0' ? 'pubblico dominio' : 'licenza'} <a href={CC[x.l as keyof typeof CC]} target="_blank" rel="noopener">{x.l}</a>.</li>
+        ))}
+      </ul>
+      <p>Il sole a strisce è ripreso dal marchio di {INFO.nome}. <a href={BASE}>Torna alla home</a></p>
+    </div>
+  </section>
+  <style>
+    .banda-t{padding-bottom:clamp(4rem,8vw,6rem)}
+    .testo h1{font-size:clamp(2.4rem,5vw,3.6rem);margin:.8rem 0 1rem;font-weight:800}
+    .testo h2{font-size:1.5rem;margin:2.2rem 0 .6rem}
+    .testo p{color:var(--muto);margin-top:.6rem}
+    .testo p a{color:var(--cielo-testo);text-decoration:underline;text-underline-offset:3px}
+    .testo .promemoria{margin:1rem 0 0}
+    .crediti{margin:1rem 0 0 1.2rem;list-style:disc;color:var(--muto);display:grid;gap:.5rem;font-size:.94rem}
+    .crediti a{color:var(--cielo-testo);text-decoration:underline;text-underline-offset:3px}
+    .crediti b{color:var(--inchiostro)}
+  </style>
+</Layout>

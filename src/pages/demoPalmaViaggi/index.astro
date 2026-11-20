@@ -1,0 +1,427 @@
+---
+import Layout from './_Layout.astro';
+import IconaWhatsApp from '../../components/IconaWhatsApp.astro';
+import {
+  INFO, BASE, TEMI, SERVIZI, COMFORT, REGOLE, GITA, PARTENZE, foto, sole, pullmino, icona, waLink,
+  prossime, biglietto, bigliettoMini, orariSettimana, nomeMese,
+} from './_shared.js';
+// Home: chi apre è quasi sempre qualcuno che vuole sapere «dove andate, quando, quanto costa, c'è
+// posto?». Le partenze vengono prima di tutto; poi i temi, il pullman, come si prenota, il resto.
+// I biglietti sono disegnati al build e ridisegnati nel browser (il pannello può averli cambiati).
+const oggi = new Date();
+const lista = prossime(PARTENZE, oggi);
+const prima = lista.find((p) => p.iscritti < (GITA[p.gita].posti ?? REGOLE.posti)) || lista[0];
+const mesi = [...new Set(lista.map((p) => p.data.slice(0, 7)))].slice(0, 6);
+const conta = (tema: string) => lista.filter((p) => GITA[p.gita].temi.includes(tema)).length;
+const apertura = foto('apertura', 1000, 560);
+const pullman = foto('pullman', 1400, 700);
+const sacra = foto('sacra', 1400, 700);
+const WA = waLink(`Ciao ${INFO.nome}, vorrei informazioni sulle prossime gite.`);
+const passi = [
+  { t: 'Scegli gita e data', d: 'Sul calendario vedi subito il prezzo, i posti liberi e se la partenza è già confermata.' },
+  { t: 'Prenota il posto', d: 'Dal sito in un minuto, su WhatsApp, al telefono o in agenzia. Ti richiamiamo noi per confermare e dirti come pagare.' },
+  { t: 'Ti aspettiamo alla fermata', d: 'Il giorno prima ti scriviamo il punto e l’orario di salita. Tu porta solo la voglia di partire.' },
+];
+---
+<Layout title="Home" active="Home">
+
+  <!-- ============================================================ apertura -->
+  <section class="apertura primo">
+    <div class="misura ap-in">
+      <div class="ap-testo">
+        <span class="occhiello">Agenzia viaggi · {INFO.citta}</span>
+        <h1>Si parte insieme, <span class="ap-em">con il nostro pullman.</span></h1>
+        <p class="ap-p">Gite di un giorno, weekend e viaggi in Italia e in Europa, sui nostri pullman Gran Turismo e con i nostri autisti. Si sale vicino a casa: a Buttigliera Alta, Pianezza, Torino e Beinasco.</p>
+        <div class="ap-cta">
+          <a href={BASE + 'partenze/'} class="btn btn-sole">Vedi le prossime partenze</a>
+          <a href={WA} class="btn btn-bordo" target="_blank" rel="noopener"><IconaWhatsApp width="20" height="20" fill="currentColor" aria-hidden="true" /> Scrivici su WhatsApp</a>
+        </div>
+      </div>
+      <div class="ap-visual">
+        <div class="ap-sole"><Fragment set:html={sole('sole-ap')} /></div>
+        <div class="ap-arco">
+          <img src={apertura.src} srcset={apertura.srcset} sizes="(max-width:980px) 92vw, 460px" width="1000" height="1250" alt="Il lago di Lugano e le montagne, visti dall’alto del Monte Brè" fetchpriority="high" />
+        </div>
+        <div class="ap-mini" id="mini">{prima && <Fragment set:html={bigliettoMini(prima, oggi)} />}</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ le promesse -->
+  <section class="promesse" aria-label="Perché partire con noi">
+    <ul class="misura promesse-in">
+      <li class="rv">{<Fragment set:html={icona('bus', 28)} />}<div><h2>I nostri pullman</h2><p>Gran Turismo da 54 posti, con toilette, Wi-Fi e sedili reclinabili.</p></div></li>
+      <li class="rv">{<Fragment set:html={icona('sconto', 28)} />}<div><h2>Sconto del 10%</h2><p>Per chi prenota almeno due mesi prima della partenza.</p></div></li>
+      <li class="rv">{<Fragment set:html={icona('persone', 28)} />}<div><h2>Partenza garantita</h2><p>Con {REGOLE.minimo} iscritti si parte: sul calendario vedi a che punto siamo.</p></div></li>
+      <li class="rv">{<Fragment set:html={icona('luna', 28)} />}<div><h2>Assistenza anche la sera</h2><p>Dalle 18:30 alle 9:00 risponde il <a href={'tel:' + INFO.telSeraHref}>{INFO.telSera}</a>.</p></div></li>
+    </ul>
+  </section>
+
+  <!-- ============================================================ partenze -->
+  <section class="banda" id="partenze">
+    <div class="misura">
+      <div class="sez-testa rv">
+        <div>
+          <span class="occhiello">Calendario</span>
+          <h2 class="sez-h2">Le prossime partenze</h2>
+          <p class="sez-p">Su ogni biglietto c’è il prezzo, quanti posti restano e quanto manca alla partenza garantita: la tacca sulla barra segna i {REGOLE.minimo} iscritti.</p>
+        </div>
+        <a href={BASE + 'partenze/'} class="link">Tutto il calendario <Fragment set:html={icona('freccia', 18)} /></a>
+      </div>
+      <nav class="mesi rv" aria-label="Partenze per mese" id="mesi">
+        {mesi.map((m) => <a href={`${BASE}partenze/?mese=${m}`}>{nomeMese(m).replace(/ \d{4}$/, '')} <small>{lista.filter((p) => p.data.startsWith(m)).length}</small></a>)}
+      </nav>
+      <div class="biglietti tre" id="prossime">
+        {lista.slice(0, 6).map((p) => <Fragment set:html={biglietto(p, oggi, { sizes: '(max-width:640px) 92vw, 380px' })} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ temi -->
+  <section class="banda chiara">
+    <div class="misura">
+      <div class="sez-testa rv">
+        <div>
+          <span class="occhiello">Idee</span>
+          <h2 class="sez-h2">Che gita cerchi?</h2>
+        </div>
+      </div>
+      <ul class="temi">
+        {TEMI.map((t) => {
+          const f = foto(t.img);
+          const n = conta(t.id);
+          return (
+            <li class="rv">
+              <a href={`${BASE}partenze/?tema=${t.id}`} class="tema">
+                <img src={f.src.replace('-1200', '-600')} srcset={f.srcset} sizes="(max-width:640px) 92vw, 380px" width="600" height="400" alt="" loading="lazy" />
+                <span class="tema-testo">
+                  <span class="tema-n" data-conta-tema={t.id}>{n ? `${n} ${n === 1 ? 'partenza' : 'partenze'}` : 'Su richiesta'}</span>
+                  <b>{t.t}</b>
+                  <span>{t.d}</span>
+                </span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================================================ il pullman -->
+  <section class="banda scura">
+    <div class="misura pullman">
+      <div class="pullman-foto rv">
+        <div class="foto"><img src={pullman.src} srcset={pullman.srcset} sizes="(max-width:980px) 92vw, 600px" width="1400" height="880" alt="Tre pullman Gran Turismo bianchi in fila, pronti a partire" loading="lazy" /></div>
+      </div>
+      <div class="rv">
+        <span class="occhiello">Il nostro pullman</span>
+        <h2 class="sez-h2">Siamo nati come ditta di trasporti.</h2>
+        <p class="sez-p">Prima dell’agenzia c’era Bus Number One: anni di gite, gruppi e trasferimenti in Italia e in Europa. Per questo viaggi sui nostri pullman, con autisti esperti che fanno corsi di aggiornamento periodici.</p>
+        <ul class="comfort">
+          {COMFORT.map(([i, t]) => <li><Fragment set:html={icona(i, 22)} />{t}</li>)}
+        </ul>
+        <a href={BASE + 'agenzia/'} class="btn btn-chiaro">La nostra storia</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ come si prenota -->
+  <section class="banda">
+    <div class="misura">
+      <div class="sez-testa rv">
+        <div>
+          <span class="occhiello">Come si prenota</span>
+          <h2 class="sez-h2">Niente registrazioni,<br />niente password.</h2>
+        </div>
+        <a href={BASE + 'prenota/'} class="btn btn-sole">Prenota un posto</a>
+      </div>
+      <div class="percorso">
+        <ol class="passi">
+          {passi.map((p, i) => (
+            <li class="rv">
+              <span class="passo-n" aria-hidden="true">{i + 1}</span>
+              <h3>{p.t}</h3>
+              <p>{p.d}</p>
+            </li>
+          ))}
+        </ol>
+        {/* da computer: il pullman parte dal primo passo, si ferma al secondo e arriva alla fermata, tracciando la strada */}
+        <div class="strada" id="strada" aria-hidden="true"><span class="strada-bus"><Fragment set:html={pullmino()} /></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ servizi -->
+  <section class="banda chiara">
+    <div class="misura">
+      <div class="sez-testa rv">
+        <div>
+          <span class="occhiello">Servizi</span>
+          <h2 class="sez-h2">Non solo gite.</h2>
+          <p class="sez-p">Il viaggio di nozze, il pullman per il matrimonio, la gita della scuola o della parrocchia: ci pensiamo noi, dall’inizio alla fine.</p>
+        </div>
+        <a href={BASE + 'servizi/#preventivo'} class="link">Chiedi un preventivo <Fragment set:html={icona('freccia', 18)} /></a>
+      </div>
+      <ul class="servizi">
+        {SERVIZI.map((s) => (
+          <li class="rv">
+            <a href={`${BASE}servizi/#${s.id}`} class="servizio">
+              <span class="servizio-ico"><Fragment set:html={icona(s.ico, 26)} /></span>
+              <b>{s.t}</b>
+              <span class="servizio-d">{s.breve}</span>
+              <span class="servizio-vai">Scopri <Fragment set:html={icona('freccia', 16)} /></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================================================ la frase del loro sito -->
+  <section class="citazione">
+    <div class="misura cit-in">
+      <div class="cit-sole" aria-hidden="true"><Fragment set:html={sole('sole-cit')} /></div>
+      <blockquote class="rv">
+        <p>L’unica regola del viaggio è: non tornare come sei partito. Torna diverso.</p>
+        <footer>Anne Carson</footer>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- ============================================================ l'agenzia -->
+  <section class="banda chiara">
+    <div class="misura sede">
+      <figure class="sede-foto rv">
+        <div class="foto"><img src={sacra.src} srcset={sacra.srcset} sizes="(max-width:980px) 92vw, 700px" width="1400" height="800" alt="La Sacra di San Michele sulla sua rupe, tra la neve e le nuvole" loading="lazy" /></div>
+        <figcaption>La Sacra di San Michele, a pochi chilometri dall’agenzia.</figcaption>
+      </figure>
+      <div class="sede-testo rv">
+        <span class="occhiello">L’agenzia</span>
+        <h2 class="sez-h2">Vieni a trovarci.</h2>
+        <p class="sede-ind"><a href={INFO.maps} target="_blank" rel="noopener">{INFO.via}, {INFO.citta}</a></p>
+        <p class="stato" id="stato" hidden></p>
+        <dl class="orari">
+          {orariSettimana().map((o) => <div data-giorno={o.i}><dt>{o.giorno}</dt><dd>{o.label}</dd></div>)}
+        </dl>
+        <div class="sede-cta">
+          <a href={'tel:' + INFO.telHref} class="btn btn-notte"><Fragment set:html={icona('telefono', 18)} /> {INFO.tel}</a>
+          <a href={BASE + 'contatti/'} class="btn btn-bordo">Tutti i contatti</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="misura">
+      <div class="promemoria">
+        <b>Per Palma Viaggi — cosa c’è in questa bozza</b>
+        <ul>
+          <li><b>Le gite vengono dal vostro sito</b> (Annecy, Lugano, Ginevra, i laghi, Ceresole, Lillaz, Sale San Giovanni, Ferragosto) e dalle vostre destinazioni. <b>Date, iscritti, orari e programmi sono d’esempio</b>: li sostituiamo con il vostro calendario.</li>
+          <li>I prezzi delle gite in giornata sono quelli del vostro sito; quelli dei viaggi di più giorni li abbiamo stimati noi.</li>
+          <li>Le partenze passate spariscono da sole, e dal pannello di gestione aggiungete date, aggiornate gli iscritti e vedete le prenotazioni.</li>
+          <li>Sul sito di oggi il cellulare è scritto <b>+324.8017979</b>: il +32 è il prefisso del Belgio, e chi tocca il numero dal telefono non vi trova. Qui è corretto.</li>
+          <li>Le foto sono a licenza libera: le vostre (il pullman, voi, le gite con i clienti) fanno molta più strada.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <style is:global>
+    /* apertura */
+    .apertura{padding-bottom:clamp(3rem,6vw,5rem);overflow:hidden}
+    .ap-in{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(2rem,5vw,4.5rem);align-items:center}
+    .ap-testo h1{font-size:clamp(2.35rem,6.4vw,5.1rem);margin-top:1.1rem;font-weight:800;letter-spacing:-.03em}
+    .ap-em{display:block;color:var(--cielo-testo)}
+    .ap-p{font-size:clamp(1.05rem,1.6vw,1.2rem);color:var(--muto);max-width:52ch;margin-top:1.4rem}
+    .ap-cta{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:2rem}
+    .ap-visual{position:relative;padding:0 0 3.5rem 2.5rem;max-width:520px;justify-self:end;width:100%}
+    .ap-sole{position:absolute;right:-12%;top:-7%;width:62%;z-index:0}
+    .ap-arco{position:relative;z-index:1;aspect-ratio:4/5;border-radius:999px 999px var(--r) var(--r);overflow:hidden;background:var(--sabbia-2);box-shadow:0 40px 70px -40px rgba(11,40,54,.7)}
+    .ap-arco img{width:100%;height:100%;object-fit:cover}
+    .ap-mini{position:absolute;left:0;bottom:0;z-index:2;width:min(330px,82%)}
+    /* l'alba: il sole sale da dietro l'arco, la foto si assesta, poi arriva il biglietto della prossima partenza.
+       Si muovono con translate/scale/rotate, che si sommano al transform (da telefono il biglietto è centrato così) */
+    @media (prefers-reduced-motion:no-preference){
+      .ap-sole{animation:alba 1.8s var(--e) .1s both}
+      .ap-arco img{animation:respiro 2.4s var(--e) both}
+      .ap-mini{animation:consegna .9s var(--e) .6s both}
+    }
+    @keyframes alba{from{translate:0 42%;opacity:0}to{translate:0 0;opacity:1}}
+    @keyframes consegna{from{opacity:0;translate:0 30px;rotate:-4deg}to{opacity:1;translate:0 0;rotate:0deg}}
+
+    /* promesse */
+    .promesse{background:var(--notte);color:#a9bec9}
+    .misura.promesse-in{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem 2rem;padding-top:2rem;padding-bottom:2rem}
+    .promesse li{display:flex;gap:.9rem;align-items:flex-start}
+    .promesse .ico{color:var(--sole);margin-top:.1rem}
+    .promesse h2{font-size:1.08rem;color:#fff;letter-spacing:0}
+    .promesse p{font-size:.9rem;margin-top:.25rem;line-height:1.5}
+    .promesse a{color:#fff;font-weight:700;white-space:nowrap}
+
+    /* partenze */
+    .mesi{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.6rem}
+    .mesi a{display:inline-flex;align-items:center;gap:.45rem;min-height:40px;padding:.35rem .95rem;border-radius:999px;background:var(--carta);border:1.5px solid var(--filo);font-weight:700;font-size:.92rem;transition:border-color .2s,background .2s}
+    .mesi a:hover{border-color:var(--inchiostro)}
+    .mesi small{display:inline-grid;place-items:center;min-width:1.5rem;height:1.5rem;border-radius:99px;background:var(--cielo-chiaro);color:var(--cielo-testo);font-size:.76rem;font-weight:800}
+    .tre{grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr))}
+
+    /* temi */
+    .temi{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
+    .tema{position:relative;display:block;aspect-ratio:4/3;border-radius:var(--r);overflow:hidden;color:#fff;isolation:isolate}
+    .tema img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transition:transform .7s var(--e)}
+    .tema::after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(11,40,54,0) 30%,rgba(11,40,54,.88))}
+    .tema:hover img{transform:scale(1.05)}
+    .tema-testo{position:absolute;left:0;right:0;bottom:0;padding:1.2rem 1.3rem;display:grid;gap:.15rem}
+    .tema-testo b{font-family:var(--disp);font-size:1.5rem;font-weight:700;line-height:1.1}
+    .tema-testo > span:last-child{font-size:.9rem;color:#d7e3e9}
+    .tema-n{justify-self:start;font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:var(--sole);color:var(--notte);padding:.2rem .6rem;border-radius:99px;margin-bottom:.4rem}
+
+    /* pullman */
+    .pullman{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4.5rem);align-items:center}
+    .pullman-foto .foto{aspect-ratio:1400/880;box-shadow:0 40px 70px -40px rgba(0,0,0,.8)}
+    .comfort{display:grid;grid-template-columns:1fr 1fr;gap:.75rem 1.5rem;margin:1.8rem 0 2rem}
+    .comfort li{display:flex;align-items:center;gap:.7rem;color:#e3ecf1;font-size:.95rem}
+    .comfort .ico{color:var(--sole)}
+
+    /* passi */
+    .passi{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem;counter-reset:passo}
+    .passi li{position:relative;background:var(--carta);border-radius:var(--r);padding:1.6rem 1.5rem 1.7rem;box-shadow:0 1px 0 var(--filo),0 18px 34px -28px rgba(11,40,54,.5)}
+    /* la strada: dal centro del primo numero al centro del terzo (3 colonne, 1.3rem di spazio tra l'una e l'altra).
+       Passa sotto i numeri e sopra le schede; il pullman parcheggia davanti al 3, «la fermata» */
+    .percorso{position:relative}
+    .strada{display:none}
+    @media (min-width:981px){
+      .passo-n{position:relative;z-index:2}
+      .strada{display:block;position:absolute;z-index:1;top:3.1rem;left:3rem;width:calc((200% + 2.6rem) / 3);height:0;pointer-events:none}
+      .strada::before{content:'';position:absolute;left:0;right:0;top:-1px;border-top:2px dashed var(--arancio);opacity:.6}
+      .strada-bus{position:absolute;bottom:-2px;left:calc(100% - 88px);width:56px}
+      .strada-bus .pullmino{display:block;width:100%;height:auto}
+    }
+    @media (min-width:981px) and (prefers-reduced-motion:no-preference){
+      .js .strada:not(.via) .strada-bus{opacity:0}
+      .js .strada:not(.via)::before{clip-path:inset(-2px 100% -2px 0)}
+      .js .strada.via .strada-bus{animation:guida 3.8s both}
+      .js .strada.via .pullmino{animation:sobbalza .3s ease-in-out 12 alternate}
+      .js .strada.via::before{animation:traccia 3.8s backwards}
+    }
+    /* la strada si disegna davanti al muso del pullman (muso = posizione + 56px); le soste a 8px dal numero */
+    @keyframes guida{
+      0%{left:28px;opacity:0;animation-timing-function:ease-out}
+      6%{left:28px;opacity:1;animation-timing-function:ease-in-out}
+      40%{left:calc(50% - 88px);animation-timing-function:linear}
+      56%{left:calc(50% - 88px);animation-timing-function:ease-in-out}
+      94%,100%{left:calc(100% - 88px)}
+    }
+    @keyframes traccia{
+      0%{clip-path:inset(-2px calc(100% - 84px) -2px 0);animation-timing-function:linear}
+      6%{clip-path:inset(-2px calc(100% - 84px) -2px 0);animation-timing-function:ease-in-out}
+      40%{clip-path:inset(-2px calc(50% + 32px) -2px 0);animation-timing-function:linear}
+      56%{clip-path:inset(-2px calc(50% + 32px) -2px 0);animation-timing-function:ease-in-out}
+      94%,100%{clip-path:inset(-2px 32px -2px 0)}
+    }
+    .passo-n{display:grid;place-items:center;width:3rem;height:3rem;border-radius:50%;background:linear-gradient(180deg,var(--sole),var(--arancio));color:var(--notte);font-family:var(--disp);font-size:1.4rem;font-weight:800}
+    .passi h3{font-size:1.35rem;margin-top:1.1rem}
+    .passi p{color:var(--muto);margin-top:.5rem}
+
+    /* servizi */
+    .servizi{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
+    .servizio{display:flex;flex-direction:column;gap:.4rem;height:100%;background:var(--carta);border-radius:var(--r);padding:1.4rem 1.4rem 1.5rem;border:1.5px solid transparent;transition:border-color .2s,transform .3s var(--e)}
+    .servizio:hover{border-color:var(--inchiostro);transform:translateY(-2px)}
+    .servizio-ico{display:grid;place-items:center;width:3.1rem;height:3.1rem;border-radius:14px;background:linear-gradient(180deg,var(--sole),var(--arancio));color:var(--notte);margin-bottom:.5rem;box-shadow:0 10px 20px -12px rgba(255,138,31,.9)}
+    .servizio b{font-family:var(--disp);font-size:1.22rem;color:var(--inchiostro);line-height:1.2}
+    .servizio-d{color:var(--muto);font-size:.95rem}
+    .servizio-vai{display:inline-flex;align-items:center;gap:.35rem;margin-top:auto;padding-top:.7rem;font-family:var(--disp);font-weight:700;color:var(--cielo-testo)}
+    .servizio-vai .ico{transition:transform .25s var(--e)}
+    .servizio:hover .servizio-vai .ico{transform:translateX(4px)}
+
+    /* citazione */
+    /* il sole che sorge dal bordo in basso, la frase sopra, sul blu */
+    .citazione{position:relative;background:var(--notte);overflow:hidden}
+    .misura.cit-in{position:static;padding-top:clamp(4rem,9vw,6.5rem);padding-bottom:clamp(12rem,32vw,18rem);text-align:center}
+    .cit-sole{position:absolute;left:50%;bottom:0;width:min(420px,70vw);transform:translate(-50%,38%)}
+    /* il sole sorge mentre la sezione entra sullo schermo (browser che lo supportano; gli altri lo vedono già alto) */
+    @media (prefers-reduced-motion:no-preference){
+      @supports (animation-timeline:view()){
+        .citazione{view-timeline:--cit block}
+        .cit-sole{animation:sorge linear both}
+        /* la timeline a parte: nella stessa regola la minificazione la fonde in «animation» e il browser la scarta */
+        .citazione .cit-sole{animation-timeline:--cit;animation-range:entry 0% entry 100%}
+      }
+    }
+    @keyframes sorge{from{translate:0 34%}to{translate:0 0}}
+    .citazione blockquote{position:relative;z-index:1;margin:0 auto}
+    .citazione blockquote p{max-width:21ch;margin:0 auto;font-family:var(--disp);font-size:clamp(1.9rem,4.4vw,3.2rem);font-weight:700;line-height:1.12;color:#fff;letter-spacing:-.02em}
+    .citazione footer{margin-top:1.4rem;color:var(--sole);font-weight:700;letter-spacing:.2em;text-transform:uppercase;font-size:.82rem}
+
+    /* sede */
+    .sede{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(2rem,5vw,4rem);align-items:center}
+    .sede-foto .foto{aspect-ratio:1400/800}
+    .sede-foto figcaption{font-size:.85rem;color:var(--muto);margin-top:.7rem}
+    .sede-ind{font-family:var(--disp);font-size:1.3rem;font-weight:600;margin-top:1rem}
+    .sede-ind a{border-bottom:2px solid var(--sole)}
+    .stato{display:inline-flex;align-items:center;gap:.5rem;margin-top:.9rem;font-weight:700;font-size:.92rem;color:var(--rosso)}
+    .stato::before{content:'';width:.6rem;height:.6rem;border-radius:50%;background:currentColor}
+    .stato.aperta{color:var(--verde)}
+    .orari{display:grid;gap:.3rem;margin-top:1.2rem;max-width:380px}
+    .orari div{display:flex;justify-content:space-between;gap:1rem;padding:.35rem 0;border-bottom:1px solid var(--filo);font-size:.95rem}
+    .orari dt{font-weight:600;color:var(--inchiostro)}
+    .orari dd{color:var(--muto);text-align:right}
+    .orari .oggi dt,.orari .oggi dd{color:var(--inchiostro);font-weight:800}
+    .sede-cta{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.6rem}
+
+    @media (max-width:1060px){
+      .misura.promesse-in{grid-template-columns:1fr 1fr}
+      .temi,.servizi{grid-template-columns:1fr 1fr}
+    }
+    @media (max-width:980px){
+      .ap-in{grid-template-columns:1fr}
+      .ap-visual{justify-self:center;max-width:460px;padding-left:1.5rem}
+      .pullman,.sede{grid-template-columns:1fr}
+      .passi{grid-template-columns:1fr}
+    }
+    @media (max-width:640px){
+      .ap-visual{padding:0 0 4.5rem}
+      .ap-arco{aspect-ratio:1/1;border-radius:200px 200px var(--r) var(--r)}
+      .ap-mini{left:50%;transform:translateX(-50%);width:min(340px,92%)}
+      .ap-sole{right:-18%;top:-6%}
+      .misura.promesse-in,.temi,.servizi,.comfort{grid-template-columns:1fr}
+      .ap-cta .btn{width:100%}
+      .ap-cta .btn-bordo{display:none}
+      .ap-p{font-size:1rem;margin-top:1rem}
+      .ap-cta{margin-top:1.4rem}
+    }
+  </style>
+
+  <script>
+    import { partenzeAttuali, prossime, biglietto, bigliettoMini, statoPosti, GITA, nomeMese, statoOra } from './_shared.js';
+    const oggi = new Date();
+    const lista = prossime(partenzeAttuali(), oggi);
+
+    // il calendario può essere cambiato dal pannello: si ridisegna con i dati di questo browser
+    const box = document.getElementById('prossime')!;
+    box.innerHTML = lista.slice(0, 6).map((p) => biglietto(p, oggi, { sizes: '(max-width:640px) 92vw, 380px' })).join('')
+      || '<p class="vuoto">Il nuovo calendario arriva a giorni. Intanto scrivici: per i gruppi organizziamo anche gite su richiesta.</p>';
+    const prima = lista.find((p) => statoPosti(p).k !== 'completo') || lista[0];
+    document.getElementById('mini')!.innerHTML = prima ? bigliettoMini(prima, oggi) : '';
+
+    const mesi = [...new Set(lista.map((p) => p.data.slice(0, 7)))].slice(0, 6);
+    document.getElementById('mesi')!.innerHTML = mesi.map((m) =>
+      `<a href="/demoPalmaViaggi/partenze/?mese=${m}">${nomeMese(m).replace(/ \d{4}$/, '')} <small>${lista.filter((p) => p.data.startsWith(m)).length}</small></a>`).join('');
+
+    document.querySelectorAll<HTMLElement>('[data-conta-tema]').forEach((el) => {
+      const n = lista.filter((p) => GITA[p.gita].temi.includes(el.dataset.contaTema!)).length;
+      el.textContent = n ? `${n} ${n === 1 ? 'partenza' : 'partenze'}` : 'Su richiesta';
+    });
+
+    // aperta / chiusa, e il giorno di oggi in grassetto
+    const s = statoOra(oggi);
+    const st = document.getElementById('stato')!;
+    st.textContent = s.testo; st.classList.toggle('aperta', s.aperta); st.hidden = false;
+    document.querySelector(`.orari [data-giorno="${oggi.getDay()}"]`)?.classList.add('oggi');
+
+    // il pullman parte quando i tre passi sono ben in vista
+    const strada = document.getElementById('strada')!;
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((es) => { if (es[0].isIntersecting) { strada.classList.add('via'); io.disconnect(); } }, { rootMargin: '0px 0px -30% 0px' });
+      io.observe(strada.parentElement!);
+    } else strada.classList.add('via');
+  </script>
+</Layout>

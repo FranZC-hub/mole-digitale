@@ -1,0 +1,168 @@
+---
+import Layout from './_Layout.astro';
+import IconaWhatsApp from '../../components/IconaWhatsApp.astro';
+import { INFO, BASE, orariSettimana, icona, waLink } from './_shared.js';
+// Contatti: i due numeri del loro sito, con l'uso giusto di ciascuno (di giorno l'agenzia, dalle
+// 18:30 alle 9:00 l'assistenza), gli orari con «aperta ora», la mappa su richiesta e un messaggio.
+// La mappa di Google si carica solo se la si chiede (prima nessuna richiesta a Google).
+const WA = waLink(`Ciao ${INFO.nome}, vorrei un’informazione.`);
+---
+<Layout title="Contatti e orari" active="Contatti" desc={`Contatti di ${INFO.nome}: ${INFO.indirizzo}. Telefono ${INFO.tel}, assistenza la sera ${INFO.telSera}, email ${INFO.email}. Orari dell’agenzia.`}>
+
+  <section class="primo ct">
+    <div class="misura">
+      <span class="occhiello">Contatti</span>
+      <h1>Siamo qui, anche la sera.</h1>
+      <p class="sez-p">Per prenotare, chiedere un preventivo o solo scegliere dove andare: chiama, scrivici o passa in agenzia.</p>
+
+      <div class="ct-griglia">
+        <div class="ct-card ct-agenzia">
+          <h2><Fragment set:html={icona('mappa', 22)} /> L’agenzia</h2>
+          <p class="ct-big"><a href={INFO.maps} target="_blank" rel="noopener">{INFO.via}<br />{INFO.cap} {INFO.citta} ({INFO.prov})</a></p>
+          <p class="stato" id="stato" hidden></p>
+          <dl class="orari">
+            {orariSettimana().map((o) => <div data-giorno={o.i}><dt>{o.giorno}</dt><dd>{o.label}</dd></div>)}
+          </dl>
+        </div>
+
+        <div class="ct-col">
+          <div class="ct-card">
+            <h2><Fragment set:html={icona('telefono', 22)} /> Telefono e WhatsApp</h2>
+            <p class="ct-big"><a href={'tel:' + INFO.telHref}>{INFO.tel}</a></p>
+            <p class="ct-d">Negli orari dell’agenzia.</p>
+            <div class="ct-cta">
+              <a href={'tel:' + INFO.telHref} class="btn btn-notte">Chiama</a>
+              <a href={WA} class="btn btn-wa" target="_blank" rel="noopener"><IconaWhatsApp width="20" height="20" fill="currentColor" aria-hidden="true" /> WhatsApp</a>
+            </div>
+          </div>
+          <div class="ct-card ct-sera">
+            <h2><Fragment set:html={icona('luna', 22)} /> Sera e notte</h2>
+            <p class="ct-big"><a href={'tel:' + INFO.telSeraHref}>{INFO.telSera}</a></p>
+            <p class="ct-d">Dalle 18:30 alle 9:00: per chi è in viaggio con noi e per le urgenze.</p>
+          </div>
+          <div class="ct-card">
+            <h2><Fragment set:html={icona('email', 22)} /> Email</h2>
+            <p class="ct-big ct-email"><a href={'mailto:' + INFO.email}>{INFO.email}</a></p>
+            <p class="ct-social"><a href={INFO.facebook} target="_blank" rel="noopener">Facebook</a> · <a href={INFO.instagram} target="_blank" rel="noopener">Instagram</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mappa" id="mappa" data-embed={INFO.mapsEmbed}>
+        <div class="mappa-ph">
+          <p><b>{INFO.via}, {INFO.citta}</b></p>
+          <p>La mappa è di Google: si carica solo se la aprite.</p>
+          <div class="ct-cta">
+            <a href={INFO.maps} class="btn btn-sole" id="mappaBtn" target="_blank" rel="noopener">Mostra la mappa</a>
+            <a href={INFO.maps} class="btn btn-bordo" target="_blank" rel="noopener">Apri in Google Maps</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="banda chiara">
+    <div class="misura stretta">
+      <span class="occhiello">Scrivici</span>
+      <h2 class="sez-h2">Un messaggio, e ti richiamiamo.</h2>
+      <form class="modulo ct-form" id="msgForm" novalidate>
+        <div class="due">
+          <label>Nome<input type="text" id="mNome" autocomplete="name" required maxlength="80" /></label>
+          <label>Telefono o email<input type="text" id="mRec" autocomplete="tel" required maxlength="120" /></label>
+        </div>
+        <label>Messaggio<textarea id="mTesto" rows="5" required maxlength="1000" placeholder="Es. Vorrei sapere se c’è ancora posto per Annecy del 12 dicembre, siamo in tre."></textarea></label>
+        <label class="spunta"><input type="checkbox" id="mPriv" required /> <span>Ho letto l’<a href={BASE + 'privacy/'} target="_blank">informativa sulla privacy</a>.</span></label>
+        <p class="errore" id="mErr" role="alert" hidden></p>
+        <div class="ct-cta">
+          <button type="submit" class="btn btn-wa" value="wa"><IconaWhatsApp width="20" height="20" fill="currentColor" aria-hidden="true" /> Invia su WhatsApp</button>
+          <button type="submit" class="btn btn-bordo" value="email"><Fragment set:html={icona('email', 18)} /> Invia per email</button>
+        </div>
+        <p class="ok" id="mOk" role="status" hidden></p>
+      </form>
+      <p class="ct-legale">{INFO.societa} · P.IVA {INFO.piva} · {INFO.indirizzo}</p>
+      <p class="promemoria"><b>Per Palma Viaggi:</b> il numero {INFO.tel} è anche su WhatsApp? Se sì, lasciamo i pulsanti verdi; altrimenti li spostiamo su un numero che lo è. Nella versione definitiva il messaggio arriva direttamente nella vostra email, senza passare dall’app di chi scrive.</p>
+    </div>
+  </section>
+
+  <style is:global>
+    .ct{padding-bottom:clamp(3rem,6vw,5rem)}
+    .ct h1{font-size:clamp(2.5rem,5.6vw,4.2rem);margin-top:.9rem;font-weight:800}
+    .ct-griglia{display:grid;grid-template-columns:1fr 1.1fr;gap:1.2rem;margin-top:2.2rem}
+    .ct-col{display:grid;gap:1.2rem}
+    .ct-card{background:var(--carta);border-radius:var(--r);padding:1.4rem 1.5rem;box-shadow:0 1px 0 var(--filo)}
+    .ct-card h2{display:flex;align-items:center;gap:.55rem;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muto)}
+    .ct-card h2 .ico{color:var(--arancio-testo)}
+    .ct-big{font-family:var(--disp);font-size:clamp(1.4rem,2.6vw,1.8rem);font-weight:700;color:var(--inchiostro);line-height:1.2;margin-top:.6rem}
+    .ct-big a:hover{color:var(--cielo-testo)}
+    .ct-email{font-size:clamp(1.15rem,2.2vw,1.45rem);overflow-wrap:anywhere}
+    .ct-d{color:var(--muto);margin-top:.3rem}
+    .ct-sera{background:var(--notte);color:#a9bec9}
+    .ct-sera h2{color:#a9bec9}
+    .ct-sera h2 .ico{color:var(--sole)}
+    .ct-sera .ct-big{color:#fff}
+    .ct-sera .ct-d{color:#a9bec9}
+    .ct-cta{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1rem}
+    .ct-social{margin-top:.6rem;font-weight:700;color:var(--cielo-testo)}
+    .stato{display:inline-flex;align-items:center;gap:.5rem;margin-top:1rem;font-weight:700;font-size:.92rem;color:var(--rosso)}
+    .stato::before{content:'';width:.6rem;height:.6rem;border-radius:50%;background:currentColor}
+    .stato.aperta{color:var(--verde)}
+    .orari{display:grid;gap:.2rem;margin-top:1.2rem}
+    .orari div{display:flex;justify-content:space-between;gap:1rem;padding:.5rem 0;border-bottom:1px solid var(--filo)}
+    .orari dt{font-weight:600;color:var(--inchiostro)}
+    .orari dd{color:var(--muto);text-align:right}
+    .orari .oggi dt,.orari .oggi dd{color:var(--inchiostro);font-weight:800}
+    .mappa{margin-top:1.2rem;border-radius:var(--r);overflow:hidden;background:var(--sabbia-2);min-height:320px;display:grid}
+    .mappa iframe{width:100%;height:420px;border:0;display:block}
+    .mappa-ph{display:grid;place-content:center;justify-items:center;text-align:center;padding:2rem;color:var(--muto);
+      background:radial-gradient(circle at 30% 40%,rgba(17,168,224,.12),transparent 50%),repeating-linear-gradient(45deg,transparent 0 22px,rgba(11,40,54,.03) 22px 23px)}
+    .mappa-ph b{font-family:var(--disp);font-size:1.3rem;color:var(--inchiostro)}
+    .ct-form{margin-top:1.8rem}
+    .ok{font-weight:700;color:var(--verde)}
+    .ct-legale{font-size:.85rem;color:var(--muto);margin-top:2rem}
+    @media (max-width:860px){.ct-griglia{grid-template-columns:1fr}}
+  </style>
+
+  <script>
+    import { INFO, statoOra, waLink } from './_shared.js';
+    import { recapitoValido, RECAPITO_ERRORE } from '../../scripts/recapito.js';
+    const $ = <T extends HTMLElement = HTMLInputElement>(s: string) => document.querySelector(s) as T;
+    const oggi = new Date();
+    const s = statoOra(oggi);
+    const st = $('#stato'); st.textContent = s.testo; st.classList.toggle('aperta', s.aperta); st.hidden = false;
+    document.querySelector(`.orari [data-giorno="${oggi.getDay()}"]`)?.classList.add('oggi');
+
+    // la mappa su richiesta: il link diventa un pulsante che mette la mappa al posto del riquadro
+    const box = $('#mappa'), link = $('#mappaBtn');
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = link.className; btn.textContent = link.textContent;
+    link.replaceWith(btn);
+    btn.addEventListener('click', () => {
+      const f = document.createElement('iframe');
+      f.src = box.dataset.embed || '';
+      f.title = `Mappa: ${INFO.nome}, ${INFO.indirizzo}`;
+      f.referrerPolicy = 'no-referrer-when-downgrade';
+      box.innerHTML = ''; box.appendChild(f); f.focus();
+    });
+
+    const err = (msg: string, campo?: HTMLElement) => {
+      const e = $('#mErr'); e.textContent = msg; e.hidden = !msg;
+      document.querySelectorAll('#msgForm [aria-invalid]').forEach((el) => el.removeAttribute('aria-invalid'));
+      if (campo) { campo.setAttribute('aria-invalid', 'true'); campo.focus(); }
+    };
+    $('#msgForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const via = ((e as SubmitEvent).submitter as HTMLButtonElement | null)?.value || 'wa';
+      const nome = $('#mNome').value.trim(), rec = $('#mRec').value.trim(), testo = $<HTMLTextAreaElement>('#mTesto').value.trim();
+      if (!nome) return err('Scrivi il tuo nome.', $('#mNome'));
+      if (!recapitoValido(rec)) return err(RECAPITO_ERRORE, $('#mRec'));
+      if (!testo) return err('Scrivi il messaggio.', $('#mTesto'));
+      if (!$('#mPriv').checked) return err('Serve la presa visione dell’informativa.', $('#mPriv'));
+      err('');
+      const corpo = `${testo}\n\n${nome} · ${rec}`;
+      if (via === 'email') location.href = `mailto:${INFO.email}?subject=${encodeURIComponent('Richiesta dal sito')}&body=${encodeURIComponent(corpo)}`;
+      else window.open(waLink(corpo), '_blank', 'noopener');
+      const ok = $('#mOk'); ok.hidden = false;
+      ok.textContent = via === 'email' ? 'Si è aperta l’email già scritta: manca solo «Invia».' : 'Si è aperto WhatsApp con il messaggio già scritto: manca solo «Invia».';
+    });
+  </script>
+</Layout>

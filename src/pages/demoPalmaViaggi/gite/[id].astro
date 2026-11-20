@@ -1,0 +1,292 @@
+---
+import Layout from '../_Layout.astro';
+import IconaWhatsApp from '../../../components/IconaWhatsApp.astro';
+import {
+  INFO, BASE, GITE, PARTENZE, REGOLE, foto, icona, salite, prossime, biglietto, durataTesto, euro, giorniAvviso, prezzoDi, statoPosti,
+} from '../_shared.js';
+// La scheda della gita: una pagina per meta, con tutte le sue date. Chi arriva da un biglietto
+// trova già scelta quella data (?p=p04). A destra (sotto, da telefono) la data, i posti, il prezzo
+// e i tre modi per prenotare; a sinistra il programma, le fermate, cosa comprende la quota.
+export function getStaticPaths() {
+  return GITE.map((g) => ({ params: { id: g.id }, props: { g } }));
+}
+const { g } = Astro.props;
+const oggi = new Date();
+const date = prossime(PARTENZE.filter((p) => p.gita === g.id), oggi);
+const f = foto(g.img);
+const fermate = salite(g);
+const altre = prossime(PARTENZE.filter((p) => p.gita !== g.id && GITE.find((x) => x.id === p.gita)!.temi.some((t: string) => g.temi.includes(t))), oggi)
+  .filter((p, i, a) => a.findIndex((x) => x.gita === p.gita) === i).slice(0, 3);
+const minimo = g.minimo ?? REGOLE.minimo;
+const multi = g.giorni > 1;
+const SITO = 'https://www.moledigitale.it';
+// per Google: la gita con il programma e una offerta per ogni data
+const schemaGita = {
+  '@context': 'https://schema.org',
+  '@type': 'TouristTrip',
+  name: g.titolo,
+  description: g.intro,
+  image: `${SITO}/img/palmaviaggi/${g.img}-1200.webp`,
+  itinerary: { '@type': 'ItemList', itemListElement: g.programma.map((x: any, i: number) => ({ '@type': 'ListItem', position: i + 1, name: x.t, description: x.d })) },
+  provider: { '@type': 'TravelAgency', name: INFO.nome, telephone: INFO.telHref, url: SITO + BASE },
+  offers: date.map((p) => ({
+    '@type': 'Offer', price: prezzoDi(p), priceCurrency: 'EUR', validThrough: p.data,
+    availability: statoPosti(p).k === 'completo' ? 'https://schema.org/SoldOut' : 'https://schema.org/InStock',
+    url: `${SITO}${BASE}gite/${g.id}/?p=${p.id}`,
+  })),
+};
+---
+<Layout title={g.titolo} active="Gite e viaggi" ogImg={`${SITO}/img/palmaviaggi/og-${g.id}.jpg`} ogAlt={g.alt} desc={`${g.titolo}: ${g.breve}. ${durataTesto(g)}, ${g.mezzo === 'aereo' ? 'volo e tour' : 'in pullman Gran Turismo'} da Buttigliera Alta e Torino, da ${euro(g.prezzo)} a persona.`}>
+
+  <script type="application/ld+json" set:html={JSON.stringify(schemaGita)} />
+
+  <section class="gt-testa primo">
+    <div class="misura">
+      <nav class="briciole" aria-label="Sei qui">
+        <a href={BASE + 'partenze/'}><Fragment set:html={icona('indietro', 16)} /> Gite e viaggi</a>
+      </nav>
+      <div class="gt-foto">
+        <img src={f.src} srcset={f.srcset} sizes="(max-width:1240px) 94vw, 1180px" width="1200" height="800" alt={g.alt} fetchpriority="high" />
+        <div class="gt-titolo">
+          <p class="gt-tipo">
+            <span>{durataTesto(g)}</span>
+            <span>{g.mezzo === 'aereo' ? 'Volo e tour' : 'In pullman'}</span>
+            <span>{g.paese}</span>
+          </p>
+          <h1>{g.titolo}</h1>
+          <p class="gt-breve">{g.breve}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="misura gt-corpo">
+    <!-- ============================================================ la data e la prenotazione -->
+    <aside class="gt-box" aria-labelledby="box-t" data-gita={g.id}>
+      <div class="box-in">
+        <p class="box-da">da <b>{euro(g.prezzo)}</b> {multi ? 'a persona, in doppia' : 'a persona'}</p>
+        <h2 id="box-t" class="box-t">Scegli la data</h2>
+        <div class="chips box-date" id="date" role="radiogroup" aria-labelledby="box-t">
+          {date.map((p, i) => (
+            <label class="chip"><input type="radio" name="data" value={p.id} checked={i === 0} /><span>{new Date(p.data + 'T12:00:00').toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' }).replace(/\./g, '')}</span></label>
+          ))}
+        </div>
+        <div id="scelta"></div>
+        <p class="box-vuoto" id="nessuna" hidden>Al momento non ci sono date in calendario per questa gita. Scrivici: la rimettiamo in programma appena si forma il gruppo.</p>
+        <div class="box-azioni">
+          <a href={BASE + 'prenota/'} class="btn btn-sole btn-pieno" id="prenota">Prenota e paga online</a>
+          <a href="#" class="btn btn-wa btn-pieno" id="wa" target="_blank" rel="noopener"><IconaWhatsApp width="20" height="20" fill="currentColor" aria-hidden="true" /> Chiedi su WhatsApp</a>
+          <a href={'tel:' + INFO.telHref} class="btn btn-bordo btn-pieno"><Fragment set:html={icona('telefono', 18)} /> {INFO.tel}</a>
+        </div>
+        <button type="button" class="condividi" id="condividi"><Fragment set:html={icona('condividi', 18)} /> Mandala a un amico</button>
+      </div>
+    </aside>
+
+    <!-- ============================================================ la gita -->
+    <article class="gt-testo">
+      <p class="gt-intro">{g.intro}</p>
+
+      <h2>Il bello di questa gita</h2>
+      <ul class="salienti">
+        {g.salienti.map((s: string) => <li><Fragment set:html={icona('check', 20)} />{s}</li>)}
+      </ul>
+
+      <h2>Il programma</h2>
+      <ol class="programma">
+        {g.programma.map((x: any) => (
+          <li>
+            <span class="pr-quando">{x.ora ?? `Giorno ${x.giorno}`}</span>
+            <div><h3>{x.t}</h3><p>{x.d}</p></div>
+          </li>
+        ))}
+      </ol>
+
+      <h2>{g.mezzo === 'aereo' ? 'Navetta per l’aeroporto' : 'Dove si sale'}</h2>
+      <table class="fermate">
+        <caption class="sr-only">Punti di salita e orari</caption>
+        <thead><tr><th scope="col">Fermata</th><th scope="col">Orario</th></tr></thead>
+        <tbody>
+          {fermate.map((x: any) => <tr><th scope="row">{x.luogo}</th><td>{x.ora}</td></tr>)}
+        </tbody>
+      </table>
+      <p class="nota">A Buttigliera Alta si sale davanti all’agenzia, in {INFO.via}. Per le altre fermate il punto esatto è nel messaggio che ti mandiamo il giorno prima. Per i gruppi, altri punti di salita si concordano in base al percorso.</p>
+
+      <div class="quota">
+        <div>
+          <h2>La quota comprende</h2>
+          <ul class="si">{g.comprende.map((c: string) => <li><Fragment set:html={icona('check', 18)} />{c}</li>)}</ul>
+        </div>
+        <div>
+          <h2>Non comprende</h2>
+          <ul class="no">{g.nonComprende.map((c: string) => <li><Fragment set:html={icona('x', 18)} />{c}</li>)}</ul>
+        </div>
+      </div>
+      {g.singola && <p class="nota">Supplemento camera singola: {euro(g.singola)}.</p>}
+
+      <h2>Buono a sapersi</h2>
+      <ul class="sapere">
+        <li><Fragment set:html={icona('documento', 22)} /><div><b>Documenti</b><p>{g.documento}</p></div></li>
+        <li><Fragment set:html={icona('persone', 22)} /><div><b>Partenza garantita</b><p>Con {minimo} iscritti la gita è confermata. Se non si raggiungono, ti avvisiamo almeno {giorniAvviso(g)} giorni prima e ti restituiamo tutto, acconto compreso.</p></div></li>
+        {g.sconto !== false
+          ? <li><Fragment set:html={icona('sconto', 22)} /><div><b>Sconto del 10%</b><p>Per chi prenota almeno due mesi prima della partenza. Il prezzo scontato è già calcolato qui a fianco.</p></div></li>
+          : <li><Fragment set:html={icona('aereo', 22)} /><div><b>Il prezzo del volo</b><p>Le tariffe aeree salgono man mano che l’aereo si riempie: la quota è garantita per chi prenota entro due mesi dalla partenza.</p></div></li>}
+        <li><Fragment set:html={icona('luna', 22)} /><div><b>Assistenza durante il viaggio</b><p>Dalle 18:30 alle 9:00 risponde il <a href={'tel:' + INFO.telSeraHref}>{INFO.telSera}</a>.</p></div></li>
+      </ul>
+    </article>
+  </div>
+
+  {altre.length > 0 && (
+    <section class="banda chiara gt-altre">
+      <div class="misura">
+        <h2 class="sez-h2">Potrebbero piacerti anche</h2>
+        <div class="biglietti tre">
+          {altre.map((p) => <Fragment set:html={biglietto(p, oggi, { sizes: '(max-width:640px) 92vw, 380px' })} />)}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <div class="misura"><p class="promemoria"><b>Per Palma Viaggi:</b> programma, orari di salita, quota e condizioni sono d’esempio, costruiti sulle vostre gite. Ogni gita ha la sua pagina, con un indirizzo che si può mandare su WhatsApp o mettere su Facebook.</p></div>
+
+  <style is:global>
+    .gt-testa{padding-bottom:0}
+    .briciole a{display:inline-flex;align-items:center;gap:.4rem;font-weight:700;color:var(--cielo-testo);margin-bottom:1rem}
+    .gt-foto{position:relative;border-radius:var(--r);overflow:hidden;aspect-ratio:21/9;min-height:340px;background:var(--notte);isolation:isolate}
+    .gt-foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+    .gt-foto::after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(11,40,54,.05) 25%,rgba(11,40,54,.85))}
+    .gt-titolo{position:absolute;left:0;right:0;bottom:0;padding:clamp(1.3rem,4vw,2.6rem)}
+    .gt-tipo{display:flex;flex-wrap:wrap;gap:.4rem}
+    .gt-tipo span{font-size:.74rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:.25rem .7rem;border-radius:99px;background:rgba(255,255,255,.16);color:#fff;backdrop-filter:blur(6px)}
+    .gt-tipo span:first-child{background:var(--sole);color:var(--notte)}
+    .gt-titolo h1{color:#fff;font-size:clamp(2.1rem,5vw,3.9rem);font-weight:800;margin-top:.7rem;max-width:20ch}
+    .gt-breve{color:#e2ebef;font-size:clamp(1rem,1.6vw,1.2rem);margin-top:.6rem;max-width:56ch}
+
+    .misura.gt-corpo{display:grid;grid-template-columns:minmax(0,1fr) 370px;gap:clamp(2rem,5vw,4rem);align-items:start;padding-top:clamp(2rem,5vw,3rem);padding-bottom:clamp(3rem,6vw,5rem)}
+    .gt-box{grid-column:2;grid-row:1;position:sticky;top:calc(var(--flag) + var(--testata) + 1.2rem)}
+    .box-in{background:var(--carta);border-radius:var(--r);padding:1.4rem 1.4rem 1.2rem;box-shadow:0 1px 0 var(--filo),0 26px 50px -30px rgba(11,40,54,.55)}
+    .box-da{color:var(--muto);font-size:.9rem}
+    .box-da b{font-family:var(--disp);font-size:1.7rem;color:var(--inchiostro)}
+    .box-t{font-size:1rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muto);margin:1.1rem 0 .6rem}
+    .box-date .chip span{min-height:40px;padding:.35rem .85rem;font-size:.9rem}
+    #scelta{margin-top:1rem;padding-top:1rem;border-top:2px dashed var(--filo)}
+    .sc-data{font-family:var(--disp);font-weight:700;color:var(--inchiostro);font-size:1.08rem}
+    .sc-prezzo{display:flex;align-items:baseline;flex-wrap:wrap;gap:.2rem .6rem;margin-top:.8rem}
+    .sc-prezzo b{font-family:var(--disp);font-size:1.9rem;font-weight:800;color:var(--inchiostro)}
+    .sc-prezzo s{color:var(--muto)}
+    .sc-sconto{font-size:.85rem;font-weight:700;color:var(--verde)}
+    .box-vuoto{color:var(--muto);font-size:.95rem;margin-top:.8rem}
+    .box-azioni{display:grid;gap:.6rem;margin-top:1.2rem}
+    .condividi{display:flex;align-items:center;justify-content:center;gap:.45rem;width:100%;margin-top:.9rem;padding:.6rem;background:none;border:0;font:inherit;font-weight:700;color:var(--cielo-testo);cursor:pointer}
+    .condividi:hover{text-decoration:underline;text-underline-offset:3px}
+
+    .gt-testo{grid-column:1;grid-row:1;min-width:0}
+    .gt-intro{font-size:clamp(1.1rem,1.6vw,1.25rem);color:var(--testo);line-height:1.65}
+    .gt-testo h2{font-size:clamp(1.5rem,2.6vw,1.9rem);margin:2.6rem 0 1rem}
+    .salienti{display:grid;grid-template-columns:1fr 1fr;gap:.7rem 1.4rem}
+    .salienti li{display:flex;gap:.6rem;align-items:flex-start;font-weight:600;color:var(--inchiostro)}
+    .salienti .ico{color:var(--verde);margin-top:.15rem}
+    .programma{--col:4.4rem;--spazio:1.8rem;list-style:none;position:relative;display:grid;gap:1.4rem}
+    .programma::before{content:'';position:absolute;left:calc(var(--col) + var(--spazio) / 2 - 1px);top:.6rem;bottom:.6rem;width:2px;background:repeating-linear-gradient(180deg,var(--filo-2) 0 6px,transparent 6px 12px)}
+    .programma li{display:grid;grid-template-columns:var(--col) 1fr;gap:var(--spazio);position:relative}
+    .programma li::before{content:'';position:absolute;left:calc(var(--col) + var(--spazio) / 2 - 7px);top:.45rem;width:14px;height:14px;border-radius:50%;background:var(--sole);border:3px solid var(--sabbia);box-shadow:0 0 0 2px var(--arancio)}
+    /* mentre leggi il programma la strada si colora fino al punto in cui sei e le tappe si accendono
+       (browser che lo supportano: Chrome, Edge, Safari 26; gli altri vedono il programma com'è sempre stato) */
+    @media (prefers-reduced-motion:no-preference){
+      @supports (animation-timeline:view()){
+        .programma{view-timeline:--programma block}
+        .programma::after{content:'';position:absolute;left:calc(var(--col) + var(--spazio) / 2 - 1px);top:.6rem;bottom:.6rem;width:2px;border-radius:2px;background:linear-gradient(180deg,var(--sole),var(--arancio));transform-origin:top;animation:traccia-pr linear both}
+        .programma li{view-timeline:--tappa block}
+        .programma li::before{z-index:1;animation:tappa linear both}
+        /* la timeline in una regola a parte: nella stessa, la minificazione la fonde nella scorciatoia
+           «animation» (dove non è ammessa) e il browser scarta tutto */
+        .gt-testo .programma::after{animation-timeline:--programma;animation-range:cover 50vh cover calc(100% - 50vh)}
+        .gt-testo .programma li::before{animation-timeline:--tappa;animation-range:cover calc(50vh - 40px) cover 50vh}
+      }
+    }
+    @keyframes traccia-pr{from{scale:1 0}to{scale:1 1}}
+    @keyframes tappa{from{background:var(--sabbia);box-shadow:0 0 0 2px var(--filo-2);scale:.75}to{background:var(--sole);box-shadow:0 0 0 2px var(--arancio);scale:1}}
+    @media (prefers-reduced-motion:no-preference){.gt-foto img{animation:respiro 2.4s var(--e) both}}
+    .pr-quando{font-family:var(--disp);font-weight:800;color:var(--arancio-testo);font-size:.95rem;padding-top:.1rem;white-space:nowrap}
+    .programma h3{font-size:1.15rem}
+    .programma p{color:var(--muto);margin-top:.25rem}
+    .fermate{width:100%;max-width:460px;border-collapse:collapse;background:var(--carta);border-radius:14px;overflow:hidden;box-shadow:0 1px 0 var(--filo)}
+    .fermate th,.fermate td{padding:.7rem 1rem;text-align:left;border-bottom:1px solid var(--filo)}
+    .fermate thead th{font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muto);background:var(--sabbia-2)}
+    .fermate tbody th{font-weight:700;color:var(--inchiostro)}
+    .fermate td{font-family:var(--disp);font-weight:700;color:var(--cielo-testo);text-align:right}
+    .fermate tr:last-child th,.fermate tr:last-child td{border-bottom:0}
+    .nota{color:var(--muto);font-size:.92rem;margin-top:.9rem;max-width:62ch}
+    .quota{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem 2.5rem}
+    .quota ul{display:grid;gap:.55rem}
+    .quota li{display:flex;gap:.55rem;align-items:flex-start}
+    .quota .ico{margin-top:.2rem}
+    .si .ico{color:var(--verde)}
+    .no .ico{color:var(--rosso)}
+    .no li{color:var(--muto)}
+    .sapere{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .sapere li{display:flex;gap:.8rem;align-items:flex-start;background:var(--carta);border-radius:14px;padding:1rem 1.1rem;box-shadow:0 1px 0 var(--filo)}
+    .sapere .ico{color:var(--cielo-testo);margin-top:.1rem}
+    .sapere b{font-family:var(--disp);color:var(--inchiostro)}
+    .sapere p{color:var(--muto);font-size:.92rem;margin-top:.15rem}
+    .sapere a{color:var(--cielo-testo);font-weight:700}
+    .gt-altre .sez-h2{margin:0 0 1.6rem}
+    .tre{grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr))}
+
+    @media (max-width:980px){
+      .misura.gt-corpo{grid-template-columns:1fr}
+      .gt-box{grid-column:1;grid-row:auto;position:static}
+      .gt-testo{grid-row:auto}
+    }
+    @media (max-width:640px){
+      .gt-foto{aspect-ratio:auto;min-height:420px}
+      .salienti,.quota,.sapere{grid-template-columns:1fr}
+      .programma{--col:4.1rem;--spazio:1.5rem}
+    }
+  </style>
+
+  <script>
+    import { GITA, INFO, BASE, partenzeAttuali, prossime, statoPosti, barraPosti, prezzoDi, prezzoOggi, scontoAttivo, scadenzaSconto, dataLunga, dataMedia, fineDi, euro, esc, waLink, waCondividi } from '../_shared.js';
+    const g = GITA[(document.querySelector('.gt-box') as HTMLElement).dataset.gita!];
+    const oggi = new Date();
+    const date = prossime(partenzeAttuali().filter((p) => p.gita === g.id), oggi);
+    const $ = (s: string) => document.querySelector(s) as HTMLElement;
+
+    // le date dai dati di questo browser, con quella del biglietto già scelta
+    const voluta = new URLSearchParams(location.search).get('p');
+    const iniziale = date.find((p) => p.id === voluta) || date.find((p) => statoPosti(p).k !== 'completo') || date[0];
+    $('#date').innerHTML = date.map((p) => `<label class="chip"><input type="radio" name="data" value="${esc(p.id)}" ${p === iniziale ? 'checked' : ''} /><span>${esc(new Date(p.data + 'T12:00:00').toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' }).replace(/\./g, ''))}${statoPosti(p).k === 'completo' ? ' <small>completo</small>' : ''}</span></label>`).join('');
+    $('#nessuna').hidden = date.length > 0;
+    ($('#prenota') as HTMLAnchorElement).hidden = !date.length;
+
+    const mostra = () => {
+      const id = (document.querySelector('input[name=data]:checked') as HTMLInputElement | null)?.value;
+      const p = date.find((x) => x.id === id);
+      const wa = $('#wa') as HTMLAnchorElement;
+      if (!p) {
+        $('#scelta').innerHTML = '';
+        wa.href = waLink(`Ciao ${INFO.nome}, mi interessa la gita «${g.titolo}». Avete in programma nuove date?`);
+        return;
+      }
+      const s = statoPosti(p);
+      const sc = scontoAttivo(p, oggi);
+      const quando = g.giorni > 1 ? `Da ${dataLunga(p.data)} a ${dataLunga(fineDi(p))}` : dataLunga(p.data);
+      $('#scelta').innerHTML = `<p class="sc-data">${esc(quando[0].toUpperCase() + quando.slice(1))}</p>${barraPosti(s)}
+        <p class="sc-prezzo"><b>${euro(prezzoOggi(p, oggi))}</b>${sc ? `<s>${euro(prezzoDi(p))}</s>` : ''}<span>${g.giorni > 1 ? 'a persona, in doppia' : 'a persona'}</span></p>
+        ${sc ? `<p class="sc-sconto">Sconto del 10% se prenoti entro il ${esc(dataMedia(scadenzaSconto(p.data)))}</p>` : ''}`;
+      const pr = $('#prenota') as HTMLAnchorElement;
+      pr.href = `${BASE}prenota/?p=${encodeURIComponent(p.id)}`;
+      pr.textContent = s.k === 'completo' ? 'Mettiti in lista d’attesa' : 'Prenota e paga online';
+      wa.href = waLink(`Ciao ${INFO.nome}, vorrei informazioni sulla gita «${g.titolo}» del ${dataMedia(p.data)}.`);
+    };
+    $('#date').addEventListener('change', mostra);
+    mostra();
+
+    // «mandala a un amico»: il menu di condivisione del telefono, o WhatsApp dal computer
+    $('#condividi').addEventListener('click', async () => {
+      const url = location.origin + location.pathname;
+      const testo = `Guarda questa gita di ${INFO.nome}: ${g.titolo}`;
+      if (navigator.share) { try { await navigator.share({ title: g.titolo, text: testo, url }); } catch { /* annullata */ } }
+      else window.open(waCondividi(`${testo} ${url}`), '_blank', 'noopener');
+    });
+  </script>
+</Layout>

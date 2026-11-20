@@ -1,0 +1,603 @@
+---
+import Layout from './_Layout.astro';
+import { GITE, icona } from './_shared.js';
+// Il pannello dell'agenzia: le tre cose che cambiano ogni settimana in un'agenzia di gite.
+// 1) le prenotazioni (pagate, acconti, posti bloccati, lista d'attesa) e i preventivi
+// 2) le partenze: iscritti, prezzi, date nuove, annullamenti (le passate spariscono da sole)
+// 3) un avviso in cima al sito (chiusure, novità)
+// Nella versione reale l'accesso e i dati stanno sul server; qui è una dimostrazione nel browser.
+---
+<Layout title="Area riservata" active="" desc="Area riservata dell’agenzia: prenotazioni, partenze, avvisi.">
+
+  <section class="primo banda-g" id="accesso">
+    <div class="misura accesso">
+      <span class="occhiello">Area riservata</span>
+      <h1>Il pannello<br /><span>dell’agenzia</span></h1>
+      <form class="modulo" id="login">
+        <label>Nome utente<input type="text" id="u" autocomplete="username" required /></label>
+        <label>Password<input type="password" id="pw" autocomplete="current-password" required /></label>
+        <p class="errore" id="lErr" hidden>Nome utente o password non corretti.</p>
+        <button type="submit" class="btn btn-notte btn-pieno">Entra</button>
+        <!-- ⚠ Solo per la bozza: da RIMUOVERE nella versione definitiva -->
+        <button type="button" class="prova" id="prova"><b>Credenziali di prova</b><span>palma · buttigliera54</span><small>toccate per compilare — spariranno nella versione definitiva</small></button>
+      </form>
+    </div>
+  </section>
+
+  <section class="primo banda-g" id="pannello" hidden>
+    <div class="misura">
+      <div class="pann-testa">
+        <div>
+          <span class="occhiello">Area riservata</span>
+          <h1>Buongiorno, <span>Palma Viaggi</span></h1>
+        </div>
+        <button type="button" class="link-s" id="esci">Esci</button>
+      </div>
+
+      <ul class="numeri" id="numeri" aria-label="In breve"></ul>
+
+      <div class="schede" role="tablist" aria-label="Sezioni del pannello">
+        <button role="tab" aria-selected="true" aria-controls="t-pren" id="b-pren">Prenotazioni <span class="conto" id="conto"></span></button>
+        <button role="tab" aria-selected="false" aria-controls="t-part" id="b-part" tabindex="-1">Partenze</button>
+        <button role="tab" aria-selected="false" aria-controls="t-lista" id="b-lista" tabindex="-1">Lista passeggeri</button>
+        <button role="tab" aria-selected="false" aria-controls="t-avv" id="b-avv" tabindex="-1">Avviso sul sito</button>
+      </div>
+
+      <!-- PRENOTAZIONI -->
+      <div class="tab" role="tabpanel" id="t-pren" aria-labelledby="b-pren">
+        <div class="tab-testa">
+          <p class="tab-d">Le prenotazioni e i preventivi arrivati dal sito, i più recenti in alto. Confermando si apre WhatsApp con il messaggio per il cliente già scritto.</p>
+          <label class="spunta-f"><input type="checkbox" id="vediArch" /> Mostra anche le archiviate</label>
+        </div>
+        <div id="listaPren" class="lista-pren"></div>
+      </div>
+
+      <!-- PARTENZE -->
+      <div class="tab" role="tabpanel" id="t-part" aria-labelledby="b-part" hidden>
+        <p class="tab-d">Le prossime partenze. Le date passate spariscono da sole dal sito; quelle annullate restano qui, ma il sito non le mostra più.</p>
+        <div class="tabella-box">
+          <table class="tab-part">
+            <thead><tr><th scope="col">Data</th><th scope="col">Gita</th><th scope="col">Iscritti</th><th scope="col">Prezzo</th><th scope="col"><span class="sr-only">Azioni</span></th></tr></thead>
+            <tbody id="righePart"></tbody>
+          </table>
+        </div>
+        <h2 class="h-nuova">Aggiungi una partenza</h2>
+        <form class="modulo nuova" id="nuovaForm">
+          <label>Gita
+            <select id="nGita" required>
+              {GITE.map((g) => <option value={g.id}>{g.titolo}</option>)}
+            </select>
+          </label>
+          <div class="tre-c">
+            <label>Data di partenza<input type="date" id="nData" required /></label>
+            <label>Prezzo (€)<input type="number" id="nPrezzo" min="1" step="1" inputmode="numeric" required /></label>
+            <label>Già iscritti<input type="number" id="nIscr" min="0" max="54" value="0" inputmode="numeric" /></label>
+          </div>
+          <p class="errore" id="nErr" role="alert" hidden></p>
+          <div class="azioni">
+            <button type="submit" class="btn btn-sole">Metti in calendario</button>
+            <a href="/demoPalmaViaggi/partenze/" class="btn btn-bordo">Guarda il calendario</a>
+            <span class="salvato" id="nOk" role="status"></span>
+          </div>
+        </form>
+      </div>
+
+      <!-- LISTA PASSEGGERI: il resoconto di una partenza -->
+      <div class="tab" role="tabpanel" id="t-lista" aria-labelledby="b-lista" hidden>
+        <div class="lista-testa">
+          <label class="lista-sel">Partenza<select id="lSel"></select></label>
+          <div class="lista-az">
+            <button type="button" class="btn btn-notte" id="lStampa"><Fragment set:html={icona('documento', 18)} /> Stampa per l’autista</button>
+            <a class="btn btn-bordo" id="lExcel" href="#" download="passeggeri.csv"><Fragment set:html={icona('calendario', 18)} /> Scarica per Excel</a>
+            <a class="btn btn-bordo" id="lMail" href="#"><Fragment set:html={icona('email', 18)} /> Mandalo per email</a>
+          </div>
+        </div>
+        <p class="tab-d">Si compila da solo con le prenotazioni del sito: i passeggeri divisi per fermata, nell’ordine del giro, i pagamenti e quanto resta da incassare. Nella versione definitiva vi arriva anche per email la sera prima della partenza.</p>
+        <details class="manuale" id="manuale">
+          <summary>+ Aggiungi una prenotazione arrivata al telefono o in agenzia</summary>
+          <form class="modulo man-form" id="manForm" novalidate>
+            <p class="tab-d">Va nella partenza scelta qui sopra e compare subito nella lista, con i posti scalati dal sito.</p>
+            <label>Passeggeri <small>(nome e cognome, uno per riga)</small><textarea id="mPass" rows="3" required></textarea></label>
+            <div class="tre-c">
+              <label>Fermata<select id="mFerm"></select></label>
+              <label>Telefono<input type="tel" id="mTel" inputmode="tel" maxlength="20" required /></label>
+              <label>Pagamento
+                <select id="mPag">
+                  <option value="pagata">Pagato in agenzia</option>
+                  <option value="acconto">Acconto in agenzia</option>
+                  <option value="bloccato">Ancora da pagare</option>
+                </select>
+              </label>
+            </div>
+            <div class="due">
+              <label>Acconto ricevuto (€) <small>(solo se acconto)</small><input type="number" id="mImp" min="0" step="0.01" inputmode="decimal" /></label>
+              <label>Note<input type="text" id="mNote" maxlength="200" /></label>
+            </div>
+            <p class="errore" id="mErr" role="alert" hidden></p>
+            <div class="azioni"><button type="submit" class="btn btn-sole">Aggiungi alla lista</button><span class="salvato" id="mOk" role="status"></span></div>
+          </form>
+        </details>
+        <div id="resoconto"></div>
+      </div>
+
+      <!-- AVVISO -->
+      <div class="tab" role="tabpanel" id="t-avv" aria-labelledby="b-avv" hidden>
+        <p class="tab-d">Una riga in cima a tutte le pagine del sito: chiusure per ferie, una gita aggiunta, un cambio di orario.</p>
+        <form class="modulo avv-form" id="avvForm">
+          <label>Testo dell’avviso<textarea id="aTesto" rows="3" maxlength="200" placeholder="Es. L’agenzia è chiusa dal 24 dicembre al 6 gennaio. Per le gite in partenza chiamate il 373 720 9979."></textarea></label>
+          <label class="spunta"><input type="checkbox" id="aOn" /> <span>Mostra l’avviso sul sito</span></label>
+          <div class="azioni">
+            <button type="submit" class="btn btn-sole">Salva</button>
+            <a href="/demoPalmaViaggi/" class="btn btn-bordo">Guarda la home</a>
+            <span class="salvato" id="aOk" role="status"></span>
+          </div>
+        </form>
+      </div>
+
+      <p class="promemoria">💡 <b>Per Palma Viaggi:</b> in questa bozza i dati restano su questo dispositivo: provate a prenotare una gita dal sito e a tornare qui. Nella versione definitiva stanno sul sito: le prenotazioni pagate vi arrivano anche per email, e il pannello si usa comodamente dal telefono.</p>
+    </div>
+  </section>
+
+  <style is:global>
+    .banda-g{padding-bottom:clamp(4rem,8vw,6rem)}
+    .accesso{max-width:440px}
+    .accesso h1,.pann-testa h1{font-size:clamp(2.3rem,5vw,3.4rem);margin:.6rem 0 1.8rem;font-weight:800}
+    .accesso h1 span,.pann-testa h1 span{color:var(--cielo-testo)}
+    .prova{display:grid;gap:.2rem;text-align:center;padding:1rem;border:1.5px dashed var(--filo-2);border-radius:14px;background:rgba(255,194,58,.1);cursor:pointer;font:inherit;color:var(--inchiostro)}
+    .prova b{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--arancio-testo)}
+    .prova span{font-family:var(--disp);font-size:1.3rem}
+    .prova small{color:var(--muto);font-size:.78rem}
+    .link-s{color:var(--cielo-testo);font-weight:700;text-decoration:underline;text-underline-offset:3px;background:none;border:0;font:inherit;cursor:pointer}
+    .pann-testa{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
+    .pann-testa h1{margin-bottom:1rem}
+
+    .numeri{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin-bottom:1.8rem}
+    .numeri li{background:var(--carta);border-radius:14px;padding:.9rem 1rem;box-shadow:0 1px 0 var(--filo)}
+    .numeri b{display:block;font-family:var(--disp);font-size:1.7rem;font-weight:800;color:var(--inchiostro);line-height:1.1}
+    .numeri span{font-size:.82rem;color:var(--muto)}
+
+    .schede{display:flex;gap:.3rem;border-bottom:2px solid var(--filo);margin-bottom:1.5rem;overflow-x:auto}
+    .schede button{display:inline-flex;align-items:center;gap:.4rem;padding:.8rem 1.1rem;background:none;border:0;border-bottom:3px solid transparent;margin-bottom:-2px;font:inherit;font-family:var(--disp);font-weight:600;font-size:1.02rem;color:var(--muto);cursor:pointer;white-space:nowrap}
+    .schede button[aria-selected="true"]{color:var(--inchiostro);border-color:var(--arancio)}
+    .conto{display:inline-grid;place-items:center;min-width:1.4rem;height:1.4rem;padding:0 .35rem;border-radius:99px;background:var(--arancio);color:var(--notte);font-size:.75rem;font-weight:800}
+    .conto:empty{display:none}
+    .tab-testa{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap}
+    .tab-d{color:var(--muto);max-width:62ch;margin-bottom:1.2rem}
+    .spunta-f{display:inline-flex;align-items:center;gap:.5rem;font-weight:600;font-size:.92rem;cursor:pointer}
+    .spunta-f input{width:18px;height:18px;accent-color:var(--notte)}
+
+    .lista-pren{display:grid;gap:1rem}
+    .pr{background:var(--carta);border-radius:16px;padding:1.2rem 1.3rem;box-shadow:0 1px 0 var(--filo);border-left:5px solid var(--cielo)}
+    .pr.pagata{border-left-color:var(--verde)}
+    .pr.acconto{border-left-color:#7fbf3f}
+    .pr.bloccato{border-left-color:var(--arancio)}
+    .pr.attesa{border-left-color:var(--muto)}
+    .pr.archiviata{opacity:.6}
+    .pr-testa{display:flex;justify-content:space-between;gap:.6rem 1rem;flex-wrap:wrap;align-items:baseline}
+    .pr-chi{font-family:var(--disp);font-size:1.2rem;font-weight:700;color:var(--inchiostro)}
+    .pr-badge{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:.2rem .6rem;border-radius:99px;background:var(--sabbia-2);color:var(--inchiostro);white-space:nowrap}
+    .pagata .pr-badge{background:#dff3e8;color:var(--verde)}
+    .bloccato .pr-badge{background:#fff0dc;color:var(--arancio-testo)}
+    .pr-cosa{font-weight:700;color:var(--inchiostro);margin-top:.4rem}
+    .pr-dett{display:flex;flex-wrap:wrap;gap:.2rem 1.2rem;font-size:.9rem;color:var(--muto);margin-top:.3rem}
+    .pr-dett a{color:var(--cielo-testo);font-weight:700}
+    .pr-note{font-size:.9rem;margin-top:.5rem;padding:.6rem .8rem;border-radius:10px;background:var(--sabbia);white-space:pre-line}
+    .pr-azioni{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.9rem}
+    .pr-azioni .btn{min-height:40px;padding:.45rem 1rem;font-size:.92rem}
+    .vuoto{padding:2rem;text-align:center;color:var(--muto);background:var(--carta);border-radius:16px;border:1.5px dashed var(--filo-2)}
+
+    .tabella-box{overflow-x:auto;background:var(--carta);border-radius:16px;box-shadow:0 1px 0 var(--filo)}
+    .tab-part{width:100%;border-collapse:collapse;min-width:680px}
+    .tab-part th,.tab-part td{padding:.7rem .9rem;text-align:left;border-bottom:1px solid var(--filo);vertical-align:middle}
+    .tab-part thead th{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muto);background:var(--sabbia-2)}
+    .tab-part tr.annullata td{opacity:.5}
+    .tab-part tr.annullata td:first-child{text-decoration:line-through}
+    .tp-data{font-weight:700;color:var(--inchiostro);white-space:nowrap}
+    .tp-gita{font-weight:600}
+    .tp-gita small{display:block;color:var(--muto);font-weight:500}
+    .passi-n{display:inline-flex;align-items:center;gap:.3rem}
+    .passi-n button{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;border:1.5px solid var(--filo-2);background:var(--carta);cursor:pointer;color:var(--inchiostro)}
+    .passi-n output{min-width:3.6rem;text-align:center;font-weight:800;font-family:var(--disp)}
+    .passi-n output small{font-weight:600;color:var(--muto)}
+    .tp-prezzo{width:5.5rem;padding:.4rem .5rem;border:1.5px solid var(--filo-2);border-radius:8px;font:inherit;font-weight:700}
+    .tp-az{display:flex;gap:.4rem;justify-content:flex-end}
+    .tp-az button{background:none;border:0;font:inherit;font-weight:700;font-size:.88rem;color:var(--cielo-testo);cursor:pointer;padding:.3rem .4rem;white-space:nowrap}
+    .tp-az .rosso{color:var(--rosso)}
+
+    .h-nuova{font-size:1.4rem;margin:2.2rem 0 1rem}
+    .nuova,.avv-form{max-width:720px;background:var(--carta);border-radius:16px;padding:1.3rem;box-shadow:0 1px 0 var(--filo)}
+    .tre-c{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:1rem}
+    .azioni{display:flex;flex-wrap:wrap;align-items:center;gap:.7rem}
+    .salvato{font-weight:700;color:var(--verde)}
+
+    /* lista passeggeri */
+    .lista-testa{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:1rem;margin-bottom:1rem}
+    .lista-sel{display:grid;gap:.4rem;font-size:.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muto);flex:1 1 320px;max-width:520px}
+    .lista-sel select{min-height:46px;padding:.5rem .9rem;border:1.5px solid var(--filo-2);border-radius:12px;background:var(--carta);font:inherit;font-weight:700;font-size:1rem;letter-spacing:0;text-transform:none;color:var(--inchiostro)}
+    .lista-az{display:flex;flex-wrap:wrap;gap:.5rem}
+    .lista-az .btn{min-height:44px;padding:.5rem 1rem;font-size:.95rem}
+    .manuale{margin:0 0 1.2rem;background:var(--carta);border-radius:16px;box-shadow:0 1px 0 var(--filo)}
+    .manuale summary{cursor:pointer;padding:1rem 1.2rem;font-family:var(--disp);font-weight:700;color:var(--cielo-testo)}
+    .man-form{padding:0 1.2rem 1.2rem}
+    .res-camere{color:var(--testo)}
+    .res-camere b{color:var(--inchiostro)}
+    .res{background:var(--carta);border-radius:18px;padding:clamp(1.1rem,3vw,1.8rem);box-shadow:0 1px 0 var(--filo)}
+    .res-testa{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem 2rem;align-items:flex-start;padding-bottom:1rem;border-bottom:2px dashed var(--filo)}
+    .res-data{font-family:var(--disp);font-weight:700;color:var(--arancio-testo)}
+    .res-testa h2{font-size:clamp(1.5rem,3vw,2rem);margin-top:.2rem}
+    .res-stato{color:var(--muto);margin-top:.3rem}
+    .res-marca{font-size:.8rem;color:var(--muto);text-align:right}
+    .res-numeri{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin:1.2rem 0 .4rem}
+    .res-numeri li{background:var(--sabbia);border-radius:12px;padding:.8rem .9rem}
+    .res-numeri b{display:block;font-family:var(--disp);font-size:1.5rem;font-weight:800;color:var(--inchiostro);line-height:1.1}
+    .res-numeri span{font-size:.8rem;color:var(--muto)}
+    .res-numeri .verde b{color:var(--verde)}
+    .res-numeri .arancio b{color:var(--arancio-testo)}
+    .res h3{font-size:1.25rem;margin:1.8rem 0 .7rem}
+    .res h4{display:flex;align-items:baseline;gap:.7rem;font-size:1.05rem;margin:1.3rem 0 .5rem;padding:.5rem .8rem;border-radius:10px;background:var(--notte);color:#fff}
+    .res h4 b{color:var(--sole);font-family:var(--disp)}
+    .res h4 span{margin-left:auto;font-size:.85rem;font-weight:600;color:#a9bec9}
+    .res-box{overflow-x:auto}
+    .res-tab{width:100%;border-collapse:collapse;font-size:.92rem}
+    .res-tab th,.res-tab td{padding:.5rem .6rem;text-align:left;border-bottom:1px solid var(--filo);vertical-align:top}
+    .res-tab thead th{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muto);font-weight:800}
+    .res-tab tfoot td,.res-tab tfoot th{font-weight:800;color:var(--inchiostro);border-bottom:0;border-top:2px solid var(--filo-2)}
+    .res-tab .num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+    .res-tab .n{color:var(--muto);width:2.2rem;font-variant-numeric:tabular-nums}
+    .res-tab .chi{font-weight:700;color:var(--inchiostro)}
+    .res-tab .cod{font-family:var(--disp);font-weight:600;white-space:nowrap}
+    .res-tab .salito{width:2.4rem;text-align:center}
+    .res-tab .salito span{display:inline-block;width:18px;height:18px;border:1.5px solid var(--filo-2);border-radius:4px}
+    .res-tab tr.altro td{border-bottom-style:dashed}
+    .res-fermate td:first-child{font-family:var(--disp);font-weight:800;color:var(--cielo-testo);width:4.5rem}
+    .res-barra{display:inline-block;height:8px;border-radius:99px;background:var(--cielo);vertical-align:middle;margin-right:.5rem}
+    .pg{display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.04em;padding:.15rem .5rem;border-radius:99px;white-space:nowrap}
+    .pg-ok{background:#dff3e8;color:var(--verde)}
+    .pg-acc{background:#fff0dc;color:var(--arancio-testo)}
+    .pg-no{background:#fbe3e0;color:var(--rosso)}
+    .res-nota{font-size:.88rem;color:var(--muto);margin-top:.6rem}
+    @media (max-width:760px){.res-numeri{grid-template-columns:1fr 1fr}}
+    @media print{
+      body *{visibility:hidden !important}
+      #stampaLista,#stampaLista *{visibility:visible !important}
+      #stampaLista{position:absolute;left:0;top:0;width:100%;box-shadow:none;padding:0}
+      .res-tab{font-size:9.5pt}
+      .res-tab tr{break-inside:avoid}
+      .res h4,.pg,.res-numeri li{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    }
+
+    @media (max-width:760px){.numeri{grid-template-columns:1fr 1fr}.tre-c{grid-template-columns:1fr}}
+  </style>
+
+  <script>
+    import {
+      GITA, INFO, REGOLE, partenzeAttuali, statoPosti, prezzoDi, dataBreve, dataMedia, dataLunga, isoLocale, euro, esc, waLink,
+      leggiRichieste, scriviRichieste, leggiModifiche, scriviModifiche, leggiAvviso, scriviAvviso, resoconto, salite,
+    } from './_shared.js';
+    const $ = <T extends HTMLElement = HTMLInputElement>(s: string) => document.querySelector(s) as T;
+
+    // ---------------------------------------------------------------- accesso (solo dimostrativo)
+    const UTENTE = 'palma', PASSWORD = 'buttigliera54';
+    const dentro = () => { try { return sessionStorage.getItem('pv-auth') === 'ok'; } catch { return false; } };
+    const gate = () => { $('#accesso').hidden = dentro(); $('#pannello').hidden = !dentro(); if (dentro()) tutto(); };
+    $('#prova').addEventListener('click', () => { $('#u').value = UTENTE; $('#pw').value = PASSWORD; $('#pw').focus(); });
+    $('#login').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const ok = $('#u').value.trim().toLowerCase() === UTENTE && $('#pw').value === PASSWORD;
+      $('#lErr').hidden = ok;
+      if (!ok) return;
+      try { sessionStorage.setItem('pv-auth', 'ok'); } catch { /* resta per questa pagina */ }
+      gate(); scrollTo(0, 0);
+    });
+    $('#esci').addEventListener('click', () => { try { sessionStorage.removeItem('pv-auth'); } catch {} gate(); scrollTo(0, 0); });
+
+    // ---------------------------------------------------------------- schede
+    const tabs = [...document.querySelectorAll<HTMLButtonElement>('[role=tab]')];
+    const apri = (b: HTMLButtonElement, fuoco = false) => {
+      tabs.forEach((t) => {
+        const on = t === b;
+        t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1;
+        $(`#${t.getAttribute('aria-controls')}`).hidden = !on;
+      });
+      if (fuoco) b.focus();
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => apri(t));
+      t.addEventListener('keydown', (e) => {
+        const k = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (k) { e.preventDefault(); apri(tabs[(i + k + tabs.length) % tabs.length], true); }
+      });
+    });
+
+    // ---------------------------------------------------------------- dati
+    const oggiIso = () => isoLocale(new Date());
+    const numeroWa = (tel: string) => { const d = String(tel).replace(/\D/g, ''); return d.startsWith('39') ? d : d.startsWith('3') ? '39' + d : d; };
+    const ETICHETTE: Record<string, [string, string]> = {
+      'pagata': ['pagata', 'Pagata'], 'acconto pagato': ['acconto', 'Acconto pagato'], 'posto bloccato': ['bloccato', 'Da pagare in agenzia'],
+      'lista d’attesa': ['attesa', 'Lista d’attesa'], 'nuova': ['', 'Preventivo'], 'gestita': ['pagata', 'Gestita'], 'archiviata': ['archiviata', 'Archiviata'],
+    };
+
+    const aggiungiIscritti = (idP: string, n: number) => {
+      const m = leggiModifiche();
+      const p = partenzeAttuali().find((x) => x.id === idP);
+      if (!p) return;
+      const max = Number(GITA[p.gita].posti ?? REGOLE.posti);
+      m.mod[idP] = { ...(m.mod[idP] || {}), iscritti: Math.max(0, Math.min(max, (Number(p.iscritti) || 0) + n)) };
+      scriviModifiche(m);
+    };
+
+    function disegnaPrenotazioni() {
+      const vediArch = $('#vediArch').checked;
+      const tutte = leggiRichieste().sort((a: any, b: any) => String(b.creata).localeCompare(String(a.creata)));
+      const lista = tutte.filter((r: any) => vediArch || r.stato !== 'archiviata');
+      const daFare = tutte.filter((r: any) => ['posto bloccato', 'lista d’attesa', 'nuova'].includes(r.stato)).length;
+      $('#conto').textContent = daFare ? String(daFare) : '';
+      if (!lista.length) {
+        $('#listaPren').innerHTML = `<p class="vuoto">Ancora nessuna prenotazione da questo dispositivo. Provate: <a href="/demoPalmaViaggi/prenota/" class="link">prenotate una gita</a> e tornate qui.</p>`;
+        return;
+      }
+      $('#listaPren').innerHTML = lista.map((r: any) => {
+        const [cls, et] = ETICHETTE[r.stato] || ['', r.stato];
+        const quando = new Date(r.creata).toLocaleString('it-IT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+        const tel = /\d{6,}/.test(String(r.tel).replace(/\s/g, '')) ? `<a href="tel:${esc(String(r.tel).replace(/[^\d+]/g, ''))}">${esc(r.tel)}</a>` : esc(r.tel);
+        if (r.tipo === 'preventivo') {
+          return `<article class="pr ${cls}" data-id="${esc(r.id)}">
+            <div class="pr-testa"><span class="pr-chi">${esc(r.nome)}</span><span class="pr-badge">${esc(r.stato === 'nuova' ? 'Preventivo da fare' : et)}</span></div>
+            <p class="pr-cosa">${esc(r.servizio)}</p>
+            <p class="pr-dett"><span>${tel}</span><span>arrivata il ${esc(quando)}</span></p>
+            <p class="pr-note">${esc(r.testo)}</p>
+            <div class="pr-azioni">
+              ${/\d{6,}/.test(String(r.tel).replace(/\s/g, '')) ? `<a class="btn btn-wa" target="_blank" rel="noopener" href="${esc(waLink(`Buongiorno ${r.nome}, sono di ${INFO.nome}: le scrivo per il preventivo «${r.servizio}».`, numeroWa(r.tel)))}">Rispondi su WhatsApp</a>` : `<a class="btn btn-bordo" href="mailto:${esc(r.tel)}">Rispondi per email</a>`}
+              ${r.stato !== 'archiviata' ? `<button type="button" class="btn btn-bordo" data-az="archivia">Archivia</button>` : ''}
+            </div></article>`;
+        }
+        const g = GITA[r.gita];
+        if (!g) return '';
+        const saldo = Math.max(0, Math.round((r.totale - (r.pagato || 0)) * 100) / 100);
+        const conferma = waLink(`Buongiorno ${r.nome}, sono di ${INFO.nome}. Confermiamo ${r.persone === 1 ? 'il posto' : `i ${r.persone} posti`} per «${g.titolo}» del ${dataMedia(r.data)}, salita a ${r.salita}. Codice ${r.codice}. Il giorno prima le scriviamo orario e punto esatto. Buon viaggio!`, numeroWa(r.tel));
+        const libero = waLink(`Buongiorno ${r.nome}, sono di ${INFO.nome}: si è liberato un posto per «${g.titolo}» del ${dataMedia(r.data)}. Lo teniamo per lei fino a domani: ci conferma?`, numeroWa(r.tel));
+        const azioni = [
+          r.stato === 'posto bloccato' && `<button type="button" class="btn btn-sole" data-az="pagata">Segna come pagata</button>`,
+          r.stato === 'acconto pagato' && `<button type="button" class="btn btn-sole" data-az="saldo">Saldo ricevuto (${euro(saldo)})</button>`,
+          r.stato === 'lista d’attesa' ? `<a class="btn btn-wa" target="_blank" rel="noopener" href="${esc(libero)}">Avvisa: posto libero</a>` : `<a class="btn btn-wa" target="_blank" rel="noopener" href="${esc(conferma)}">Conferma su WhatsApp</a>`,
+          r.stato !== 'archiviata' && `<button type="button" class="btn btn-bordo" data-az="archivia">Archivia</button>`,
+        ].filter(Boolean).join('');
+        return `<article class="pr ${cls}" data-id="${esc(r.id)}">
+          <div class="pr-testa"><span class="pr-chi">${esc(r.nome)} · ${r.persone} ${r.persone === 1 ? 'persona' : 'persone'}</span><span class="pr-badge">${esc(et)}</span></div>
+          <p class="pr-cosa">${esc(g.titolo)} — ${esc(dataBreve(r.data))}</p>
+          <p class="pr-dett"><span>Codice <b>${esc(r.codice)}</b></span><span>Sale a ${esc(r.salita)}</span><span>${tel}</span>${r.email ? `<span>${esc(r.email)}</span>` : ''}
+            <span>Totale ${euro(r.totale)} · pagato ${euro(r.pagato || 0)}${saldo > 0 && r.stato !== 'lista d’attesa' ? ` · da incassare ${euro(saldo)}` : ''}</span><span>arrivata il ${esc(quando)}</span></p>
+          ${r.note ? `<p class="pr-note">${esc(r.note)}</p>` : ''}
+          <div class="pr-azioni">${azioni}</div></article>`;
+      }).join('');
+    }
+    $('#vediArch').addEventListener('change', disegnaPrenotazioni);
+    $('#listaPren').addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-az]');
+      if (!b) return;
+      const id = b.closest<HTMLElement>('.pr')!.dataset.id;
+      const lista = leggiRichieste();
+      const r = lista.find((x: any) => x.id === id);
+      if (!r) return;
+      const az = b.dataset.az;
+      // il posto bloccato conta già tra gli iscritti: qui si segna solo l'incasso
+      if (az === 'pagata') { r.stato = 'pagata'; r.pagato = r.totale; r.metodo = 'In agenzia'; }
+      if (az === 'saldo') { r.stato = 'pagata'; r.pagato = r.totale; }
+      if (az === 'archivia') r.stato = 'archiviata';
+      scriviRichieste(lista);
+      tutto();
+    });
+
+    // ---------------------------------------------------------------- partenze
+    function disegnaPartenze() {
+      const o = oggiIso();
+      const nuove = new Set(leggiModifiche().nuove.map((p: any) => p.id));
+      const lista = partenzeAttuali().filter((p) => p.data >= o).sort((a, b) => a.data.localeCompare(b.data));
+      $('#righePart').innerHTML = lista.map((p) => {
+        const g = GITA[p.gita], s = statoPosti(p), ann = p.stato === 'annullata';
+        return `<tr data-id="${esc(p.id)}" class="${ann ? 'annullata' : ''}">
+          <td class="tp-data">${esc(dataBreve(p.data))}</td>
+          <td class="tp-gita">${esc(g.titolo)}<small>${ann ? 'Annullata' : esc(s.t)}</small></td>
+          <td><span class="passi-n"><button type="button" data-az="meno" aria-label="Un iscritto in meno">−</button><output>${s.iscritti}<small>/${s.posti}</small></output><button type="button" data-az="piu" aria-label="Un iscritto in più">+</button></span></td>
+          <td><input class="tp-prezzo" type="number" min="1" step="1" value="${prezzoDi(p)}" aria-label="Prezzo per ${esc(g.titolo)}, ${esc(dataBreve(p.data))}" data-az="prezzo" /></td>
+          <td><div class="tp-az"><button type="button" data-az="lista">Lista passeggeri</button>${ann ? '<button type="button" data-az="ripristina">Ripristina</button>' : '<button type="button" class="rosso" data-az="annulla">Annulla</button>'}${nuove.has(p.id) ? '<button type="button" class="rosso" data-az="togli">Elimina</button>' : ''}</div></td>
+        </tr>`;
+      }).join('');
+    }
+    $('#righePart').addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-az]');
+      if (!b) return;
+      const id = b.closest('tr')!.dataset.id!;
+      const m = leggiModifiche();
+      const az = b.dataset.az;
+      if (az === 'lista') { $<HTMLSelectElement>('#lSel').value = id; disegnaLista(); fermateModulo(); apri($<HTMLButtonElement>('#b-lista')); scrollTo({ top: 0 }); return; }
+      if (az === 'piu' || az === 'meno') { aggiungiIscritti(id, az === 'piu' ? 1 : -1); tutto(); return; }
+      if (az === 'annulla') { if (!confirm('Annullare questa partenza? Sparirà dal sito; chi ha prenotato va avvisato.')) return; m.mod[id] = { ...(m.mod[id] || {}), stato: 'annullata' }; }
+      if (az === 'ripristina') m.mod[id] = { ...(m.mod[id] || {}), stato: 'attiva' };
+      if (az === 'togli') { m.nuove = m.nuove.filter((p: any) => p.id !== id); delete m.mod[id]; }
+      scriviModifiche(m); tutto();
+    });
+    $('#righePart').addEventListener('change', (e) => {
+      const el = e.target as HTMLInputElement;
+      if (el.dataset.az !== 'prezzo') return;
+      const v = Math.round(Number(el.value));
+      if (!(v > 0)) { disegnaPartenze(); return; }
+      const m = leggiModifiche(); const id = el.closest('tr')!.dataset.id!;
+      m.mod[id] = { ...(m.mod[id] || {}), prezzo: v }; scriviModifiche(m); tutto();
+    });
+
+    // nuova partenza: il prezzo propone quello della gita
+    const nGita = $<HTMLSelectElement>('#nGita');
+    const proponi = () => { $('#nPrezzo').value = String(GITA[nGita.value].prezzo); $('#nIscr').max = String(GITA[nGita.value].posti ?? REGOLE.posti); };
+    nGita.addEventListener('change', proponi); proponi();
+    $('#nData').min = oggiIso();
+    $('#nuovaForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = $('#nData').value, prezzo = Math.round(Number($('#nPrezzo').value)), iscritti = Math.max(0, Math.round(Number($('#nIscr').value) || 0));
+      const err = $('#nErr');
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(data) || data < oggiIso()) { err.textContent = 'Scegliete una data da oggi in avanti.'; err.hidden = false; return; }
+      if (!(prezzo > 0)) { err.textContent = 'Scrivete il prezzo a persona.'; err.hidden = false; return; }
+      if (partenzeAttuali().some((p) => p.gita === nGita.value && p.data === data)) { err.textContent = 'Questa gita in quella data c’è già.'; err.hidden = false; return; }
+      err.hidden = true;
+      const m = leggiModifiche();
+      m.nuove.push({ id: 'n' + Date.now(), gita: nGita.value, data, prezzo, iscritti });
+      scriviModifiche(m);
+      $('#nOk').textContent = `Aggiunta: ${GITA[nGita.value].titolo}, ${dataMedia(data)}.`;
+      setTimeout(() => { $('#nOk').textContent = ''; }, 4000);
+      ($('#nuovaForm') as HTMLFormElement).reset(); proponi();
+      tutto();
+    });
+
+    // ---------------------------------------------------------------- avviso
+    const av = leggiAvviso();
+    $<HTMLTextAreaElement>('#aTesto').value = av.testo; $('#aOn').checked = av.attivo;
+    $('#avvForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      scriviAvviso({ testo: $<HTMLTextAreaElement>('#aTesto').value.trim(), attivo: $('#aOn').checked });
+      $('#aOk').textContent = $('#aOn').checked ? 'Salvato: l’avviso è sul sito.' : 'Salvato: l’avviso è nascosto.';
+      setTimeout(() => { $('#aOk').textContent = ''; }, 4000);
+    });
+
+    // ---------------------------------------------------------------- lista passeggeri (resoconto)
+    const prossimePart = () => { const o = oggiIso(); return partenzeAttuali().filter((p) => p.data >= o && p.stato !== 'annullata').sort((a, b) => a.data.localeCompare(b.data)); };
+    const cifra = (n: number) => n.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const badge = (r: any) => r.residuo <= 0 ? '<span class="pg pg-ok">Pagato</span>'
+      : r.pagato > 0 ? `<span class="pg pg-acc">Acconto · mancano ${euro(r.residuo)}</span>` : `<span class="pg pg-no">Da incassare ${euro(r.residuo)}</span>`;
+
+    function disegnaLista() {
+      const sel = $<HTMLSelectElement>('#lSel');
+      const part = prossimePart();
+      const prima = sel.value;
+      sel.innerHTML = part.map((p) => `<option value="${esc(p.id)}">${esc(dataBreve(p.data))} · ${esc(GITA[p.gita].titolo)}</option>`).join('');
+      if (part.some((p) => p.id === prima)) sel.value = prima;
+      const p = part.find((x) => x.id === sel.value);
+      if (!p) { $('#resoconto').innerHTML = '<p class="vuoto">Nessuna partenza in calendario.</p>'; return; }
+      const R = resoconto(p, leggiRichieste());
+      const s = statoPosti(p);
+      const aMano = s.iscritti - R.passeggeri;
+      const quando = R.g.giorni > 1 ? `${dataLunga(p.data)} – ${dataLunga(new Date(new Date(p.data + 'T12:00:00').getTime() + (R.g.giorni - 1) * 864e5).toISOString().slice(0, 10))}` : dataLunga(p.data);
+      let n = 0;
+      $('#resoconto').innerHTML = `<div class="res" id="stampaLista">
+        <header class="res-testa">
+          <div><p class="res-data">${esc(quando[0].toUpperCase() + quando.slice(1))}</p><h2>${esc(R.g.titolo)}</h2><p class="res-stato">${esc(s.t)} · ${R.passeggeri} passeggeri su ${s.posti} posti</p></div>
+          <p class="res-marca">${esc(INFO.nome)}<br />aggiornato al ${esc(new Date().toLocaleString('it-IT', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }))}</p>
+        </header>
+        <ul class="res-numeri">
+          <li><b>${R.passeggeri}<small>/${s.posti}</small></b><span>passeggeri</span></li>
+          <li><b>${R.prenotazioni.length}</b><span>prenotazioni</span></li>
+          <li class="verde"><b>${euro(R.incassato)}</b><span>incassati · ${euro(R.online)} online, ${euro(R.agenzia)} in agenzia</span></li>
+          <li class="arancio"><b>${euro(R.residuo)}</b><span>da incassare</span></li>
+        </ul>
+
+        <h3>Fermate</h3>
+        <div class="res-box"><table class="res-tab res-fermate">
+          <thead><tr><th scope="col">Orario</th><th scope="col">Fermata</th><th scope="col" class="num">Passeggeri</th></tr></thead>
+          <tbody>${R.fermate.map((f: any) => `<tr><td>${esc(f.ora)}</td><th scope="row">${esc(f.luogo)}</th><td class="num"><span class="res-barra" style="width:${Math.round((f.passeggeri / Math.max(1, R.passeggeri)) * 120)}px"></span>${f.passeggeri}</td></tr>`).join('')}</tbody>
+          <tfoot><tr><td></td><th scope="row">Totale</th><td class="num">${R.passeggeri}</td></tr></tfoot>
+        </table></div>
+        ${R.camere ? `<h3>Camere per l’hotel</h3><p class="res-camere">Singole: <b>${R.camere.singole}</b>${R.camere.nomiSingole.length ? ` (${esc(R.camere.nomiSingole.join(', '))})` : ''}. In doppia o tripla: <b>${R.camere.inDoppia}</b> ${R.camere.inDoppia === 1 ? 'passeggero' : 'passeggeri'}, circa ${Math.ceil(R.camere.inDoppia / 2)} camere.</p>` : ''}
+        ${aMano > 0 ? `<p class="res-nota">In più ci sono ${aMano} ${aMano === 1 ? 'posto segnato' : 'posti segnati'} a mano dal pannello (prenotazioni al telefono, senza nomi).</p>` : ''}
+
+        <h3>Lista passeggeri</h3>
+        ${R.fermate.filter((f: any) => f.passeggeri).map((f: any) => `
+          <h4><b>${esc(f.ora)}</b> ${esc(f.luogo)} <span>${f.passeggeri} ${f.passeggeri === 1 ? 'passeggero' : 'passeggeri'}</span></h4>
+          <div class="res-box"><table class="res-tab res-pass">
+            <thead><tr><th scope="col" class="n">N.</th><th scope="col">Passeggero</th><th scope="col">Prenotazione</th><th scope="col">Telefono</th><th scope="col">Pagamento</th><th scope="col">Note</th><th scope="col" class="salito">Salito</th></tr></thead>
+            <tbody>${f.prenotazioni.map((r: any) => r.passeggeri.map((nome: string, i: number) => `<tr class="${i ? 'altro' : ''}">
+              <td class="n">${++n}</td><td class="chi">${esc(nome)}</td>
+              <td class="cod">${i ? '' : esc(r.codice)}</td><td>${i ? '' : esc(r.tel)}</td><td>${i ? '' : badge(r)}</td><td>${i ? '' : esc(r.note || '')}</td>
+              <td class="salito"><span></span></td></tr>`).join('')).join('')}</tbody>
+          </table></div>`).join('')}
+
+        <h3>Pagamenti</h3>
+        <div class="res-box"><table class="res-tab res-pag">
+          <thead><tr><th scope="col">Codice</th><th scope="col">Referente</th><th scope="col">Fermata</th><th scope="col" class="num">Persone</th><th scope="col" class="num">Totale</th><th scope="col" class="num">Pagato</th><th scope="col">Come</th><th scope="col" class="num">Da incassare</th></tr></thead>
+          <tbody>${R.prenotazioni.map((r: any) => `<tr><td class="cod">${esc(r.codice)}</td><td class="chi">${esc(r.nome)}</td><td>${esc(r.salita)}</td><td class="num">${r.passeggeri.length}</td><td class="num">${euro(r.totale)}</td><td class="num">${euro(r.pagato)}</td><td>${esc(r.metodo)}</td><td class="num">${r.residuo > 0 ? `<b>${euro(r.residuo)}</b>` : '—'}</td></tr>`).join('')}</tbody>
+          <tfoot><tr><th scope="row" colspan="3">Totale</th><td class="num">${R.passeggeri}</td><td class="num">${euro(R.totale)}</td><td class="num">${euro(R.incassato)}</td><td></td><td class="num">${euro(R.residuo)}</td></tr></tfoot>
+        </table></div>
+      </div>`;
+
+      // per Excel: punto e virgola, virgola decimale, e il BOM perché legga bene gli accenti
+      const righe: (string | number)[][] = [['Partenza', 'Gita', 'Fermata', 'Orario', 'N.', 'Passeggero', 'Codice', 'Referente', 'Telefono', 'Totale prenotazione', 'Pagato', 'Da incassare', 'Come ha pagato', 'Note']];
+      let k = 0;
+      R.fermate.forEach((f: any) => f.prenotazioni.forEach((r: any) => r.passeggeri.forEach((nome: string, i: number) => righe.push([
+        p.data, R.g.titolo, f.luogo, f.ora, ++k, nome, r.codice, r.nome, r.tel,
+        i ? '' : cifra(r.totale), i ? '' : cifra(r.pagato), i ? '' : cifra(r.residuo), i ? '' : r.metodo, i ? '' : (r.note || ''),
+      ]))));
+      const csv = '﻿' + righe.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(';')).join('\r\n');
+      const ex = $<HTMLAnchorElement>('#lExcel');
+      ex.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+      ex.download = `passeggeri-${R.g.id}-${p.data}.csv`;
+
+      // il resoconto in breve, per email
+      const corpo = [
+        `${R.g.titolo} — ${quando}`, '',
+        `Passeggeri: ${R.passeggeri} su ${s.posti} (${s.t.toLowerCase()})`,
+        ...R.fermate.map((f: any) => `  ${f.ora}  ${f.luogo}: ${f.passeggeri}`), '',
+        `Incassato: ${euro(R.incassato)} (online ${euro(R.online)}, in agenzia ${euro(R.agenzia)})`,
+        `Da incassare: ${euro(R.residuo)}`,
+        ...(R.camere ? [`Camere: ${R.camere.singole} singole, ${R.camere.inDoppia} passeggeri in doppia o tripla`] : []),
+        ...R.prenotazioni.filter((r: any) => r.residuo > 0).map((r: any) => `  ${r.codice} ${r.nome}, ${r.tel}: ${euro(r.residuo)}`),
+      ].join('\n');
+      $<HTMLAnchorElement>('#lMail').href = `mailto:${INFO.email}?subject=${encodeURIComponent(`Resoconto ${R.g.titolo}, ${dataMedia(p.data)}`)}&body=${encodeURIComponent(corpo)}`;
+    }
+    $('#lSel').addEventListener('change', () => { disegnaLista(); fermateModulo(); });
+
+    // prenotazione a mano: con i nomi, così la lista passeggeri è completa anche per chi chiama
+    const codiceNuovo = () => { const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; return 'PV-' + Array.from({ length: 5 }, () => A[Math.floor(Math.random() * A.length)]).join(''); };
+    function fermateModulo() {
+      const p = prossimePart().find((x) => x.id === $<HTMLSelectElement>('#lSel').value);
+      const sel = $<HTMLSelectElement>('#mFerm'), prima = sel.value;
+      sel.innerHTML = p ? salite(GITA[p.gita]).map((f: any) => `<option value="${esc(f.luogo)}">${esc(f.luogo)} (${esc(f.ora)})</option>`).join('') : '';
+      if ([...sel.options].some((o) => o.value === prima)) sel.value = prima;
+    }
+    $('#manForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const err = (m: string, c?: HTMLElement) => { const x = $('#mErr'); x.textContent = m; x.hidden = !m; if (c) c.focus(); };
+      const p = prossimePart().find((x) => x.id === $<HTMLSelectElement>('#lSel').value);
+      if (!p) return err('Scegliete prima la partenza.');
+      const nomi = $<HTMLTextAreaElement>('#mPass').value.split(/\r?\n/).map((s) => s.trim()).filter(Boolean);
+      if (!nomi.length) return err('Scrivete almeno un passeggero, uno per riga.', $('#mPass'));
+      const s = statoPosti(p);
+      if (nomi.length > s.liberi) return err(`Posti liberi su questa partenza: ${s.liberi}.`, $('#mPass'));
+      const tel = $('#mTel').value.trim();
+      if (tel.replace(/\D/g, '').length < 8) return err('Serve un telefono completo.', $('#mTel'));
+      err('');
+      const totale = Math.round(prezzoDi(p) * nomi.length * 100) / 100;
+      const pag = $<HTMLSelectElement>('#mPag').value;
+      const pagato = pag === 'pagata' ? totale : pag === 'acconto' ? Math.min(totale, Number($('#mImp').value) || Math.round(totale * 30) / 100) : 0;
+      const pren = {
+        id: 'm' + Date.now(), codice: codiceNuovo(), tipo: 'prenotazione', fonte: 'agenzia', partenza: p.id, gita: p.gita, data: p.data,
+        persone: nomi.length, passeggeri: nomi, nome: nomi[0], salita: $<HTMLSelectElement>('#mFerm').value, tel, email: '', note: $('#mNote').value.trim(),
+        singole: 0, totale, pagato, modo: 'agenzia', metodo: pagato > 0 ? 'In agenzia' : '—',
+        stato: pag === 'pagata' ? 'pagata' : pag === 'acconto' ? 'acconto pagato' : 'posto bloccato', creata: new Date().toISOString(),
+      };
+      scriviRichieste([...leggiRichieste(), pren]);
+      aggiungiIscritti(p.id, nomi.length);
+      ($('#manForm') as HTMLFormElement).reset();
+      $('#mOk').textContent = `Aggiunta: ${pren.codice}, ${nomi.length} ${nomi.length === 1 ? 'passeggero' : 'passeggeri'}.`;
+      setTimeout(() => { $('#mOk').textContent = ''; }, 5000);
+      tutto();
+    });
+    $('#lStampa').addEventListener('click', () => print());
+
+    // ---------------------------------------------------------------- numeri in breve (tutte le prossime partenze)
+    function disegnaNumeri() {
+      const rich = leggiRichieste();
+      const tot = prossimePart().map((p) => resoconto(p, rich));
+      const somma = (k: string) => Math.round(tot.reduce((t, r: any) => t + r[k], 0) * 100) / 100;
+      $('#numeri').innerHTML = [
+        [tot.length, 'partenze in calendario'],
+        [somma('passeggeri'), 'passeggeri prenotati'],
+        [euro(somma('incassato')), 'già incassati'],
+        [euro(somma('residuo')), 'da incassare'],
+      ].map(([n, t]) => `<li><b>${n}</b><span>${t}</span></li>`).join('');
+    }
+
+    // il saluto secondo l'ora
+    (document.querySelector('.pann-testa h1') as HTMLElement).firstChild!.textContent = new Date().getHours() >= 18 ? 'Buonasera, ' : 'Buongiorno, ';
+
+    function tutto() { disegnaNumeri(); disegnaPrenotazioni(); disegnaPartenze(); disegnaLista(); fermateModulo(); }
+    gate();
+  </script>
+</Layout>
